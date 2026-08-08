@@ -6432,3 +6432,34 @@ evidence against its verified top-level package.
 - No production connection or mutation, public geometry write, canonical
   manifest eligibility change, Git commit/push, or public deployment occurred
   during this clean integration gate.
+
+### 2026-08-08 - Minnesota Vercel preview packaging correction
+
+- Draft PR #208's native Vercel preview deployment
+  `dpl_6s72pMzuRq1jpsdrbrHh5bhgF844` failed at commit `d69b17f` because
+  `.vercelignore` excluded `data/precinct-geometry-manifests.json` while both
+  precinct API routes import that registry at build time. The local build did
+  not reproduce the failure because `.vercelignore` applies to Vercel's source
+  upload rather than an ordinary local checkout.
+
+- Added one exact Vercel source-bundle exception for
+  `data/precinct-geometry-manifests.json`. The broad `data/**` exclusion stays
+  in place, and neither `data/precinct-geometry/` nor its raw, normalized,
+  crosswalk, report, or delivery-candidate artifacts are uploaded by this
+  exception.
+
+- Added regression contracts in `tests/api/precinct-map-ui.test.mjs` and the
+  CI-executed `tests/api/api-contract.test.mjs`. They require the exact registry
+  exception, while the focused contract also rejects directory-wide
+  precinct-geometry exceptions. The complete `npm run test:api` suite and the
+  focused 5/5-test file passed, `npm run typecheck` passed, and the optimized
+  `npm run build` passed with both precinct API routes present. The native
+  Vercel preview remains the final source-bundle verification after the
+  corrected commit is pushed.
+
+- This packaging correction changes files hash-pinned by the Minnesota release
+  candidate, so the prior confirmed review record remains immutable evidence
+  for its earlier bytes rather than approval of this correction. Any future
+  production package must be resealed and reviewed. No database, canonical
+  delivery eligibility, public geometry, certified result, crosswalk, or
+  production environment changed.

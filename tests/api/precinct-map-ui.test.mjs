@@ -38,6 +38,17 @@ test("precinct geography API accompanies geometry with source terms", () => {
   assert.match(builder, /sourceAuthority: manifest.source.authority/);
 });
 
+test("Vercel retains the precinct manifest registry without raw geometry", () => {
+  const vercelIgnore = readFileSync(".vercelignore", "utf8");
+  assert.match(vercelIgnore, /^data\/\*\*$/m);
+  assert.match(
+    vercelIgnore,
+    /^!data\/precinct-geometry-manifests\.json$/m,
+  );
+  assert.doesNotMatch(vercelIgnore, /^!data\/precinct-geometry\/?$/m);
+  assert.doesNotMatch(vercelIgnore, /^!data\/precinct-geometry\/\*\*$/m);
+});
+
 test("precinct map has one keyboard control rather than focusable GIS paths", () => {
   const component = readFileSync(
     "src/app/precinct-detail-map.tsx",

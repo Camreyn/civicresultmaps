@@ -80,10 +80,15 @@ test("precinct geography API defaults to delivery-eligible manifests", () => {
     "src/app/api/geography-manifests/route.ts",
     "utf8",
   );
+  const vercelIgnore = readFileSync(".vercelignore", "utf8");
   assert.match(route, /includeBlockedParam === "true"/);
   assert.match(route, /listPrecinctGeometryManifestViews/);
   assert.match(route, /Only reviewed, reconciled, election-vintage-confirmed/);
   assert.doesNotMatch(route, /getCanonicalJurisdictionRegistry/);
+  assert.match(
+    vercelIgnore,
+    /^!data\/precinct-geometry-manifests\.json$/m,
+  );
 });
 
 test("precinct delivery API validates immutable geometry before county transfer", () => {
