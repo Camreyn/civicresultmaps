@@ -60,11 +60,8 @@ jobs:
       - name: Electronic integrity request workflow validation
         run: npm run validate:electronic-integrity-requests
 
-      - name: Production map join validation
-        run: npm run validate:maps
-
-      - name: Production provenance validation
-        run: npm run validate:provenance
+      - name: Map geometry validation
+        run: npm run validate:map-geometry
 
       - name: Feature-enabled public equipment build
         run: npm run build

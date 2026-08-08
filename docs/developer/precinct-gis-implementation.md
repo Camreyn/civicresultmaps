@@ -6722,3 +6722,24 @@ evidence against its verified top-level package.
   production release. No production database write, Blob upload, Vercel
   environment mutation, manifest activation, deployment promotion, or public
   data cutover occurred during this checkpoint.
+
+### 2026-08-08 - Production data smoke isolation
+
+- PR #211 exposed a live-environment regression rather than a change-local map
+  failure: the deployed API was reading a newly connected starter Neon database
+  containing only the Wisconsin, Minnesota, and Washington starter county rows.
+  The 51-state geometry validator remained green, while the pull-request job's
+  live request to `civicresultmaps.org` correctly found the other production
+  county joins missing.
+
+- Pull-request CI now gates the deterministic, repository-owned 51-state map
+  geometry validation. Strict live map-join and provenance validation remains
+  enabled in a separate scheduled and manually dispatchable production-data
+  smoke workflow. That workflow has no soft-failure setting, so incomplete live
+  data remains a visible production alarm without making an unrelated pull
+  request's result depend on mutable production state.
+
+- This workflow separation does not authorize or perform a production data
+  promotion, database mutation, environment change, or Minnesota public
+  activation. Restoring the complete production result corpus remains a
+  separate reviewed production operation.
