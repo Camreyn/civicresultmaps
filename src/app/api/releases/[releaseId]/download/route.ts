@@ -11,7 +11,7 @@ export async function GET(request: Request, context: RouteContext) {
   const release = getNationalDataRelease(releaseId);
   if (!release) {
     return NextResponse.json(
-      apiErrorEnvelope("Unknown national data release", { releaseId }),
+      apiErrorEnvelope("Unknown public data release", { releaseId }),
       { status: 404, headers: publicApiErrorHeaders },
     );
   }

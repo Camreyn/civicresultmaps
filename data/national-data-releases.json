@@ -1,10 +1,12 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
   "currentReleaseId": "2026-07-11-national-county-v1",
   "releases": [
     {
       "id": "2026-07-11-national-county-v1",
       "title": "National county presidential comparison release",
+      "summary": "Complete available county and county-equivalent presidential comparison rows for 2016, 2020, and 2024.",
+      "product": "national_county_results",
       "publishedAt": "2026-07-11T00:00:00.000Z",
       "status": "current",
       "electionYears": [2016, 2020, 2024],
@@ -30,6 +32,11 @@
           "2024": 0
         }
       },
+      "coverageHighlights": [
+        { "label": "Registry geographies", "value": "3,144" },
+        { "label": "Matched per year", "value": "3,114" },
+        { "label": "Election years", "value": "2016, 2020, 2024" }
+      ],
       "comparisonSummary": {
         "2020-2024": {
           "redToBlue": 0,
@@ -49,6 +56,21 @@
         "Connecticut 2016 and 2020 values are derived current-geography aggregates from official town rows to the nine planning regions adopted as Census county equivalents in 2022; they are not totals reported by those planning regions in those elections.",
         "Turnout, equipment, vote-method, advisory, and administrative context have different reporting grains and should not be assumed to cover every county."
       ],
+      "requiredEntries": [
+        "README.md",
+        "manifest.json",
+        "jurisdictions.csv",
+        "data-dictionary.csv",
+        "confidence-definitions.json",
+        "openapi.json",
+        "coverage.json",
+        "county-results-2016.csv",
+        "county-results-2020.csv",
+        "county-results-2024.csv",
+        "county-comparison-2016-2020.csv",
+        "county-comparison-2016-2024.csv",
+        "county-comparison-2020-2024.csv"
+      ],
       "sourceArtifacts": [
         "data/canonical-jurisdictions.json",
         "data/jurisdiction-tag-coverage-waves.json",
@@ -56,6 +78,187 @@
         "data/native-import-source-packages.json",
         "data/source-acquisition-tiers.json",
         "data/county-historical-aliases.json"
+      ]
+    },
+    {
+      "id": "2026-08-05-historical-presidential-2012-v1",
+      "title": "2012 presidential historical baseline snapshot",
+      "summary": "Partial source-linked presidential baseline rows for the 28 states currently carrying normalized 2012 data.",
+      "product": "historical_presidential_results",
+      "publishedAt": "2026-08-05T00:00:00.000Z",
+      "status": "available",
+      "electionYears": [2012],
+      "dataSha256": "6c1c5219213e00de44bca5c208774c704382ac679e9e2fbe14b00bf11857d475",
+      "archivePath": "/data/releases/2026-08-05-historical-presidential-2012-v1.zip",
+      "archiveSha256": "883536b2cd1e017a362c4ae92f9683d5c500c6b554123809fec3412ce8c61a3c",
+      "primaryDataEntry": "historical-presidential-2012.csv",
+      "buildRecipe": "historical-presidential-2012-v1",
+      "coverage": {
+        "electionYear": 2012,
+        "rowCount": 2173,
+        "statesRepresented": 28,
+        "canonicalCountyTaggedRows": 120,
+        "untaggedOrNoncanonicalRows": 2053,
+        "sourceFiles": 28,
+        "coverageStatus": "partial"
+      },
+      "coverageHighlights": [
+        { "label": "States represented", "value": "28 of 51" },
+        { "label": "Historical rows", "value": "2,173" },
+        { "label": "Canonical county tags", "value": "120" }
+      ],
+      "changes": [
+        "Published the normalized 2012 presidential baseline rows already retained by 28 state ETL packages.",
+        "Preserved source identifiers, parser methods, URLs, reporting grains, and row-level canonical-tag eligibility.",
+        "Separated the partial 2012 snapshot from the complete available 2016/2020/2024 national county product."
+      ],
+      "knownLimitations": [
+        "Coverage is partial: 23 state or District of Columbia jurisdictions do not yet have normalized 2012 baseline rows in this release.",
+        "Only 120 rows currently carry reviewed canonical county tags; untagged rows must not be treated as national county-comparison matches.",
+        "Several state packages explicitly use supplemental Wikipedia county tables where official machine-readable historical sources were blocked or unavailable; row_method and source_url preserve that caveat.",
+        "This archive contains historical presidential result rows only. It does not include 2012 precinct geometry or make 2012 available through the live national comparison API."
+      ],
+      "requiredEntries": [
+        "README.md",
+        "manifest.json",
+        "historical-presidential-2012.csv",
+        "coverage.json",
+        "data-dictionary.csv",
+        "source-artifacts.json"
+      ],
+      "sourceArtifacts": [
+        "data/al-historical-presidential-baseline.csv",
+        "data/ar-historical-presidential-baseline.csv",
+        "data/az-historical-presidential-baseline.csv",
+        "data/ca-historical-presidential-baseline.csv",
+        "data/fl-historical-presidential-baseline.csv",
+        "data/ga-historical-presidential-baseline.csv",
+        "data/ia-historical-presidential-baseline.csv",
+        "data/id-historical-presidential-baseline.csv",
+        "data/in-historical-presidential-baseline.csv",
+        "data/ks-historical-presidential-baseline.csv",
+        "data/ky-historical-presidential-baseline.csv",
+        "data/ma-historical-presidential-baseline.csv",
+        "data/mi-historical-presidential-baseline.csv",
+        "data/mo-historical-presidential-county-baseline.csv",
+        "data/ms-historical-presidential-baseline.csv",
+        "data/nc-historical-presidential-baseline.csv",
+        "data/ne-historical-presidential-baseline.csv",
+        "data/nv-historical-presidential-baseline.csv",
+        "data/ny-historical-presidential-baseline.csv",
+        "data/pa-historical-presidential-baseline.csv",
+        "data/ri-historical-presidential-baseline.csv",
+        "data/sd-historical-presidential-baseline.csv",
+        "data/tx-historical-presidential-baseline.csv",
+        "data/ut-historical-presidential-baseline.csv",
+        "data/va-historical-presidential-baseline.csv",
+        "data/wi-historical-presidential-baseline.csv",
+        "data/wv-historical-presidential-baseline.csv",
+        "data/wy-historical-presidential-baseline.csv"
+      ]
+    },
+    {
+      "id": "2026-08-05-election-equipment-2024-v1",
+      "title": "2024 election equipment context release",
+      "summary": "Normalized, source-linked jurisdiction equipment context used by the Equipment tab across 50 states.",
+      "product": "election_equipment",
+      "publishedAt": "2026-08-05T00:00:00.000Z",
+      "status": "available",
+      "electionYears": [2024],
+      "dataSha256": "899360c4c64f5d0e924c03825152a17aa3a510324585b5739f08cef28e71b50b",
+      "archivePath": "/data/releases/2026-08-05-election-equipment-2024-v1.zip",
+      "archiveSha256": "46bae28803ab23f0434566c3264c5b73d7e08bebf1456aedf1dc48407d434f74",
+      "primaryDataEntry": "equipment-context-2024.csv",
+      "buildRecipe": "election-equipment-2024-v1",
+      "coverage": {
+        "electionYear": 2024,
+        "rowCount": 3119,
+        "statesRepresented": 50,
+        "sourceFiles": 50,
+        "detailedDossierCatalogIncluded": false
+      },
+      "coverageHighlights": [
+        { "label": "States represented", "value": "50" },
+        { "label": "Jurisdiction rows", "value": "3,119" },
+        { "label": "Data year", "value": "2024" }
+      ],
+      "changes": [
+        "Published one normalized national CSV assembled from the 50 retained state equipment-context files.",
+        "Preserved vendor, system, usage, paper-record, tabulation, source, and uniformity-warning fields.",
+        "Added an offline data dictionary, coverage statement, and hashed source-artifact inventory."
+      ],
+      "knownLimitations": [
+        "District of Columbia is not present in the retained 2024 state equipment-context files.",
+        "The source is jurisdiction-level context and does not prove that every precinct, ballot mode, or fielded unit used one identical setup.",
+        "Equipment deployments and certifications can change after the 2024 snapshot; source URLs and row caveats should be reviewed before reuse.",
+        "The separately maintained detailed equipment dossier catalog is not included because its publication lifecycle is distinct from this context release."
+      ],
+      "requiredEntries": [
+        "README.md",
+        "manifest.json",
+        "equipment-context-2024.csv",
+        "coverage.json",
+        "data-dictionary.csv",
+        "source-artifacts.json"
+      ],
+      "sourceArtifacts": [
+        "data/*-2024-equipment-context.csv"
+      ]
+    },
+    {
+      "id": "2026-08-05-election-security-2024-v1",
+      "title": "November 2024 election security incident release",
+      "summary": "Source-linked mixed-grain incident records and source inventory used by the national Security tab.",
+      "product": "election_security_incidents",
+      "publishedAt": "2026-08-05T00:00:00.000Z",
+      "status": "available",
+      "electionYears": [2024],
+      "dataSha256": "ad9e3469e626c3d7f07379f08cfb55e90d9d5054b3dcb53d65070c25f584b1ff",
+      "archivePath": "/data/releases/2026-08-05-election-security-2024-v1.zip",
+      "archiveSha256": "a0bc67f8f25476531b5c983e9e0132c6e6aec1940fea706bc4201827460ceeb7",
+      "primaryDataEntry": "security-incidents-2024.json",
+      "buildRecipe": "election-security-2024-v1",
+      "coverage": {
+        "electionYear": 2024,
+        "rowCount": 112,
+        "statesRepresented": 10,
+        "countyRows": 110,
+        "statewideUnspecifiedRows": 2,
+        "statewideUnspecifiedThreatCount": 66,
+        "knownThreatCountMinimum": 227,
+        "nonBombThreatRows": 1
+      },
+      "coverageHighlights": [
+        { "label": "Incident rows", "value": "112" },
+        { "label": "States represented", "value": "10" },
+        { "label": "Mapped county rows", "value": "110" }
+      ],
+      "changes": [
+        "Published the reviewed JSON registry, a flat CSV export, and the national source inventory used by the Security tab.",
+        "Preserved county and statewide-unspecified reporting grains without manufacturing county assignments.",
+        "Kept the separately classified non-bomb-threat public-safety response outside the documented 227-threat minimum."
+      ],
+      "knownLimitations": [
+        "The 227 figure is a documented minimum from a public-source tracker, not an official FBI roster or an exhaustive national count.",
+        "Two tracker rows contain 66 threats whose counties were not specified; they remain statewide-unspecified and are not drawn on county polygons.",
+        "An absent county row means only that no matching record is loaded; it does not establish that no incident occurred.",
+        "Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome."
+      ],
+      "requiredEntries": [
+        "README.md",
+        "manifest.json",
+        "security-incidents-2024.json",
+        "security-incidents-2024.csv",
+        "source-inventory-2024.json",
+        "coverage.json",
+        "data-dictionary.csv",
+        "source-artifacts.json"
+      ],
+      "sourceArtifacts": [
+        "data/election-security-incidents-2024.json",
+        "data/election-security-incident-source-inventory-2024.json",
+        "data/brennan-2024-election-bomb-threat-tracker.json",
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
       ]
     }
   ]
