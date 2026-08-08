@@ -182,6 +182,25 @@ The guarded browser rehearsal must additionally pass for all four years with
 `crm_clone_dev` server. A new candidate, overlay, or review hash supersedes the
 earlier confirmation and requires the new review record to be confirmed.
 
+From that clean, fully checked integration tree, generate the deterministic
+project-owner confirmation template. This command writes only a `NO_GO` record
+under `.etl/precinct-release-confirmations/MN/` and refuses a tracked-dirty Git
+tree:
+
+```powershell
+npm.cmd run precinct-gis:production-release:mn -- --package=$PKG --overlay=$OVERLAY --review=$REVIEW --write-confirmation-template
+```
+
+The template pins the exact package, overlay, review, clean `HEAD` commit, Git
+tree, and empty tracked-status hash. After reviewing those exact artifacts, the
+project owner may complete only `decision` (`GO_OWNER_CONFIRMATION`),
+`confirmedAtUtc`, `confirmedBy`, and `review.confirmed` (`true`). Do not alter
+the fixed confirmation text, hashes, Git evidence, or the all-false production,
+publication, activation, deployment, and Git authorization fields. The hidden-
+load runner rechecks the same clean Git tree and requires the confirmer and
+database operator to be different people. This confirmation still authorizes
+no production action by itself.
+
 ## Production-readiness commands
 
 The release-specific preflight defaults to a no-connection plan. It does not
@@ -214,18 +233,30 @@ the following simultaneously:
 - a fresh hash-pinned read-only preflight no more than four hours old;
 - a fresh checksummed backup no more than four hours old with recorded restore
   verification, covering the complete `public` schema with no excluded table
-  data;
+  data; the backup must be created after the approved preflight, and its restore
+  proof must show the exact source table set, archive table-data set, row counts,
+  read-only restored database, and zero invalid constraints. Restore
+  verification must follow backup creation, must not be in the future, and must
+  also be within the four-hour release window;
+- exact hash-pinned overlay, machine review, and project-owner confirmation
+  artifacts whose package/overlay/review relationships all match;
 - a `GO_PRODUCTION` authorization record naming authorizer, operator, verifier,
-  and rollback owner, with at least two independent people;
-- an active deployment window and rollback decision time;
+  and rollback owner, with at least two independent people after Unicode/case
+  normalization;
+- an active deployment window whose rollback decision time has not passed;
 - the exact database scopes for migration 0008, hidden Minnesota load, and
   public-revision increment;
 - `CRM_DATABASE_ENVIRONMENT=production`, the exact package hash in
   `CRM_MN_PRECINCT_PRODUCTION_WRITES`, and the exact authorization ID in
-  `CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_ID`.
+  `CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_ID`; and
+- the SHA-256 of the exact completed authorization file both in
+  `CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256` and the required
+  `--authorization-sha256` option.
 
 When those guards pass, migration 0008 and the four-election hidden load run in
-one PostgreSQL transaction. All source and package hashes are rechecked before
+one PostgreSQL transaction. The evidence freshness, authorization expiry,
+deployment window, rollback cutoff, and clean Git tree are rechecked immediately
+before the first transaction query. All source and package hashes are rechecked before
 connection, every expected database count is validated inside the transaction,
 and any error rolls back both schema and data. The transaction leaves geography
 versions blocked and does not write public files, edit canonical manifests, or
@@ -326,21 +357,23 @@ build, maps validation, provenance validation, source-package validation, and
 the normal Minnesota advisory report. Advisory indicators are review signals,
 not evidence of fraud or misconduct.
 
-### 2. Backup and read-only preflight
+### 2. Read-only preflight and verified backup
 
-Before any write, create the verified production backup and perform the current
-read-only preflight. Stop if the schema, live Minnesota year set, row counts,
+Before any write, perform the current read-only preflight first, then use its
+exact 64-hex endpoint fingerprint to create and restore-verify the full
+production backup. Stop if the schema, live Minnesota year set, row counts,
 source records, or public revision differ from the approved release record.
 
 Compare the live and proposed Minnesota years explicitly. No existing year or
 row may be removed merely because it is absent from a candidate artifact.
 
-### 3. Apply the additive schema
+### 3. Inspect the additive schema preconditions
 
-Apply the exact pinned migration in a single migration transaction. Verify all
+Inspect the exact pinned migration and the read-only preflight evidence for all
 four tables, three nullable reporting-unit foreign-key columns, indexes, unique
-constraints, foreign keys, and check constraints. Stop and roll back if any
-object conflicts with current production.
+constraints, foreign keys, and check constraints. Do not apply the migration in
+this step. The guarded hidden-load command below applies it in the same
+transaction as the data load and stops if any object conflicts with production.
 
 ### 4. Load data while public delivery remains blocked
 
@@ -359,6 +392,48 @@ In one reviewed Minnesota-specific transaction:
 8. verify totals, zero-vote units, same-election links, source provenance, and
    constraints inside the transaction;
 9. commit only if every expected count and semantic hash agrees.
+
+Migration 0008 and the hidden load are coupled in this one transaction; do not
+run the migration separately. After hashing the completed authorization file,
+set the guarded acknowledgements and execute the exact receipt-producing
+command:
+
+```powershell
+$env:CRM_DATABASE_ENVIRONMENT='production'
+$env:CRM_MN_PRECINCT_PRODUCTION_WRITES=$PKG_SHA
+$env:CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_ID=$AUTH_ID
+$env:CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256=$AUTH_SHA
+npm.cmd run precinct-gis:production-release:mn -- --package=$PKG --preflight=$PREFLIGHT --backup-manifest=$BACKUP_MANIFEST --authorization=$AUTH --authorization-sha256=$AUTH_SHA --receipt=$HIDDEN_RECEIPT --apply
+```
+
+The authorization must reference the exact `.etl` overlay, review, and
+project-owner confirmation paths and SHA-256 values. The runner re-hashes all
+three, validates their package-to-overlay-to-review relationship, and records
+them plus the exact authorization, preflight, backup, endpoint, transaction
+time, and public-revision audit in both the hidden-load receipt and the loaded
+database metadata. The explicit receipt target is reserved before PostgreSQL is
+opened and finalized with an atomic rename after commit.
+
+If the database transaction commits but the local final receipt cannot be
+written, or if the connection fails after the transaction attempt begins and
+the COMMIT acknowledgement is ambiguous, keep the `.pending` reservation and do
+not rerun `--apply`. Reconcile the outcome by recovering a distinct, explicitly
+marked receipt with a read-only database transaction:
+
+```powershell
+$env:CRM_DATABASE_ENVIRONMENT='production-read-only'
+$env:CRM_MN_PRECINCT_RECEIPT_RECOVERY_PACKAGE_SHA256=$PKG_SHA
+$env:CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256=$AUTH_SHA
+npm.cmd run precinct-gis:production-release:mn -- --package=$PKG --preflight=$PREFLIGHT --backup-manifest=$BACKUP_MANIFEST --authorization=$AUTH --authorization-sha256=$AUTH_SHA --receipt=$HIDDEN_RECEIPT --recover-receipt
+```
+
+Recovery re-hashes every original evidence artifact, evaluates its timing at
+the database-persisted transaction time, requires all four years and every
+loaded metadata surface to retain the exact blocked audit, and requires the
+current public revision to equal the committed hidden-load revision. It opens
+`BEGIN READ ONLY`, performs no production mutation, and fails closed on any
+package, endpoint, authorization, row, provenance, audit, status, or revision
+drift.
 
 The canonical manifests remain blocked throughout this phase, so the public
 manifest and precinct-geometry APIs cannot expose the new layers. Both public
@@ -590,11 +665,12 @@ same-election identity, source term, constraint, API response, or UI result
 differs from the reviewed package.
 
 Before a transaction commits, let the transaction roll back and leave canonical
-manifests blocked. After application cutover, restore the immediately previous
-application deployment so the eligible manifests and geometry endpoints
-disappear together. Restore the verified pre-release database backup, or use a
-separately reviewed Minnesota-only rollback, if committed database changes must
-be reversed.
+manifests blocked. After public cutover, block the database publication state
+first while the activated gate-capable application remains live; both precinct
+endpoints then fail closed. Only afterward restore the exact previous deployment
+pinned in the publication receipt. Restore the verified pre-release database
+backup, or use a separately reviewed Minnesota-only rollback, if the earlier
+hidden-load transaction itself must be reversed.
 
 Do not drop the additive precinct schema during an ordinary Minnesota rollback;
 other states or subsequent work may depend on it. Do not overwrite or reuse the

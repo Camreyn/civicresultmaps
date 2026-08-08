@@ -234,7 +234,7 @@ const POLICY = Object.freeze([
     requiredMarkers: [
       "Local four-election GIS release candidate",
       "Local release-candidate precinct units, four elections",
-      "hidden-load implementation is not enabled",
+      "guarded hidden-load implementation exists but has not been executed in production",
     ],
     excludedMarkers: [
       "## 2024 Precinct Geometry Wave 17 Closeout",

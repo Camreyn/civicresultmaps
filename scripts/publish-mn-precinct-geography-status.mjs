@@ -751,6 +751,8 @@ export async function applyMinnesotaGeographyPublicationTransaction(
         releaseCandidateId: context.plan.releaseCandidate.id,
         releasePackageSha256: context.plan.releaseCandidate.sha256,
         databaseName: context.databaseName,
+        productionReleaseAudit:
+          context.plan.productionHiddenLoad.productionReleaseAudit,
       },
       readOnlySession: false,
     });

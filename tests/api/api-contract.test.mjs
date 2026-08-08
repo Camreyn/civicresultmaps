@@ -589,6 +589,25 @@ test("production domains force HTTPS through proxy", () => {
   assert.match(proxy, /NextResponse\.redirect/);
 });
 
+test("pull-request CI stays hermetic while production data checks remain strict", () => {
+  const ciWorkflow = readFileSync(".github/workflows/ci.yml", "utf8");
+  const productionWorkflow = readFileSync(
+    ".github/workflows/production-data-smoke.yml",
+    "utf8",
+  );
+
+  assert.match(ciWorkflow, /npm run validate:map-geometry(?:\r?\n|$)/);
+  assert.doesNotMatch(ciWorkflow, /npm run validate:maps(?:\r?\n|$)/);
+  assert.doesNotMatch(ciWorkflow, /npm run validate:provenance(?:\r?\n|$)/);
+
+  assert.match(productionWorkflow, /workflow_dispatch:/);
+  assert.match(productionWorkflow, /schedule:/);
+  assert.match(productionWorkflow, /npm run validate:maps(?:\r?\n|$)/);
+  assert.match(productionWorkflow, /npm run validate:provenance(?:\r?\n|$)/);
+  assert.doesNotMatch(productionWorkflow, /pull_request:/);
+  assert.doesNotMatch(productionWorkflow, /continue-on-error/);
+});
+
 test("native source package handoff is validated in CI", () => {
   const packageScripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
   const workflow = readFileSync(".github/workflows/ci.yml", "utf8");

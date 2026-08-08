@@ -1,0 +1,35 @@
+name: Production data smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 11 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-data-smoke
+  cancel-in-progress: false
+
+jobs:
+  validate-production-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Production map join validation
+        run: npm run validate:maps
+
+      - name: Production provenance validation
+        if: ${{ always() }}
+        run: npm run validate:provenance

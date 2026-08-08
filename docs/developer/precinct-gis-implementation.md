@@ -6668,3 +6668,78 @@ evidence against its verified top-level package.
   production load, public status change, Blob upload, Vercel environment edit,
   deployment, or Git publication was performed while closing these review
   findings.
+
+### 2026-08-08 - Minnesota hidden-load authorization hardening
+
+- A post-merge release rehearsal stopped before the first production write
+  when independent review found that the hidden-load runner did not bind the
+  exact `GO_PRODUCTION` authorization bytes, treated differently cased versions
+  of one name as distinct release people, and allowed execution after the
+  recorded rollback-decision cutoff. The runner now requires the authorization
+  artifact SHA-256 in both its CLI and environment acknowledgements, normalizes
+  release identities with Unicode normalization plus case folding, and rejects
+  execution after that cutoff.
+
+- The documented release-overlay, release-review, and project-owner
+  confirmation gates are now executable inputs rather than manual prose only.
+  A deterministic `NO_GO_OWNER_CONFIRMATION` template pins the clean integration
+  commit/tree and empty tracked-status hash; the project owner must explicitly
+  complete it, and the runner rechecks the same tree and requires a different
+  database operator.
+  Their exact safe `.etl` paths and SHA-256 values are carried in the
+  authorization, relationship-validated against the sealed package, and
+  written into the hidden-load receipt. Backup evidence now proves that the
+  backup follows preflight and that restore verification occurred at or after
+  backup creation, is not future-dated, exactly matches every public table and
+  row count, uses a read-only restored database, has zero invalid constraints,
+  and remains within the same four-hour freshness window.
+
+- The production release audit is persisted with the loaded Minnesota database
+  metadata, not solely in the local post-commit receipt. It binds the exact
+  authorization, overlay, review, confirmation, preflight, backup/dump,
+  endpoint, authorization ID, transaction time, and public revision.
+  Existing-row validation and the later public-activation transaction require
+  exact semantic equality between the receipt audit and live database audit.
+  The output path is reserved before opening PostgreSQL and finalized atomically
+  after commit. If finalization fails, a separately acknowledged read-only mode
+  can reconstruct a distinct recovery receipt from the exact blocked database
+  audit and artifacts; it rejects revision or metadata drift and never retries
+  the production mutation.
+
+- The runbook now gives the executable order as read-only preflight, full
+  restore-verified backup, exact two-person authorization, and hidden load. It
+  also preserves the fail-closed rollback order: block the database while the
+  gate-capable application is live, then restore only the pinned prior
+  deployment.
+
+- Expanded focused Minnesota release, activation, deterministic projection,
+  and publication-gate tests pass, including authorization-byte tampering,
+  backup/restore timing and exact counts, case-normalized roles, release-
+  evidence binding, transaction-time cutoff revalidation, post-commit receipt
+  failure/read-only recovery, and a mismatched hidden-load audit. TypeScript
+  validation also passes. The candidate
+  sealed before these changes is intentionally stale and cannot be used for a
+  production release. No production database write, Blob upload, Vercel
+  environment mutation, manifest activation, deployment promotion, or public
+  data cutover occurred during this checkpoint.
+
+### 2026-08-08 - Production data smoke isolation
+
+- PR #211 exposed a live-environment regression rather than a change-local map
+  failure: the deployed API was reading a newly connected starter Neon database
+  containing only the Wisconsin, Minnesota, and Washington starter county rows.
+  The 51-state geometry validator remained green, while the pull-request job's
+  live request to `civicresultmaps.org` correctly found the other production
+  county joins missing.
+
+- Pull-request CI now gates the deterministic, repository-owned 51-state map
+  geometry validation. Strict live map-join and provenance validation remains
+  enabled in a separate scheduled and manually dispatchable production-data
+  smoke workflow. That workflow has no soft-failure setting, so incomplete live
+  data remains a visible production alarm without making an unrelated pull
+  request's result depend on mutable production state.
+
+- This workflow separation does not authorize or perform a production data
+  promotion, database mutation, environment change, or Minnesota public
+  activation. Restoring the complete production result corpus remains a
+  separate reviewed production operation.
