@@ -2,8 +2,11 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  renameSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
+import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import postgres from "postgres";
@@ -14,16 +17,22 @@ import {
   buildMinnesotaPrecinctGisPlan,
 } from "./lib/mn-precinct-gis-plan.mjs";
 import {
+  readMinnesotaPersistedProductionReleaseAudit,
+  validateMinnesotaPrecinctGisClient,
+} from "./lib/mn-precinct-gis-db.mjs";
+import {
   productionEndpointFingerprint,
   sha256,
 } from "./lib/mn-precinct-production-preflight.mjs";
 import {
   applyMinnesotaProductionReleaseTransaction,
+  buildMinnesotaOwnerConfirmationTemplate,
   buildMinnesotaProductionAuthorizationTemplate,
   readAndVerifyEvidenceFile,
   validateMinnesotaProductionAuthorization,
   validateMinnesotaProductionBackupEvidence,
   validateMinnesotaProductionPreflightEvidence,
+  validateMinnesotaProductionReviewEvidence,
 } from "./lib/mn-precinct-production-release.mjs";
 
 // Never load .env.local. A production database write requires an exact package
@@ -38,9 +47,18 @@ function parseArguments(args) {
     "--preflight",
     "--backup-manifest",
     "--authorization",
+    "--authorization-sha256",
+    "--confirmation",
+    "--overlay",
+    "--review",
     "--receipt",
   ]);
-  const flags = new Set(["--apply", "--write-authorization-template"]);
+  const flags = new Set([
+    "--apply",
+    "--recover-receipt",
+    "--write-authorization-template",
+    "--write-confirmation-template",
+  ]);
   for (const arg of args) {
     if (flags.has(arg)) continue;
     const name = arg.includes("=") ? arg.slice(0, arg.indexOf("=")) : arg;
@@ -55,9 +73,115 @@ function parseArguments(args) {
     preflightPath: value("--preflight"),
     backupManifestPath: value("--backup-manifest"),
     authorizationPath: value("--authorization"),
+    authorizationSha256: value("--authorization-sha256"),
+    confirmationPath: value("--confirmation"),
+    overlayPath: value("--overlay"),
+    reviewPath: value("--review"),
     receiptPath: value("--receipt"),
     apply: args.includes("--apply"),
+    recoverReceipt: args.includes("--recover-receipt"),
     writeAuthorizationTemplate: args.includes("--write-authorization-template"),
+    writeConfirmationTemplate: args.includes("--write-confirmation-template"),
+  };
+}
+
+function authorizationEvidenceReference(authorization, key, label) {
+  const reference = authorization?.evidence?.[key];
+  if (
+    typeof reference?.path !== "string"
+    || !reference.path
+    || !/^[a-f0-9]{64}$/.test(reference?.sha256 ?? "")
+  ) {
+    throw new Error(`Minnesota production authorization requires ${label} path and SHA-256`);
+  }
+  return reference;
+}
+
+export function assertMinnesotaProductionReleaseEnvironment(
+  expected,
+  environment = process.env,
+) {
+  if (environment.CRM_DATABASE_ENVIRONMENT !== "production") {
+    throw new Error("Minnesota production release requires CRM_DATABASE_ENVIRONMENT=production");
+  }
+  if (environment.CRM_MN_PRECINCT_PRODUCTION_WRITES !== expected.packageSha256) {
+    throw new Error("Minnesota production-write acknowledgement must equal the package SHA-256");
+  }
+  if (
+    environment.CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_ID
+      !== expected.authorizationId
+  ) {
+    throw new Error("Minnesota production authorization-ID acknowledgement is missing");
+  }
+  if (
+    environment.CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256
+      !== expected.authorizationSha256
+  ) {
+    throw new Error("Minnesota production authorization-SHA acknowledgement is missing");
+  }
+}
+
+export function assertMinnesotaReceiptRecoveryEnvironment(
+  expected,
+  environment = process.env,
+) {
+  if (environment.CRM_DATABASE_ENVIRONMENT !== "production-read-only") {
+    throw new Error("Minnesota hidden receipt recovery requires CRM_DATABASE_ENVIRONMENT=production-read-only");
+  }
+  if (
+    environment.CRM_MN_PRECINCT_RECEIPT_RECOVERY_PACKAGE_SHA256
+      !== expected.packageSha256
+  ) {
+    throw new Error("Minnesota hidden receipt recovery package acknowledgement is missing");
+  }
+  if (
+    environment.CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256
+      !== expected.authorizationSha256
+  ) {
+    throw new Error("Minnesota hidden receipt recovery authorization-SHA acknowledgement is missing");
+  }
+}
+
+export function inspectMinnesotaCleanIntegration(
+  root,
+  runner = spawnSync,
+) {
+  const run = (args) => {
+    const result = runner("git", args, {
+      cwd: root,
+      encoding: "utf8",
+      windowsHide: true,
+    });
+    if (result.status !== 0) {
+      throw new Error(
+        "Minnesota clean-integration Git inspection failed: "
+          + String(result.stderr ?? "").trim(),
+      );
+    }
+    return String(result.stdout ?? "").trim();
+  };
+  const gitSha = run(["rev-parse", "HEAD"]);
+  const gitTreeSha = run(["rev-parse", "HEAD^{tree}"]);
+  const trackedStatus = run([
+    "status",
+    "--porcelain=v1",
+    "--untracked-files=no",
+  ]);
+  if (
+    !/^[a-f0-9]{40}$/.test(gitSha)
+    || !/^[a-f0-9]{40}$/.test(gitTreeSha)
+    || trackedStatus
+  ) {
+    throw new Error("Minnesota release confirmation requires a clean tracked Git integration tree");
+  }
+  return {
+    gitSha,
+    gitTreeSha,
+    trackedStatusSha256: sha256(Buffer.from(trackedStatus, "utf8")),
+    trackedStatusClean: true,
+    diffCheckPassed: true,
+    missingPaths: 0,
+    unexpectedPaths: 0,
   };
 }
 
@@ -221,11 +345,122 @@ function writeJson(target, value) {
   };
 }
 
+function jsonBytes(value) {
+  return Buffer.from(JSON.stringify(value, null, 2) + "\n", "utf8");
+}
+
+export function reserveMinnesotaReceiptTarget(
+  target,
+  reservation,
+  options = {},
+) {
+  if (existsSync(target.absolute)) {
+    throw new Error("Minnesota hidden-load receipt target already exists");
+  }
+  mkdirSync(path.dirname(target.absolute), { recursive: true });
+  const pending = {
+    absolute: target.absolute + ".pending",
+    relativePath: target.relativePath + ".pending",
+    bytes: jsonBytes(reservation),
+  };
+  if (existsSync(pending.absolute)) {
+    if (
+      options.allowExisting === true
+      && readFileSync(pending.absolute).equals(pending.bytes)
+    ) {
+      return { ...pending, disposition: "reused" };
+    }
+    throw new Error("Minnesota hidden-load receipt reservation already exists");
+  }
+  try {
+    writeFileSync(pending.absolute, pending.bytes, { flag: "wx" });
+  } catch (error) {
+    throw new Error(
+      "Minnesota hidden-load receipt target could not be reserved before production: "
+        + (error instanceof Error ? error.message : String(error)),
+    );
+  }
+  return { ...pending, disposition: "created" };
+}
+
+export function releaseMinnesotaReceiptReservation(target, pending) {
+  if (
+    existsSync(pending.absolute)
+    && !existsSync(target.absolute)
+    && readFileSync(pending.absolute).equals(pending.bytes)
+  ) {
+    unlinkSync(pending.absolute);
+  }
+}
+
+export function finalizeMinnesotaReceipt(target, pending, value) {
+  const bytes = jsonBytes(value);
+  if (existsSync(target.absolute)) {
+    if (!readFileSync(target.absolute).equals(bytes)) {
+      throw new Error("Refusing to overwrite different Minnesota hidden-load receipt");
+    }
+    let pendingCleanupRequired = false;
+    if (existsSync(pending.absolute) && readFileSync(pending.absolute).equals(pending.bytes)) {
+      try {
+        unlinkSync(pending.absolute);
+      } catch {
+        pendingCleanupRequired = true;
+      }
+    }
+    return {
+      path: target.relativePath,
+      byteCount: bytes.length,
+      sha256: sha256(bytes),
+      disposition: "verified_existing",
+      pendingCleanupRequired,
+    };
+  }
+  if (
+    !existsSync(pending.absolute)
+    || !readFileSync(pending.absolute).equals(pending.bytes)
+  ) {
+    throw new Error("Minnesota hidden-load receipt reservation drifted after commit");
+  }
+  const temporary = target.absolute + ".write-" + sha256(bytes).slice(0, 16) + ".tmp";
+  if (existsSync(temporary)) {
+    if (!readFileSync(temporary).equals(bytes)) {
+      throw new Error("Minnesota hidden-load receipt temporary file drifted");
+    }
+  } else {
+    writeFileSync(temporary, bytes, { flag: "wx" });
+  }
+  renameSync(temporary, target.absolute);
+  let pendingCleanupRequired = false;
+  if (existsSync(pending.absolute) && readFileSync(pending.absolute).equals(pending.bytes)) {
+    try {
+      unlinkSync(pending.absolute);
+    } catch {
+      pendingCleanupRequired = true;
+    }
+  }
+  return {
+    path: target.relativePath,
+    byteCount: bytes.length,
+    sha256: sha256(bytes),
+    disposition: "created",
+    pendingCleanupRequired,
+  };
+}
+
 export async function runMinnesotaProductionRelease(options = {}) {
   const root = path.resolve(options.root ?? process.cwd());
   const parsed = options.packagePath
     ? options
     : parseArguments(process.argv.slice(2));
+  if (parsed.apply && parsed.recoverReceipt) {
+    throw new Error("Minnesota production apply and receipt recovery are mutually exclusive");
+  }
+  if (
+    (parsed.apply || parsed.recoverReceipt)
+    && (parsed.writeAuthorizationTemplate || parsed.writeConfirmationTemplate)
+  ) {
+    throw new Error("Minnesota production template writes cannot accompany apply or recovery");
+  }
   const loaded = safeReleasePackage(root, parsed.packagePath);
   const verifiedInputCount = verifyCurrentReleaseInputs(root, loaded.document);
   const template = buildMinnesotaProductionAuthorizationTemplate(
@@ -241,7 +476,38 @@ export async function runMinnesotaProductionRelease(options = {}) {
     );
     templateArtifact = writeJson(target, template);
   }
-  if (!parsed.apply) {
+  let confirmationTemplateArtifact = null;
+  if (parsed.writeConfirmationTemplate) {
+    if (!parsed.overlayPath || !parsed.reviewPath) {
+      throw new Error("--overlay and --review are required for --write-confirmation-template");
+    }
+    const overlayArtifact = readAndVerifyEvidenceFile(root, parsed.overlayPath);
+    const reviewArtifact = readAndVerifyEvidenceFile(root, parsed.reviewPath);
+    const cleanIntegration = inspectMinnesotaCleanIntegration(
+      root,
+      options.gitRunner ?? spawnSync,
+    );
+    const confirmationTemplate = buildMinnesotaOwnerConfirmationTemplate({
+      releaseCandidate: loaded.releaseCandidate,
+      releaseCandidatePath: parsed.packagePath,
+      overlay: overlayArtifact,
+      overlayDocument: JSON.parse(overlayArtifact.bytes.toString("utf8")),
+      review: reviewArtifact,
+      reviewDocument: JSON.parse(reviewArtifact.bytes.toString("utf8")),
+      cleanIntegration,
+    });
+    const target = outputPath(
+      root,
+      parsed.confirmationPath,
+      "mn-precinct-owner-confirmation-template-"
+        + loaded.artifact.sha256.slice(0, 12) + "-"
+        + overlayArtifact.sha256.slice(0, 12) + "-"
+        + reviewArtifact.sha256.slice(0, 12) + ".json",
+      "precinct-release-confirmations",
+    );
+    confirmationTemplateArtifact = writeJson(target, confirmationTemplate);
+  }
+  if (!parsed.apply && !parsed.recoverReceipt) {
     return {
       mode: "plan",
       state: "MN",
@@ -253,6 +519,7 @@ export async function runMinnesotaProductionRelease(options = {}) {
       publicFileWritten: false,
       canonicalManifestChanged: false,
       authorizationTemplate: templateArtifact,
+      confirmationTemplate: confirmationTemplateArtifact,
       requiredEvidence: [
         "fresh read-only production preflight",
         "fresh checksummed backup with restoration verification",
@@ -262,52 +529,342 @@ export async function runMinnesotaProductionRelease(options = {}) {
     };
   }
 
-  if (!parsed.preflightPath || !parsed.authorizationPath) {
-    throw new Error("--preflight and --authorization are required for --apply");
+  if (
+    !parsed.preflightPath
+    || !parsed.authorizationPath
+    || !/^[a-f0-9]{64}$/.test(parsed.authorizationSha256 ?? "")
+    || !parsed.receiptPath
+  ) {
+    throw new Error(
+      "--preflight, --authorization, --authorization-sha256, and --receipt are required for production apply or recovery",
+    );
   }
   const preflightArtifact = readAndVerifyEvidenceFile(root, parsed.preflightPath);
-  const authorizationArtifact = readAndVerifyEvidenceFile(root, parsed.authorizationPath);
-  const backupArtifact = safeTmpBackupManifest(parsed.backupManifestPath);
-  const now = options.now ?? new Date();
-  const databaseUrl = productionUrl();
+  const authorizationArtifact = readAndVerifyEvidenceFile(
+    root,
+    parsed.authorizationPath,
+    parsed.authorizationSha256,
+  );
+  const backupArtifact = options.backupArtifact
+    ?? safeTmpBackupManifest(parsed.backupManifestPath);
+  const clock = options.nowFactory
+    ?? (() => options.now ?? new Date());
+  const currentTime = () => {
+    const value = clock();
+    const result = value instanceof Date ? new Date(value.getTime()) : new Date(value);
+    if (Number.isNaN(result.getTime())) {
+      throw new Error("Minnesota production release clock returned an invalid time");
+    }
+    return result;
+  };
+  const databaseUrl = options.databaseUrl ?? productionUrl();
   const endpointFingerprint = productionEndpointFingerprint(databaseUrl);
   const preflight = JSON.parse(preflightArtifact.bytes.toString("utf8"));
   const backup = backupArtifact.value;
   const authorization = JSON.parse(authorizationArtifact.bytes.toString("utf8"));
-  const context = {
-    now,
-    endpointFingerprint,
-    releaseCandidate: loaded.releaseCandidate,
-  };
-  const preflightEvidence = validateMinnesotaProductionPreflightEvidence(
-    preflight,
-    context,
-  );
-  const backupEvidence = validateMinnesotaProductionBackupEvidence(
-    backup,
-    context,
-  );
-  const backupDump = verifyBackupDump(backupArtifact);
-  const authorizationEvidence = validateMinnesotaProductionAuthorization(
+  const overlayReference = authorizationEvidenceReference(
     authorization,
-    {
-      ...context,
-      preflightSha256: preflightArtifact.sha256,
-      backupManifestSha256: backupArtifact.sha256,
-    },
+    "releaseOverlay",
+    "the release overlay evidence",
   );
-  if (process.env.CRM_DATABASE_ENVIRONMENT !== "production") {
-    throw new Error("Minnesota production release requires CRM_DATABASE_ENVIRONMENT=production");
+  const reviewReference = authorizationEvidenceReference(
+    authorization,
+    "releaseReview",
+    "the release review evidence",
+  );
+  const confirmationReference = authorizationEvidenceReference(
+    authorization,
+    "releaseConfirmation",
+    "the human confirmation evidence",
+  );
+  const overlayArtifact = readAndVerifyEvidenceFile(
+    root,
+    overlayReference.path,
+    overlayReference.sha256,
+  );
+  const reviewArtifact = readAndVerifyEvidenceFile(
+    root,
+    reviewReference.path,
+    reviewReference.sha256,
+  );
+  const confirmationArtifact = readAndVerifyEvidenceFile(
+    root,
+    confirmationReference.path,
+    confirmationReference.sha256,
+  );
+  const overlayDocument = JSON.parse(overlayArtifact.bytes.toString("utf8"));
+  const reviewDocument = JSON.parse(reviewArtifact.bytes.toString("utf8"));
+  const confirmationDocument = JSON.parse(
+    confirmationArtifact.bytes.toString("utf8"),
+  );
+  const backupDump = options.backupDump ?? verifyBackupDump(backupArtifact);
+  const validateEvidenceAt = (now, cleanIntegration) => {
+    const context = {
+      now,
+      endpointFingerprint,
+      releaseCandidate: loaded.releaseCandidate,
+    };
+    const preflightEvidence = validateMinnesotaProductionPreflightEvidence(
+      preflight,
+      context,
+    );
+    const backupEvidence = validateMinnesotaProductionBackupEvidence(
+      backup,
+      {
+        ...context,
+        preflightCapturedAtUtc: preflightEvidence.capturedAtUtc,
+      },
+    );
+    const releaseReviewEvidence = validateMinnesotaProductionReviewEvidence({
+      overlay: overlayDocument,
+      review: reviewDocument,
+      confirmation: confirmationDocument,
+    }, {
+      now,
+      authorizedAtUtc: authorization.authorizedAtUtc,
+      operator: authorization.people?.operator,
+      releaseCandidate: loaded.releaseCandidate,
+      releaseCandidatePath: parsed.packagePath,
+      overlay: overlayArtifact,
+      review: reviewArtifact,
+      confirmation: confirmationArtifact,
+      cleanIntegration,
+    });
+    const authorizationEvidence = validateMinnesotaProductionAuthorization(
+      authorization,
+      {
+        ...context,
+        preflightPath: preflightArtifact.path,
+        preflightSha256: preflightArtifact.sha256,
+        backupManifestPath: backupArtifact.path,
+        backupManifestSha256: backupArtifact.sha256,
+        releaseOverlayPath: overlayArtifact.path,
+        releaseOverlaySha256: overlayArtifact.sha256,
+        releaseReviewPath: reviewArtifact.path,
+        releaseReviewSha256: reviewArtifact.sha256,
+        releaseConfirmationPath: confirmationArtifact.path,
+        releaseConfirmationSha256: confirmationArtifact.sha256,
+      },
+    );
+    return {
+      preflightEvidence,
+      backupEvidence,
+      releaseReviewEvidence,
+      authorizationEvidence,
+    };
+  };
+  const cleanIntegration = () => options.cleanIntegration
+    ?? inspectMinnesotaCleanIntegration(root, options.gitRunner ?? spawnSync);
+  const baseReleaseAudit = (authorizationId) => ({
+    authorization: {
+      path: authorizationArtifact.path,
+      sha256: authorizationArtifact.sha256,
+    },
+    releaseOverlay: {
+      path: overlayArtifact.path,
+      sha256: overlayArtifact.sha256,
+    },
+    releaseReview: {
+      path: reviewArtifact.path,
+      sha256: reviewArtifact.sha256,
+    },
+    releaseConfirmation: {
+      path: confirmationArtifact.path,
+      sha256: confirmationArtifact.sha256,
+    },
+    preflight: {
+      path: preflightArtifact.path,
+      sha256: preflightArtifact.sha256,
+    },
+    backupManifest: {
+      sha256: backupArtifact.sha256,
+      dumpSha256: backupDump.sha256,
+    },
+    authorizationId,
+    endpointFingerprint,
+  });
+  const plan = (options.planBuilder ?? buildMinnesotaPrecinctGisPlan)({ root });
+  const receiptTarget = outputPath(
+    root,
+    parsed.receiptPath,
+    "mn-precinct-production-receipt-"
+      + loaded.artifact.sha256.slice(0, 12) + "-"
+      + authorizationArtifact.sha256.slice(0, 12) + ".json",
+    "production-release-receipts",
+  );
+  const reservationDocument = {
+    schemaVersion: 1,
+    state: "MN",
+    status: "PENDING_HIDDEN_LOAD_RECEIPT",
+    target: receiptTarget.relativePath,
+    releaseCandidate: {
+      id: loaded.releaseCandidate.id,
+      sha256: loaded.releaseCandidate.sha256,
+    },
+    authorization: {
+      path: authorizationArtifact.path,
+      sha256: authorizationArtifact.sha256,
+    },
+    preflight: {
+      path: preflightArtifact.path,
+      sha256: preflightArtifact.sha256,
+    },
+    backupManifestSha256: backupArtifact.sha256,
+  };
+
+  if (parsed.recoverReceipt) {
+    assertMinnesotaReceiptRecoveryEnvironment({
+      packageSha256: loaded.artifact.sha256,
+      authorizationSha256: authorizationArtifact.sha256,
+    }, options.environment ?? process.env);
+    const pending = reserveMinnesotaReceiptTarget(
+      receiptTarget,
+      reservationDocument,
+      { allowExisting: true },
+    );
+    let sql;
+    try {
+      sql = (options.postgresFactory ?? postgres)(databaseUrl, {
+        max: 1,
+        connect_timeout: 10,
+        idle_timeout: 20,
+        connection: {
+          application_name: "civicresultmaps-mn-precinct-hidden-receipt-recovery",
+        },
+      });
+    } catch (error) {
+      if (pending.disposition === "created") {
+        releaseMinnesotaReceiptReservation(receiptTarget, pending);
+      }
+      throw error;
+    }
+    let recovered;
+    try {
+      recovered = await sql.begin("read only", async (tx) => {
+        const persistedAudit = await readMinnesotaPersistedProductionReleaseAudit(
+          tx,
+          loaded.releaseCandidate,
+        );
+        const evidence = validateEvidenceAt(
+          new Date(persistedAudit.transaction.executedAtUtc),
+          confirmationDocument.cleanIntegration,
+        );
+        const { transaction: persistedTransaction, ...persistedBase } = persistedAudit;
+        if (
+          JSON.stringify(persistedBase)
+            !== JSON.stringify(baseReleaseAudit(evidence.authorizationEvidence.authorizationId))
+        ) {
+          throw new Error("Minnesota hidden receipt recovery evidence does not match the durable database audit");
+        }
+        const executionContext = {
+          mode: "production_release",
+          releaseCandidateId: loaded.releaseCandidate.id,
+          releasePackageSha256: loaded.releaseCandidate.sha256,
+          databaseName: evidence.preflightEvidence.databaseName,
+          productionReleaseAudit: {
+            ...persistedBase,
+            transaction: persistedTransaction,
+          },
+        };
+        const validation = await validateMinnesotaPrecinctGisClient(
+          tx,
+          plan,
+          { executionContext, readOnlySession: true },
+        );
+        if (Number(validation.revision) !== persistedTransaction.publicRevision) {
+          throw new Error("Minnesota hidden receipt recovery public revision drifted");
+        }
+        const totals = validation.years.reduce((result, year) => ({
+          reportingUnits: result.reportingUnits + year.reportingUnits,
+          candidateResultRows: result.candidateResultRows + year.resultRows,
+          geometryFeatures: result.geometryFeatures + year.features,
+          reviewedExactCrosswalks:
+            result.reviewedExactCrosswalks + year.reviewedCrosswalks,
+          zeroVoteUnits: result.zeroVoteUnits + year.zeroVoteUnits,
+        }), {
+          reportingUnits: 0,
+          candidateResultRows: 0,
+          geometryFeatures: 0,
+          reviewedExactCrosswalks: 0,
+          zeroVoteUnits: 0,
+        });
+        return {
+          evidence,
+          transaction: {
+            disposition: "recovered_existing",
+            committedAtUtc: persistedTransaction.executedAtUtc,
+            validation,
+            totals,
+            releaseAudit: persistedAudit,
+            canonicalManifestChanged: false,
+            publicFileWritten: false,
+            publicDeliveryAuthorized: false,
+          },
+        };
+      });
+    } catch (error) {
+      if (pending.disposition === "created") {
+        releaseMinnesotaReceiptReservation(receiptTarget, pending);
+      }
+      throw error;
+    } finally {
+      await sql.end({ timeout: 5 });
+    }
+    const receipt = {
+      schemaVersion: 1,
+      state: "MN",
+      releaseCandidate: loaded.releaseCandidate,
+      committedAtUtc: recovered.transaction.committedAtUtc,
+      endpointFingerprint,
+      authorization: {
+        path: authorizationArtifact.path,
+        sha256: authorizationArtifact.sha256,
+        ...recovered.evidence.authorizationEvidence,
+      },
+      releaseReview: recovered.evidence.releaseReviewEvidence,
+      preflight: {
+        path: preflightArtifact.path,
+        sha256: preflightArtifact.sha256,
+        ...recovered.evidence.preflightEvidence,
+      },
+      backup: {
+        manifestPath: backupArtifact.path,
+        manifestSha256: backupArtifact.sha256,
+        ...recovered.evidence.backupEvidence,
+        dumpByteCount: backupDump.byteCount,
+      },
+      transaction: recovered.transaction,
+      recovery: {
+        recoveredAtUtc: currentTime().toISOString(),
+        productionMutationPerformed: false,
+      },
+      productionMutationPerformed: true,
+      publicFileWritten: false,
+      canonicalManifestChanged: false,
+      publicDeliveryAuthorized: false,
+    };
+    return {
+      mode: "production_hidden_load_receipt_recovery",
+      state: "MN",
+      decision: "RECOVERED_HIDDEN_RECEIPT",
+      receipt: (options.receiptFinalizer ?? finalizeMinnesotaReceipt)(
+        receiptTarget,
+        pending,
+        receipt,
+      ),
+      productionMutationPerformed: false,
+      publicFileWritten: false,
+      canonicalManifestChanged: false,
+      publicDeliveryAuthorized: false,
+    };
   }
-  if (process.env.CRM_MN_PRECINCT_PRODUCTION_WRITES !== loaded.artifact.sha256) {
-    throw new Error("Minnesota production-write acknowledgement must equal the package SHA-256");
-  }
-  if (
-    process.env.CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_ID
-      !== authorizationEvidence.authorizationId
-  ) {
-    throw new Error("Minnesota production authorization-ID acknowledgement is missing");
-  }
+
+  const initialEvidence = validateEvidenceAt(currentTime(), cleanIntegration());
+  assertMinnesotaProductionReleaseEnvironment({
+    packageSha256: loaded.artifact.sha256,
+    authorizationId: initialEvidence.authorizationEvidence.authorizationId,
+    authorizationSha256: authorizationArtifact.sha256,
+  }, options.environment ?? process.env);
   const migration = inspectReleaseArtifact(
     root,
     loaded.document.databaseActivationContract.migration.path,
@@ -316,27 +873,56 @@ export async function runMinnesotaProductionRelease(options = {}) {
       sha256: loaded.document.databaseActivationContract.migration.sha256,
     },
   );
-  const plan = buildMinnesotaPrecinctGisPlan({ root });
-  const sql = (options.postgresFactory ?? postgres)(databaseUrl, {
-    max: 1,
-    connect_timeout: 10,
-    idle_timeout: 20,
-    connection: {
-      application_name: "civicresultmaps-mn-precinct-production-release",
-    },
-  });
-  let transaction;
+  const pending = reserveMinnesotaReceiptTarget(
+    receiptTarget,
+    reservationDocument,
+  );
+  let sql;
   try {
-    transaction = await sql.begin((tx) =>
-      applyMinnesotaProductionReleaseTransaction(tx, {
+    sql = (options.postgresFactory ?? postgres)(databaseUrl, {
+      max: 1,
+      connect_timeout: 10,
+      idle_timeout: 20,
+      connection: {
+        application_name: "civicresultmaps-mn-precinct-production-release",
+      },
+    });
+  } catch (error) {
+    releaseMinnesotaReceiptReservation(receiptTarget, pending);
+    throw error;
+  }
+  let transaction;
+  let transactionBodyCompleted = false;
+  try {
+    transaction = await sql.begin(async (tx) => {
+      const transactionNow = currentTime();
+      const finalEvidence = validateEvidenceAt(
+        transactionNow,
+        cleanIntegration(),
+      );
+      const transactionRunner = options.transactionRunner
+        ?? applyMinnesotaProductionReleaseTransaction;
+      const result = await transactionRunner(tx, {
         releaseCandidate: loaded.releaseCandidate,
         packageDocument: loaded.document,
         migrationBytes: migration.bytes,
-        databaseName: preflightEvidence.databaseName,
+        databaseName: finalEvidence.preflightEvidence.databaseName,
         preflightReport: preflight,
         plan,
+        releaseAudit: baseReleaseAudit(
+          finalEvidence.authorizationEvidence.authorizationId,
+        ),
+        transactionAtUtc: transactionNow.toISOString(),
         testOnlyFailBeforeCommit: options.testOnlyFailBeforeCommit,
-      }));
+      });
+      transactionBodyCompleted = true;
+      return result;
+    });
+  } catch (error) {
+    if (!transactionBodyCompleted) {
+      releaseMinnesotaReceiptReservation(receiptTarget, pending);
+    }
+    throw error;
   } finally {
     await sql.end({ timeout: 5 });
   }
@@ -344,18 +930,23 @@ export async function runMinnesotaProductionRelease(options = {}) {
     schemaVersion: 1,
     state: "MN",
     releaseCandidate: loaded.releaseCandidate,
-    committedAtUtc: new Date().toISOString(),
+    committedAtUtc: transaction.committedAtUtc,
     endpointFingerprint,
-    authorization: authorizationEvidence,
+    authorization: {
+      path: authorizationArtifact.path,
+      sha256: authorizationArtifact.sha256,
+      ...initialEvidence.authorizationEvidence,
+    },
+    releaseReview: initialEvidence.releaseReviewEvidence,
     preflight: {
       path: preflightArtifact.path,
       sha256: preflightArtifact.sha256,
-      ...preflightEvidence,
+      ...initialEvidence.preflightEvidence,
     },
     backup: {
       manifestPath: backupArtifact.path,
       manifestSha256: backupArtifact.sha256,
-      ...backupEvidence,
+      ...initialEvidence.backupEvidence,
       dumpByteCount: backupDump.byteCount,
     },
     transaction,
@@ -364,17 +955,18 @@ export async function runMinnesotaProductionRelease(options = {}) {
     canonicalManifestChanged: false,
     publicDeliveryAuthorized: false,
   };
-  const receiptTarget = outputPath(
-    root,
-    parsed.receiptPath,
-    `mn-precinct-production-receipt-${loaded.artifact.sha256.slice(0, 12)}-${sha256(Buffer.from(JSON.stringify(receipt))).slice(0, 12)}.json`,
-    "production-release-receipts",
-  );
+  if (options.testOnlyFailReceiptWrite === true) {
+    throw new Error("Intentional Minnesota hidden-load receipt write failure after commit");
+  }
   return {
     mode: "production_hidden_load",
     state: "MN",
     decision: "COMMITTED_HIDDEN_NOT_PUBLIC",
-    receipt: writeJson(receiptTarget, receipt),
+    receipt: (options.receiptFinalizer ?? finalizeMinnesotaReceipt)(
+      receiptTarget,
+      pending,
+      receipt,
+    ),
     productionMutationPerformed: true,
     publicFileWritten: false,
     canonicalManifestChanged: false,

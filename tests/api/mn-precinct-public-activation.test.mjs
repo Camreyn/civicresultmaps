@@ -422,14 +422,79 @@ function fixture() {
     },
     committedAtUtc: "2026-08-08T00:20:00.000Z",
     endpointFingerprint: "a".repeat(64),
-    authorization: { authorizationId: "fixture-db" },
-    preflight: { databaseName: "crm_production" },
+    authorization: {
+      path: ".etl/production-authorizations/MN/fixture.json",
+      sha256: "b".repeat(64),
+      authorizationId: "fixture-db",
+    },
+    releaseReview: {
+      overlay: {
+        path: ".etl/precinct-release-overlays/MN/fixture/overlay.json",
+        sha256: "c".repeat(64),
+      },
+      review: {
+        path: ".etl/precinct-release-reviews/MN/fixture/review.json",
+        sha256: "d".repeat(64),
+        decision: "READY_FOR_HUMAN_CONFIRMATION",
+      },
+      confirmation: {
+        path: ".etl/precinct-release-confirmations/MN/fixture/confirmation.json",
+        sha256: "e".repeat(64),
+        confirmedAtUtc: "2026-08-08T00:10:00.000Z",
+        confirmedBy: "Project owner",
+      },
+    },
+    preflight: {
+      path: ".etl/production-preflight-candidates/MN/fixture.json",
+      sha256: "f".repeat(64),
+      databaseName: "crm_production",
+    },
+    backup: {
+      manifestSha256: "0".repeat(64),
+      dumpSha256: "1".repeat(64),
+    },
     transaction: {
+      committedAtUtc: "2026-08-08T00:20:00.000Z",
       totals: packageDocument.totals,
-      validation: { years: YEARS.map((year) => ({ year })) },
+      validation: {
+        revision: 29,
+        years: YEARS.map((year) => ({ year })),
+      },
       canonicalManifestChanged: false,
       publicFileWritten: false,
       publicDeliveryAuthorized: false,
+      releaseAudit: {
+        authorization: {
+          path: ".etl/production-authorizations/MN/fixture.json",
+          sha256: "b".repeat(64),
+        },
+        releaseOverlay: {
+          path: ".etl/precinct-release-overlays/MN/fixture/overlay.json",
+          sha256: "c".repeat(64),
+        },
+        releaseReview: {
+          path: ".etl/precinct-release-reviews/MN/fixture/review.json",
+          sha256: "d".repeat(64),
+        },
+        releaseConfirmation: {
+          path: ".etl/precinct-release-confirmations/MN/fixture/confirmation.json",
+          sha256: "e".repeat(64),
+        },
+        preflight: {
+          path: ".etl/production-preflight-candidates/MN/fixture.json",
+          sha256: "f".repeat(64),
+        },
+        backupManifest: {
+          sha256: "0".repeat(64),
+          dumpSha256: "1".repeat(64),
+        },
+        authorizationId: "fixture-db",
+        endpointFingerprint: "a".repeat(64),
+        transaction: {
+          executedAtUtc: "2026-08-08T00:20:00.000Z",
+          publicRevision: 29,
+        },
+      },
     },
     productionMutationPerformed: true,
     publicFileWritten: false,
@@ -541,6 +606,21 @@ test("Minnesota public authorization requires verified preview and production de
       "dpl_fixture_production",
     );
     assert.equal(checked.rollbackTarget.deploymentId, "dpl_fixture_previous");
+    assert.throws(
+      () => validateMinnesotaPublicActivationAuthorization({
+        ...authorization,
+        people: {
+          ...authorization.people,
+          operator: "Ｒｅｌｅａｓｅ　Ｏｐｅｒａｔｏｒ",
+          verifier: "release  operator",
+        },
+      }, {
+        now: Date.parse("2026-08-08T01:00:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+      }),
+      /requires two independent people/,
+    );
     assert.throws(
       () => validateMinnesotaPublicActivationAuthorization(
         { ...authorization, productionDeployment: template.productionDeployment },
@@ -666,6 +746,22 @@ test("Minnesota rollback requires a separate decision bound to the publish recei
     assert.equal(
       checked.applicationRollback.target.deploymentId,
       "dpl_previous",
+    );
+    assert.throws(
+      () => validateMinnesotaPublicRollbackAuthorization({
+        ...authorization,
+        people: {
+          ...authorization.people,
+          operator: "Ｒｅｌｅａｓｅ　Ｏｐｅｒａｔｏｒ",
+          verifier: "release  operator",
+        },
+      }, {
+        now: Date.parse("2026-08-08T01:20:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+        publicationReceipt,
+      }),
+      /requires two independent people/,
     );
     assert.throws(
       () => validateMinnesotaPublicRollbackAuthorization({
@@ -1389,6 +1485,29 @@ test("Minnesota activation receipts reject Blob or package tampering", () => {
         blobEvidenceSha256: digest(tamperedBytes),
       }),
       /artifact set drifted/,
+    );
+  } finally {
+    rmSync(item.root, { recursive: true, force: true });
+  }
+});
+
+test("Minnesota activation rejects a hidden-load receipt with mismatched release audit", () => {
+  const item = fixture();
+  try {
+    const receiptPath = path.resolve(
+      item.root,
+      ...item.options.productionReceiptPath.split("/"),
+    );
+    const receipt = JSON.parse(readFileSync(receiptPath, "utf8"));
+    receipt.transaction.releaseAudit.authorization.sha256 = "0".repeat(64);
+    const tamperedBytes = serialize(receipt);
+    writeFileSync(receiptPath, tamperedBytes);
+    assert.throws(
+      () => inspectMinnesotaPublicActivationPlan({
+        ...item.options,
+        productionReceiptSha256: digest(tamperedBytes),
+      }),
+      /hidden-load receipt is incomplete or incompatible/,
     );
   } finally {
     rmSync(item.root, { recursive: true, force: true });

@@ -105,7 +105,7 @@ Expected validation:
 | Local release-candidate geometry features | 16,435 |
 | Local release-candidate reviewed exact crosswalks | 16,435 |
 
-Caveat: the ordinary 2024 native staging artifact remains distinct from the four-election release candidate. The 2016 and 2020 LCC election attributes are preliminary and are excluded from public vote data; certified SOS workbooks are the sole vote authority. All four local geometry/result pairs reconcile by exact VTDID. The hidden-load implementation is not enabled: shared-overlay review, a current restoration-verified production backup and read-only preflight, independent transaction review, named deployment/rollback ownership, and explicit authorization are still required. Public file placement and canonical-manifest activation remain separate later decisions.
+Caveat: the ordinary 2024 native staging artifact remains distinct from the four-election release candidate. The 2016 and 2020 LCC election attributes are preliminary and are excluded from public vote data; certified SOS workbooks are the sole vote authority. All four local geometry/result pairs reconcile by exact VTDID. The guarded hidden-load implementation exists but has not been executed in production. It requires a fresh merged-main candidate, exact overlay/review/project-owner-confirmation hashes, a current read-only preflight, a current full-schema restoration-verified backup, two independently named people, an active rollback window, and a SHA-pinned `GO_PRODUCTION` record. Public Blob placement and receipt-bound canonical/database activation remain separate later decisions.
 
 ## Michigan
 

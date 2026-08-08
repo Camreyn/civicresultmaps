@@ -23,7 +23,83 @@ const LOCAL_EXECUTION_CONTEXT = Object.freeze({
     name: "crm_clone_dev",
   },
   releaseCandidate: null,
+  productionReleaseAudit: null,
 });
+
+const PRODUCTION_RELEASE_AUDIT_KEYS = Object.freeze([
+  "authorization",
+  "releaseOverlay",
+  "releaseReview",
+  "releaseConfirmation",
+  "preflight",
+  "backupManifest",
+  "authorizationId",
+  "endpointFingerprint",
+  "transaction",
+]);
+
+const PRODUCTION_RELEASE_AUDIT_ARTIFACT_KEYS = Object.freeze([
+  "authorization",
+  "releaseOverlay",
+  "releaseReview",
+  "releaseConfirmation",
+  "preflight",
+]);
+
+function validatedProductionReleaseAudit(value) {
+  if (!value || typeof value !== "object") {
+    throw new Error("Production Minnesota execution requires durable release-audit metadata");
+  }
+  const output = {};
+  for (const key of PRODUCTION_RELEASE_AUDIT_ARTIFACT_KEYS) {
+    const item = value[key];
+    if (
+      typeof item?.path !== "string"
+      || !item.path.startsWith(".etl/")
+      || item.path.includes("\\")
+      || item.path.split("/").includes("..")
+      || !/^[a-f0-9]{64}$/.test(item?.sha256 ?? "")
+    ) {
+      throw new Error("Production Minnesota execution release-audit metadata is invalid: " + key);
+    }
+    output[key] = Object.freeze({
+      path: item.path,
+      sha256: item.sha256,
+    });
+  }
+  if (
+    !value.backupManifest
+    || Object.keys(value.backupManifest).sort().join(",") !== "dumpSha256,sha256"
+    || !/^[a-f0-9]{64}$/.test(value.backupManifest.sha256 ?? "")
+    || !/^[a-f0-9]{64}$/.test(value.backupManifest.dumpSha256 ?? "")
+    || typeof value.authorizationId !== "string"
+    || !value.authorizationId.trim()
+    || !/^[a-f0-9]{64}$/.test(value.endpointFingerprint ?? "")
+    || !value.transaction
+    || Object.keys(value.transaction).sort().join(",")
+      !== "executedAtUtc,publicRevision"
+    || typeof value.transaction.executedAtUtc !== "string"
+    || Number.isNaN(Date.parse(value.transaction.executedAtUtc))
+    || !Number.isInteger(Number(value.transaction.publicRevision))
+    || Number(value.transaction.publicRevision) < 1
+  ) {
+    throw new Error("Production Minnesota execution release-audit metadata is invalid");
+  }
+  output.backupManifest = Object.freeze({
+    sha256: value.backupManifest.sha256,
+    dumpSha256: value.backupManifest.dumpSha256,
+  });
+  output.authorizationId = value.authorizationId.trim();
+  output.endpointFingerprint = value.endpointFingerprint;
+  output.transaction = Object.freeze({
+    executedAtUtc: value.transaction.executedAtUtc,
+    publicRevision: Number(value.transaction.publicRevision),
+  });
+  if (Object.keys(value).length !== PRODUCTION_RELEASE_AUDIT_KEYS.length) {
+    throw new Error("Production Minnesota execution release-audit metadata has extra fields");
+  }
+  return Object.freeze(output);
+}
 
 export function buildMinnesotaPrecinctExecutionContext(options = {}) {
   if (!options.mode || options.mode === "local") return LOCAL_EXECUTION_CONTEXT;
@@ -59,12 +135,18 @@ export function buildMinnesotaPrecinctExecutionContext(options = {}) {
       sha256: options.releasePackageSha256,
       publicDeliveryAuthorized: false,
     }),
+    productionReleaseAudit: validatedProductionReleaseAudit(
+      options.productionReleaseAudit,
+    ),
   });
 }
 
 function executionMetadata(context) {
   return context.releaseCandidate
-    ? { releaseCandidate: context.releaseCandidate }
+    ? {
+      releaseCandidate: context.releaseCandidate,
+      productionReleaseAudit: context.productionReleaseAudit,
+    }
     : {};
 }
 
@@ -682,6 +764,7 @@ export async function applyMinnesotaPrecinctGisTransaction(
     productionMutationPerformed: context.mode === "production_release",
     publicDeliveryAuthorized: false,
     releaseCandidate: context.releaseCandidate,
+    productionReleaseAudit: context.productionReleaseAudit,
     revision: Number(revisions[0].revision),
     years,
   };
@@ -741,6 +824,8 @@ async function validateSourceDocumentRecords(sql, yearPlan, context) {
     || resultMetadata.publicDeliveryAuthorized !== false
     || JSON.stringify(canonicalJson(resultMetadata.releaseCandidate ?? null))
       !== JSON.stringify(canonicalJson(context.releaseCandidate))
+    || JSON.stringify(canonicalJson(resultMetadata.productionReleaseAudit ?? null))
+      !== JSON.stringify(canonicalJson(context.productionReleaseAudit))
   ) {
     throw new Error("Minnesota " + yearPlan.year + " result provenance drifted");
   }
@@ -774,6 +859,8 @@ async function validateSourceDocumentRecords(sql, yearPlan, context) {
     || geometryMetadata.publicDeliveryAuthorized !== false
     || JSON.stringify(canonicalJson(geometryMetadata.releaseCandidate ?? null))
       !== JSON.stringify(canonicalJson(context.releaseCandidate))
+    || JSON.stringify(canonicalJson(geometryMetadata.productionReleaseAudit ?? null))
+      !== JSON.stringify(canonicalJson(context.productionReleaseAudit))
   ) {
     throw new Error("Minnesota " + yearPlan.year + " geometry provenance drifted");
   }
@@ -781,6 +868,44 @@ async function validateSourceDocumentRecords(sql, yearPlan, context) {
     resultSourceSlug: yearPlan.resultSource.slug,
     geometrySourceSlug: yearPlan.geometrySourceSlug,
   };
+}
+
+async function validateStoredProductionAudit(
+  sql,
+  yearPlan,
+  electionId,
+  context,
+) {
+  if (!context.releaseCandidate) return;
+  const audit = JSON.stringify(context.productionReleaseAudit);
+  const units = await query(sql, [
+    "select count(*)::int total,",
+    " count(*) filter (where metadata->'productionReleaseAudit'=$3::jsonb)::int exact_audit",
+    "from reporting_units where state_code=$1 and election_id=$2::uuid",
+    " and reporting_grain='precinct'",
+  ], [STATE, electionId, audit]);
+  if (
+    Number(units[0]?.total) !== yearPlan.reportingUnits.length
+    || Number(units[0]?.exact_audit) !== yearPlan.reportingUnits.length
+  ) {
+    throw new Error("Minnesota " + yearPlan.year + " reporting-unit release audit drifted");
+  }
+  const imports = await query(sql, [
+    "select count(distinct ir.id)::int import_runs,count(rr.id)::int result_rows,",
+    " count(rr.id) filter (where ir.metadata->'productionReleaseAudit'=$4::jsonb)::int exact_audit_rows",
+    "from import_runs ir",
+    "join result_rows rr on rr.import_run_id=ir.id and rr.state_code=$1",
+    "join contests c on c.id=rr.contest_id and c.election_id=$2::uuid",
+    "where ir.state_code=$1 and ir.election_year=$3 and ir.parser=$5",
+    " and rr.level='precinct'",
+  ], [STATE, electionId, yearPlan.year, audit, context.importParser]);
+  if (
+    Number(imports[0]?.import_runs) !== 1
+    || Number(imports[0]?.result_rows) !== yearPlan.resultRows.length
+    || Number(imports[0]?.exact_audit_rows) !== yearPlan.resultRows.length
+  ) {
+    throw new Error("Minnesota " + yearPlan.year + " import-run release audit drifted");
+  }
 }
 
 async function validateStoredGeometryRecords(sql, yearPlan, electionId, context) {
@@ -909,12 +1034,61 @@ async function validateStoredGeometryRecords(sql, yearPlan, electionId, context)
       || metadata.publicDeliveryAuthorized !== false
       || JSON.stringify(canonicalJson(metadata.releaseCandidate ?? null))
         !== JSON.stringify(canonicalJson(context.releaseCandidate))
+      || JSON.stringify(canonicalJson(metadata.productionReleaseAudit ?? null))
+        !== JSON.stringify(canonicalJson(context.productionReleaseAudit))
     ) {
       throw new Error("Minnesota " + yearPlan.year + " stored crosswalk drifted at " + reportingCode);
     }
     seenCrosswalks.add(reportingCode);
   }
   return { exactFeatures: features.length, exactCrosswalks: crosswalks.length };
+}
+
+export async function readMinnesotaPersistedProductionReleaseAudit(
+  sql,
+  releaseCandidate,
+) {
+  if (
+    typeof releaseCandidate?.id !== "string"
+    || !/^[a-f0-9]{64}$/.test(releaseCandidate?.sha256 ?? "")
+  ) {
+    throw new Error("Minnesota hidden receipt recovery requires an exact release candidate");
+  }
+  const rows = await query(sql, [
+    "select e.year,gv.status,gv.metadata",
+    "from geography_versions gv",
+    "join elections e on e.id=gv.election_id",
+    "where gv.state_code='MN' and gv.geography_type='precinct'",
+    " and gv.metadata->'releaseCandidate'->>'id'=$1",
+    " and gv.metadata->'releaseCandidate'->>'sha256'=$2",
+    "order by e.year",
+  ], [releaseCandidate.id, releaseCandidate.sha256]);
+  const expectedYears = [2012, 2016, 2020, 2024];
+  if (
+    rows.length !== expectedYears.length
+    || rows.some((row, index) => Number(row.year) !== expectedYears[index])
+  ) {
+    throw new Error("Minnesota hidden receipt recovery found an incomplete year set");
+  }
+  const firstAudit = rows[0]?.metadata?.productionReleaseAudit;
+  const audit = validatedProductionReleaseAudit(firstAudit);
+  for (const row of rows) {
+    if (
+      String(row.status) !== "blocked"
+      || row.metadata?.publicDeliveryAuthorized !== false
+      || JSON.stringify(canonicalJson(row.metadata?.releaseCandidate ?? null))
+        !== JSON.stringify(canonicalJson({
+          id: releaseCandidate.id,
+          sha256: releaseCandidate.sha256,
+          publicDeliveryAuthorized: false,
+        }))
+      || JSON.stringify(canonicalJson(row.metadata?.productionReleaseAudit ?? null))
+        !== JSON.stringify(canonicalJson(audit))
+    ) {
+      throw new Error("Minnesota hidden receipt recovery audit drifted across years");
+    }
+  }
+  return audit;
 }
 
 export async function validateMinnesotaPrecinctGisClient(
@@ -995,6 +1169,12 @@ export async function validateMinnesotaPrecinctGisClient(
       const provenance = await validateSourceDocumentRecords(
         sql,
         yearPlan,
+        context,
+      );
+      await validateStoredProductionAudit(
+        sql,
+        yearPlan,
+        row.election_id,
         context,
       );
       const exactGeometry = await validateStoredGeometryRecords(
@@ -1085,6 +1265,7 @@ export async function validateMinnesotaPrecinctGisClient(
       productionMutationPerformed: context.mode === "production_release",
       publicDeliveryAuthorized: false,
       releaseCandidate: context.releaseCandidate,
+      productionReleaseAudit: context.productionReleaseAudit,
       invalidConstraints: 0,
       revision: revision.length ? Number(revision[0].revision) : null,
       years: output,

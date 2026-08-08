@@ -8,6 +8,9 @@ import {
   inspectMinnesotaPrecinctBlobPublicationPlan,
 } from "./mn-precinct-blob-publication.mjs";
 import {
+  normalizeMinnesotaReleaseIdentity,
+} from "./mn-precinct-production-release.mjs";
+import {
   inspectPrecinctGeometryManifest,
   inspectPrecinctGeometryRegistry,
 } from "../../src/lib/precinct-geography.ts";
@@ -212,6 +215,45 @@ function draftManifests(root, loaded) {
 
 export function validateMinnesotaHiddenLoadReceipt(value, context) {
   const expectedTotals = context.packageDocument.totals;
+  const releaseAudit = {
+    authorization: {
+      path: value?.authorization?.path,
+      sha256: value?.authorization?.sha256,
+    },
+    releaseOverlay: {
+      path: value?.releaseReview?.overlay?.path,
+      sha256: value?.releaseReview?.overlay?.sha256,
+    },
+    releaseReview: {
+      path: value?.releaseReview?.review?.path,
+      sha256: value?.releaseReview?.review?.sha256,
+    },
+    releaseConfirmation: {
+      path: value?.releaseReview?.confirmation?.path,
+      sha256: value?.releaseReview?.confirmation?.sha256,
+    },
+    preflight: {
+      path: value?.preflight?.path,
+      sha256: value?.preflight?.sha256,
+    },
+    backupManifest: {
+      sha256: value?.backup?.manifestSha256,
+      dumpSha256: value?.backup?.dumpSha256,
+    },
+    authorizationId: value?.authorization?.authorizationId,
+    endpointFingerprint: value?.endpointFingerprint,
+    transaction: {
+      executedAtUtc: value?.committedAtUtc,
+      publicRevision: value?.transaction?.validation?.revision,
+    },
+  };
+  const validAuditItem = (item) => (
+    typeof item?.path === "string"
+    && item.path.startsWith(".etl/")
+    && !item.path.includes("\\")
+    && !item.path.split("/").includes("..")
+    && /^[a-f0-9]{64}$/.test(item?.sha256 ?? "")
+  );
   if (
     value?.schemaVersion !== 1
     || value?.state !== "MN"
@@ -230,6 +272,21 @@ export function validateMinnesotaHiddenLoadReceipt(value, context) {
     || value?.transaction?.canonicalManifestChanged !== false
     || value?.transaction?.publicFileWritten !== false
     || value?.transaction?.publicDeliveryAuthorized !== false
+    || value?.transaction?.committedAtUtc !== value?.committedAtUtc
+    || ![
+      releaseAudit.authorization,
+      releaseAudit.releaseOverlay,
+      releaseAudit.releaseReview,
+      releaseAudit.releaseConfirmation,
+      releaseAudit.preflight,
+    ].every(validAuditItem)
+    || !/^[a-f0-9]{64}$/.test(releaseAudit.backupManifest.sha256 ?? "")
+    || !/^[a-f0-9]{64}$/.test(releaseAudit.backupManifest.dumpSha256 ?? "")
+    || typeof releaseAudit.authorizationId !== "string"
+    || !releaseAudit.authorizationId.trim()
+    || !Number.isInteger(Number(releaseAudit.transaction.publicRevision))
+    || Number(releaseAudit.transaction.publicRevision) < 1
+    || !semanticallyEqual(value?.transaction?.releaseAudit, releaseAudit)
   ) {
     throw new Error("Minnesota hidden-load receipt is incomplete or incompatible");
   }
@@ -258,6 +315,7 @@ export function validateMinnesotaHiddenLoadReceipt(value, context) {
     databaseName: value.preflight.databaseName,
     endpointFingerprint: value.endpointFingerprint,
     authorizationId: value.authorization?.authorizationId ?? null,
+    productionReleaseAudit: releaseAudit,
     totals: value.transaction.totals,
   };
 }
@@ -849,8 +907,11 @@ export function validateMinnesotaPublicActivationAuthorization(
     rollbackOwner: requiredPerson(value, "rollbackOwner"),
   };
   if (
-    people.operator.toLocaleLowerCase() === people.verifier.toLocaleLowerCase()
-    || new Set(Object.values(people).map((person) => person.toLocaleLowerCase())).size < 2
+    normalizeMinnesotaReleaseIdentity(people.operator)
+      === normalizeMinnesotaReleaseIdentity(people.verifier)
+    || new Set(
+      Object.values(people).map(normalizeMinnesotaReleaseIdentity),
+    ).size < 2
   ) {
     throw new Error("Minnesota public activation requires two independent people");
   }
@@ -962,8 +1023,11 @@ export function validateMinnesotaPublicRollbackAuthorization(value, context) {
     rollbackOwner: requiredPerson(value, "rollbackOwner"),
   };
   if (
-    people.operator.toLocaleLowerCase() === people.verifier.toLocaleLowerCase()
-    || new Set(Object.values(people).map((person) => person.toLocaleLowerCase())).size < 2
+    normalizeMinnesotaReleaseIdentity(people.operator)
+      === normalizeMinnesotaReleaseIdentity(people.verifier)
+    || new Set(
+      Object.values(people).map(normalizeMinnesotaReleaseIdentity),
+    ).size < 2
   ) {
     throw new Error("Minnesota rollback requires two independent people");
   }
