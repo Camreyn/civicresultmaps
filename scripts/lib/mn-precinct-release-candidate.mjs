@@ -779,7 +779,7 @@ export function buildMinnesotaPrecinctReleaseCandidate(options = {}) {
       {
         order: 6,
         phase: "application_cutover",
-        action: "Upload the four immutable parent indexes and 348 county GeoJSON files, configure the pinned HTTPS delivery origin, and deploy the reviewed canonical manifests together; validate the protected preview, then atomically promote the application deployment alias.",
+        action: "Upload the four immutable parent indexes and 348 county GeoJSON files, configure the pinned HTTPS delivery origin, verify a protected preview, and deploy the identical reviewed activation tree to production while both database gates remain blocked; publish the exact database status only after the production deployment is verified.",
         productionWrite: true,
       },
       {
@@ -791,8 +791,8 @@ export function buildMinnesotaPrecinctReleaseCandidate(options = {}) {
     ],
     rollback: {
       automaticBeforeCommit: "Any schema or data-load failure must roll back its transaction and leave canonical manifests blocked.",
-      application: "Promote the immediately previous application deployment so eligible Minnesota manifests and geometry endpoints disappear together.",
-      database: "Restore the verified pre-release backup or execute a separately reviewed Minnesota-only rollback; retain the additive schema unless an independent migration review authorizes its removal.",
+      application: "After the separately authorized database publication rollback blocks both precinct endpoints, restore the exact previously pinned gate-capable application deployment and verify its blocked static manifests.",
+      database: "Execute the receipt-bound Minnesota publication-status rollback first while the activated gate-capable application remains live; use the verified pre-release backup only for a broader separately authorized recovery, and retain the additive schema unless an independent migration review authorizes its removal.",
       immutableFiles: "Do not overwrite or repurpose a released immutable URL. Unreferenced bytes may remain while the previous manifest deployment is restored.",
       stopConditions: [
         "Any candidate, source, manifest-preimage, migration, or draft-manifest hash differs from this package.",

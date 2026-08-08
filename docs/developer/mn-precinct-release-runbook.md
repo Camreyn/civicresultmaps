@@ -388,14 +388,15 @@ geometry, source authority/link, full terms, exact join counts, zero-vote
 styling, visible OpenStreetMap attribution, and county-bounded tile requests.
 
 The protected deployment proves the production build and environment shape,
-not an early public-data bypass. Record its exact branch Git SHA, deployment ID,
-Deployment Protection check, five tracked activation hashes, and configured
-Blob origin. Reverify the 352 immutable Blob objects against the publication
-receipt. While the database versions remain blocked, direct Minnesota precinct
-results must be empty and the precinct-geometry route must return its no-store
-`404` publication-inactive response. That fail-closed behavior is the expected
-preview result. The full end-to-end public map check occurs immediately after
-the atomic database transition inside the rollback window.
+not an early public-data bypass. Record its exact branch Git commit SHA, Git
+tree SHA, deployment ID, Deployment Protection check, five tracked activation
+hashes, and configured Blob origin. Reverify the 352 immutable Blob objects
+against the publication receipt. While the database versions remain blocked,
+direct Minnesota precinct results must be empty and the precinct-geometry route
+must return its no-store `404` publication-inactive response. That fail-closed
+behavior is the expected preview result. The full end-to-end public map check
+occurs immediately after the atomic database transition inside the rollback
+window.
 
 ### 6. Cut over the application
 
@@ -411,10 +412,10 @@ public data cutover: both Minnesota precinct endpoints remain fail-closed while
 the database geography versions are blocked. Do not merge an activation
 candidate until the protected preview proof is complete, the release roles and
 window are agreed, the exact geometry origin is configured for Production, and
-the previous gate-capable production deployment ID is recorded. The final
-`GO_PUBLIC` decision remains unavailable until the activation deployment itself
-is READY/PROMOTED and both public precinct endpoints have been observed to stay
-blocked.
+the previous gate-capable production deployment is recorded as the exact
+rollback target. The final `GO_PUBLIC` decision remains unavailable until the
+activation deployment itself is READY/PROMOTED and both public precinct
+endpoints have been observed to stay blocked.
 
 The canonical and database publication transition is executable only through
 the receipt-bound follow-on tools. After the hidden-load receipt and Blob
@@ -433,8 +434,9 @@ activation candidate under `.etl/precinct-public-activations/MN`; it does not
 contact production, change database status, deploy, promote, or publish Git.
 Commit those five tracked changes on a review branch. Set the exact origin for
 the Preview environment only, trigger a new preview deployment, and record its
-deployment ID, URL, Deployment Protection check, and exact 40-hex Git SHA.
-Verify that the preview SHA is the activation-branch HEAD and that its five
+deployment ID, URL, Deployment Protection check, exact 40-hex Git commit SHA,
+and exact 40-hex Git tree SHA. Verify that the preview commit SHA is the
+activation-branch HEAD, its tree SHA is `git rev-parse HEAD^{tree}`, and its five
 tracked output hashes match the activation candidate. An environment change is
 not retroactive: an older preview deployment cannot be used as evidence.
 
@@ -451,25 +453,38 @@ release and activation hashes and both receipt hashes, name authorizer,
 operator, verifier, and rollback owner, use at least two distinct people with
 operator different from verifier, record an active UTC deployment/rollback
 window, identify a protected preview verified within four hours, and include a
-production deployment verified within four hours. The production evidence must
-record its deployment ID, URL, 40-hex Git SHA, READY and PROMOTED checks, exact
+production deployment verified within four hours and no earlier than the
+preview verification. The production evidence must record its deployment ID,
+URL, 40-hex Git commit SHA, 40-hex Git tree SHA, READY and PROMOTED checks, exact
 origin, all five activation hashes, and successful observations that results
-remain empty and geometry remains `404` while the database is blocked. The
-operator checkout must be tracked-clean and its HEAD must equal that preview
-Git SHA. `protectionVerified`, READY, and PROMOTED remain explicit human
-attestations; retain the corresponding Vercel checks in the release evidence.
+remain empty and geometry remains `404` while the database is blocked. Preview
+and production commit SHAs may differ after a merge or squash, but their Git
+tree SHAs must be identical. The operator checkout must be tracked-clean, its
+HEAD must equal the preview commit SHA, and its tree SHA must equal both
+deployment tree SHAs. Fetch the relevant `origin` history immediately before
+the database runner so it can resolve the recorded production and rollback
+commit objects locally; each recorded commit's `^{tree}` must equal its claimed
+tree SHA. The same authorization must pin the immediately previous production
+deployment by ID, URL, commit SHA, and tree SHA, with fresh checks that it is
+gate-capable, has blocked static manifests, and blocks both precinct endpoints.
+`protectionVerified`, READY, PROMOTED, and the endpoint observations remain
+explicit human attestations; retain the corresponding Vercel checks in the
+release evidence.
 
 Set the exact same origin for the Production environment before the activation
 merge. This does not change an existing deployment; it ensures the next `main`
-deployment receives the value. Record the current gate-capable production
-deployment ID for rollback. The project owner then merges the activation PR.
-Wait for the exact activation deployment to become READY/PROMOTED, record its
-production deployment ID and Git SHA, verify its five tracked hashes and origin,
-and confirm that both Minnesota precinct endpoints still fail closed against
-the blocked database state. Place a hold on unrelated `main` merges for the
+deployment receives the value. Record and freshly verify the current
+gate-capable production deployment as `rollbackTarget` before merging. The
+project owner then merges the activation PR. Wait for the exact activation
+deployment to become READY/PROMOTED, record its production deployment ID,
+commit SHA, and tree SHA, verify its five tracked hashes and origin, and confirm
+that both Minnesota precinct endpoints still fail closed against the blocked
+database state. Its tree SHA must equal the protected preview tree SHA even if
+the merge commit SHA differs. Place a hold on unrelated `main` merges for the
 remainder of the cutover/rollback window. Fill those facts into
-`productionDeployment`, have the two people complete the final `GO_PUBLIC`
-record, and hash that exact authorization artifact.
+`productionDeployment` and the pinned facts into `rollbackTarget`, have the two
+people complete the final `GO_PUBLIC` record, and hash that exact authorization
+artifact.
 
 Only after that deployment proof, set all exact acknowledgements and run the
 atomic database status transition as the single public data switch:
@@ -490,9 +505,9 @@ certified candidate totals, 125 zero-vote units, source provenance, exact
 features/crosswalks, same-election links, and constraints. It then changes only
 the exact four package-bound geography versions to `published`, updates exact
 release-bound metadata counts, stores the activation and authorization hashes
-in the database, increments the public revision, and verifies every
-postcondition. It is idempotent only for that exact activation. It never deploys
-or publishes Git.
+plus the exact pinned rollback target in the database, increments the public
+revision, and verifies every postcondition. It is idempotent only for that exact
+activation. It never deploys or publishes Git.
 
 After this transaction succeeds, immediately run the post-cutover checks
 against the already READY/PROMOTED activation deployment. The database
@@ -517,11 +532,12 @@ versions, exact metadata, original commit time, authorization hash, and stored
 revision match. It cannot perform the initial publication.
 
 Rollback is a separate decision. Hold all new `main` merges and automatic
-production cutovers. First restore and verify the immediately previous
-gate-capable application deployment (the tooling release with both database
-gates and blocked static manifests). Then use the exact publish receipt to
-create a rollback template and complete it as `GO_ROLLBACK` with a new rollback
-ID, two people, an active window, and the restored deployment ID/Git SHA:
+production cutovers. Verify that the exact `rollbackTarget` pinned in the
+publish receipt is still available, but do not restore it yet. Use the exact
+publish receipt to create a rollback template and complete it as `GO_ROLLBACK`
+with a new rollback ID, two people, an active window, the unchanged pinned
+target, and explicit acknowledgements that the database will be blocked first
+and the application will be restored only afterward:
 
 ```powershell
 npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --rollback --publication-receipt=$PUBLICATION_RECEIPT --publication-receipt-sha256=$PUBLICATION_RECEIPT_SHA --write-authorization-template
@@ -534,12 +550,21 @@ $env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_ID=$ROLLBACK_ID
 npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --rollback --publication-receipt=$PUBLICATION_RECEIPT --publication-receipt-sha256=$PUBLICATION_RECEIPT_SHA --authorization=$ROLLBACK_AUTHORIZATION
 ```
 
-The rollback must match the publish receipt's activation ID, authorization hash,
-revision, and original commit time. It restores the original four caveats,
-returns exact release metadata to unauthorized/blocked, preserves both audit
-records, and increments the public revision. It never deletes immutable Blob
-objects. A rolled-back release cannot be republished in place; reseal and review
-a new release candidate rather than erasing its retained activation history.
+Run the database rollback while the activated, gate-capable application is
+still live. The rollback must match the publish receipt's activation ID,
+authorization hash, revision, original commit time, and exact pinned application
+target. The runner rehashes and revalidates the original `GO_PUBLIC`
+authorization referenced by the publication receipt and requires the same
+target in the live publication metadata, so a rewritten receipt cannot
+substitute another deployment. It restores the original four caveats, returns
+exact release metadata to unauthorized/blocked, preserves both audit records,
+and increments the public revision. At that moment both precinct endpoints fail
+closed. Only then restore the exact pinned previous deployment and verify its
+blocked static manifests and both blocked endpoint observations. The rollback
+never deletes immutable Blob objects. If application restoration is delayed,
+the data stays hidden behind the blocked database gate. A rolled-back release
+cannot be republished in place; reseal and review a new release candidate rather
+than erasing its retained activation history.
 
 ### 7. Post-cutover verification
 

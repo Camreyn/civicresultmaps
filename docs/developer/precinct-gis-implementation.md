@@ -6631,7 +6631,11 @@ evidence against its verified top-level package.
   map proof. The final `GO_PUBLIC` authorization now also requires the exact
   READY/PROMOTED production deployment, its five activation hashes and origin,
   and observed blocked result/geometry gates before the database runner can
-  write.
+  write. Preview and production records now include exact Git tree SHAs and
+  must resolve to the same tree even when their commit SHAs differ after merge
+  or squash. The operator checkout must match the preview commit and the shared
+  deployment tree, and the runner resolves both the production and pinned
+  rollback commit objects locally to prove their claimed tree identities.
 
 - Publication metadata now preserves the exact authorization hash, original
   caveat, activation candidate, Blob receipt/origin, commit time, and public
@@ -6639,8 +6643,14 @@ evidence against its verified top-level package.
   features/crosswalks/reporting units, eight source documents, and four import
   runs. A read-only recovery mode can reconstruct a missing local receipt from
   that audit state without reopening an expired write window. Rollback requires
-  a new two-person `GO_ROLLBACK` record, an already restored application
-  deployment, and the exact publish receipt/hash/revision/time; it restores the
+  a new two-person `GO_ROLLBACK` record and the exact publish
+  receipt/hash/revision/time. The original `GO_PUBLIC` record and publication
+  receipt pin the immediately previous gate-capable deployment, including its
+  commit/tree identity and blocked endpoint observations. Rollback blocks the
+  database first while the activated gate-capable application remains live.
+  The exact target is also stored in live publication metadata, and rollback
+  rehashes the original authorization before comparing all three copies. Only
+  then does the procedure restore that pinned deployment; it restores the
   original caveats and retains both audit records.
 
 - Production endpoint fingerprints are now full 64-hex SHA-256 values over the
@@ -6649,10 +6659,10 @@ evidence against its verified top-level package.
   endpoint check and requires the fresh preflight fingerprint as a separate
   execution acknowledgement. Public cutover documentation now reflects the
   actual Vercel behavior: `main` auto-deploys to production, preview environment
-  changes require a new preview deployment, and the clean operator HEAD must
-  equal the recorded protected-preview Git SHA. Rollback restores the previous
-  gate-capable deployment under a temporary `main` hold before it blocks the
-  database publication state.
+  changes require a new preview deployment, and the clean operator HEAD/tree
+  must match the protected preview and production evidence. Rollback holds
+  `main`, blocks the database publication state first, and then restores the
+  exact gate-capable deployment pinned before cutover.
 
 - The expanded focused activation and public-result-gate tests pass. No hidden
   production load, public status change, Blob upload, Vercel environment edit,

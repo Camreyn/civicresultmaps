@@ -636,6 +636,7 @@ export function buildMinnesotaPublicActivationAuthorizationTemplate(plan, activa
       deploymentId: null,
       url: null,
       gitSha: null,
+      gitTreeSha: null,
       protectionVerified: false,
       verifiedAtUtc: null,
       verified: false,
@@ -649,6 +650,7 @@ export function buildMinnesotaPublicActivationAuthorizationTemplate(plan, activa
       deploymentId: null,
       url: null,
       gitSha: null,
+      gitTreeSha: null,
       readyVerified: false,
       promotedVerified: false,
       verifiedAtUtc: null,
@@ -657,6 +659,17 @@ export function buildMinnesotaPublicActivationAuthorizationTemplate(plan, activa
         path: output.path,
         sha256: output.sha256,
       })),
+      blockedResultGateVerified: false,
+      blockedGeometryGateVerified: false,
+    },
+    rollbackTarget: {
+      deploymentId: null,
+      url: null,
+      gitSha: null,
+      gitTreeSha: null,
+      verifiedAtUtc: null,
+      gateCapableVerified: false,
+      blockedStaticManifestsVerified: false,
       blockedResultGateVerified: false,
       blockedGeometryGateVerified: false,
     },
@@ -695,9 +708,11 @@ export function validateMinnesotaPublicActivationAuthorization(
   const productionAt = Date.parse(
     value?.productionDeployment?.verifiedAtUtc,
   );
+  const rollbackTargetAt = Date.parse(value?.rollbackTarget?.verifiedAtUtc);
   const recovery = context.recovery === true;
   let previewUrl = null;
   let productionUrl = null;
+  let rollbackTargetUrl = null;
   try {
     previewUrl = new URL(value?.protectedPreview?.url);
   } catch {
@@ -705,6 +720,11 @@ export function validateMinnesotaPublicActivationAuthorization(
   }
   try {
     productionUrl = new URL(value?.productionDeployment?.url);
+  } catch {
+    // The shared compatibility check below reports one fail-closed error.
+  }
+  try {
+    rollbackTargetUrl = new URL(value?.rollbackTarget?.url);
   } catch {
     // The shared compatibility check below reports one fail-closed error.
   }
@@ -727,6 +747,7 @@ export function validateMinnesotaPublicActivationAuthorization(
       rollbackAt,
       previewAt,
       productionAt,
+      rollbackTargetAt,
     ]
       .some((time) => Number.isNaN(time))
     || expiresAt <= authorizedAt
@@ -738,6 +759,7 @@ export function validateMinnesotaPublicActivationAuthorization(
     || typeof value?.protectedPreview?.deploymentId !== "string"
     || !value.protectedPreview.deploymentId.trim()
     || !/^[a-f0-9]{40}$/.test(value?.protectedPreview?.gitSha ?? "")
+    || !/^[a-f0-9]{40}$/.test(value?.protectedPreview?.gitTreeSha ?? "")
     || value?.protectedPreview?.deliveryOrigin
       !== context.plan.blobPublication.deliveryOrigin
     || !semanticallyEqual(
@@ -760,6 +782,9 @@ export function validateMinnesotaPublicActivationAuthorization(
     || typeof value?.productionDeployment?.deploymentId !== "string"
     || !value.productionDeployment.deploymentId.trim()
     || !/^[a-f0-9]{40}$/.test(value?.productionDeployment?.gitSha ?? "")
+    || !/^[a-f0-9]{40}$/.test(value?.productionDeployment?.gitTreeSha ?? "")
+    || value.productionDeployment.gitTreeSha
+      !== value.protectedPreview.gitTreeSha
     || value?.productionDeployment?.deliveryOrigin
       !== context.plan.blobPublication.deliveryOrigin
     || !semanticallyEqual(
@@ -774,7 +799,26 @@ export function validateMinnesotaPublicActivationAuthorization(
     || productionUrl?.password
     || productionUrl?.search
     || productionUrl?.hash
+    || productionAt < previewAt
     || productionAt > authorizedAt
+    || value?.rollbackTarget?.gateCapableVerified !== true
+    || value?.rollbackTarget?.blockedStaticManifestsVerified !== true
+    || value?.rollbackTarget?.blockedResultGateVerified !== true
+    || value?.rollbackTarget?.blockedGeometryGateVerified !== true
+    || typeof value?.rollbackTarget?.deploymentId !== "string"
+    || !value.rollbackTarget.deploymentId.trim()
+    || value.rollbackTarget.deploymentId
+      === value.productionDeployment.deploymentId
+    || !/^[a-f0-9]{40}$/.test(value?.rollbackTarget?.gitSha ?? "")
+    || !/^[a-f0-9]{40}$/.test(value?.rollbackTarget?.gitTreeSha ?? "")
+    || value.rollbackTarget.gitTreeSha
+      === value.productionDeployment.gitTreeSha
+    || rollbackTargetUrl?.protocol !== "https:"
+    || rollbackTargetUrl?.username
+    || rollbackTargetUrl?.password
+    || rollbackTargetUrl?.search
+    || rollbackTargetUrl?.hash
+    || rollbackTargetAt > authorizedAt
     || (!recovery && (
       authorizedAt > now
       || now > expiresAt
@@ -784,6 +828,8 @@ export function validateMinnesotaPublicActivationAuthorization(
       || now - previewAt > 4 * 60 * 60 * 1000
       || productionAt > now
       || now - productionAt > 4 * 60 * 60 * 1000
+      || rollbackTargetAt > now
+      || now - rollbackTargetAt > 4 * 60 * 60 * 1000
     ))
     || value?.evidence?.productionHiddenLoad?.sha256
       !== context.plan.productionHiddenLoad.sha256
@@ -814,6 +860,7 @@ export function validateMinnesotaPublicActivationAuthorization(
     deploymentWindow: value.deploymentWindow,
     protectedPreview: value.protectedPreview,
     productionDeployment: value.productionDeployment,
+    rollbackTarget: value.rollbackTarget,
   };
 }
 
@@ -851,10 +898,9 @@ export function buildMinnesotaPublicRollbackAuthorizationTemplate(
       endsAtUtc: null,
     },
     applicationRollback: {
-      deploymentId: null,
-      gitSha: null,
-      restoredAtUtc: null,
-      verified: false,
+      target: publicationReceipt.rollbackTarget,
+      databaseBlockFirstAcknowledged: false,
+      restoreAfterDatabaseRollbackAcknowledged: false,
     },
     evidence: {
       publicationReceipt: {
@@ -871,7 +917,6 @@ export function validateMinnesotaPublicRollbackAuthorization(value, context) {
   const expiresAt = Date.parse(value?.expiresAtUtc);
   const startsAt = Date.parse(value?.rollbackWindow?.startsAtUtc);
   const endsAt = Date.parse(value?.rollbackWindow?.endsAtUtc);
-  const restoredAt = Date.parse(value?.applicationRollback?.restoredAtUtc);
   const receipt = context.publicationReceipt;
   const recovery = context.recovery === true;
   if (
@@ -888,23 +933,23 @@ export function validateMinnesotaPublicRollbackAuthorization(value, context) {
     || Number(value?.publication?.revision) !== receipt.revision
     || value?.publication?.changedAtUtc !== receipt.changedAtUtc
     || !semanticallyEqual(value?.scopes, MINNESOTA_PUBLIC_ROLLBACK_SCOPES)
-    || [authorizedAt, expiresAt, startsAt, endsAt, restoredAt]
+    || [authorizedAt, expiresAt, startsAt, endsAt]
       .some((time) => Number.isNaN(time))
     || expiresAt <= authorizedAt
     || startsAt > endsAt
-    || restoredAt > authorizedAt
     || (!recovery && (
       authorizedAt > now
       || now > expiresAt
       || startsAt > now
       || now > endsAt
-      || restoredAt > now
-      || now - restoredAt > 4 * 60 * 60 * 1000
     ))
-    || value?.applicationRollback?.verified !== true
-    || typeof value?.applicationRollback?.deploymentId !== "string"
-    || !value.applicationRollback.deploymentId.trim()
-    || !/^[a-f0-9]{40}$/.test(value?.applicationRollback?.gitSha ?? "")
+    || !semanticallyEqual(
+      value?.applicationRollback?.target,
+      receipt.rollbackTarget,
+    )
+    || value?.applicationRollback?.databaseBlockFirstAcknowledged !== true
+    || value?.applicationRollback?.restoreAfterDatabaseRollbackAcknowledged
+      !== true
     || value?.evidence?.publicationReceipt?.path !== receipt.path
     || value?.evidence?.publicationReceipt?.sha256 !== receipt.sha256
   ) {

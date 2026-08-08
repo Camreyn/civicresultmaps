@@ -23,6 +23,7 @@ import {
 } from "../../scripts/lib/mn-precinct-blob-publication.mjs";
 import {
   applyMinnesotaGeographyPublicationTransaction,
+  inspectMinnesotaPublicationReceipt,
   verifyMinnesotaActivationGitCandidate,
 } from "../../scripts/publish-mn-precinct-geography-status.mjs";
 import {
@@ -55,6 +56,71 @@ function fixtureGisPlan() {
         crosswalks: Array.from({ length: 87 }),
       },
     })),
+  };
+}
+
+function fixtureRollbackTarget(overrides = {}) {
+  return {
+    deploymentId: "dpl_previous",
+    url: "https://fixture-previous.vercel.app",
+    gitSha: "c".repeat(40),
+    gitTreeSha: "d".repeat(40),
+    verifiedAtUtc: "2026-08-08T00:40:00.000Z",
+    gateCapableVerified: true,
+    blockedStaticManifestsVerified: true,
+    blockedResultGateVerified: true,
+    blockedGeometryGateVerified: true,
+    ...overrides,
+  };
+}
+
+function fixturePublicAuthorization(template) {
+  return {
+    ...template,
+    decision: "GO_PUBLIC",
+    activationId: "fixture-public-window",
+    authorizedAtUtc: "2026-08-08T00:50:00.000Z",
+    expiresAtUtc: "2026-08-08T02:00:00.000Z",
+    people: {
+      authorizedBy: "Project owner",
+      operator: "Release operator",
+      verifier: "Independent verifier",
+      rollbackOwner: "Project owner",
+    },
+    deploymentWindow: {
+      startsAtUtc: "2026-08-08T00:45:00.000Z",
+      endsAtUtc: "2026-08-08T01:30:00.000Z",
+      rollbackDecisionAtUtc: "2026-08-08T01:20:00.000Z",
+    },
+    protectedPreview: {
+      deploymentId: "dpl_fixture",
+      url: "https://fixture-preview.vercel.app",
+      gitSha: "a".repeat(40),
+      gitTreeSha: "c".repeat(40),
+      protectionVerified: true,
+      verifiedAtUtc: "2026-08-08T00:35:00.000Z",
+      verified: true,
+      deliveryOrigin: template.protectedPreview.deliveryOrigin,
+      trackedOutputs: template.protectedPreview.trackedOutputs,
+    },
+    productionDeployment: {
+      deploymentId: "dpl_fixture_production",
+      url: "https://fixture-production.vercel.app",
+      gitSha: "b".repeat(40),
+      gitTreeSha: "c".repeat(40),
+      readyVerified: true,
+      promotedVerified: true,
+      verifiedAtUtc: "2026-08-08T00:45:00.000Z",
+      deliveryOrigin: template.productionDeployment.deliveryOrigin,
+      trackedOutputs: template.productionDeployment.trackedOutputs,
+      blockedResultGateVerified: true,
+      blockedGeometryGateVerified: true,
+    },
+    rollbackTarget: fixtureRollbackTarget({
+      deploymentId: "dpl_fixture_previous",
+      gitSha: "d".repeat(40),
+      gitTreeSha: "e".repeat(40),
+    }),
   };
 }
 
@@ -459,46 +525,7 @@ test("Minnesota public authorization requires verified preview and production de
       }),
       /authorization is absent/,
     );
-    const authorization = {
-      ...template,
-      decision: "GO_PUBLIC",
-      activationId: "fixture-public-window",
-      authorizedAtUtc: "2026-08-08T00:50:00.000Z",
-      expiresAtUtc: "2026-08-08T02:00:00.000Z",
-      people: {
-        authorizedBy: "Project owner",
-        operator: "Release operator",
-        verifier: "Independent verifier",
-        rollbackOwner: "Project owner",
-      },
-      deploymentWindow: {
-        startsAtUtc: "2026-08-08T00:45:00.000Z",
-        endsAtUtc: "2026-08-08T01:30:00.000Z",
-        rollbackDecisionAtUtc: "2026-08-08T01:20:00.000Z",
-      },
-      protectedPreview: {
-        deploymentId: "dpl_fixture",
-        url: "https://fixture-preview.vercel.app",
-        gitSha: "a".repeat(40),
-        protectionVerified: true,
-        verifiedAtUtc: "2026-08-08T00:35:00.000Z",
-        verified: true,
-        deliveryOrigin: template.protectedPreview.deliveryOrigin,
-        trackedOutputs: template.protectedPreview.trackedOutputs,
-      },
-      productionDeployment: {
-        deploymentId: "dpl_fixture_production",
-        url: "https://fixture-production.vercel.app",
-        gitSha: "b".repeat(40),
-        readyVerified: true,
-        promotedVerified: true,
-        verifiedAtUtc: "2026-08-08T00:45:00.000Z",
-        deliveryOrigin: template.productionDeployment.deliveryOrigin,
-        trackedOutputs: template.productionDeployment.trackedOutputs,
-        blockedResultGateVerified: true,
-        blockedGeometryGateVerified: true,
-      },
-    };
+    const authorization = fixturePublicAuthorization(template);
     const checked = validateMinnesotaPublicActivationAuthorization(
       authorization,
       {
@@ -513,6 +540,7 @@ test("Minnesota public authorization requires verified preview and production de
       checked.productionDeployment.deploymentId,
       "dpl_fixture_production",
     );
+    assert.equal(checked.rollbackTarget.deploymentId, "dpl_fixture_previous");
     assert.throws(
       () => validateMinnesotaPublicActivationAuthorization(
         { ...authorization, productionDeployment: template.productionDeployment },
@@ -522,6 +550,34 @@ test("Minnesota public authorization requires verified preview and production de
           activationSha256: built.sha256,
         },
       ),
+      /authorization is absent/,
+    );
+    assert.throws(
+      () => validateMinnesotaPublicActivationAuthorization({
+        ...authorization,
+        productionDeployment: {
+          ...authorization.productionDeployment,
+          gitTreeSha: "f".repeat(40),
+        },
+      }, {
+        now: Date.parse("2026-08-08T01:00:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+      }),
+      /authorization is absent/,
+    );
+    assert.throws(
+      () => validateMinnesotaPublicActivationAuthorization({
+        ...authorization,
+        productionDeployment: {
+          ...authorization.productionDeployment,
+          verifiedAtUtc: "2026-08-08T00:30:00.000Z",
+        },
+      }, {
+        now: Date.parse("2026-08-08T01:00:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+      }),
       /authorization is absent/,
     );
     assert.equal(
@@ -548,6 +604,17 @@ test("Minnesota rollback requires a separate decision bound to the publish recei
       activationId: "fixture-public-window",
       revision: 29,
       changedAtUtc: "2026-08-08T01:00:00.000Z",
+      rollbackTarget: {
+        deploymentId: "dpl_previous",
+        url: "https://fixture-previous.vercel.app",
+        gitSha: "c".repeat(40),
+        gitTreeSha: "d".repeat(40),
+        verifiedAtUtc: "2026-08-08T00:40:00.000Z",
+        gateCapableVerified: true,
+        blockedStaticManifestsVerified: true,
+        blockedResultGateVerified: true,
+        blockedGeometryGateVerified: true,
+      },
     };
     const template = buildMinnesotaPublicRollbackAuthorizationTemplate(
       built.plan,
@@ -580,10 +647,9 @@ test("Minnesota rollback requires a separate decision bound to the publish recei
         endsAtUtc: "2026-08-08T01:45:00.000Z",
       },
       applicationRollback: {
-        deploymentId: "dpl_previous",
-        gitSha: "c".repeat(40),
-        restoredAtUtc: "2026-08-08T01:15:00.000Z",
-        verified: true,
+        target: publicationReceipt.rollbackTarget,
+        databaseBlockFirstAcknowledged: true,
+        restoreAfterDatabaseRollbackAcknowledged: true,
       },
     };
     const checked = validateMinnesotaPublicRollbackAuthorization(
@@ -597,6 +663,28 @@ test("Minnesota rollback requires a separate decision bound to the publish recei
     );
     assert.equal(checked.activationId, "fixture-rollback-window");
     assert.equal(checked.publicationActivationId, "fixture-public-window");
+    assert.equal(
+      checked.applicationRollback.target.deploymentId,
+      "dpl_previous",
+    );
+    assert.throws(
+      () => validateMinnesotaPublicRollbackAuthorization({
+        ...authorization,
+        applicationRollback: {
+          ...authorization.applicationRollback,
+          target: {
+            ...authorization.applicationRollback.target,
+            deploymentId: "dpl_unpinned",
+          },
+        },
+      }, {
+        now: Date.parse("2026-08-08T01:20:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+        publicationReceipt,
+      }),
+      /authorization is absent/,
+    );
     assert.equal(
       validateMinnesotaPublicRollbackAuthorization(authorization, {
         now: Date.parse("2026-08-09T01:20:00.000Z"),
@@ -612,33 +700,256 @@ test("Minnesota rollback requires a separate decision bound to the publish recei
   }
 });
 
+test("Minnesota publish receipt pins the exact gate-capable rollback deployment", () => {
+  const item = fixture();
+  try {
+    const built = inspectMinnesotaPublicActivationPlan(item.options);
+    const activation = {
+      plan: built.plan,
+      artifact: {
+        path: ".etl/precinct-public-activations/MN/activation.json",
+        sha256: "a".repeat(64),
+      },
+    };
+    const publicAuthorization = fixturePublicAuthorization(
+      buildMinnesotaPublicActivationAuthorizationTemplate(
+        built.plan,
+        activation.artifact.sha256,
+      ),
+    );
+    const rollbackTarget = publicAuthorization.rollbackTarget;
+    const publicAuthorizationArtifact = write(
+      item.root,
+      ".etl/production-authorizations/MN/public.json",
+      serialize(publicAuthorization),
+    );
+    const receipt = {
+      schemaVersion: 1,
+      state: "MN",
+      mode: "publish",
+      changedAtUtc: "2026-08-08T01:00:00.000Z",
+      releaseCandidate: built.plan.releaseCandidate,
+      activationCandidate: activation.artifact,
+      authorization: {
+        activationId: "fixture-public-window",
+        path: publicAuthorizationArtifact.path,
+        sha256: publicAuthorizationArtifact.sha256,
+        rollbackTarget,
+      },
+      transaction: {
+        mode: "publish",
+        disposition: "updated",
+        geographyVersions: 4,
+        features: 348,
+        crosswalks: 348,
+        reportingUnits: 348,
+        sourceDocuments: 8,
+        importRuns: 4,
+        revision: 29,
+        committedAtUtc: "2026-08-08T01:00:00.000Z",
+      },
+      databasePublicationStatusConfirmed: true,
+    };
+    const artifact = write(
+      item.root,
+      ".etl/production-publication-receipts/MN/publish.json",
+      serialize(receipt),
+    );
+    const inspected = inspectMinnesotaPublicationReceipt(item.root, {
+      publicationReceiptPath: artifact.path,
+      publicationReceiptSha256: artifact.sha256,
+      now: Date.parse("2026-08-08T01:05:00.000Z"),
+    }, activation);
+    assert.deepEqual(inspected.summary.rollbackTarget, rollbackTarget);
+
+    const tampered = write(
+      item.root,
+      ".etl/production-publication-receipts/MN/publish-missing-target.json",
+      serialize({
+        ...receipt,
+        authorization: {
+          activationId: receipt.authorization.activationId,
+          path: receipt.authorization.path,
+          sha256: receipt.authorization.sha256,
+        },
+      }),
+    );
+    assert.throws(
+      () => inspectMinnesotaPublicationReceipt(item.root, {
+        publicationReceiptPath: tampered.path,
+        publicationReceiptSha256: tampered.sha256,
+        now: Date.parse("2026-08-08T01:05:00.000Z"),
+      }, activation),
+      /receipt is incomplete/,
+    );
+    const substituted = write(
+      item.root,
+      ".etl/production-publication-receipts/MN/publish-substituted-target.json",
+      serialize({
+        ...receipt,
+        authorization: {
+          ...receipt.authorization,
+          rollbackTarget: fixtureRollbackTarget({
+            deploymentId: "dpl_substituted",
+            gitSha: "f".repeat(40),
+            gitTreeSha: "0".repeat(40),
+          }),
+        },
+      }),
+    );
+    assert.throws(
+      () => inspectMinnesotaPublicationReceipt(item.root, {
+        publicationReceiptPath: substituted.path,
+        publicationReceiptSha256: substituted.sha256,
+        now: Date.parse("2026-08-08T01:05:00.000Z"),
+      }, activation),
+      /receipt is incomplete/,
+    );
+  } finally {
+    rmSync(item.root, { recursive: true, force: true });
+  }
+});
+
 test("Minnesota publication binds the operator checkout to the verified preview commit", () => {
   const expected = "a".repeat(40);
+  const expectedTree = "c".repeat(40);
+  const productionCommit = "b".repeat(40);
+  const rollbackCommit = "d".repeat(40);
+  const rollbackTree = "e".repeat(40);
   const calls = [];
   const runner = (_command, args) => {
     calls.push(args);
-    if (args[0] === "rev-parse") return { status: 0, stdout: expected + "\n" };
+    if (args[0] === "rev-parse" && args[1] === "HEAD") {
+      return { status: 0, stdout: expected + "\n" };
+    }
+    if (args[0] === "rev-parse" && args[1] === "HEAD^{tree}") {
+      return { status: 0, stdout: expectedTree + "\n" };
+    }
+    if (
+      args[0] === "rev-parse"
+      && args[1] === `${productionCommit}^{tree}`
+    ) {
+      return { status: 0, stdout: expectedTree + "\n" };
+    }
+    if (
+      args[0] === "rev-parse"
+      && args[1] === `${rollbackCommit}^{tree}`
+    ) {
+      return { status: 0, stdout: rollbackTree + "\n" };
+    }
     return { status: 0, stdout: "" };
   };
   assert.deepEqual(
     verifyMinnesotaActivationGitCandidate(
       process.cwd(),
-      { protectedPreview: { gitSha: expected } },
+      {
+        protectedPreview: { gitSha: expected, gitTreeSha: expectedTree },
+        productionDeployment: {
+          gitSha: productionCommit,
+          gitTreeSha: expectedTree,
+        },
+        rollbackTarget: {
+          gitSha: rollbackCommit,
+          gitTreeSha: rollbackTree,
+        },
+      },
       runner,
     ),
-    { gitSha: expected, trackedWorktreeClean: true },
+    {
+      gitSha: expected,
+      gitTreeSha: expectedTree,
+      productionDeployment: {
+        gitSha: productionCommit,
+        gitTreeSha: expectedTree,
+      },
+      rollbackTarget: {
+        gitSha: rollbackCommit,
+        gitTreeSha: rollbackTree,
+      },
+      trackedWorktreeClean: true,
+    },
   );
   assert.deepEqual(calls, [
     ["rev-parse", "HEAD"],
+    ["rev-parse", "HEAD^{tree}"],
+    ["rev-parse", `${productionCommit}^{tree}`],
+    ["rev-parse", `${rollbackCommit}^{tree}`],
     ["status", "--porcelain", "--untracked-files=no"],
   ]);
   assert.throws(
     () => verifyMinnesotaActivationGitCandidate(
       process.cwd(),
-      { protectedPreview: { gitSha: "b".repeat(40) } },
+      {
+        protectedPreview: {
+          gitSha: "b".repeat(40),
+          gitTreeSha: expectedTree,
+        },
+        productionDeployment: {
+          gitSha: productionCommit,
+          gitTreeSha: expectedTree,
+        },
+        rollbackTarget: {
+          gitSha: rollbackCommit,
+          gitTreeSha: rollbackTree,
+        },
+      },
       runner,
     ),
     /does not match the verified preview Git SHA/,
+  );
+  assert.throws(
+    () => verifyMinnesotaActivationGitCandidate(
+      process.cwd(),
+      {
+        protectedPreview: { gitSha: expected, gitTreeSha: expectedTree },
+        productionDeployment: {
+          gitSha: productionCommit,
+          gitTreeSha: "d".repeat(40),
+        },
+        rollbackTarget: {
+          gitSha: rollbackCommit,
+          gitTreeSha: rollbackTree,
+        },
+      },
+      runner,
+    ),
+    /tree does not match both verified deployments/,
+  );
+  assert.throws(
+    () => verifyMinnesotaActivationGitCandidate(
+      process.cwd(),
+      {
+        protectedPreview: { gitSha: expected, gitTreeSha: expectedTree },
+        productionDeployment: {
+          gitSha: "f".repeat(40),
+          gitTreeSha: expectedTree,
+        },
+        rollbackTarget: {
+          gitSha: rollbackCommit,
+          gitTreeSha: rollbackTree,
+        },
+      },
+      runner,
+    ),
+    /production deployment commit does not resolve/,
+  );
+  assert.throws(
+    () => verifyMinnesotaActivationGitCandidate(
+      process.cwd(),
+      {
+        protectedPreview: { gitSha: expected, gitTreeSha: expectedTree },
+        productionDeployment: {
+          gitSha: productionCommit,
+          gitTreeSha: expectedTree,
+        },
+        rollbackTarget: {
+          gitSha: "f".repeat(40),
+          gitTreeSha: rollbackTree,
+        },
+      },
+      runner,
+    ),
+    /rollback deployment commit does not resolve/,
   );
 });
 
@@ -727,7 +1038,10 @@ test("Minnesota publication transaction atomically publishes exact versions and 
       mode: "publish",
       plan: built.plan,
       activationSha256: built.sha256,
-      authorization: { activationId: "fixture-public-window" },
+      authorization: {
+        activationId: "fixture-public-window",
+        rollbackTarget: fixtureRollbackTarget(),
+      },
       authorizationSha256: "d".repeat(64),
       publicationActivationId: "fixture-public-window",
       publicationAuthorizationSha256: "d".repeat(64),
@@ -759,10 +1073,11 @@ test("Minnesota publication transaction atomically publishes exact versions and 
   }
 });
 
-test("Minnesota rollback restores original caveats and is bound to the exact publication", async () => {
+test("Minnesota rollback restores original caveats and rejects a substituted rollback target", async () => {
   const item = fixture();
   try {
     const built = inspectMinnesotaPublicActivationPlan(item.options);
+    const rollbackTarget = fixtureRollbackTarget();
     const versions = built.plan.manifests.map((manifest, index) => ({
       id: `10000000-0000-0000-0000-00000000000${index}`,
       year: manifest.year,
@@ -786,6 +1101,7 @@ test("Minnesota rollback restores original caveats and is bound to the exact pub
           blobPublicationSha256: built.plan.blobPublication.sha256,
           deliveryOrigin: built.plan.blobPublication.deliveryOrigin,
           authorizationSha256: "d".repeat(64),
+          rollbackTarget,
           changedAtUtc: "2026-08-08T01:00:00.000Z",
           mode: "publish",
           year: manifest.year,
@@ -857,11 +1173,47 @@ test("Minnesota rollback restores original caveats and is bound to the exact pub
         return [];
       },
     };
+    const substitutedRollbackTarget = fixtureRollbackTarget({
+      deploymentId: "dpl_substituted",
+      gitSha: "e".repeat(40),
+      gitTreeSha: "f".repeat(40),
+    });
+    await assert.rejects(
+      () => applyMinnesotaGeographyPublicationTransaction(tx, {
+        mode: "rollback",
+        plan: built.plan,
+        activationSha256: built.sha256,
+        authorization: {
+          activationId: "fixture-rollback-window",
+          applicationRollback: { target: substitutedRollbackTarget },
+        },
+        authorizationSha256: "e".repeat(64),
+        publicationActivationId: "fixture-public-window",
+        publicationAuthorizationSha256: "d".repeat(64),
+        publicationReceipt: {
+          path: ".etl/production-publication-receipts/MN/publish.json",
+          sha256: "f".repeat(64),
+          activationId: "fixture-public-window",
+          authorizationSha256: "d".repeat(64),
+          revision: 29,
+          changedAtUtc: "2026-08-08T01:00:00.000Z",
+          rollbackTarget: substitutedRollbackTarget,
+        },
+        databaseName: "crm_production",
+        changedAtUtc: "2026-08-08T01:30:00.000Z",
+        gisPlan: fixtureGisPlan(),
+      }),
+      /does not match the publication being reversed/,
+    );
+    assert.deepEqual(restoredCaveats, []);
     const result = await applyMinnesotaGeographyPublicationTransaction(tx, {
       mode: "rollback",
       plan: built.plan,
       activationSha256: built.sha256,
-      authorization: { activationId: "fixture-rollback-window" },
+      authorization: {
+        activationId: "fixture-rollback-window",
+        applicationRollback: { target: rollbackTarget },
+      },
       authorizationSha256: "e".repeat(64),
       publicationActivationId: "fixture-public-window",
       publicationAuthorizationSha256: "d".repeat(64),
@@ -872,6 +1224,7 @@ test("Minnesota rollback restores original caveats and is bound to the exact pub
         authorizationSha256: "d".repeat(64),
         revision: 29,
         changedAtUtc: "2026-08-08T01:00:00.000Z",
+        rollbackTarget,
       },
       databaseName: "crm_production",
       changedAtUtc: "2026-08-08T01:30:00.000Z",
@@ -887,7 +1240,10 @@ test("Minnesota rollback restores original caveats and is bound to the exact pub
         mode: "rollback",
         plan: built.plan,
         activationSha256: built.sha256,
-        authorization: { activationId: "fixture-rollback-window" },
+        authorization: {
+          activationId: "fixture-rollback-window",
+          applicationRollback: { target: rollbackTarget },
+        },
         authorizationSha256: "e".repeat(64),
         publicationActivationId: "different-publication",
         publicationAuthorizationSha256: "d".repeat(64),
@@ -898,6 +1254,7 @@ test("Minnesota rollback restores original caveats and is bound to the exact pub
           authorizationSha256: "d".repeat(64),
           revision: 29,
           changedAtUtc: "2026-08-08T01:00:00.000Z",
+          rollbackTarget,
         },
         databaseName: "crm_production",
         changedAtUtc: "2026-08-08T01:30:00.000Z",
@@ -914,6 +1271,7 @@ test("Minnesota publication receipt can be recovered read-only from exact DB aud
   const item = fixture();
   try {
     const built = inspectMinnesotaPublicActivationPlan(item.options);
+    const rollbackTarget = fixtureRollbackTarget();
     const versions = built.plan.manifests.map((manifest, index) => ({
       id: `20000000-0000-0000-0000-00000000000${index}`,
       year: manifest.year,
@@ -937,6 +1295,7 @@ test("Minnesota publication receipt can be recovered read-only from exact DB aud
           blobPublicationSha256: built.plan.blobPublication.sha256,
           deliveryOrigin: built.plan.blobPublication.deliveryOrigin,
           authorizationSha256: "d".repeat(64),
+          rollbackTarget,
           changedAtUtc: "2026-08-08T01:00:00.000Z",
           mode: "publish",
           year: manifest.year,
@@ -992,7 +1351,10 @@ test("Minnesota publication receipt can be recovered read-only from exact DB aud
       mode: "publish",
       plan: built.plan,
       activationSha256: built.sha256,
-      authorization: { activationId: "fixture-public-window" },
+      authorization: {
+        activationId: "fixture-public-window",
+        rollbackTarget,
+      },
       authorizationSha256: "d".repeat(64),
       publicationActivationId: "fixture-public-window",
       publicationAuthorizationSha256: "d".repeat(64),
@@ -1113,7 +1475,10 @@ test("Minnesota publication blocks before writes when live result data drifted",
         mode: "publish",
         plan: built.plan,
         activationSha256: built.sha256,
-        authorization: { activationId: "fixture-public-window" },
+        authorization: {
+          activationId: "fixture-public-window",
+          rollbackTarget: fixtureRollbackTarget(),
+        },
         authorizationSha256: "d".repeat(64),
         publicationActivationId: "fixture-public-window",
         publicationAuthorizationSha256: "d".repeat(64),

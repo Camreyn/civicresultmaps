@@ -274,10 +274,32 @@ export function inspectMinnesotaPublicationReceipt(root, options, activation) {
     options.publicationReceiptSha256,
   );
   const value = artifact.value;
+  const publicAuthorizationArtifact = safeJson(
+    root,
+    value?.authorization?.path,
+    ".etl/production-authorizations/MN",
+    value?.authorization?.sha256,
+  );
+  const publicAuthorization = validateMinnesotaPublicActivationAuthorization(
+    publicAuthorizationArtifact.value,
+    {
+      now: options.now ?? Date.now(),
+      plan: activation.plan,
+      activationSha256: activation.artifact.sha256,
+      recovery: true,
+    },
+  );
   const expectedFeatures = activation.plan.manifests.reduce(
     (sum, manifest) => sum + manifest.draftManifest.delivery.featureCount,
     0,
   );
+  const rollbackTarget = value?.authorization?.rollbackTarget;
+  let rollbackTargetUrl = null;
+  try {
+    rollbackTargetUrl = new URL(rollbackTarget?.url);
+  } catch {
+    // The compatibility check below reports one fail-closed error.
+  }
   if (
     value?.schemaVersion !== 1
     || value?.state !== "MN"
@@ -300,6 +322,28 @@ export function inspectMinnesotaPublicationReceipt(root, options, activation) {
     || typeof value?.authorization?.activationId !== "string"
     || !value.authorization.activationId.trim()
     || !/^[a-f0-9]{64}$/.test(value?.authorization?.sha256 ?? "")
+    || value?.authorization?.path !== publicAuthorizationArtifact.path
+    || value.authorization.sha256 !== publicAuthorizationArtifact.sha256
+    || value.authorization.activationId !== publicAuthorization.activationId
+    || typeof rollbackTarget?.deploymentId !== "string"
+    || !rollbackTarget.deploymentId.trim()
+    || !/^[a-f0-9]{40}$/.test(rollbackTarget?.gitSha ?? "")
+    || !/^[a-f0-9]{40}$/.test(rollbackTarget?.gitTreeSha ?? "")
+    || rollbackTarget?.gateCapableVerified !== true
+    || rollbackTarget?.blockedStaticManifestsVerified !== true
+    || rollbackTarget?.blockedResultGateVerified !== true
+    || rollbackTarget?.blockedGeometryGateVerified !== true
+    || rollbackTargetUrl?.protocol !== "https:"
+    || rollbackTargetUrl?.username
+    || rollbackTargetUrl?.password
+    || rollbackTargetUrl?.search
+    || rollbackTargetUrl?.hash
+    || Number.isNaN(Date.parse(rollbackTarget?.verifiedAtUtc))
+    || Date.parse(rollbackTarget.verifiedAtUtc) > Date.parse(value?.changedAtUtc)
+    || !semanticallyEqual(
+      rollbackTarget,
+      publicAuthorization.rollbackTarget,
+    )
     || value?.transaction?.committedAtUtc !== value?.changedAtUtc
     || Number.isNaN(Date.parse(value?.changedAtUtc))
     || Date.parse(value.changedAtUtc) > (options.now ?? Date.now())
@@ -315,6 +359,7 @@ export function inspectMinnesotaPublicationReceipt(root, options, activation) {
       authorizationSha256: value.authorization.sha256,
       revision: Number(value.transaction.revision),
       changedAtUtc: value.changedAtUtc,
+      rollbackTarget,
     },
   };
 }
@@ -361,6 +406,8 @@ function expectedReleaseCounts(gisPlan) {
 
 function currentActivationMatches(metadata, context, mode, year, wanted) {
   const activation = metadata?.publicActivation;
+  const rollbackTarget = context.publicationReceipt?.rollbackTarget
+    ?? context.authorization?.rollbackTarget;
   if (
     activation?.activationId !== context.publicationActivationId
     || activation?.activationCandidateSha256 !== context.activationSha256
@@ -368,6 +415,7 @@ function currentActivationMatches(metadata, context, mode, year, wanted) {
     || activation?.blobPublicationSha256 !== context.plan.blobPublication.sha256
     || activation?.deliveryOrigin !== context.plan.blobPublication.deliveryOrigin
     || activation?.authorizationSha256 !== context.publicationAuthorizationSha256
+    || !semanticallyEqual(activation?.rollbackTarget, rollbackTarget)
     || activation?.mode !== "publish"
     || activation?.year !== year
     || activation?.manifestId !== wanted?.manifestId
@@ -392,6 +440,10 @@ function currentActivationMatches(metadata, context, mode, year, wanted) {
     && activation.rollback.authorizationSha256 === context.authorizationSha256
     && activation.rollback.publicationReceiptSha256
       === context.publicationReceipt?.sha256
+    && semanticallyEqual(
+      activation.rollback.rollbackTarget,
+      context.publicationReceipt?.rollbackTarget,
+    )
     && !Number.isNaN(Date.parse(activation.rollback.changedAtUtc))
     && Number.isInteger(Number(activation.rollback.revision));
 }
@@ -412,6 +464,10 @@ async function verifyMinnesotaPublicationPostconditions(
     context.plan.blobPublication.sha256,
     context.plan.blobPublication.deliveryOrigin,
     context.publicationAuthorizationSha256,
+    JSON.stringify(
+      context.publicationReceipt?.rollbackTarget
+        ?? context.authorization?.rollbackTarget,
+    ),
   ];
   if (context.mode === "rollback") {
     versionParameters.push(
@@ -433,10 +489,11 @@ async function verifyMinnesotaPublicationPostconditions(
     "  and gv.metadata->'publicActivation'->>'blobPublicationSha256'=$6",
     "  and gv.metadata->'publicActivation'->>'deliveryOrigin'=$7",
     "  and gv.metadata->'publicActivation'->>'authorizationSha256'=$8",
+    "  and gv.metadata->'publicActivation'->'rollbackTarget'=$9::jsonb",
     "  and gv.metadata->'publicActivation'->>'mode'='publish')::int bound_activation,",
     context.mode === "publish"
       ? " count(*) filter (where not (gv.metadata->'publicActivation' ? 'rollback'))::int operation_bound,"
-      : " count(*) filter (where gv.metadata->'publicActivation'->'rollback'->>'rollbackId'=$9 and gv.metadata->'publicActivation'->'rollback'->>'activationCandidateSha256'=$4 and gv.metadata->'publicActivation'->'rollback'->>'blobPublicationSha256'=$6 and gv.metadata->'publicActivation'->'rollback'->>'authorizationSha256'=$10 and gv.metadata->'publicActivation'->'rollback'->>'publicationReceiptSha256'=$11 and (gv.metadata->'publicActivation'->>'revision')::int=$12 and gv.metadata->'publicActivation'->>'changedAtUtc'=$13)::int operation_bound,",
+      : " count(*) filter (where gv.metadata->'publicActivation'->'rollback'->>'rollbackId'=$10 and gv.metadata->'publicActivation'->'rollback'->>'activationCandidateSha256'=$4 and gv.metadata->'publicActivation'->'rollback'->>'blobPublicationSha256'=$6 and gv.metadata->'publicActivation'->'rollback'->>'authorizationSha256'=$11 and gv.metadata->'publicActivation'->'rollback'->>'publicationReceiptSha256'=$12 and gv.metadata->'publicActivation'->'rollback'->'rollbackTarget'=$9::jsonb and (gv.metadata->'publicActivation'->>'revision')::int=$13 and gv.metadata->'publicActivation'->>'changedAtUtc'=$14)::int operation_bound,",
     context.mode === "publish"
       ? " min((gv.metadata->'publicActivation'->>'revision')::int)::int revision_min, max((gv.metadata->'publicActivation'->>'revision')::int)::int revision_max"
       : " min((gv.metadata->'publicActivation'->'rollback'->>'revision')::int)::int revision_min, max((gv.metadata->'publicActivation'->'rollback'->>'revision')::int)::int revision_max",
@@ -534,6 +591,11 @@ export async function applyMinnesotaGeographyPublicationTransaction(
   tx,
   context,
 ) {
+  const rollbackTarget = context.publicationReceipt?.rollbackTarget
+    ?? context.authorization?.rollbackTarget;
+  if (!rollbackTarget || typeof rollbackTarget !== "object") {
+    throw new Error("Minnesota publication transaction requires the pinned rollback target");
+  }
   const identity = await query(tx, [
     "select current_database() database_name,",
     " current_setting('transaction_read_only') transaction_read_only",
@@ -701,6 +763,7 @@ export async function applyMinnesotaGeographyPublicationTransaction(
     blobPublicationSha256: context.plan.blobPublication.sha256,
     deliveryOrigin: context.plan.blobPublication.deliveryOrigin,
     authorizationSha256: context.authorizationSha256,
+    rollbackTarget: context.authorization.rollbackTarget,
     changedAtUtc: context.changedAtUtc,
     mode: "publish",
   };
@@ -710,6 +773,7 @@ export async function applyMinnesotaGeographyPublicationTransaction(
     blobPublicationSha256: context.plan.blobPublication.sha256,
     authorizationSha256: context.authorizationSha256,
     publicationReceiptSha256: context.publicationReceipt?.sha256,
+    rollbackTarget: context.authorization.applicationRollback?.target,
     changedAtUtc: context.changedAtUtc,
     mode: "rollback",
   };
@@ -902,6 +966,44 @@ export function verifyMinnesotaActivationGitCandidate(
   ) {
     throw new Error("Minnesota activation checkout does not match the verified preview Git SHA");
   }
+  const tree = runner(
+    "git",
+    ["rev-parse", "HEAD^{tree}"],
+    { cwd: root, encoding: "utf8", windowsHide: true },
+  );
+  if (
+    tree.status !== 0
+    || tree.error
+    || tree.stdout.trim() !== authorization.protectedPreview.gitTreeSha
+    || tree.stdout.trim() !== authorization.productionDeployment.gitTreeSha
+  ) {
+    throw new Error("Minnesota activation checkout tree does not match both verified deployments");
+  }
+  const productionTree = runner(
+    "git",
+    ["rev-parse", `${authorization.productionDeployment.gitSha}^{tree}`],
+    { cwd: root, encoding: "utf8", windowsHide: true },
+  );
+  if (
+    productionTree.status !== 0
+    || productionTree.error
+    || productionTree.stdout.trim()
+      !== authorization.productionDeployment.gitTreeSha
+  ) {
+    throw new Error("Minnesota production deployment commit does not resolve to its verified Git tree");
+  }
+  const rollbackTree = runner(
+    "git",
+    ["rev-parse", `${authorization.rollbackTarget.gitSha}^{tree}`],
+    { cwd: root, encoding: "utf8", windowsHide: true },
+  );
+  if (
+    rollbackTree.status !== 0
+    || rollbackTree.error
+    || rollbackTree.stdout.trim() !== authorization.rollbackTarget.gitTreeSha
+  ) {
+    throw new Error("Minnesota rollback deployment commit does not resolve to its pinned Git tree");
+  }
   const status = runner(
     "git",
     ["status", "--porcelain", "--untracked-files=no"],
@@ -910,7 +1012,19 @@ export function verifyMinnesotaActivationGitCandidate(
   if (status.status !== 0 || status.error || status.stdout.trim()) {
     throw new Error("Minnesota activation checkout has tracked changes after preview verification");
   }
-  return { gitSha: head.stdout.trim(), trackedWorktreeClean: true };
+  return {
+    gitSha: head.stdout.trim(),
+    gitTreeSha: tree.stdout.trim(),
+    productionDeployment: {
+      gitSha: authorization.productionDeployment.gitSha,
+      gitTreeSha: productionTree.stdout.trim(),
+    },
+    rollbackTarget: {
+      gitSha: authorization.rollbackTarget.gitSha,
+      gitTreeSha: rollbackTree.stdout.trim(),
+    },
+    trackedWorktreeClean: true,
+  };
 }
 
 export async function runMinnesotaGeographyPublication(options = {}) {
@@ -1090,7 +1204,7 @@ export async function runMinnesotaGeographyPublication(options = {}) {
         : "DATABASE_PUBLISHED_VERIFY_ALREADY_DEPLOYED_APPLICATION"
       : recoveryOnly
         ? "DATABASE_ROLLBACK_RECEIPT_RECOVERED"
-        : "DATABASE_ROLLED_BACK_APPLICATION_ALREADY_RESTORED",
+        : "DATABASE_ROLLED_BACK_RESTORE_PINNED_APPLICATION",
     receipt: writeImmutable(target, receipt),
     transaction,
     databasePublicationStatusChanged: transaction.productionMutationPerformed,
