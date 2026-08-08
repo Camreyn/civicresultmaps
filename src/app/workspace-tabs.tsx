@@ -38,6 +38,7 @@ import { WorkspaceContextBar } from "./workspace-context-bar";
 import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
 import { WorkspaceLayoutGroupsV3 } from "./workspace-layout-v3-groups";
 import { rowsToCsv } from "@/lib/csv";
+import type { SupportedPresidentialYear } from "@/lib/api-version";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
 import {
   type WorkspaceSectionId,
@@ -91,7 +92,7 @@ type WorkspaceTabsProps = {
   coverage: CoverageSummary | null;
   countyLabel: string;
   electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
-  electionYear: 2016 | 2020 | 2024;
+  electionYear: SupportedPresidentialYear;
   electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
   sourceRecordsRequests: SourceRecordsRequestOperationSummary;
   equipmentExplorerEnabled: boolean;

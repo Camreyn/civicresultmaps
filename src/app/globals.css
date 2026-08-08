@@ -6938,3 +6938,286 @@ td {
 .workspace-supporting-tools .national-overview {
   margin-bottom: 0;
 }
+
+.precinct-detail-status {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent),
+    var(--panel);
+  display: grid;
+  gap: 8px;
+  min-height: 128px;
+  padding: 28px 18px;
+}
+
+.precinct-detail-status strong {
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.precinct-detail-status span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 760px;
+}
+
+.precinct-detail-body {
+  container-type: inline-size;
+  display: grid;
+}
+
+.precinct-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  min-width: 0;
+}
+
+.precinct-detail-map-wrap {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    #121413;
+  min-width: 0;
+  padding: 16px;
+}
+
+.precinct-detail-map-stage {
+  background: #d8ddd7;
+  overflow: hidden;
+  position: relative;
+}
+
+.precinct-detail-map {
+  aspect-ratio: 24 / 13;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.precinct-detail-basemap,
+.precinct-detail-basemap-tile,
+.precinct-detail-basemap-shade {
+  pointer-events: none;
+}
+
+.precinct-detail-basemap-tile {
+  opacity: 0.78;
+}
+
+.precinct-detail-basemap-shade {
+  fill: rgba(8, 15, 12, 0.26);
+}
+
+.precinct-detail-basemap-attribution {
+  background: rgba(5, 10, 8, 0.88);
+  border-radius: 3px 0 0;
+  bottom: 0;
+  color: #f4f1ea;
+  font-size: 10px;
+  line-height: 1.35;
+  padding: 3px 6px;
+  position: absolute;
+  right: 0;
+  text-decoration: none;
+  z-index: 1;
+}
+
+.precinct-detail-basemap-attribution:hover,
+.precinct-detail-basemap-attribution:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.precinct-detail-shape {
+  cursor: pointer;
+  fill-opacity: 0.8;
+  stroke: #171a18;
+  stroke-width: 1;
+  transition:
+    filter 120ms ease,
+    stroke 120ms ease,
+    stroke-width 120ms ease;
+  vector-effect: non-scaling-stroke;
+}
+
+.precinct-detail-shape:hover {
+  filter: brightness(1.16);
+  stroke: var(--foreground);
+}
+
+.precinct-detail-shape.is-selected {
+  fill-opacity: 0.94;
+  filter: brightness(1.16);
+  stroke: var(--gold);
+  stroke-width: 3;
+}
+
+.precinct-detail-legend {
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 11px;
+  gap: 8px 14px;
+  padding: 8px 2px 0;
+}
+
+.precinct-detail-legend span {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.precinct-detail-legend i {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+  display: inline-block;
+  height: 10px;
+  width: 14px;
+}
+
+.precinct-detail-legend .dem {
+  background: #4e83c4;
+}
+
+.precinct-detail-legend .rep {
+  background: #b75b5b;
+}
+
+.precinct-detail-legend .other {
+  background: #c39b4a;
+}
+
+.precinct-detail-legend .missing {
+  background: #4a504d;
+}
+
+.precinct-detail-legend .no-votes {
+  background: #747b77;
+}
+
+.precinct-detail-source-terms {
+  flex-basis: 100%;
+}
+
+.precinct-detail-source-terms summary {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.precinct-detail-source-terms p {
+  margin: 8px 0 0;
+  max-width: 90ch;
+}
+
+.precinct-detail-controls {
+  align-content: start;
+  background: var(--panel-strong);
+  border-left: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.precinct-detail-controls label {
+  color: var(--muted);
+  display: grid;
+  font-size: 12px;
+  font-weight: 750;
+  gap: 7px;
+}
+
+.precinct-detail-controls select {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--foreground);
+  font: inherit;
+  min-height: 42px;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.precinct-detail-controls select:focus-visible {
+  border-color: var(--accent-line);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.precinct-detail-controls > strong {
+  font-size: 16px;
+}
+
+.precinct-detail-controls p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.precinct-detail-stats {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.precinct-detail-stats div {
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+
+.precinct-detail-stats dt {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.precinct-detail-stats dd {
+  font-family: var(--font-code);
+  font-size: 12px;
+  margin: 0;
+  text-align: right;
+}
+
+.precinct-detail-meta {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 11px;
+  gap: 8px 16px;
+  justify-content: space-between;
+  padding: 10px 16px;
+}
+
+.precinct-detail-meta a {
+  color: var(--accent);
+}
+
+@container (max-width: 720px) {
+  .precinct-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .precinct-detail-controls {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 800px) {
+  .precinct-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .precinct-detail-map {
+    aspect-ratio: 24 / 13;
+  }
+
+  .precinct-detail-controls {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}

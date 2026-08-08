@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           </div>
           <article className={styles.heroCard}>
             <span>Last updated</span>
-            <strong>July 15, 2026</strong>
+            <strong>August 7, 2026</strong>
             <p>The public election data remains source-linked and reviewable.</p>
           </article>
         </section>
@@ -60,6 +60,21 @@ export default function PrivacyPage() {
               The site uses Vercel Web Analytics for aggregate site-usage measurement. Election sources and normalized data
               published by this project are public records or public-interest datasets; source authority, caveats, and
               provenance remain visible throughout the product.
+            </p>
+          </article>
+          <article className={styles.card}>
+            <h3>OpenStreetMap map tiles</h3>
+            <p>
+              When a precinct-detail map is visible, the browser requests only the map tiles needed for that county view
+              from <code>tile.openstreetmap.org</code>. Like other direct web requests, those requests provide the tile
+              service with the browser&apos;s IP address, user-agent information, referring site, and requested tile coordinates.
+              Civic Result Maps does not add names, email addresses, layout identifiers, or election-result data to them.
+            </p>
+            <p>
+              The OpenStreetMap Foundation processes those requests under its{" "}
+              <a href="https://osmfoundation.org/wiki/Privacy_Policy" rel="noreferrer" target="_blank">
+                privacy policy
+              </a>.
             </p>
           </article>
           <article className={styles.card}>

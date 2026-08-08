@@ -1,0 +1,370 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-06T23:33:53.561Z",
+  "manifests": [
+    {
+      "schemaVersion": 1,
+      "id": "mn-2012-11-06-lcc-2012generalresults-v1",
+      "state": "MN",
+      "election": {
+        "id": "2012-11-06-general",
+        "date": "2012-11-06",
+        "year": 2012,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "Official LCC-GIS 2012generalresults election-results archive, Last-Modified January 24, 2013",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export",
+        "nativeCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326"
+      },
+      "source": {
+        "authority": "Minnesota Legislative Coordinating Commission Geographic Information Services; Office of the Minnesota Secretary of State Elections Division",
+        "url": "https://gis.lcc.mn.gov/data/elections/2012generalresults.zip",
+        "retrievedAt": "2026-08-06T22:26:35.991Z",
+        "artifact": "data/precinct-geometry/MN/2012-11-06-general/source-evidence.json",
+        "sha256": "f59b121c348c314d1e87ff23c030b7ef5d5b9f0d864f6b41ed7bdd7a24db1c8e",
+        "byteCount": 9671,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "LCC-GIS makes no representation or warranties, express or implied, with respect to the reuse of data provided herewith, regardless of its format or the means of its transmission. There is no guarantee or representation to the user as to the accuracy, currency, suitability, or reliability of this data for any purpose. The user accepts the data 'as is', and assumes all risks associated with its use. By accepting this data, the user agrees not to transmit this data or provide access to it or any part of it to another party unless the user shall include with the data a copy of this disclaimer. The Geographic Information System (GIS) Data to which this notice is attached are made available pursuant to the Minnesota Government Data Practices Act (Minnesota Statutes Chapter 13). THE GIS DATA ARE PROVIDED TO YOU AS IS AND WITHOUT ANY WARRANTY AS TO THEIR PERFORMANCE, MERCHANTABILITY, OR FITNESS FOR ANY PARTICULAR PURPOSE. The GIS Data were developed by the LCC - GIS Office for its own internal business purposes. The LCC - GIS Office does not represent or warrant that the GIS Data or the data documentation are error-free, complete, current, or accurate. You are responsible for any consequences resulting from your use of the GIS Data or your reliance on the GIS Data. You should consult the data documentation for this particular GIS Data to determine the limitations of the GIS Data and the precision with which the GIS Data may depict distance, direction, location, or other geographic features. If you transmit or provide the GIS Data (or any portion of it) to another user, the GIS Data must include a copy of this disclaimer."
+      },
+      "normalization": {
+        "script": "scripts/collect-mn-2012-precinct-geometry-reviewed.mjs",
+        "sourceCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/MN/2012-11-06-general/normalized/mn-2012-11-06-precincts.geojson.gz",
+        "sha256": "c6f97425303c7c1f9124eb7c904c2c9ca744b5e15885ad56eb76bfb7f34698b3",
+        "byteCount": 13021594,
+        "featureCount": 4102,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "mn-2012-general-precinct-results",
+        "artifact": "data/precinct-geometry/MN/2012-11-06-general/crosswalk/mn-2012-11-06-vtdid-to-geometry.json",
+        "sha256": "994cc7aaf15abf4604ebd262ef584e06a22ba564f336027f310630e97734e8c2",
+        "byteCount": 3264734,
+        "resultUnits": 4102,
+        "colorableResultUnits": 4102,
+        "matchedResultUnits": 4102,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 4102,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "exact_official_id"
+        ]
+      },
+      "validation": {
+        "status": "blocked",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": false,
+        "parentTotalsReconciled": true,
+        "errors": [
+          "Geometry and exact result identity are reviewed, but public delivery remains null until separately authorized production result activation and immutable delivery review."
+        ],
+        "warnings": [
+          "All 4,102 VTDIDs are reviewed exact one-to-one relationships across 87 county parents and statewide.",
+          "The 33 zero-presidential-vote VTDs remain geographic reporting units."
+        ]
+      },
+      "delivery": null,
+      "caveats": [
+        "The SOS certified workbook is the sole authority for result values; LCC election-result attributes are retained only for exact source reconciliation.",
+        "Two source PCTNAME values differ from the certified workbook. They are display-only, retained in evidence, and do not affect exact VTDID/PCTCODE/county-parent identity.",
+        "LCC-GIS metadata contains historical spelling/field-description typos; such prose is nonbinding and is not used for identity or vote assignment.",
+        "No election values are emitted in normalized geometry or crosswalk rows.",
+        "Public delivery remains null pending separately authorized public data activation and delivery review.",
+        "Geometry and exact result identity are reviewed, but public delivery remains null until separately authorized production result activation and immutable delivery review."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "mn-2016-11-08-lcc-vtd2016general-v1",
+      "state": "MN",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "LCC-GIS vtd2016general; current boundaries as of October 2016; developed for the 2016 election",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export",
+        "nativeCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326"
+      },
+      "source": {
+        "authority": "Minnesota Legislative Coordinating Commission Geographic Information Services; Minnesota Secretary of State Elections Division",
+        "url": "https://gis.lcc.mn.gov/html/download.html",
+        "retrievedAt": "2026-08-03T06:00:00.000Z",
+        "artifact": "data/precinct-geometry/MN/2016-11-08-general/source-evidence.json",
+        "sha256": "7535c706691db48fb1b150d695ff928e18b44450be0dcc101630e63d37c1155d",
+        "byteCount": 25291,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "LCC-GIS makes no representation or warranties, express or implied, with respect to the reuse of data provided herewith, regardless of its format or the means of its transmission. There is no guarantee or representation to the user as to the accuracy, currency, suitability, or reliability of this data for any purpose. The user accepts the data 'as is', and assumes all risks associated with its use. By accepting this data, the user agrees not to transmit this data or provide access to it or any part of it to another party unless the user shall include with the data a copy of this disclaimer. The Geographic Information System (GIS) Data to which this notice is attached are made available pursuant to the Minnesota Government Data Practices Act (Minnesota Statutes Chapter 13). THE GIS DATA ARE PROVIDED TO YOU AS IS AND WITHOUT ANY WARRANTY AS TO THEIR PERFORMANCE, MERCHANTABILITY, OR FITNESS FOR ANY PARTICULAR PURPOSE. The GIS Data were developed by the LCC - GIS Office for its own internal business purposes. The LCC - GIS Office does not represent or warrant that the GIS Data or the data documentation are error-free, complete, current, or accurate. You are responsible for any consequences resulting from your use of the GIS Data or your reliance on the GIS Data. You should consult the data documentation for this particular GIS Data to determine the limitations of the GIS Data and the precision with which the GIS Data may depict distance, direction, location, or other geographic features. If you transmit or provide the GIS Data (or any portion of it) to another user, the GIS Data must include a copy of this disclaimer."
+      },
+      "normalization": {
+        "script": "scripts/collect-mn-2016-precinct-geometry-diagnostic.mjs",
+        "sourceCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/MN/2016-11-08-general/normalized/mn-2016-11-08-precincts.geojson.gz",
+        "sha256": "109936689be0adfcc1563f83089b02d84d0cc0414a51d8f0dba2ae4a22023d50",
+        "byteCount": 8413494,
+        "featureCount": 4120,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "mn-sos-2016-general-certified-precinct-results",
+        "artifact": "data/precinct-geometry/MN/2016-11-08-general/crosswalk/mn-2016-11-08-vtdid-to-geometry.json",
+        "sha256": "a214c6d0205a3a353ced2e471a4a5571157a2020eedfae1211f4e226ede43106",
+        "byteCount": 3938940,
+        "resultUnits": 4120,
+        "colorableResultUnits": 4120,
+        "matchedResultUnits": 4120,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 4120,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "exact_official_id"
+        ]
+      },
+      "validation": {
+        "status": "blocked",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": false,
+        "parentTotalsReconciled": true,
+        "errors": [
+          "The 4,120 one-to-one VTDID relationships are reviewed and the certified SOS workbook reconciles across all 87 county parents and statewide, but relationship review establishes identity—not a public certified-result activation path. The retained LCC elec2016 layer is an unofficial November 9 snapshot with 2,938,405 presidential votes, 6,408 fewer than the certified/recount-inclusive SOS workbook, and differs in 261 VTDs. Delivery remains null until a separately reviewed importer/display path explicitly uses the certified SOS workbook, excludes LCC vote fields, preserves zero-vote units, and is authorized for public activation."
+        ],
+        "warnings": [
+          "The LCC preliminary election layer is retained only to prove the exact three-way VTDID relationship and document its pre-canvass difference; none of its election values enter normalized geometry, crosswalk relationships, or certified reconciliation.",
+          "The 31 official zero-presidential-vote VTDIDs remain geographic one-to-one result units.",
+          "LCC attribution, disclaimer, and redistribution terms must accompany any future public geometry delivery."
+        ]
+      },
+      "delivery": null,
+      "caveats": [
+        "The 4,120 one-to-one VTDID relationships are reviewed and the certified SOS workbook reconciles across all 87 county parents and statewide, but relationship review establishes identity—not a public certified-result activation path. The retained LCC elec2016 layer is an unofficial November 9 snapshot with 2,938,405 presidential votes, 6,408 fewer than the certified/recount-inclusive SOS workbook, and differs in 261 VTDs. Delivery remains null until a separately reviewed importer/display path explicitly uses the certified SOS workbook, excludes LCC vote fields, preserves zero-vote units, and is authorized for public activation.",
+        "The reviewed one-to-one relationship proves identity and cardinality only. It does not make the preliminary LCC vote fields certified and does not authorize public delivery without an explicitly reviewed certified-result importer/display path.",
+        "All election values are confined to retained source evidence and reconciliation summaries. Normalized geometry and crosswalk relationship rows contain no election values.",
+        "PCTNAME and MCDNAME display strings differ in some boundary/workbook rows; exact official IDs, county parents, and PCTCODE—not names—govern every relationship.",
+        "The retained SOS landing-page HTML is one byte-pinned official response captured during this task. The upstream page is dynamically regenerated, so retrievedAt records this retained response's collection context and does not assert that later upstream HTML bytes will remain identical."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "mn-2020-11-03-lcc-preliminary-identity-geometry-v1",
+      "state": "MN",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "LCC-GIS PreliminaryElectionResults2020 official 2020 election archive",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export",
+        "nativeCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326"
+      },
+      "source": {
+        "authority": "Minnesota Legislative Coordinating Commission Geographic Information Services; Minnesota Secretary of State Elections Division",
+        "url": "https://gis.lcc.mn.gov/data/elections/PreliminaryElectionResults2020.zip",
+        "retrievedAt": "2026-08-06T22:26:35.991Z",
+        "artifact": "data/precinct-geometry/MN/2020-11-03-general/source-evidence.json",
+        "sha256": "04db3efa950a639718daade9a5ea09d8e8b8f8d71ed912eb74e65953fd8ce6c9",
+        "byteCount": 5701,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "LCC-GIS makes no representation or warranties, express or implied, with respect to the reuse of data provided herewith, regardless of its format or the means of its transmission. There is no guarantee or representation to the user as to the accuracy, currency, suitability, or reliability of this data for any purpose. The user accepts the data 'as is', and assumes all risks associated with its use. By accepting this data, the user agrees not to transmit this data or provide access to it or any part of it to another party unless the user shall include with the data a copy of this disclaimer."
+      },
+      "normalization": {
+        "script": "scripts/collect-mn-2020-precinct-geometry-reviewed.mjs",
+        "sourceCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/MN/2020-11-03-general/normalized/mn-2020-11-03-precincts.geojson.gz",
+        "sha256": "6715d6e7d11afabb2384b9293d970c4a6846cc29bc97d26cfbcd105b6b079592",
+        "byteCount": 8153668,
+        "featureCount": 4110,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "mn-2020-general-precinct-results",
+        "artifact": "data/precinct-geometry/MN/2020-11-03-general/crosswalk/mn-2020-11-03-vtdid-to-geometry.json",
+        "sha256": "9a0c0f167f03fab882be86ba756d5e2c146ef7fbffb65e13e7eb8e1e21a7ca43",
+        "byteCount": 3175393,
+        "resultUnits": 4110,
+        "colorableResultUnits": 4110,
+        "matchedResultUnits": 4110,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 4110,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "exact_official_id"
+        ]
+      },
+      "validation": {
+        "status": "blocked",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": false,
+        "parentTotalsReconciled": true,
+        "errors": [
+          "Public delivery remains null until separately authorized activation using certified SOS result rows."
+        ],
+        "warnings": [
+          "The 4,110 reviewed relationships use LCC geometry/identity only. No preliminary election values are present in normalized geometry or crosswalk relationships.",
+          "The 33 certified zero-vote VTDs remain geographic one-to-one units."
+        ]
+      },
+      "delivery": null,
+      "caveats": [
+        "PCTNAME display/capitalization differences (4,110), MCDNAME differences (133), and COUNTYNAME differences (46) are nonbinding; exact VTDID and county/precinct-code construction govern relationships.",
+        "The preliminary LCC archive is not a vote source. Certified SOS results are the only vote authority.",
+        "Public delivery remains blocked pending separately authorized activation."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "mn-2024-11-05-lcc-vtd2024general-v1",
+      "state": "MN",
+      "election": {
+        "id": "2024-11-05-general",
+        "date": "2024-11-05",
+        "year": 2024,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "LCC-GIS vtd2024general archive, server-modified November 5, 2024",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export",
+        "nativeCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326"
+      },
+      "source": {
+        "authority": "Minnesota Legislative Coordinating Commission Geographic Information Services; Office of the Minnesota Secretary of State Elections Division",
+        "url": "https://gis.lcc.mn.gov/html/download.html",
+        "retrievedAt": "2026-08-02T05:00:00.000Z",
+        "artifact": "data/precinct-geometry/MN/2024-11-05-general/source-package-manifest.json",
+        "sha256": "b926ddfc1d9149590e8f1c29e42cf94252e75dc41ee6dcfbdfe537e8e70dfd3f",
+        "byteCount": 11967,
+        "format": "precinct-source-package-manifest+json",
+        "licenseOrTerms": "LCC-GIS makes no representation or warranties, express or implied, with respect to the reuse of data provided herewith, regardless of its format or the means of its transmission. There is no guarantee or representation to the user as to the accuracy, currency, suitability, or reliability of this data for any purpose. The user accepts the data 'as is', and assumes all risks associated with its use. By accepting this data, the user agrees not to transmit this data or provide access to it or any part of it to another party unless the user shall include with the data a copy of this disclaimer."
+      },
+      "normalization": {
+        "script": "scripts/collect-mn-2024-precinct-geometry.mjs",
+        "sourceCrs": "PROJCS[\"NAD_1983_UTM_Zone_15N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-93.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/MN/2024-11-05-general/normalized/mn-2024-11-05-precincts.geojson.gz",
+        "sha256": "11c301c9ac5ab389a682ee4e20821ed566855b9c00b251fae2324dc62c17dd0f",
+        "featureCount": 4103,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "mn-2024-precinct-results",
+        "artifact": "data/precinct-geometry/MN/2024-11-05-general/crosswalk/mn-2024-11-05-vtdid-to-geometry.json",
+        "sha256": "1489c18da5e104647c7d9d23b4b4eb49834786e4cfc7e0ff40d7d3d681333d3d",
+        "resultUnits": 4103,
+        "colorableResultUnits": 4103,
+        "matchedResultUnits": 4103,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 4103,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "exact_official_id"
+        ]
+      },
+      "validation": {
+        "status": "blocked",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": false,
+        "parentTotalsReconciled": true,
+        "errors": [
+          "The independently reviewed local Minnesota importer retains 87 county aggregates and emits 4,103 precinct ResultRows keyed to the reviewed VTDIDs; zero-vote outcomes and source-disclaimer delivery are covered by regression tests. Public geometry delivery remains null until an explicitly authorized production promotion and geometry release are coordinated, because deploying geometry before those result rows exist would render uncolored precincts."
+        ],
+        "warnings": [
+          "All 4,103 official VTDID relationships are reviewed one-to-one and reconcile across all 87 counties and statewide; the remaining blocker is independent importer review and public-data activation, not geometry or vote reconciliation.",
+          "The 28 official zero-presidential-vote precincts remain geographic reporting units and are retained in the crosswalk."
+        ]
+      },
+      "delivery": null,
+      "caveats": [
+        "The independently reviewed local Minnesota importer retains 87 county aggregates and emits 4,103 precinct ResultRows keyed to the reviewed VTDIDs; zero-vote outcomes and source-disclaimer delivery are covered by regression tests. Public geometry delivery remains null until an explicitly authorized production promotion and geometry release are coordinated, because deploying geometry before those result rows exist would render uncolored precincts.",
+        "One zero-vote VTD has a County Commissioner District attribute difference; exact precinct identity fields still agree and no result assignment depends on that district attribute.",
+        "The LCC-GIS source disclaimer and attribution requirements must accompany any future public delivery."
+      ]
+    }
+  ]
+}

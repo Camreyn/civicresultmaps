@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-06T23:34:01.344Z",
+  "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "dispositionDefinitions": {
+    "mapped": "Reviewed election-applicable geometry and result crosswalk cover the state/DC scope intended for public delivery.",
+    "partial": "A reviewed public subset exists, while documented jurisdictions or reporting units remain unavailable or blocked.",
+    "official_geometry_unavailable": "Official-source review found no usable public election-applicable geometry; evidence and request path are recorded.",
+    "blocked": "Candidate geometry exists but election vintage, identity, topology, reconciliation, or review gates prevent public delivery."
+  },
+  "programStatusDefinitions": {
+    "not_started": "No precinct-GIS wave has reviewed this state/DC yet.",
+    "in_progress": "A bounded source and crosswalk review is active.",
+    "reviewed": "The current wave produced an evidence-backed disposition."
+  },
+  "sourceContext": {
+    "sourceAcquisitionTiers": "data/source-acquisition-tiers.json",
+    "sourceAcquisitionCheckedAt": "2026-08-02",
+    "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
+  },
+  "summary": {
+    "totalJurisdictions": 1,
+    "programStatus": {
+      "not_started": 0,
+      "in_progress": 0,
+      "reviewed": 1
+    },
+    "disposition": {
+      "undecided": 0,
+      "mapped": 0,
+      "partial": 0,
+      "official_geometry_unavailable": 0,
+      "blocked": 1
+    },
+    "publicEligibleJurisdictions": 0
+  },
+  "states": [
+    {
+      "state": "MN",
+      "stateName": "Minnesota",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 5,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-02T06:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://gis.lcc.mn.gov/data/shape/vtd2024general.zip",
+        "https://gis.lcc.mn.gov/html/download.html",
+        "https://www.sos.mn.gov/elections-voting/election-results",
+        "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "mn-2024-11-05-lcc-vtd2024general-v1"
+        ],
+        "officialSourceLeads": [
+          "https://gis.lcc.mn.gov/html/download.html"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/MN/2024-11-05-general/crosswalk/mn-2024-11-05-vtdid-to-geometry.json",
+          "data/precinct-geometry/MN/2024-11-05-general/normalized/mn-2024-11-05-precincts.geojson.gz",
+          "data/precinct-geometry/MN/2024-11-05-general/source-package-manifest.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 4103,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 4103,
+        "colorableResultUnits": 4103,
+        "matchedResultUnits": 4103,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "The independently reviewed local Minnesota importer retains 87 county aggregates and emits 4,103 precinct ResultRows keyed to the reviewed VTDIDs; zero-vote outcomes and source-disclaimer delivery are covered by regression tests. Public geometry delivery remains null until an explicitly authorized production promotion and geometry release are coordinated, because deploying geometry before those result rows exist would render uncolored precincts."
+      ],
+      "nextAction": "Resolve the listed election-vintage, source-coverage, and result-to-feature blockers; do not publish until every fail-closed eligibility gate passes.",
+      "notes": []
+    }
+  ]
+}
