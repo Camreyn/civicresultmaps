@@ -22,6 +22,8 @@ import {
   presentIndicatorScope,
   summarizeIndicatorScopes,
 } from "@/lib/indicator-presentation";
+import { PrecinctDetailMap } from "./precinct-detail-map";
+import type { SupportedPresidentialYear } from "@/lib/api-version";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
 import { activeMapSelection } from "@/lib/map-selection";
 import {
@@ -37,7 +39,7 @@ import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, ReviewRowSummar
 import { notifyWorkspaceContextChange, type WorkspaceMapMode } from "@/lib/workspace-navigation";
 type ResultsExplorerProps = {
   countyLabel: string;
-  electionYear: 2016 | 2020 | 2024;
+  electionYear: SupportedPresidentialYear;
   initialFips?: string;
   initialMapMode?: MapMode;
   equipmentRows: EquipmentRowSummary[];
@@ -171,11 +173,11 @@ function normalizeName(name: string) {
 }
 
 function isDemocraticWinner(winner: string) {
-  return ["Harris", "Biden", "Clinton"].includes(winner);
+  return ["Harris", "Biden", "Clinton", "Obama"].includes(winner);
 }
 
 function isRepublicanWinner(winner: string) {
-  return winner === "Trump";
+  return ["Trump", "Romney"].includes(winner);
 }
 
 function featureName(feature: GeoFeature) {
@@ -1181,6 +1183,9 @@ export function ResultsExplorer({
   const pinnedMapResult = pinnedMapName
     ? mapResultsByName.get(normalizeName(pinnedMapName)) ?? resultsByName.get(normalizeName(pinnedMapName))
     : undefined;
+  const pinnedCountyGeoid =
+    pinnedMapResult?.jurisdictionTag?.match(/^county:(\d{5})$/)?.[1]
+    ?? null;
   const pinnedMapIndicators = pinnedMapName
     ? (pinnedMapResult?.jurisdictionTag
         ? mapIndicatorsByTag.get(pinnedMapResult.jurisdictionTag) ?? indicatorsByTag.get(pinnedMapResult.jurisdictionTag)
@@ -2096,6 +2101,13 @@ export function ResultsExplorer({
           )}
         </aside>
       </div>
+
+      <PrecinctDetailMap
+        electionYear={electionYear}
+        parentGeoid={pinnedCountyGeoid}
+        parentName={pinnedMapResult?.jurisdictionName ?? null}
+        selectedState={selectedState}
+      />
 
       <section className="panel" aria-label={`${selectedState} county results table`}>
         <div className="panel-header">

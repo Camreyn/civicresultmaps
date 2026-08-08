@@ -1,4 +1,5 @@
 import { Client, type NeonQueryFunction } from "@neondatabase/serverless";
+import postgres from "postgres";
 
 type QueryResult = {
   rows?: unknown[];
@@ -58,6 +59,25 @@ export async function withTransactionClient<T>(
         }
       }
     }
+  }
+}
+
+/** Run a local postgres.js transaction while preserving the native import's tagged SQL surface. */
+export async function runPostgresTransaction<T>(
+  databaseUrl: string,
+  work: (sql: NeonQueryFunction<false, false>) => Promise<T>,
+) {
+  const sql = postgres(databaseUrl, {
+    connect_timeout: 10,
+    idle_timeout: 20,
+    max: 1,
+    connection: { application_name: "civicresultmaps-local-native-promotion" },
+  });
+  try {
+    // postgres.js rolls back automatically if this callback rejects.
+    return await sql.begin(async (transaction) => work(transaction as unknown as NeonQueryFunction<false, false>));
+  } finally {
+    await sql.end({ timeout: 5 });
   }
 }
 export async function runNeonTransaction<T>(

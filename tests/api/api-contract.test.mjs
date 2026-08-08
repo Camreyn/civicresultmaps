@@ -42,6 +42,8 @@ test("public API route contracts exist", () => {
   const expectedRoutes = [
     "src/app/api/states/route.ts",
     "src/app/api/jurisdictions/route.ts",
+    "src/app/api/geography-manifests/route.ts",
+    "src/app/api/precinct-geography/route.ts",
     "src/app/api/elections/route.ts",
     "src/app/api/results/route.ts",
     "src/app/api/sources/route.ts",
@@ -71,6 +73,39 @@ test("public API route contracts exist", () => {
   assert.match(api, /unstable_cache/);
   assert.match(api, /publicDataRevalidateSeconds/);
   assert.match(api, /Vercel-CDN-Cache-Control/);
+});
+
+test("precinct geography API defaults to delivery-eligible manifests", () => {
+  const route = readFileSync(
+    "src/app/api/geography-manifests/route.ts",
+    "utf8",
+  );
+  const vercelIgnore = readFileSync(".vercelignore", "utf8");
+  assert.match(route, /includeBlockedParam === "true"/);
+  assert.match(route, /listPrecinctGeometryManifestViews/);
+  assert.match(route, /Only reviewed, reconciled, election-vintage-confirmed/);
+  assert.doesNotMatch(route, /getCanonicalJurisdictionRegistry/);
+  assert.match(
+    vercelIgnore,
+    /^!data\/precinct-geometry-manifests\.json$/m,
+  );
+});
+
+test("precinct delivery API validates immutable geometry before county transfer", () => {
+  const route = readFileSync(
+    "src/app/api/precinct-geography/route.ts",
+    "utf8",
+  );
+  const server = readFileSync(
+    "src/lib/precinct-delivery-server.ts",
+    "utf8",
+  );
+  assert.match(route, /listPrecinctGeometryManifestViews\(registry\)/);
+  assert.match(route, /readParentScopedPrecinctDelivery/);
+  assert.match(route, /parentGeoid/);
+  assert.doesNotMatch(route, /includeBlocked/);
+  assert.match(server, /delivery artifact SHA-256 does not match manifest/);
+  assert.match(server, /selectPrecinctDeliveryFeatures/);
 });
 
 
@@ -105,7 +140,7 @@ test("mutable public caches advance with the monotonic data revision", () => {
   assert.match(dataAccess, /readPublicDataRevision/);
   assert.match(dataAccess, /public-data-revision/);
   assert.doesNotMatch(dataAccess, /promotedCount/);
-  assert.match(dataAccess, /catch \{\s+return null;/);
+  assert.match(dataAccess, /catch \(error\) \{\s+rethrowReadErrorIfStrict\(error\);\s+return null;/);
   assert.match(nativeImporter, /status = 'promoted'/);
   assert.match(nativeImporter, /finished_at = now\(\)/);
   assert.match(api, /"Cache-Control": "no-store"/);
@@ -155,6 +190,25 @@ test("public year-filtered APIs default missing year to 2024", () => {
     assert.match(content, /yearQuery\.parse\(params\.get\("year"\) \?\? "2024"\)/);
     assert.doesNotMatch(content, /yearQuery\.parse\(params\.get\("year"\) \?\? ""\)/);
   }
+});
+
+test("results API keeps contest offices separated", () => {
+  const route = readFileSync("src/app/api/results/route.ts", "utf8");
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+
+  assert.match(route, /officeQuery\.parse\(officeParam\)/);
+  assert.match(
+    route,
+    /listResults\(\{ state, year, level, office \}\)/,
+  );
+  assert.match(
+    dataAccess,
+    /lower\(elections\.office\) = \$\{normalizedOffice\}/,
+  );
+  assert.match(
+    dataAccess,
+    /row\.office\.toLowerCase\(\) \+ "\\|" \+ row\.jurisdictionCode/,
+  );
 });
 
 test("map joins support repository GeoJSON county name variants", () => {

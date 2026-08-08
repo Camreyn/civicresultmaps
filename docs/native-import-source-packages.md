@@ -85,7 +85,8 @@ Caveat: the precinct ZIP is valid for same-grain review rows and registration-de
 - Turnout source: `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx`
 - Turnout denominator: `REG7AM + EDR`
 - County boundary: `data/mn-counties.geojson`
-- Historical baseline status: not loaded in native ETL; production may still expose pre-native historical rows until official 2012/2016/2020 Minnesota source artifacts are normalized.
+- Historical native-baseline status: still not loaded through the ordinary 2024 native staging artifact. A separate guarded four-election planner has normalized and locally validated the official 2012, 2016, 2020, and 2024 certified precinct result identities against election-applicable LCC-GIS geometry.
+- Local four-election GIS release candidate: 16,435 precinct reporting units, 49,305 candidate rows, 16,435 geometry features, and 16,435 reviewed exact-ID crosswalks. A content-addressed release-overlay builder, deterministic 23-surface shared-diff classifier, release-specific read-only preflight, and separately guarded atomic migration-plus-hidden-load transaction are implemented locally. Independent confirmation/clean application, canonical manifests, and public delivery remain blocked.
 
 Expected validation:
 
@@ -100,8 +101,11 @@ Expected validation:
 | Local review rows | 4,075 |
 | Turnout rows | 4,103 |
 | Native historical baseline rows | 0 |
+| Local release-candidate precinct units, four elections | 16,435 |
+| Local release-candidate geometry features | 16,435 |
+| Local release-candidate reviewed exact crosswalks | 16,435 |
 
-Caveat: precinct boundary GeoJSON is not included. County map joins are ready. Native Minnesota historical baseline rows are not enabled until official historical source artifacts are collected, parsed, and reconciled.
+Caveat: the ordinary 2024 native staging artifact remains distinct from the four-election release candidate. The 2016 and 2020 LCC election attributes are preliminary and are excluded from public vote data; certified SOS workbooks are the sole vote authority. All four local geometry/result pairs reconcile by exact VTDID. The hidden-load implementation is not enabled: shared-overlay review, a current restoration-verified production backup and read-only preflight, independent transaction review, named deployment/rollback ownership, and explicit authorization are still required. Public file placement and canonical-manifest activation remain separate later decisions.
 
 ## Michigan
 

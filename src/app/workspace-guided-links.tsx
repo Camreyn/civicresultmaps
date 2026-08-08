@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import type { SupportedPresidentialYear } from "@/lib/api-version";
 import type { WorkspaceTabId } from "@/lib/workspace-layout";
 import { workspaceNavigationHref, type WorkspaceMapMode } from "@/lib/workspace-navigation";
 
@@ -52,7 +53,7 @@ export function WorkspaceGuidedLinks({ activeTab, fips, mode, state, visibleTabs
   mode?: WorkspaceMapMode;
   state: string;
   visibleTabs: WorkspaceTabId[];
-  year: 2016 | 2020 | 2024;
+  year: SupportedPresidentialYear;
 }) {
   const visible = new Set(visibleTabs);
   const destinations = guidedDestinations[activeTab]?.filter((destination) => visible.has(destination.tab));

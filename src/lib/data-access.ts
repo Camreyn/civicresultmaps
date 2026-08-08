@@ -1,8 +1,4 @@
-import { eq } from "drizzle-orm";
-import { neon } from "@neondatabase/serverless";
-import { getDb, hasDatabase } from "@/db";
-import { getDatabaseUrl } from "@/db/url";
-import { contests, elections } from "@/db/schema";
+import { getReadSql, hasReadableDatabase, rethrowReadErrorIfStrict } from "@/db/read-sql";
 import { readPublicDataRevision } from "@/db/public-data-revision";
 import {
   getCoverage,
@@ -28,6 +24,7 @@ import type {
   TurnoutRowSummary,
 } from "./types";
 import { jurisdictionTagForRow } from "./jurisdiction-tags";
+import { finalizeResultRowSummary } from "./result-row-summary";
 
 const emptyCapabilities: CapabilitySummary = {
   sourcePlanner: true,
@@ -41,7 +38,7 @@ const emptyCapabilities: CapabilitySummary = {
 
 async function getDatabaseCapabilitySummary(input: { state: string; year: number }): Promise<CapabilitySummary | null> {
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     const [row] = (await sql`
       select
         source_planner as "sourcePlanner",
@@ -65,7 +62,8 @@ async function getDatabaseCapabilitySummary(input: { state: string; year: number
       notes: string;
     }>;
     return row ?? null;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return null;
   }
 }
@@ -79,13 +77,14 @@ function toIsoTimestamp(value: Date | string | null) {
 }
 
 export async function getPublicDataRevision(): Promise<string | null> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return "seed-data";
   }
 
   try {
-    return await readPublicDataRevision(neon(getDatabaseUrl()));
-  } catch {
+    return await readPublicDataRevision(getReadSql());
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return null;
   }
 }
@@ -284,11 +283,11 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
 }
 
 export function currentDataSource() {
-  return hasDatabase() ? "database" : "seed-fallback";
+  return hasReadableDatabase() ? "database" : "seed-fallback";
 }
 
 export async function listStates(): Promise<StateSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return seedStates;
   }
 
@@ -307,7 +306,7 @@ export async function listStates(): Promise<StateSummary[]> {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         states.code,
@@ -326,7 +325,8 @@ export async function listStates(): Promise<StateSummary[]> {
         and capability_flags.election_year = 2024
       order by states.name
     `) as typeof rows;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return seedStates;
   }
 
@@ -365,7 +365,7 @@ export async function listElections(input: {
   year?: number;
   office?: string;
 }): Promise<ElectionSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return seedElections.filter((election) => {
       if (input.year && election.year !== input.year) {
         return false;
@@ -388,18 +388,19 @@ export async function listElections(input: {
   }>;
 
   try {
-    const db = getDb();
-    rows = await db
-      .select({
-        year: elections.year,
-        office: elections.office,
-        electionDate: elections.electionDate,
-        label: elections.label,
-        stateCode: contests.stateCode,
-      })
-      .from(elections)
-      .leftJoin(contests, eq(elections.id, contests.electionId));
-  } catch {
+    const sql = getReadSql();
+    rows = (await sql`
+      select
+        elections.year,
+        elections.office,
+        elections.election_date as "electionDate",
+        elections.label,
+        contests.state_code as "stateCode"
+      from elections
+      left join contests on contests.election_id = elections.id
+    `) as typeof rows;
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return seedElections;
   }
 
@@ -437,11 +438,20 @@ export async function listResults(input: {
   state: string;
   year: number;
   level: string;
+  office?: string;
 }): Promise<ResultRow[]> {
-  if (!hasDatabase()) {
+  const normalizedOffice = input.office?.trim().toLowerCase() || null;
+  if (!hasReadableDatabase()) {
     return seedResults
       .filter(
-        (row) => row.state === input.state && row.year === input.year && row.level === input.level,
+        (row) =>
+          row.state === input.state
+          && row.year === input.year
+          && row.level === input.level
+          && (
+            normalizedOffice === null
+            || row.office.toLowerCase() === normalizedOffice
+          ),
       )
       .map((row) => ({
         ...row,
@@ -466,7 +476,7 @@ export async function listResults(input: {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         result_rows.state_code as "stateCode",
@@ -487,18 +497,29 @@ export async function listResults(input: {
       where result_rows.state_code = ${input.state}
         and result_rows.level = ${input.level}
         and elections.year = ${input.year}
+        and (
+          ${normalizedOffice}::text is null
+          or lower(elections.office) = ${normalizedOffice}
+        )
       order by result_rows.jurisdiction_name, result_rows.candidate_name
     `) as typeof rows;
-  } catch {
-    return seedResults.filter(
-      (row) => row.state === input.state && row.year === input.year && row.level === input.level,
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
+    return seedResults.filter((row) =>
+      row.state === input.state
+      && row.year === input.year
+      && row.level === input.level
+      && (
+        normalizedOffice === null
+        || row.office.toLowerCase() === normalizedOffice
+      )
     );
   }
 
   const grouped = new Map<string, ResultRow>();
 
   for (const row of rows) {
-    const key = row.jurisdictionCode;
+    const key = row.office.toLowerCase() + "|" + row.jurisdictionCode;
     const current =
       grouped.get(key) ??
       ({
@@ -522,18 +543,11 @@ export async function listResults(input: {
     grouped.set(key, current);
   }
 
-  for (const row of grouped.values()) {
-    const ranked = Object.entries(row.votes).sort((a, b) => b[1] - a[1]);
-    row.winner = ranked[0]?.[0] ?? "";
-    row.marginVotes = (ranked[0]?.[1] ?? 0) - (ranked[1]?.[1] ?? 0);
-    row.marginPct = row.totalVotes > 0 ? Number(((row.marginVotes / row.totalVotes) * 100).toFixed(2)) : 0;
-  }
-
-  return Array.from(grouped.values());
+  return Array.from(grouped.values(), finalizeResultRowSummary);
 }
 
 export async function listSources(input: { state: string; year: number }): Promise<SourceSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return seedSources.filter(
       (source) => source.state === input.state && source.electionYear === input.year,
     );
@@ -556,7 +570,7 @@ export async function listSources(input: { state: string; year: number }): Promi
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         id,
@@ -577,7 +591,8 @@ export async function listSources(input: { state: string; year: number }): Promi
         and election_year = ${input.year}
       order by category, title
     `) as typeof rows;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return seedSources.filter(
       (source) => source.state === input.state && source.electionYear === input.year,
     );
@@ -603,7 +618,7 @@ export async function listIndicators(input: {
   state: string;
   year: number;
 }): Promise<AnalysisIndicator[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return [];
   }
 
@@ -624,7 +639,7 @@ export async function listIndicators(input: {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         analysis_indicators.id,
@@ -649,7 +664,8 @@ export async function listIndicators(input: {
         and analysis_indicators.election_year = ${input.year}
       order by severity desc, jurisdiction_name, label
     `) as typeof rows;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return [];
   }
 
@@ -676,7 +692,7 @@ export async function listReviewRows(input: {
   state: string;
   year: number;
 }): Promise<ReviewRowSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return [];
   }
 
@@ -707,7 +723,7 @@ export async function listReviewRows(input: {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         review_rows.id,
@@ -744,7 +760,8 @@ export async function listReviewRows(input: {
       order by review_rows.jurisdiction_name, review_rows.local_unit
       limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
     `) as typeof rows;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return [];
   }
 
@@ -780,7 +797,7 @@ export async function listTurnoutRows(input: {
   state: string;
   year: number;
 }): Promise<TurnoutRowSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return [];
   }
 
@@ -801,7 +818,7 @@ export async function listTurnoutRows(input: {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         turnout_rows.id,
@@ -824,7 +841,8 @@ export async function listTurnoutRows(input: {
       order by turnout_rows.jurisdiction_name
       limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
     `) as typeof rows;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return [];
   }
 
@@ -851,7 +869,7 @@ export async function listHistoricalResultRows(input: {
   state: string;
   year?: number;
 }): Promise<HistoricalResultRowSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return [];
   }
 
@@ -875,7 +893,7 @@ export async function listHistoricalResultRows(input: {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = input.year
       ? ((await sql`
           select
@@ -926,7 +944,8 @@ export async function listHistoricalResultRows(input: {
           order by historical_result_rows.election_year desc, historical_result_rows.jurisdiction_name
           limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
         `) as typeof rows);
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return [];
   }
 
@@ -955,7 +974,7 @@ export async function listEquipmentRows(input: {
   state: string;
   year: number;
 }): Promise<EquipmentRowSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return [];
   }
 
@@ -986,7 +1005,7 @@ export async function listEquipmentRows(input: {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         equipment_rows.id,
@@ -1019,7 +1038,8 @@ export async function listEquipmentRows(input: {
       order by equipment_rows.jurisdiction_name, equipment_rows.usage
       limit ${Math.min(Math.max(input.limit ?? 5000, 1), 20000)}
     `) as typeof rows;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return [];
   }
 
@@ -1065,7 +1085,7 @@ export async function listEquipmentRows(input: {
 }
 
 export async function listCompletenessReport(input: { year: number }): Promise<CompletenessSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return seedCompletenessReport(input.year);
   }
 
@@ -1111,7 +1131,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
   let rows: StateAggregate[];
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       with result_counts as (
         select
@@ -1298,7 +1318,8 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       left join latest_native_imports on states.code = latest_native_imports.state_code
       order by states.name
     `) as StateAggregate[];
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return seedCompletenessReport(input.year);
   }
 
@@ -1395,7 +1416,7 @@ export async function getCoverageSummary(input: {
   state: string;
   year: number;
 }): Promise<CoverageSummary | null> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return getCoverage(input.state, input.year);
   }
 
@@ -1434,7 +1455,7 @@ export async function getCoverageSummary(input: {
 }
 
 export async function listImportRuns(): Promise<ImportRunSummary[]> {
-  if (!hasDatabase()) {
+  if (!hasReadableDatabase()) {
     return seedImportRuns;
   }
 
@@ -1450,7 +1471,7 @@ export async function listImportRuns(): Promise<ImportRunSummary[]> {
   }>;
 
   try {
-    const sql = neon(getDatabaseUrl());
+    const sql = getReadSql();
     rows = (await sql`
       select
         id,
@@ -1465,7 +1486,8 @@ export async function listImportRuns(): Promise<ImportRunSummary[]> {
       order by started_at desc
       limit 20
     `) as typeof rows;
-  } catch {
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
     return seedImportRuns;
   }
 

@@ -4,6 +4,7 @@ import {
   boolean,
   check,
   index,
+  foreignKey,
   integer,
   jsonb,
   numeric,
@@ -236,6 +237,207 @@ export const sourceDocuments = pgTable("source_documents", {
   metadata: jsonb("metadata").notNull().default({}),
 });
 
+
+export const geographyVersions = pgTable(
+  "geography_versions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    stateCode: text("state_code").notNull().references(() => states.code),
+    electionId: uuid("election_id").notNull().references(() => elections.id),
+    geographyType: text("geography_type").notNull(),
+    boundaryVintage: text("boundary_vintage").notNull(),
+    vintageStatus: text("vintage_status").notNull().default("unknown"),
+    validFrom: text("valid_from"),
+    validTo: text("valid_to"),
+    sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+    sourceLayer: text("source_layer"),
+    sourceCrs: text("source_crs"),
+    servedCrs: text("served_crs").notNull().default("EPSG:4326"),
+    derivationMethod: text("derivation_method").notNull(),
+    status: text("status").notNull().default("candidate"),
+    caveat: text("caveat").notNull().default(""),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>().notNull().default({}),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    uniqueVersion: uniqueIndex(
+      "geography_versions_state_election_type_vintage_idx",
+    ).on(
+      table.stateCode,
+      table.electionId,
+      table.geographyType,
+      table.boundaryVintage,
+    ),
+    electionIndex: index("geography_versions_election_id_idx").on(
+      table.electionId,
+    ),
+    statusIndex: index("geography_versions_status_idx").on(table.status),
+    vintageStatusCheck: check(
+      "geography_versions_vintage_status_check",
+      sql`${table.vintageStatus} in ('election_date_confirmed', 'current_only', 'unknown')`,
+    ),
+    derivationMethodCheck: check(
+      "geography_versions_derivation_method_check",
+      sql`${table.derivationMethod} in ('official_export', 'official_service', 'digitized_map', 'official_crosswalk')`,
+    ),
+    statusCheck: check(
+      "geography_versions_status_check",
+      sql`${table.status} in ('candidate', 'blocked', 'reviewed', 'published', 'rejected')`,
+    ),
+  }),
+);
+
+export const geographyFeatures = pgTable(
+  "geography_features",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    geometryVersionId: uuid("geometry_version_id")
+      .notNull()
+      .references(() => geographyVersions.id, { onDelete: "cascade" }),
+    sourceFeatureId: text("source_feature_id").notNull(),
+    parentGeoid: text("parent_geoid"),
+    name: text("name").notNull().default(""),
+    geometryKey: text("geometry_key"),
+    isGeographic: boolean("is_geographic").notNull().default(true),
+    properties: jsonb("properties").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    idVersionUnique: unique("geography_features_id_version_unique").on(
+      table.id,
+      table.geometryVersionId,
+    ),
+    uniqueFeature: uniqueIndex(
+      "geography_features_version_source_feature_idx",
+    ).on(table.geometryVersionId, table.sourceFeatureId),
+    parentIndex: index("geography_features_version_parent_idx").on(
+      table.geometryVersionId,
+      table.parentGeoid,
+    ),
+    sourceFeatureIdCheck: check(
+      "geography_features_source_feature_id_check",
+      sql`length(trim(${table.sourceFeatureId})) > 0`,
+    ),
+  }),
+);
+
+export const reportingUnits = pgTable(
+  "reporting_units",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    stateCode: text("state_code").notNull().references(() => states.code),
+    electionId: uuid("election_id").notNull().references(() => elections.id),
+    reportingGrain: text("reporting_grain").notNull(),
+    parentGeoid: text("parent_geoid"),
+    sourceUnitId: text("source_unit_id").notNull(),
+    sourceDisplayName: text("source_display_name").notNull(),
+    isGeographic: boolean("is_geographic").notNull(),
+    sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    uniqueSourceUnit: unique(
+      "reporting_units_state_election_grain_parent_source_unique",
+    )
+      .on(
+        table.stateCode,
+        table.electionId,
+        table.reportingGrain,
+        table.parentGeoid,
+        table.sourceUnitId,
+      )
+      .nullsNotDistinct(),
+    electionIndex: index("reporting_units_election_id_idx").on(table.electionId),
+    parentIndex: index("reporting_units_state_parent_idx").on(
+      table.stateCode,
+      table.parentGeoid,
+    ),
+    sourceUnitIdCheck: check(
+      "reporting_units_source_unit_id_check",
+      sql`length(trim(${table.sourceUnitId})) > 0`,
+    ),
+  }),
+);
+
+export const reportingUnitGeometryCrosswalks = pgTable(
+  "reporting_unit_geometry_crosswalks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    reportingUnitId: uuid("reporting_unit_id")
+      .notNull()
+      .references(() => reportingUnits.id, { onDelete: "cascade" }),
+    geometryVersionId: uuid("geometry_version_id")
+      .notNull()
+      .references(() => geographyVersions.id, { onDelete: "cascade" }),
+    geographyFeatureId: uuid("geography_feature_id"),
+    relationshipType: text("relationship_type").notNull(),
+    matchMethod: text("match_method").notNull(),
+    reviewStatus: text("review_status").notNull().default("pending"),
+    confidence: text("confidence").notNull(),
+    sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    reviewedBy: text("reviewed_by"),
+    note: text("note").notNull().default(""),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    featureVersionReference: foreignKey({
+      name:
+        "reporting_unit_geometry_crosswalks_feature_version_geography_features_fk",
+      columns: [table.geographyFeatureId, table.geometryVersionId],
+      foreignColumns: [
+        geographyFeatures.id,
+        geographyFeatures.geometryVersionId,
+      ],
+    }).onDelete("cascade"),
+    uniqueRelationship: unique(
+      "reporting_unit_geometry_crosswalks_unique",
+    )
+      .on(
+        table.reportingUnitId,
+        table.geometryVersionId,
+        table.geographyFeatureId,
+        table.relationshipType,
+      )
+      .nullsNotDistinct(),
+    versionStatusIndex: index(
+      "reporting_unit_geometry_crosswalks_version_status_idx",
+    ).on(table.geometryVersionId, table.reviewStatus),
+    reportingUnitIndex: index(
+      "reporting_unit_geometry_crosswalks_reporting_unit_idx",
+    ).on(table.reportingUnitId),
+    relationshipTypeCheck: check(
+      "reporting_unit_geometry_crosswalks_relationship_type_check",
+      sql`${table.relationshipType} in ('one_to_one', 'one_to_many', 'many_to_one', 'unmatched', 'non_geographic', 'source_alias')`,
+    ),
+    matchMethodCheck: check(
+      "reporting_unit_geometry_crosswalks_match_method_check",
+      sql`${table.matchMethod} in ('exact_official_id', 'official_crosswalk', 'reviewed_name', 'spatial_review', 'digitized')`,
+    ),
+    reviewStatusCheck: check(
+      "reporting_unit_geometry_crosswalks_review_status_check",
+      sql`${table.reviewStatus} in ('pending', 'reviewed', 'rejected')`,
+    ),
+    confidenceCheck: check(
+      "reporting_unit_geometry_crosswalks_confidence_check",
+      sql`${table.confidence} in ('high', 'medium', 'low')`,
+    ),
+    featureRelationshipCheck: check(
+      "reporting_unit_geometry_crosswalks_feature_relationship_check",
+      sql`(
+        (${table.relationshipType} in ('unmatched', 'non_geographic', 'source_alias') and ${table.geographyFeatureId} is null)
+        or
+        (${table.relationshipType} in ('one_to_one', 'one_to_many', 'many_to_one') and ${table.geographyFeatureId} is not null)
+      )`,
+    ),
+  }),
+);
+
 export const importRuns = pgTable("import_runs", {
   id: uuid("id").primaryKey().defaultRandom(),
   stateCode: text("state_code").notNull().references(() => states.code),
@@ -262,6 +464,7 @@ export const resultRows = pgTable(
     candidateName: text("candidate_name").notNull(),
     party: text("party").notNull(),
     votes: integer("votes").notNull(),
+    reportingUnitId: uuid("reporting_unit_id").references(() => reportingUnits.id),
     sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
   },
   (table) => ({
@@ -271,6 +474,9 @@ export const resultRows = pgTable(
       table.jurisdictionCode,
       table.candidateName,
       table.party,
+    ),
+    reportingUnitIndex: index("result_rows_reporting_unit_id_idx").on(
+      table.reportingUnitId,
     ),
   }),
 );
@@ -291,6 +497,7 @@ export const turnoutRows = pgTable(
     turnoutPct: numeric("turnout_pct", { precision: 8, scale: 4 }),
     denominatorNote: text("denominator_note").notNull(),
     warningRequired: boolean("warning_required").notNull().default(false),
+    reportingUnitId: uuid("reporting_unit_id").references(() => reportingUnits.id),
     sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
   },
   (table) => ({
@@ -299,6 +506,9 @@ export const turnoutRows = pgTable(
       table.electionYear,
       table.level,
       table.jurisdictionCode,
+    ),
+    reportingUnitIndex: index("turnout_rows_reporting_unit_id_idx").on(
+      table.reportingUnitId,
     ),
   }),
 );
@@ -329,6 +539,7 @@ export const reviewRows = pgTable(
     demDropoff: numeric("dem_dropoff", { precision: 8, scale: 4 }),
     repDropoff: numeric("rep_dropoff", { precision: 8, scale: 4 }),
     metrics: jsonb("metrics").notNull().default({}),
+    reportingUnitId: uuid("reporting_unit_id").references(() => reportingUnits.id),
     sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
   },
   (table) => ({
@@ -337,6 +548,9 @@ export const reviewRows = pgTable(
       table.electionYear,
       table.jurisdictionCode,
       table.localUnit,
+    ),
+    reportingUnitIndex: index("review_rows_reporting_unit_id_idx").on(
+      table.reportingUnitId,
     ),
   }),
 );

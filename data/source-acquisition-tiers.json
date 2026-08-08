@@ -1280,34 +1280,45 @@
       "stateName": "Minnesota",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_geometry",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
-        "XLSX"
+        "XLSX",
+        "official statewide shapefile ZIP"
       ],
       "sourceUrls": [
         "https://www.sos.mn.gov/elections-voting/election-results",
-        "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx"
+        "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx",
+        "https://gis.lcc.mn.gov/html/download.html",
+        "https://gis.lcc.mn.gov/data/shape/vtd2024general.zip"
       ],
       "exampleUrls": [
-        "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx"
+        "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx",
+        "https://gis.lcc.mn.gov/data/shape/vtd2024general.zip"
       ],
       "availableFields": [
         "county presidential rows aggregated from the official precinct workbook",
+        "4,103 VTDID-keyed precinct presidential ResultRows in local staging",
         "precinct President rows",
         "precinct U.S. Senate rows",
         "precinct TOTVOTING turnout rows",
-        "precinct REG7AM plus EDR registration denominator fields"
+        "precinct REG7AM plus EDR registration denominator fields",
+        "official certified precinct presidential result identities for 2012, 2016, 2020, and 2024 with 4,102, 4,120, 4,110, and 4,103 units",
+        "official election-applicable statewide precinct geometry for all four tracked elections with 16,435 exact reviewed VTDID relationships across 87 counties per year",
+        "deterministic presentation-only delivery candidates with source terms and no election-value properties for all four tracked elections",
+        "content-addressed release overlay with Git-base patches and Minnesota-only shared-registry projections",
+        "deterministic shared-diff review tooling that hash-checks 23 modified/shared surfaces and explicitly separates Minnesota requirements from unrelated workspace work",
+        "separately guarded atomic migration-plus-hidden-load transaction and release-specific read-only production preflight tooling"
       ],
       "missingFields": [
-        "precinct boundary geometry"
+        "independent human confirmation and clean-worktree application of the classified release diff, current production backup/preflight evidence, named deployment and rollback ownership, and explicitly authorized coordinated production promotion and immutable public geometry release"
       ],
-      "parserStatus": "native Minnesota precinct workbook parser is active through etl/state-configs/mn.json and civic_etl.native: it loads 87 county result rows, 4,075 President-versus-U.S.-Senate review rows, and 4,103 turnout rows from the official SOS workbook",
+      "parserStatus": "the 2024 native parser retains 87 county aggregates and emits 4,103 independently reviewed VTDID-keyed precinct ResultRows, 4,075 review rows, and 4,103 turnout rows; the guarded four-election planner additionally normalizes certified 2012/2016/2020/2024 precinct result identities and exact reviewed LCC-GIS geometry/crosswalks for 16,435 local units",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Turnout denominator is REG7AM plus EDR, so election-day registrations are included in the denominator. Precinct boundary GeoJSON is not included; county geometry is loaded for county map joins only.",
-      "nextAction": "Treat as an example Tier 1 goal state; optional next step is precinct geometry."
+      "caveats": "Turnout denominator is REG7AM plus EDR, so election-day registrations are included. All four geometry/result packages reconcile by exact VTDID, including 33/31/33/28 geographic zero-vote precincts. The 2016 and 2020 LCC election attributes are preliminary and excluded; certified SOS workbooks are the sole vote authority. The LCC-GIS redistribution disclaimer must accompany every delivered copy. The atomic hidden-load implementation remains disabled without current hash-pinned preflight and restoration-verified backup evidence, named independent roles, an active deployment window, and exact authorization acknowledgements. Canonical manifests and public delivery remain blocked until a separately authorized coordinated public release.",
+      "nextAction": "Confirm the deterministic shared-file include/exclude review and apply it in a clean integration worktree, then create current production backup/preflight evidence, name deployment and rollback roles, and obtain explicit authorization before any hidden load or coordinated immutable geometry activation."
     },
     {
       "state": "MO",

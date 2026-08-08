@@ -2,6 +2,7 @@ import type { HistoricalResultRowSummary, ResultRow } from "./types";
 import type { SupportedPresidentialYear } from "./api-version";
 
 const candidateNames: Record<SupportedPresidentialYear, { dem: string; rep: string }> = {
+  2012: { dem: "Obama", rep: "Romney" },
   2016: { dem: "Clinton", rep: "Trump" },
   2020: { dem: "Biden", rep: "Trump" },
   2024: { dem: "Harris", rep: "Trump" },

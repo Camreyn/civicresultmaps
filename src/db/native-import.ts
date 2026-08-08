@@ -3,7 +3,9 @@ import type { NeonQueryFunction } from "@neondatabase/serverless";
 import { calculateAnalysisIndicators, type CandidateNeutralReviewRow } from "../lib/analysis-indicators.ts";
 import { reviewPolicy } from "../lib/review-policy.ts";
 import { jurisdictionTagForRow } from "../lib/jurisdiction-tags.ts";
-import { runNeonTransaction } from "./neon-transaction.ts";
+import { reportingUnitCode } from "../lib/precinct-geography.ts";
+import { runNeonTransaction, runPostgresTransaction } from "./neon-transaction.ts";
+import { resolveNativeImportDatabaseTarget } from "./database-driver.ts";
 import { bumpPublicDataRevision } from "./public-data-revision.ts";
 
 type NativeSource = {
@@ -18,15 +20,24 @@ type NativeSource = {
   status: string;
   metadata?: Record<string, unknown>;
 };
+type NativeReportingUnit = {
+  sourceUnitId: string;
+  sourceDisplayName?: string;
+  parentGeoid?: string | null;
+  reportingGrain: string;
+  isGeographic: boolean;
+};
+
 
 type NativeResultRow = {
   jurisdictionName: string;
   level: string;
   votes: Record<"Harris" | "Trump" | "Other", number>;
   sourceId: string;
+  reportingUnit?: NativeReportingUnit;
 };
 
-type NativeReviewRow = CandidateNeutralReviewRow;
+type NativeReviewRow = CandidateNeutralReviewRow & { reportingUnit?: NativeReportingUnit };
 
 type WisconsinAuditSelection = {
   ballotsAudited: number;
@@ -63,6 +74,7 @@ type NativeTurnoutRow = {
   registrationDenominatorTiming?: string;
   warningRequired?: boolean;
   sourceId: string;
+  reportingUnit?: NativeReportingUnit;
 };
 
 type NativeHistoricalRow = {
@@ -92,6 +104,9 @@ type NativeArtifact = {
   election: {
     year: number;
     office: string;
+    id?: string;
+    date?: string;
+    type?: string;
   };
   sources: NativeSource[];
   capabilities: Record<string, boolean>;
@@ -122,19 +137,6 @@ const candidateParties = {
 } as const;
 
 
-function getDatabaseUrl() {
-  return (
-    [
-      process.env.DATABASE_URL,
-      process.env.POSTGRES_DATABASE_URL,
-      process.env.POSTGRES_URL,
-      process.env.POSTGRES_PRISMA_URL,
-      process.env.POSTGRES_URL_NON_POOLING,
-      process.env.POSTGRES_DATABASE_URL_UNPOOLED,
-      process.env.CRM_URL,
-    ].find((value) => value && value.trim() && value.trim() !== '""') ?? ""
-  );
-}
 
 function normalizeJurisdictionName(name: string) {
   return name.trim().replace(/\s+County$/i, "");
@@ -143,6 +145,86 @@ function normalizeJurisdictionName(name: string) {
 function jurisdictionCode(stateCode: string, name: string) {
   return `${stateCode}-${normalizeJurisdictionName(name).toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
 }
+const parentScopedReportingGrains = new Set([
+  "precinct",
+  "ward",
+  "vtd",
+  "election_district",
+  "split_precinct",
+]);
+
+export function buildNativeReportingUnitRecord(input: {
+  stateCode: string;
+  electionEventId: string;
+  reportingUnit?: NativeReportingUnit;
+  fallbackDisplayName: string;
+  sourceDocumentId: string;
+}) {
+  const reportingUnit = input.reportingUnit;
+  if (!reportingUnit) {
+    return null;
+  }
+
+  const sourceUnitId = String(reportingUnit.sourceUnitId ?? "").trim();
+  const reportingGrain = String(reportingUnit.reportingGrain ?? "")
+    .trim()
+    .toLowerCase();
+  const parentGeoid = String(reportingUnit.parentGeoid ?? "").trim() || null;
+  const sourceDisplayName = String(
+    reportingUnit.sourceDisplayName ?? input.fallbackDisplayName,
+  ).trim();
+  if (typeof reportingUnit.isGeographic !== "boolean") {
+    throw new Error("Native reporting unit isGeographic must be a boolean.");
+  }
+  if (
+    reportingUnit.isGeographic
+    && parentScopedReportingGrains.has(reportingGrain)
+    && !parentGeoid
+  ) {
+    throw new Error(
+      "Native " + reportingGrain + " reporting unit requires a parentGeoid.",
+    );
+  }
+  if (!sourceDisplayName) {
+    throw new Error("Native reporting unit sourceDisplayName is required.");
+  }
+
+  const code = reportingUnitCode({
+    state: input.stateCode,
+    electionId: input.electionEventId,
+    reportingGrain,
+    parentGeoid,
+    sourceUnitId,
+  });
+
+  return {
+    code,
+    reporting_grain: reportingGrain,
+    parent_geoid: parentGeoid,
+    source_unit_id: sourceUnitId,
+    source_display_name: sourceDisplayName,
+    is_geographic: reportingUnit.isGeographic,
+    source_document_id: input.sourceDocumentId,
+  };
+}
+
+function electionEventDetails(election: NativeArtifact["election"]) {
+  const type = String(election.type ?? "general").trim().toLowerCase();
+  const date = String(election.date ?? election.year + "-11-05").trim();
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(date)
+    || Number.isNaN(Date.parse(date + "T00:00:00Z"))
+    || Number(date.slice(0, 4)) !== election.year
+  ) {
+    throw new Error("Native election date must be a valid ISO date in its election year.");
+  }
+  const id = String(election.id ?? date + "-" + type).trim();
+  if (!id) {
+    throw new Error("Native election event id is required.");
+  }
+  return { date, id, type };
+}
+
 
 function numberOrNull(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -504,10 +586,7 @@ function assertPromotable(artifact: NativeArtifact) {
 }
 
 export async function promoteNativeStagingArtifact(path: string) {
-  const databaseUrl = getDatabaseUrl();
-  if (!databaseUrl) {
-    throw new Error("DATABASE_URL or POSTGRES_URL is required to promote native staging data.");
-  }
+  const database = resolveNativeImportDatabaseTarget();
 
   const artifact = JSON.parse(await readFile(path, "utf8")) as NativeArtifact;
   assertPromotable(artifact);
@@ -515,7 +594,9 @@ export async function promoteNativeStagingArtifact(path: string) {
   const stateCode = artifact.state.code.toUpperCase();
   const electionYear = artifact.election.year;
   const office = artifact.election.office.toLowerCase();
+  const electionEvent = electionEventDetails(artifact.election);
   const native = artifact.native!;
+  const supportsReportingUnits = database.driver === "postgres";
   const artifactSourceIds = artifact.sources.map((source) => source.id);
   validateNativeSourceReferences({
     historicalRows: native.historicalRows,
@@ -529,7 +610,8 @@ export async function promoteNativeStagingArtifact(path: string) {
     historicalRows: native.historicalReviewRows,
     knownSourceIds: artifactSourceIds,
   });
-  return runNeonTransaction(databaseUrl, async (sql) => {
+  const runTransaction = database.driver === "postgres" ? runPostgresTransaction : runNeonTransaction;
+  return runTransaction(database.databaseUrl, async (sql) => {
     await sql`select set_config('lock_timeout', '30s', true)`;
     await sql`select pg_advisory_xact_lock(hashtextextended(${`crm-native-promotion:${stateCode}`}, 0))`;
   await sql`
@@ -542,8 +624,10 @@ export async function promoteNativeStagingArtifact(path: string) {
 
   const [election] = await sql`
     insert into elections (year, office, election_date, label)
-    values (${electionYear}, ${office}, ${`${electionYear}-11-05`}, ${`${electionYear} ${office}`})
-    on conflict (year, office) do update set label = excluded.label
+    values (${electionYear}, ${office}, ${electionEvent.date}, ${`${electionYear} ${office}`})
+    on conflict (year, office) do update set
+      election_date = excluded.election_date,
+      label = excluded.label
     returning id
   `;
 
@@ -611,7 +695,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${source.timestampBasis},
         ${source.confidence},
         ${source.status},
-        ${JSON.stringify({ nativeSourceId: source.id, ...(source.metadata ?? {}) })}::jsonb
+        ${JSON.stringify({ nativeSourceId: source.id, ...(source.metadata ?? {}) })}::text::jsonb
       )
       on conflict (slug) do update set
         category = excluded.category,
@@ -645,7 +729,7 @@ export async function promoteNativeStagingArtifact(path: string) {
       ${native.parser},
       ${primarySourceId ?? null},
       'staged',
-      ${JSON.stringify(native.metrics)}::jsonb
+      ${JSON.stringify(native.metrics)}::text::jsonb
     )
     returning id
   `;
@@ -694,11 +778,143 @@ export async function promoteNativeStagingArtifact(path: string) {
     `;
   }
 
-  const resultJurisdictions = native.resultRows.map((row) => ({
-    code: jurisdictionCode(stateCode, row.jurisdictionName),
-    name: row.jurisdictionName,
-    level: row.level,
-  }));
+  const reportingUnitRecordCandidates = supportsReportingUnits ? [
+    ...native.resultRows.map((row) => ({
+      fallbackDisplayName: row.jurisdictionName,
+      reportingUnit: row.reportingUnit,
+      sourceId: row.sourceId,
+    })),
+    ...(reviewRowsByYear.get(electionYear) ?? []).map((row) => ({
+      fallbackDisplayName: row.localUnit || row.county,
+      reportingUnit: row.reportingUnit,
+      sourceId: row.sourceId,
+    })),
+    ...native.turnoutRows.map((row) => ({
+      fallbackDisplayName: row.localUnit || row.county,
+      reportingUnit: row.reportingUnit,
+      sourceId: row.sourceId,
+    })),
+  ] : [];
+  const reportingUnitRecordsByCode = new Map<
+    string,
+    NonNullable<ReturnType<typeof buildNativeReportingUnitRecord>>
+  >();
+  for (const candidate of reportingUnitRecordCandidates) {
+    const record = buildNativeReportingUnitRecord({
+      stateCode,
+      electionEventId: electionEvent.id,
+      reportingUnit: candidate.reportingUnit,
+      fallbackDisplayName: candidate.fallbackDisplayName,
+      sourceDocumentId: requiredSourceDocumentId(
+        sourceIds,
+        candidate.sourceId,
+        "Native reporting unit",
+      ),
+    });
+    if (!record) {
+      continue;
+    }
+    const existing = reportingUnitRecordsByCode.get(record.code);
+    if (existing && existing.is_geographic !== record.is_geographic) {
+      throw new Error(
+        "Native reporting unit " + record.code + " has conflicting geographic status.",
+      );
+    }
+    reportingUnitRecordsByCode.set(record.code, record);
+  }
+
+  const reportingUnitIdByCode = new Map<string, string>();
+  for (const records of chunkRows(Array.from(reportingUnitRecordsByCode.values()))) {
+    const inserted = await sql`
+      insert into reporting_units (
+        state_code,
+        election_id,
+        reporting_grain,
+        parent_geoid,
+        source_unit_id,
+        source_display_name,
+        is_geographic,
+        source_document_id
+      )
+      select
+        ${stateCode},
+        ${election.id}::uuid,
+        incoming.reporting_grain,
+        incoming.parent_geoid,
+        incoming.source_unit_id,
+        incoming.source_display_name,
+        incoming.is_geographic,
+        incoming.source_document_id
+      from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
+        code text,
+        reporting_grain text,
+        parent_geoid text,
+        source_unit_id text,
+        source_display_name text,
+        is_geographic boolean,
+        source_document_id uuid
+      )
+      on conflict on constraint reporting_units_state_election_grain_parent_source_unique
+      do update set
+        source_display_name = excluded.source_display_name,
+        is_geographic = excluded.is_geographic,
+        source_document_id = excluded.source_document_id,
+        updated_at = now()
+      returning id, reporting_grain, parent_geoid, source_unit_id
+    `;
+    for (const row of inserted) {
+      const code = reportingUnitCode({
+        state: stateCode,
+        electionId: electionEvent.id,
+        reportingGrain: String(row.reporting_grain),
+        parentGeoid: row.parent_geoid ? String(row.parent_geoid) : null,
+        sourceUnitId: String(row.source_unit_id),
+      });
+      reportingUnitIdByCode.set(code, String(row.id));
+    }
+  }
+
+  function reportingUnitReference(input: {
+    reportingUnit?: NativeReportingUnit;
+    fallbackDisplayName: string;
+    sourceId: string;
+  }) {
+    if (!supportsReportingUnits) {
+      return null;
+    }
+    const record = buildNativeReportingUnitRecord({
+      stateCode,
+      electionEventId: electionEvent.id,
+      reportingUnit: input.reportingUnit,
+      fallbackDisplayName: input.fallbackDisplayName,
+      sourceDocumentId: requiredSourceDocumentId(
+        sourceIds,
+        input.sourceId,
+        "Native reporting unit",
+      ),
+    });
+    if (!record) {
+      return null;
+    }
+    const id = reportingUnitIdByCode.get(record.code);
+    if (!id) {
+      throw new Error("Native reporting unit was not persisted: " + record.code);
+    }
+    return { code: record.code, id };
+  }
+
+  const resultJurisdictions = native.resultRows.map((row) => {
+    const reportingUnit = reportingUnitReference({
+      reportingUnit: row.reportingUnit,
+      fallbackDisplayName: row.jurisdictionName,
+      sourceId: row.sourceId,
+    });
+    return {
+      code: reportingUnit?.code ?? jurisdictionCode(stateCode, row.jurisdictionName),
+      name: row.jurisdictionName,
+      level: row.level,
+    };
+  });
   const resultJurisdictionWrites = dedupeRowsLastWins(
     resultJurisdictions,
     (row) => [row.level, row.code].join("\u0000"),
@@ -711,7 +927,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         incoming.code,
         incoming.name,
         incoming.level
-      from jsonb_to_recordset(${JSON.stringify(jurisdictionBatch)}::jsonb) as incoming (
+      from jsonb_to_recordset(${JSON.stringify(jurisdictionBatch)}::text::jsonb) as incoming (
         code text,
         name text,
         level text
@@ -722,8 +938,13 @@ export async function promoteNativeStagingArtifact(path: string) {
   }
 
   const resultRecords = native.resultRows.flatMap((row) => {
-    const code = jurisdictionCode(stateCode, row.jurisdictionName);
-    const tag = jurisdictionTagForRow({
+    const reportingUnit = reportingUnitReference({
+      reportingUnit: row.reportingUnit,
+      fallbackDisplayName: row.jurisdictionName,
+      sourceId: row.sourceId,
+    });
+    const code = reportingUnit?.code ?? jurisdictionCode(stateCode, row.jurisdictionName);
+    const tag = reportingUnit ? null : jurisdictionTagForRow({
       state: stateCode,
       jurisdictionCode: code,
       jurisdictionName: row.jurisdictionName,
@@ -738,6 +959,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         candidate_name: candidate,
         party: candidateParties[candidate],
         votes,
+        reporting_unit_id: reportingUnit?.id ?? null,
         source_document_id: requiredSourceDocumentId(sourceIds, row.sourceId, "Native row"),
       }),
     );
@@ -773,7 +995,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         incoming.party,
         incoming.votes,
         incoming.source_document_id
-      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+      from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
         jurisdiction_code text,
         jurisdiction_name text,
         jurisdiction_tag text,
@@ -791,6 +1013,26 @@ export async function promoteNativeStagingArtifact(path: string) {
         votes = excluded.votes,
         source_document_id = excluded.source_document_id
     `;
+    if (supportsReportingUnits) {
+      await sql`
+        update result_rows as target
+        set reporting_unit_id = incoming.reporting_unit_id
+        from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
+          jurisdiction_code text,
+          level text,
+          candidate_name text,
+          party text,
+          reporting_unit_id uuid
+        )
+        where target.contest_id = ${contest.id}::uuid
+          and target.state_code = ${stateCode}
+          and target.level = incoming.level
+          and target.jurisdiction_code = incoming.jurisdiction_code
+          and target.candidate_name = incoming.candidate_name
+          and target.party = incoming.party
+          and incoming.reporting_unit_id is not null
+      `;
+    }
   }
   const storedResultRows = resultRecords.length;
   const reviewTagsByYearAndJurisdictionCode = new Map<string, string>();
@@ -801,6 +1043,11 @@ export async function promoteNativeStagingArtifact(path: string) {
   for (const [reviewYear, yearRows] of Array.from(reviewRowsByYear.entries()).sort(([left], [right]) => left - right)) {
     for (const [index, row] of yearRows.entries()) {
       const localUnit = row.localUnit || `review-row-${index + 1}`;
+      const reportingUnit = reviewYear === electionYear ? reportingUnitReference({
+        reportingUnit: row.reportingUnit,
+        fallbackDisplayName: localUnit,
+        sourceId: row.sourceId,
+      }) : null;
       const code = jurisdictionCode(stateCode, row.county);
       const resolvedTag = jurisdictionTagForRow({
         state: stateCode,
@@ -841,6 +1088,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         dem_dropoff: numberOrNull(row.demDropoff),
         rep_dropoff: numberOrNull(row.repDropoff),
         metrics: row,
+        reporting_unit_id: reportingUnit?.id ?? null,
         source_document_id: requiredSourceDocumentId(sourceIds, row.sourceId, "Native row"),
       });
       storedReviewRowsByYear[String(reviewYear)] = (storedReviewRowsByYear[String(reviewYear)] ?? 0) + 1;
@@ -911,7 +1159,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         incoming.rep_dropoff,
         incoming.metrics,
         incoming.source_document_id
-      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+      from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
         election_year integer,
         jurisdiction_code text,
         jurisdiction_name text,
@@ -956,6 +1204,23 @@ export async function promoteNativeStagingArtifact(path: string) {
         metrics = excluded.metrics,
         source_document_id = excluded.source_document_id
     `;
+    if (supportsReportingUnits) {
+      await sql`
+        update review_rows as target
+        set reporting_unit_id = incoming.reporting_unit_id
+        from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
+          election_year integer,
+          jurisdiction_code text,
+          local_unit text,
+          reporting_unit_id uuid
+        )
+        where target.state_code = ${stateCode}
+          and target.election_year = incoming.election_year
+          and target.jurisdiction_code = incoming.jurisdiction_code
+          and target.local_unit = incoming.local_unit
+          and incoming.reporting_unit_id is not null
+      `;
+    }
   }
   const storedIndicatorRowsByYear: Record<string, number> = {};
   const indicatorRecords: Array<Record<string, unknown>> = [];
@@ -1039,7 +1304,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         incoming.detail,
         incoming.metrics,
         incoming.source_document_id
-      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+      from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
         election_year integer,
         jurisdiction_code text,
         jurisdiction_name text,
@@ -1066,8 +1331,13 @@ export async function promoteNativeStagingArtifact(path: string) {
   }
   const turnoutRecords = native.turnoutRows.map((row, index) => {
     const localUnit = row.localUnit || `turnout-row-${index + 1}`;
+    const reportingUnit = reportingUnitReference({
+      reportingUnit: row.reportingUnit,
+      fallbackDisplayName: localUnit,
+      sourceId: row.sourceId,
+    });
     return {
-      jurisdiction_code: jurisdictionCode(stateCode, `${row.county}-${localUnit}`),
+      jurisdiction_code: reportingUnit?.code ?? jurisdictionCode(stateCode, `${row.county}-${localUnit}`),
       jurisdiction_name: [row.county, localUnit].filter(Boolean).join(" / "),
       jurisdiction_tag: jurisdictionTagForRow({
         state: stateCode,
@@ -1080,6 +1350,7 @@ export async function promoteNativeStagingArtifact(path: string) {
       turnout_pct: numberOrNull(row.turnoutPct),
       denominator_note: row.registrationDenominatorTiming ?? row.denominatorType ?? "Not recorded",
       warning_required: Boolean(row.warningRequired),
+      reporting_unit_id: reportingUnit?.id ?? null,
       source_document_id: requiredSourceDocumentId(sourceIds, row.sourceId, "Native row"),
     };
   });
@@ -1118,7 +1389,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         incoming.denominator_note,
         incoming.warning_required,
         incoming.source_document_id
-      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+      from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
         jurisdiction_code text,
         jurisdiction_name text,
         jurisdiction_tag text,
@@ -1142,6 +1413,22 @@ export async function promoteNativeStagingArtifact(path: string) {
         warning_required = excluded.warning_required,
         source_document_id = excluded.source_document_id
     `;
+    if (supportsReportingUnits) {
+      await sql`
+        update turnout_rows as target
+        set reporting_unit_id = incoming.reporting_unit_id
+        from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
+          jurisdiction_code text,
+          level text,
+          reporting_unit_id uuid
+        )
+        where target.state_code = ${stateCode}
+          and target.election_year = ${electionYear}
+          and target.level = incoming.level
+          and target.jurisdiction_code = incoming.jurisdiction_code
+          and incoming.reporting_unit_id is not null
+      `;
+    }
   }
   const storedTurnoutRows = turnoutRecords.length;
   const historicalRecords = historicalRows.map((row, index) => {
@@ -1219,7 +1506,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         incoming.total_votes,
         incoming.metrics,
         incoming.source_document_id
-      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+      from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
         election_year integer,
         source_id text,
         source_level text,
@@ -1378,9 +1665,9 @@ export async function promoteNativeStagingArtifact(path: string) {
       ${stateCode},
       ${electionYear},
       ${artifact.validation.passed},
-      ${JSON.stringify(artifact.validation.errors)}::jsonb,
-      ${JSON.stringify(artifact.validation.warnings)}::jsonb,
-      ${JSON.stringify(artifact.validation.metrics)}::jsonb
+      ${JSON.stringify(artifact.validation.errors)}::text::jsonb,
+      ${JSON.stringify(artifact.validation.warnings)}::text::jsonb,
+      ${JSON.stringify(artifact.validation.metrics)}::text::jsonb
     )
   `;
 
@@ -1389,7 +1676,7 @@ export async function promoteNativeStagingArtifact(path: string) {
     set
       status = 'promoted',
       finished_at = now(),
-      summary = ${JSON.stringify(summary)}::jsonb
+      summary = ${JSON.stringify(summary)}::text::jsonb
     where id = ${importRun.id}
   `;
 
