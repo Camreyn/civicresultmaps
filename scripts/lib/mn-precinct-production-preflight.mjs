@@ -41,13 +41,17 @@ export function productionEndpointFingerprint(databaseUrl) {
   if (LOOPBACK_HOSTS.has(parsed.hostname.toLowerCase())) {
     throw new Error("Minnesota production preflight refuses a loopback database URL");
   }
-  if (!decodeURIComponent(parsed.pathname).replace(/^\//, "")) {
+  const databaseName = decodeURIComponent(parsed.pathname).replace(/^\//, "");
+  if (!databaseName) {
     throw new Error("Minnesota production preflight requires a database name");
   }
   return createHash("sha256")
-    .update(parsed.hostname.toLowerCase() + parsed.pathname)
-    .digest("hex")
-    .slice(0, 12);
+    .update([
+      parsed.hostname.toLowerCase(),
+      parsed.port || "5432",
+      databaseName,
+    ].join("\n"))
+    .digest("hex");
 }
 
 export function assertMinnesotaReleaseCandidateDocument(

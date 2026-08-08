@@ -24,7 +24,7 @@
       "parser": "mnGeoCountyGeojson",
       "authority": "MnGeo",
       "timestampBasis": "MnGeo county boundary feature service artifact.",
-      "confidence": "County geometry is used for county map joins; precinct boundary geometry is not included in this package.",
+      "confidence": "County geometry is used for county map joins. Election-vintage precinct geometry is delivered separately through the reviewed precinct-geometry registry.",
       "status": "loaded"
     }
   ],
@@ -52,7 +52,7 @@
     "format": "minnesotaPrecinctPresidentVsSenate",
     "sourceId": "mn-2024-precinct-results",
     "sheetName": "Precinct-Results",
-    "warning": "Minnesota native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Precinct map overlays remain disabled until precinct boundary geometry is sourced."
+    "warning": "Minnesota native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Precinct overlays use separately reviewed election-vintage geometry only when the manifest, immutable-delivery, and production activation gates pass."
   },
   "turnout": {
     "format": "minnesotaPrecinctTurnout",

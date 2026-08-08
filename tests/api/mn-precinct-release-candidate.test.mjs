@@ -210,6 +210,22 @@ test("Minnesota release package serialization and dependency inventory are hash 
     inventory.releaseDependencies.some((item) => item.path === "src/lib/api.ts"),
     true,
   );
+  for (const activationDependency of [
+    "scripts/lib/mn-precinct-public-activation.mjs",
+    "scripts/prepare-mn-precinct-public-activation.mjs",
+    "scripts/publish-mn-precinct-geography-status.mjs",
+    "tests/api/mn-precinct-public-activation.test.mjs",
+    "src/lib/precinct-result-publication.ts",
+    "tests/api/mn-precinct-result-publication-gate.test.mjs",
+  ]) {
+    assert.equal(
+      inventory.releaseDependencies.some(
+        (item) => item.path === activationDependency,
+      ),
+      true,
+      activationDependency,
+    );
+  }
   assert.ok(inventory.sourceAndDataArtifacts.length > 20);
   assert.ok(inventory.sharedReviewFiles.length >= 8);
   for (const group of [

@@ -145,9 +145,9 @@ function fixture() {
 
 test("Minnesota release review policy classifies every shared or modified integration surface", () => {
   const policy = minnesotaReleaseReviewPolicy();
-  assert.equal(policy.length, 45);
-  assert.equal(new Set(policy.map((item) => item.path)).size, 45);
-  assert.equal(policy.filter((item) => item.decision === "include_entire_patch").length, 30);
+  assert.equal(policy.length, 52);
+  assert.equal(new Set(policy.map((item) => item.path)).size, 52);
+  assert.equal(policy.filter((item) => item.decision === "include_entire_patch").length, 37);
   assert.equal(policy.filter((item) => item.decision === "include_curated_hunks").length, 5);
   assert.equal(policy.filter((item) => item.decision === "include_semantic_projection").length, 9);
   assert.equal(policy.filter((item) => item.decision === "retain_as_external_ledger").length, 1);
@@ -192,11 +192,11 @@ test("Minnesota release review produces a no-production confirmation record", ()
       "pending_human_confirmation_and_clean_application",
     );
     assert.deepEqual(built.document.summary, {
-      reviewedFiles: 45,
-      originalHumanReviewQueue: 42,
+      reviewedFiles: 52,
+      originalHumanReviewQueue: 49,
       additionalModifiedDependenciesReviewed: 3,
       decisions: {
-        include_entire_patch: 30,
+        include_entire_patch: 37,
         include_curated_hunks: 5,
         include_semantic_projection: 9,
         retain_as_external_ledger: 1,

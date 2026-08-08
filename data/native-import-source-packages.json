@@ -352,7 +352,7 @@
           "sourceUrl": "https://www.sos.mn.gov/elections-voting/election-results; https://gis.lcc.mn.gov/html/download.html",
           "localFile": "data/precinct-geometry/MN/{2012-11-06,2016-11-08,2020-11-03,2024-11-05}-general",
           "level": "precinct",
-          "parserHint": "scripts/lib/mn-precinct-gis-plan.mjs verifies the four certified result workbooks, canonical manifests, normalized geometry, and reviewed exact-ID crosswalks; scripts/prepare-mn-precinct-release-candidate.mjs freezes the local-only release contract; scripts/prepare-mn-precinct-release-overlay.mjs isolates exact dependency bytes and shared review projections; and the separate preflight/release runner remains evidence- and authorization-gated."
+      "parserHint": "scripts/lib/mn-precinct-gis-plan.mjs verifies the four certified result workbooks, canonical manifests, normalized geometry, and reviewed exact-ID crosswalks; scripts/prepare-mn-precinct-release-candidate.mjs freezes the release contract; scripts/prepare-mn-precinct-release-overlay.mjs isolates exact dependency bytes and shared review projections; the preflight/release runner remains evidence- and authorization-gated; and scripts/prepare-mn-precinct-public-activation.mjs plus scripts/publish-mn-precinct-geography-status.mjs bind the final preview and publication transition to exact hidden-load and Blob receipts."
         }
       },
       "expected": {
@@ -373,12 +373,12 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff",
         "turnoutMode": "precinct_registered_voters_plus_election_day_registrations",
-        "historicalPrecinctGisMode": "reviewed_local_release_candidate_2012_2016_2020_2024_atomic_hidden_load_implemented_but_production_blocked"
+      "historicalPrecinctGisMode": "reviewed_2012_2016_2020_2024_release_hidden_load_and_receipt_bound_public_activation_implemented_but_production_blocked"
       },
       "caveats": [
         "County presidential totals can be aggregated from the precinct workbook; separate official county text files also exist for historical baseline.",
         "The 2024 native staging artifact does not by itself load the 2012/2016/2020 precinct elections. A separate guarded local planner has verified all four certified result/geometry pairs and exact VTDID joins.",
-        "All four canonical geometry manifests and immutable public delivery remain blocked. A deterministic review now classifies the shared overlay's Minnesota-required, shared-prerequisite, semantic-projection, and explicitly excluded work, but independent human confirmation and clean-worktree application remain pending. The separate atomic hidden-load implementation is also disabled pending current restoration-verified backup and read-only preflight evidence, named independent deployment/rollback roles, and explicit authorization."
+      "All four canonical geometry manifests and immutable public delivery remain blocked. The reviewed production-safe delivery path from PR #209 is merged; the follow-on activation tooling now requires exact hidden-load and Blob publication receipts before producing five deterministic preview surfaces, then requires a fresh verified protected preview, two independent people, an active deployment window, and exact acknowledgements before the atomic database publication-status transition."
       ]
     },
     {

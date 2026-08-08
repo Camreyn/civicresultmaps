@@ -1,6 +1,13 @@
 import { getReadSql, hasReadableDatabase, rethrowReadErrorIfStrict } from "@/db/read-sql";
 import { readPublicDataRevision } from "@/db/public-data-revision";
 import {
+  matchesPrecinctGeometryPublicationMetadata,
+  precinctGeometryPublicManifestSha256,
+  requiresPrecinctGeometryPublicationGate,
+  requiresPrecinctResultPublicationGate,
+} from "./precinct-result-publication";
+import type { PrecinctGeometryManifest } from "./precinct-geography";
+import {
   getCoverage,
   seedElections,
   seedImportRuns,
@@ -286,6 +293,102 @@ export function currentDataSource() {
   return hasReadableDatabase() ? "database" : "seed-fallback";
 }
 
+export async function isPrecinctGeometryManifestPublished(
+  manifest: PrecinctGeometryManifest,
+) {
+  if (!requiresPrecinctGeometryPublicationGate(manifest)) return true;
+  if (
+    manifest.delivery?.format !== "parent_scoped_geojson"
+    || !hasReadableDatabase()
+  ) {
+    return false;
+  }
+
+  const expectedFeatureCount = manifest.delivery.featureCount;
+  const publicManifestSha256 = precinctGeometryPublicManifestSha256(manifest);
+  let rows: Array<{
+    metadata: unknown;
+    crosswalkCount: number;
+    featureCount: number;
+    reportingUnitCount: number;
+    authorizedLinkCount: number;
+  }>;
+  try {
+    const sql = getReadSql();
+    rows = (await sql`
+      select
+        geography_versions.metadata,
+        count(*)::int as "crosswalkCount",
+        count(distinct geography_features.id)::int as "featureCount",
+        count(distinct reporting_units.id)::int as "reportingUnitCount",
+        count(*) filter (
+          where geography_features.id is not null
+            and geography_features.is_geographic = true
+            and reporting_units.election_id = geography_versions.election_id
+            and reporting_units.state_code = geography_versions.state_code
+            and reporting_units.reporting_grain = 'precinct'
+            and reporting_units.is_geographic = true
+            and reporting_units.metadata->>'publicDeliveryAuthorized' = 'true'
+            and reporting_units.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+            and reporting_units.metadata->'releaseCandidate'->>'sha256'
+              = geography_versions.metadata->'releaseCandidate'->>'sha256'
+            and result_sources.metadata->>'publicDeliveryAuthorized' = 'true'
+            and result_sources.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+            and result_sources.metadata->'releaseCandidate'->>'sha256'
+              = geography_versions.metadata->'releaseCandidate'->>'sha256'
+            and reporting_unit_geometry_crosswalks.relationship_type = 'one_to_one'
+            and reporting_unit_geometry_crosswalks.match_method = 'exact_official_id'
+            and reporting_unit_geometry_crosswalks.review_status = 'reviewed'
+            and reporting_unit_geometry_crosswalks.confidence = 'high'
+            and reporting_unit_geometry_crosswalks.metadata->>'manifestId'
+              = geography_versions.metadata->>'manifestId'
+            and reporting_unit_geometry_crosswalks.metadata->>'publicDeliveryAuthorized' = 'true'
+            and reporting_unit_geometry_crosswalks.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+            and reporting_unit_geometry_crosswalks.metadata->'releaseCandidate'->>'sha256'
+              = geography_versions.metadata->'releaseCandidate'->>'sha256'
+        )::int as "authorizedLinkCount"
+      from geography_versions
+      inner join elections
+        on elections.id = geography_versions.election_id
+      inner join reporting_unit_geometry_crosswalks
+        on reporting_unit_geometry_crosswalks.geometry_version_id = geography_versions.id
+      left join geography_features
+        on geography_features.id = reporting_unit_geometry_crosswalks.geography_feature_id
+        and geography_features.geometry_version_id = geography_versions.id
+      inner join reporting_units
+        on reporting_units.id = reporting_unit_geometry_crosswalks.reporting_unit_id
+      left join source_documents result_sources
+        on result_sources.id = reporting_units.source_document_id
+      where geography_versions.state_code = ${manifest.state}
+        and geography_versions.geography_type = ${manifest.geography.level}
+        and geography_versions.boundary_vintage = ${manifest.geography.boundaryVintage}
+        and geography_versions.status = 'published'
+        and geography_versions.metadata->>'manifestId' = ${manifest.id}
+        and geography_versions.metadata->>'publicDeliveryAuthorized' = 'true'
+        and geography_versions.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+        and geography_versions.metadata->'publicActivation'->>'publicManifestSha256'
+          = ${publicManifestSha256}
+        and elections.year = ${manifest.election.year}
+        and elections.election_date = ${manifest.election.date}
+        and lower(elections.office) = ${manifest.election.office.toLowerCase()}
+      group by geography_versions.id
+    `) as typeof rows;
+  } catch (error) {
+    rethrowReadErrorIfStrict(error);
+    return false;
+  }
+
+  const row = rows.length === 1 ? rows[0] : null;
+  return Boolean(
+    row
+    && Number(row.crosswalkCount) === expectedFeatureCount
+    && Number(row.featureCount) === expectedFeatureCount
+    && Number(row.reportingUnitCount) === expectedFeatureCount
+    && Number(row.authorizedLinkCount) === expectedFeatureCount
+    && matchesPrecinctGeometryPublicationMetadata(manifest, row.metadata),
+  );
+}
+
 export async function listStates(): Promise<StateSummary[]> {
   if (!hasReadableDatabase()) {
     return seedStates;
@@ -443,6 +546,7 @@ export async function listResults(input: {
 }): Promise<ResultRow[]> {
   const normalizedOffice = input.office?.trim().toLowerCase() || null;
   const parentGeoid = input.parentGeoid?.trim() || null;
+  const requiresPublicationGate = requiresPrecinctResultPublicationGate(input);
   if (parentGeoid && (input.level !== "precinct" || !/^\d{5}$/.test(parentGeoid))) {
     throw new Error(
       "parentGeoid requires precinct results and a five-digit county GEOID",
@@ -453,6 +557,7 @@ export async function listResults(input: {
       "reporting:" + input.state + ":",
     ) && row.jurisdictionCode.includes(":precinct:" + parentGeoid + ":");
   if (!hasReadableDatabase()) {
+    if (requiresPublicationGate) return [];
     return seedResults
       .filter(
         (row) =>
@@ -517,6 +622,41 @@ export async function listResults(input: {
           and elections.year = ${input.year}
           and reporting_units.parent_geoid = ${parentGeoid}
           and (
+            ${!requiresPublicationGate}
+            or (
+              reporting_units.metadata->>'publicDeliveryAuthorized' = 'true'
+              and reporting_units.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+              and source_documents.metadata->>'publicDeliveryAuthorized' = 'true'
+              and source_documents.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+              and exists (
+                select 1
+                from reporting_unit_geometry_crosswalks gate_crosswalk
+                inner join geography_versions gate_version
+                  on gate_version.id = gate_crosswalk.geometry_version_id
+                inner join geography_features gate_feature
+                  on gate_feature.id = gate_crosswalk.geography_feature_id
+                  and gate_feature.geometry_version_id = gate_version.id
+                where gate_crosswalk.reporting_unit_id = reporting_units.id
+                  and gate_version.election_id = elections.id
+                  and gate_version.state_code = result_rows.state_code
+                  and gate_version.geography_type = 'precinct'
+                  and gate_version.status = 'published'
+                  and gate_version.metadata->>'publicDeliveryAuthorized' = 'true'
+                  and gate_version.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+                  and gate_version.metadata->'releaseCandidate'->>'sha256'
+                    = reporting_units.metadata->'releaseCandidate'->>'sha256'
+                  and gate_version.metadata->>'manifestId'
+                    = gate_crosswalk.metadata->>'manifestId'
+                  and gate_crosswalk.relationship_type = 'one_to_one'
+                  and gate_crosswalk.match_method = 'exact_official_id'
+                  and gate_crosswalk.review_status = 'reviewed'
+                  and gate_crosswalk.confidence = 'high'
+                  and gate_crosswalk.metadata->>'publicDeliveryAuthorized' = 'true'
+                  and gate_crosswalk.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+              )
+            )
+          )
+          and (
             ${normalizedOffice}::text is null
             or lower(elections.office) = ${normalizedOffice}
           )
@@ -538,10 +678,50 @@ export async function listResults(input: {
       from result_rows
       inner join contests on result_rows.contest_id = contests.id
       inner join elections on contests.election_id = elections.id
+      left join reporting_units
+        on result_rows.reporting_unit_id = reporting_units.id
+        and reporting_units.election_id = elections.id
+        and reporting_units.state_code = result_rows.state_code
+        and reporting_units.reporting_grain = 'precinct'
       left join source_documents on result_rows.source_document_id = source_documents.id
       where result_rows.state_code = ${input.state}
         and result_rows.level = ${input.level}
         and elections.year = ${input.year}
+        and (
+          ${!requiresPublicationGate}
+          or (
+            reporting_units.metadata->>'publicDeliveryAuthorized' = 'true'
+            and reporting_units.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+            and source_documents.metadata->>'publicDeliveryAuthorized' = 'true'
+            and source_documents.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+            and exists (
+              select 1
+              from reporting_unit_geometry_crosswalks gate_crosswalk
+              inner join geography_versions gate_version
+                on gate_version.id = gate_crosswalk.geometry_version_id
+              inner join geography_features gate_feature
+                on gate_feature.id = gate_crosswalk.geography_feature_id
+                and gate_feature.geometry_version_id = gate_version.id
+              where gate_crosswalk.reporting_unit_id = reporting_units.id
+                and gate_version.election_id = elections.id
+                and gate_version.state_code = result_rows.state_code
+                and gate_version.geography_type = 'precinct'
+                and gate_version.status = 'published'
+                and gate_version.metadata->>'publicDeliveryAuthorized' = 'true'
+                and gate_version.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+                and gate_version.metadata->'releaseCandidate'->>'sha256'
+                  = reporting_units.metadata->'releaseCandidate'->>'sha256'
+                and gate_version.metadata->>'manifestId'
+                  = gate_crosswalk.metadata->>'manifestId'
+                and gate_crosswalk.relationship_type = 'one_to_one'
+                and gate_crosswalk.match_method = 'exact_official_id'
+                and gate_crosswalk.review_status = 'reviewed'
+                and gate_crosswalk.confidence = 'high'
+                and gate_crosswalk.metadata->>'publicDeliveryAuthorized' = 'true'
+                and gate_crosswalk.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
+            )
+          )
+        )
         and (
           ${normalizedOffice}::text is null
           or lower(elections.office) = ${normalizedOffice}
@@ -550,6 +730,7 @@ export async function listResults(input: {
     `) as typeof rows;
   } catch (error) {
     rethrowReadErrorIfStrict(error);
+    if (requiresPublicationGate) return [];
     return seedResults.filter((row) =>
       row.state === input.state
       && row.year === input.year
