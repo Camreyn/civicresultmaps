@@ -21,6 +21,8 @@ const TEST_FILES = [
   "tests/api/mn-precinct-local-rehearsal.test.mjs",
   "tests/api/mn-precinct-production-release.test.mjs",
   "tests/api/mn-precinct-blob-publication.test.mjs",
+  "tests/api/mn-precinct-public-activation.test.mjs",
+  "tests/api/mn-precinct-result-publication-gate.test.mjs",
   "tests/api/mn-precinct-release-candidate.test.mjs",
   "tests/api/mn-precinct-release-overlay.test.mjs",
   "tests/api/mn-precinct-release-review.test.mjs",

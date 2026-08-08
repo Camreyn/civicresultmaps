@@ -249,7 +249,11 @@ npm.cmd run precinct-gis:production-backup:mn -- -ReleasePackagePath .etl/precin
 Execution additionally requires `-Execute`, the exact package hash in
 `CRM_MN_PRECINCT_BACKUP_PACKAGE_SHA256`, the literal
 `CRM_MN_PRECINCT_BACKUP_ACK=CREATE_FULL_PUBLIC_SCHEMA_ROLLBACK_BACKUP`, and an
-explicitly supplied unpooled production URL. The script uses the verified
+explicitly supplied unpooled production URL. Execution also requires
+`CRM_MN_PRECINCT_BACKUP_ENDPOINT_FINGERPRINT` to equal the fresh preflight's
+full 64-hex fingerprint over normalized host, port, and database name. The
+legacy 12-hex host/database fingerprint remains only an independent approved-
+endpoint check. The script uses the verified
 loopback-only Postgres 17 clone container to make a custom-format dump of the
 entire `public` schema with no exclusions. It restores into the fixed isolated
 `crm_mn_precinct_restore_verify` database, compares every public table and
@@ -270,9 +274,10 @@ production action: it requires `--write`, the exact package hash in
 and a nonempty `CRM_MN_PRECINCT_PUBLIC_FILE_AUTHORIZATION_ID`. It uses a public
 Vercel Blob store, refuses overwrites and random suffixes, uploads every county
 file before any index, re-downloads and re-hashes every object, and records the
-single HTTPS origin. The project currently has no Blob store installed; store
-provisioning and any associated cost are an explicit external-resource choice,
-not an implied part of local preparation. The resulting origin must be set as
+single HTTPS origin. As of 2026-08-08 the linked Vercel project has an existing
+Blob token/store, but no Minnesota delivery receipt has been produced. Any
+future store provisioning or associated cost remains an explicit external-
+resource choice. The resulting origin must be set as
 the server-only `CRM_PRECINCT_GEOGRAPHY_ORIGIN` in a protected preview before
 manifest activation.
 
@@ -356,7 +361,15 @@ In one reviewed Minnesota-specific transaction:
 9. commit only if every expected count and semantic hash agrees.
 
 The canonical manifests remain blocked throughout this phase, so the public
-manifest and precinct-geometry APIs cannot expose the new layers.
+manifest and precinct-geometry APIs cannot expose the new layers. Both public
+data paths also have Minnesota-specific fail-closed database gates. County-
+scoped and unscoped precinct result queries require the exact same-election
+reporting unit, authorized source document, `published` geography version,
+reviewed exact crosswalk, and matching release-package metadata. The precinct-
+geometry route additionally binds the selected static manifest's exact SHA-256,
+delivery declaration, election, feature count, and release identity to the
+same publication audit. Hidden-load rows therefore remain unavailable even
+through direct results or geometry requests.
 
 ### 5. Validate the hidden load and protected preview
 
@@ -370,25 +383,163 @@ year. The established Hennepin County expectations are:
 | 2020 | 425/425 |
 | 2024 | 396/396 |
 
-The protected preview must show the correct year, candidate names, geometry,
-source authority/link, full terms, exact join counts, and zero-vote styling. It
-must also show visible OpenStreetMap attribution and request only the tiles for
-the current county viewport. It must have no failed API response, page error,
-console error, or framework error overlay.
+Use the guarded local rehearsal to show the correct year, candidate names,
+geometry, source authority/link, full terms, exact join counts, zero-vote
+styling, visible OpenStreetMap attribution, and county-bounded tile requests.
+
+The protected deployment proves the production build and environment shape,
+not an early public-data bypass. Record its exact branch Git SHA, deployment ID,
+Deployment Protection check, five tracked activation hashes, and configured
+Blob origin. Reverify the 352 immutable Blob objects against the publication
+receipt. While the database versions remain blocked, direct Minnesota precinct
+results must be empty and the precinct-geometry route must return its no-store
+`404` publication-inactive response. That fail-closed behavior is the expected
+preview result. The full end-to-end public map check occurs immediately after
+the atomic database transition inside the rollback window.
 
 ### 6. Cut over the application
 
 Upload and verify the 348 immutable county GeoJSON files first, then the four
-immutable parent indexes. Configure the exact resulting HTTPS origin as
-`CRM_PRECINCT_GEOGRAPHY_ORIGIN` in a protected preview. Apply the reviewed
-canonical manifest/registry changes only after that preview can verify each
-index, the selected county artifact, and its county-filtered results. Validate
-the protected deployment before promoting its alias to production. The alias
-promotion is the public application cutover; database results and geometry
-must already be validated before it occurs.
+immutable parent indexes. Never overwrite an immutable delivery URL. Any
+changed byte requires a new manifest ID or delivery URL and a new review
+package.
 
-Never overwrite an immutable delivery URL. Any changed byte requires a new
-manifest ID or delivery URL and a new review package.
+The linked Vercel project uses `main` as its production branch. A merge to
+`main` automatically creates the production deployment; there is no later
+manual-alias-only safety gate. The activation deployment by itself is not the
+public data cutover: both Minnesota precinct endpoints remain fail-closed while
+the database geography versions are blocked. Do not merge an activation
+candidate until the protected preview proof is complete, the release roles and
+window are agreed, the exact geometry origin is configured for Production, and
+the previous gate-capable production deployment ID is recorded. The final
+`GO_PUBLIC` decision remains unavailable until the activation deployment itself
+is READY/PROMOTED and both public precinct endpoints have been observed to stay
+blocked.
+
+The canonical and database publication transition is executable only through
+the receipt-bound follow-on tools. After the hidden-load receipt and Blob
+publication evidence exist, generate the static protected-preview candidate:
+
+```powershell
+npm.cmd run precinct-gis:public-activation:mn -- --package=$PKG --package-sha256=$PKG_SHA --production-receipt=$DB_RECEIPT --production-receipt-sha256=$DB_RECEIPT_SHA --blob-evidence=$BLOB_RECEIPT --blob-evidence-sha256=$BLOB_RECEIPT_SHA
+npm.cmd run precinct-gis:public-activation:mn -- --package=$PKG --package-sha256=$PKG_SHA --production-receipt=$DB_RECEIPT --production-receipt-sha256=$DB_RECEIPT_SHA --blob-evidence=$BLOB_RECEIPT --blob-evidence-sha256=$BLOB_RECEIPT_SHA --write
+```
+
+The writer verifies the package's four blocked canonical preimages, the exact
+committed hidden-load totals, every one of the 352 public object hashes/URLs,
+and the single credential-free HTTPS origin. It changes only the canonical
+registry and four year-specific coverage inventories. It writes a hash-pinned
+activation candidate under `.etl/precinct-public-activations/MN`; it does not
+contact production, change database status, deploy, promote, or publish Git.
+Commit those five tracked changes on a review branch. Set the exact origin for
+the Preview environment only, trigger a new preview deployment, and record its
+deployment ID, URL, Deployment Protection check, and exact 40-hex Git SHA.
+Verify that the preview SHA is the activation-branch HEAD and that its five
+tracked output hashes match the activation candidate. An environment change is
+not retroactive: an older preview deployment cannot be used as evidence.
+
+After an independent person verifies the preview, generate the separate public
+authorization template. Leave it at `NO_GO_PUBLIC` until the production
+deployment proof described below exists:
+
+```powershell
+npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --write-authorization-template
+```
+
+The eventually completed record must change `decision` to `GO_PUBLIC`, bind the exact
+release and activation hashes and both receipt hashes, name authorizer,
+operator, verifier, and rollback owner, use at least two distinct people with
+operator different from verifier, record an active UTC deployment/rollback
+window, identify a protected preview verified within four hours, and include a
+production deployment verified within four hours. The production evidence must
+record its deployment ID, URL, 40-hex Git SHA, READY and PROMOTED checks, exact
+origin, all five activation hashes, and successful observations that results
+remain empty and geometry remains `404` while the database is blocked. The
+operator checkout must be tracked-clean and its HEAD must equal that preview
+Git SHA. `protectionVerified`, READY, and PROMOTED remain explicit human
+attestations; retain the corresponding Vercel checks in the release evidence.
+
+Set the exact same origin for the Production environment before the activation
+merge. This does not change an existing deployment; it ensures the next `main`
+deployment receives the value. Record the current gate-capable production
+deployment ID for rollback. The project owner then merges the activation PR.
+Wait for the exact activation deployment to become READY/PROMOTED, record its
+production deployment ID and Git SHA, verify its five tracked hashes and origin,
+and confirm that both Minnesota precinct endpoints still fail closed against
+the blocked database state. Place a hold on unrelated `main` merges for the
+remainder of the cutover/rollback window. Fill those facts into
+`productionDeployment`, have the two people complete the final `GO_PUBLIC`
+record, and hash that exact authorization artifact.
+
+Only after that deployment proof, set all exact acknowledgements and run the
+atomic database status transition as the single public data switch:
+
+```powershell
+$env:CRM_DATABASE_ENVIRONMENT='production'
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_WRITES='I_ACKNOWLEDGE_PUBLIC_PRECINCT_MAP_CUTOVER'
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_PACKAGE_SHA256=$PKG_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_CANDIDATE_SHA256=$ACTIVATION_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_AUTHORIZATION_SHA256=$PUBLIC_AUTHORIZATION_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_ID=$ACTIVATION_ID
+npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --authorization=$PUBLIC_AUTHORIZATION --apply
+```
+
+The runner accepts only an explicitly supplied unpooled production URL. In one
+transaction it revalidates all 16,435 reporting units, 49,305 result rows,
+certified candidate totals, 125 zero-vote units, source provenance, exact
+features/crosswalks, same-election links, and constraints. It then changes only
+the exact four package-bound geography versions to `published`, updates exact
+release-bound metadata counts, stores the activation and authorization hashes
+in the database, increments the public revision, and verifies every
+postcondition. It is idempotent only for that exact activation. It never deploys
+or publishes Git.
+
+After this transaction succeeds, immediately run the post-cutover checks
+against the already READY/PROMOTED activation deployment. The database
+transaction is the public map/results cutover; the runner neither deploys nor
+publishes Git.
+
+If the database commit succeeds but writing its local receipt fails, recover
+the receipt without extending the expired write window or mutating production:
+
+```powershell
+$env:CRM_DATABASE_ENVIRONMENT='production-read-only'
+$env:CRM_MN_PRECINCT_PUBLIC_RECEIPT_RECOVERY='I_ACKNOWLEDGE_READ_ONLY_PUBLICATION_RECEIPT_RECOVERY'
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_PACKAGE_SHA256=$PKG_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_CANDIDATE_SHA256=$ACTIVATION_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_AUTHORIZATION_SHA256=$PUBLIC_AUTHORIZATION_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_ID=$ACTIVATION_ID
+npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --authorization=$PUBLIC_AUTHORIZATION --recover-receipt
+```
+
+Recovery opens a read-only transaction and succeeds only when all four live
+versions, exact metadata, original commit time, authorization hash, and stored
+revision match. It cannot perform the initial publication.
+
+Rollback is a separate decision. Hold all new `main` merges and automatic
+production cutovers. First restore and verify the immediately previous
+gate-capable application deployment (the tooling release with both database
+gates and blocked static manifests). Then use the exact publish receipt to
+create a rollback template and complete it as `GO_ROLLBACK` with a new rollback
+ID, two people, an active window, and the restored deployment ID/Git SHA:
+
+```powershell
+npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --rollback --publication-receipt=$PUBLICATION_RECEIPT --publication-receipt-sha256=$PUBLICATION_RECEIPT_SHA --write-authorization-template
+$env:CRM_DATABASE_ENVIRONMENT='production'
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_WRITES='I_ACKNOWLEDGE_PUBLIC_PRECINCT_MAP_ROLLBACK'
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_PACKAGE_SHA256=$PKG_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_CANDIDATE_SHA256=$ACTIVATION_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_AUTHORIZATION_SHA256=$ROLLBACK_AUTHORIZATION_SHA
+$env:CRM_MN_PRECINCT_PUBLIC_ACTIVATION_ID=$ROLLBACK_ID
+npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --rollback --publication-receipt=$PUBLICATION_RECEIPT --publication-receipt-sha256=$PUBLICATION_RECEIPT_SHA --authorization=$ROLLBACK_AUTHORIZATION
+```
+
+The rollback must match the publish receipt's activation ID, authorization hash,
+revision, and original commit time. It restores the original four caveats,
+returns exact release metadata to unauthorized/blocked, preserves both audit
+records, and increments the public revision. It never deletes immutable Blob
+objects. A rolled-back release cannot be republished in place; reseal and review
+a new release candidate rather than erasing its retained activation history.
 
 ### 7. Post-cutover verification
 
@@ -435,7 +586,7 @@ The following are separate, explicit production decisions:
 - provisioning public immutable-object storage and uploading geometry;
 - setting the server-side immutable geometry origin;
 - changing canonical manifest validation/delivery fields or registry rows;
-- promoting the deployment alias;
+- merging the activation commit to the auto-deployed `main` production branch;
 - publishing a Git branch or pull request.
 
 Local generation, testing, draft manifests, and `.etl` release-package writes do

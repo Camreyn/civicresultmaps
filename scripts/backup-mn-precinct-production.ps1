@@ -22,7 +22,7 @@ $CloneUser = 'crm_clone_admin'
 $VerifyDatabase = 'crm_mn_precinct_restore_verify'
 $BackupRoot = 'C:\tmp\crm-db-clone\mn-release-backups'
 $ContainerBackupRoot = '/backups/mn-release-backups'
-$ExpectedEndpointFingerprint = 'bf2bf2213814'
+$ExpectedLegacyEndpointFingerprint = 'bf2bf2213814'
 
 function Fail([string]$Message) {
   throw "Minnesota production backup aborted: $Message"
@@ -109,6 +109,14 @@ function Assert-RemoteSource([string]$Url) {
 }
 
 function Get-EndpointFingerprint([string]$Url) {
+  $uri = [Uri]$Url
+  $database = [Uri]::UnescapeDataString($uri.AbsolutePath.TrimStart('/'))
+  $port = if ($uri.IsDefaultPort) { '5432' } else { [string]$uri.Port }
+  $identity = @($uri.Host.ToLowerInvariant(), $port, $database) -join "`n"
+  return Get-Sha256 ([Text.Encoding]::UTF8.GetBytes($identity))
+}
+
+function Get-LegacyEndpointFingerprint([string]$Url) {
   $uri = [Uri]$Url
   $bytes = [Text.Encoding]::UTF8.GetBytes($uri.Host.ToLowerInvariant() + $uri.AbsolutePath)
   return (Get-Sha256 $bytes).Substring(0, 12)
@@ -233,13 +241,17 @@ if (-not $Execute) {
     mode = 'plan'
     decision = 'NO_BACKUP_CREATED'
     releaseCandidate = $releaseCandidate
-    sourceEndpointFingerprint = $ExpectedEndpointFingerprint
+    sourceEndpointFingerprint = 'computed_during_execution'
+    sourceEndpointLegacyApprovalFingerprint = $ExpectedLegacyEndpointFingerprint
     includedSchemas = @('public')
     excludedTableDataPatterns = @()
     restoreVerificationRequired = $true
     remoteMutationPerformed = $false
     outputDirectory = $BackupRoot
-    acknowledgementRequired = 'CRM_MN_PRECINCT_BACKUP_ACK=CREATE_FULL_PUBLIC_SCHEMA_ROLLBACK_BACKUP'
+    acknowledgementRequired = @(
+      'CRM_MN_PRECINCT_BACKUP_ACK=CREATE_FULL_PUBLIC_SCHEMA_ROLLBACK_BACKUP',
+      'CRM_MN_PRECINCT_BACKUP_ENDPOINT_FINGERPRINT=<fresh 64-hex preflight endpoint fingerprint>'
+    )
   } | ConvertTo-Json -Depth 6
   exit 0
 }
@@ -253,8 +265,15 @@ if (
 
 $sourceUrl = Get-RequiredSourceUrl
 Assert-RemoteSource $sourceUrl
-if ((Get-EndpointFingerprint $sourceUrl) -ne $ExpectedEndpointFingerprint) {
+if ((Get-LegacyEndpointFingerprint $sourceUrl) -ne $ExpectedLegacyEndpointFingerprint) {
   Fail 'The production endpoint fingerprint is not approved.'
+}
+$sourceEndpointFingerprint = Get-EndpointFingerprint $sourceUrl
+if (
+  $sourceEndpointFingerprint -notmatch '^[a-f0-9]{64}$' -or
+  [Environment]::GetEnvironmentVariable('CRM_MN_PRECINCT_BACKUP_ENDPOINT_FINGERPRINT') -ne $sourceEndpointFingerprint
+) {
+  Fail 'Execution requires the exact fresh 64-hex preflight endpoint fingerprint acknowledgement.'
 }
 $script:Docker = Require-Command docker
 $script:RemoteExecEnv = @(Get-RemoteExecEnv $sourceUrl)
@@ -334,7 +353,8 @@ $manifest = [ordered]@{
   dumpFormat = 'custom'
   includedSchemas = @('public')
   excludedTableDataPatterns = @()
-  sourceEndpointFingerprint = $ExpectedEndpointFingerprint
+  sourceEndpointFingerprint = $sourceEndpointFingerprint
+  sourceEndpointLegacyApprovalFingerprint = $ExpectedLegacyEndpointFingerprint
   sourceServerVersionNum = [int]$identity[0]
   sourceDatabaseBytes = [int64]$identity[1]
   sourcePublicTableCount = $sourceTables.Count

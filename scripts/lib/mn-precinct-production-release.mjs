@@ -99,6 +99,8 @@ export function validateMinnesotaProductionPreflightEvidence(
     || !["absent", "complete"].includes(report?.migration0008?.status)
     || report?.releaseCandidate?.id !== context.releaseCandidate.id
     || report?.releaseCandidate?.sha256 !== context.releaseCandidate.sha256
+    || !/^[a-f0-9]{64}$/.test(report?.endpointFingerprint ?? "")
+    || !/^[a-f0-9]{64}$/.test(context.endpointFingerprint ?? "")
     || report?.endpointFingerprint !== context.endpointFingerprint
   ) {
     throw new Error("Minnesota production preflight evidence is incompatible");
@@ -127,6 +129,8 @@ export function validateMinnesotaProductionBackupEvidence(
     Number(manifest?.manifestVersion) < 3
     || manifest?.backupPurpose !== "mn-precinct-production-release-rollback"
     || !/^[a-f0-9]{64}$/.test(manifest?.dumpSha256 ?? "")
+    || !/^[a-f0-9]{64}$/.test(manifest?.sourceEndpointFingerprint ?? "")
+    || !/^[a-f0-9]{64}$/.test(context.endpointFingerprint ?? "")
     || manifest?.sourceEndpointFingerprint !== context.endpointFingerprint
     || manifest?.releaseCandidate?.id !== context.releaseCandidate.id
     || manifest?.releaseCandidate?.sha256 !== context.releaseCandidate.sha256

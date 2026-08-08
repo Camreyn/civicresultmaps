@@ -6552,3 +6552,109 @@ evidence against its verified top-level package.
   path and root-escape regression test. This is a local evidence-consumption
   correction; the production backup session remained read-only and no schema,
   data, public geometry, environment, or canonical manifest was changed.
+
+### 2026-08-08 - Minnesota receipt-bound public activation tooling
+
+- PR #209 is merged and deployed at `b540c6d`. A clean merged-main audit found
+  that its intentionally separated release surfaces stopped after the hidden
+  load and immutable Blob upload: there was no executable consumer for those
+  receipts, no deterministic canonical-registry transition, and no guarded
+  `geography_versions` publication-status transition. The four canonical MN
+  registry rows therefore remain blocked and delivery-null.
+
+- Added a plan-first public-activation candidate builder. It requires the exact
+  sealed release-package hash, committed hidden-load receipt, and Blob
+  publication evidence. It validates the four blocked source-manifest
+  preimages, all production totals, one credential-free HTTPS origin, and every
+  one of the 348 county files plus four indexes. Its only tracked projections
+  are `data/precinct-geometry-manifests.json` and the four year-specific
+  coverage inventories. The writer is deterministic and idempotent and emits a
+  hash-pinned `.etl` candidate for protected preview; it cannot contact or
+  mutate production, deploy, promote, or publish Git.
+
+- Added a separate guarded database publication-status runner. It consumes the
+  exact activation candidate, re-hashes the five tracked preview surfaces, and
+  requires a `GO_PUBLIC` record bound to the package, activation, database, and
+  Blob evidence. Four named release roles, at least two distinct people,
+  operator/verifier separation, an active rollback window, and a protected
+  preview verified within four hours are mandatory. Exact environment
+  acknowledgements and an explicitly supplied unpooled production URL are also
+  required.
+
+- The database transition is atomic, package-scoped, and idempotent. It locks
+  the Minnesota release scope, verifies exactly four blocked geography
+  versions and 16,435 reviewed crosswalks, changes publication status and
+  release metadata together, and increments the public revision. It still does
+  not deploy or promote the application. A separately acknowledged rollback
+  path returns the exact versions to blocked without deleting immutable public
+  objects.
+
+- Added focused fixtures covering exact receipt binding, deterministic five-
+  file activation, tamper rejection, verified-preview/two-person authorization,
+  and the atomic publication transition. The first focused run passed all six
+  tests. Production remains unchanged: no database write, Blob upload,
+  environment mutation, canonical activation, deployment promotion, or Git
+  publication occurred during this implementation checkpoint. Because these
+  tooling and inventory bytes are release dependencies, the earlier
+  `57d671a02c09...` package is preliminary evidence only; a fresh candidate must
+  be sealed from merged main after this change is reviewed and merged.
+
+- Independent release review found that the first activation draft did not yet
+  make evidence hashes mandatory, could partially write the five tracked
+  surfaces, trusted an editable activation document at execution time, and did
+  not revalidate the live result/join/provenance data immediately before public
+  status. Those paths now fail closed: both receipt SHA-256 values are required,
+  all five files are preflighted before any mutation and restored on a later
+  failure, the activation document is reconstructed byte-for-byte from pinned
+  evidence, and the existing exact Minnesota database validator runs inside the
+  publication transaction before its first write.
+
+- The same review identified a more fundamental hidden-load exposure: the
+  public results API previously filtered precinct rows only by `level`. Both its
+  parent-scoped and unscoped Minnesota precinct queries now require the exact
+  same-election reporting unit, authorized source document, `published`
+  geography version, reviewed one-to-one exact-ID crosswalk, linked feature,
+  and matching release-package flags. Missing database configuration or a read
+  error returns no Minnesota precinct rows rather than seed fallback.
+
+- A final deployment-order audit found that the eligible static registry and
+  results gate could still expose geometry or votes at different moments,
+  depending on whether the application or database transition ran first. The
+  precinct-geometry route now applies the same database publication gate. It
+  binds the selected static manifest's serialized SHA-256, exact delivery,
+  election, manifest ID, feature/link counts, release package, authorized
+  source rows, and publication audit before reading Blob bytes. The safe order
+  is now activation deployment first while both endpoints remain unavailable,
+  followed by the atomic database transaction as the single public data
+  switch. Protected preview verifies the exact candidate and deliberately
+  blocked routes; the guarded local rehearsal supplies the pre-cutover visual
+  map proof. The final `GO_PUBLIC` authorization now also requires the exact
+  READY/PROMOTED production deployment, its five activation hashes and origin,
+  and observed blocked result/geometry gates before the database runner can
+  write.
+
+- Publication metadata now preserves the exact authorization hash, original
+  caveat, activation candidate, Blob receipt/origin, commit time, and public
+  revision in the database. Exact postconditions cover four versions, 16,435
+  features/crosswalks/reporting units, eight source documents, and four import
+  runs. A read-only recovery mode can reconstruct a missing local receipt from
+  that audit state without reopening an expired write window. Rollback requires
+  a new two-person `GO_ROLLBACK` record, an already restored application
+  deployment, and the exact publish receipt/hash/revision/time; it restores the
+  original caveats and retains both audit records.
+
+- Production endpoint fingerprints are now full 64-hex SHA-256 values over the
+  normalized host, explicit/default port, and database name. The backup retains
+  the historical 12-hex host/database value only as an independent approved-
+  endpoint check and requires the fresh preflight fingerprint as a separate
+  execution acknowledgement. Public cutover documentation now reflects the
+  actual Vercel behavior: `main` auto-deploys to production, preview environment
+  changes require a new preview deployment, and the clean operator HEAD must
+  equal the recorded protected-preview Git SHA. Rollback restores the previous
+  gate-capable deployment under a temporary `main` hold before it blocks the
+  database publication state.
+
+- The expanded focused activation and public-result-gate tests pass. No hidden
+  production load, public status change, Blob upload, Vercel environment edit,
+  deployment, or Git publication was performed while closing these review
+  findings.

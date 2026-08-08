@@ -10,7 +10,7 @@ The Postgres 17 clone service is loopback-only at `127.0.0.1:54329`, with a labe
 - `crm_clone_dev` is the writable database for local development and normalization.
 - Dumps and SHA-256 manifests are kept under `C:\tmp\crm-db-clone`.
 
-The dump covers `public` and excludes `public.ui_layout_*` data. The approved source is checked using the `bf2bf2213814` SHA-256 prefix over host plus database path, PostgreSQL major 17, 27 public tables, and only `plpgsql`. The manifest records the actual `server_version_num` and database bytes but size is not a gate.
+The dump covers `public` and excludes `public.ui_layout_*` data. The historical approved source is checked using the `bf2bf2213814` SHA-256 prefix over host plus database path, PostgreSQL major 17, 27 public tables, and only `plpgsql`. New Minnesota release backups additionally bind the fresh preflight's full SHA-256 over normalized host, port, and database name. The manifest records the actual `server_version_num` and database bytes but size is not a gate.
 
 Production lacks `drizzle/0008_typical_thunderbolts.sql`: the geography and `reporting_unit_geometry_crosswalks` tables are absent. The clone script does not apply 0008. After cloning, the coordinator may apply it only to `crm_clone_dev` for precinct normalization and perform any post-migration local sanitization there—never on the snapshot or production source.
 

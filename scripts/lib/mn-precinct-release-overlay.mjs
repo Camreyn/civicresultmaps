@@ -39,6 +39,8 @@ export const MINNESOTA_PACKAGE_SCRIPTS = Object.freeze([
   "precinct-gis:production-preflight:mn",
   "precinct-gis:production-backup:mn",
   "precinct-gis:production-release:mn",
+  "precinct-gis:public-activation:mn",
+  "precinct-gis:publication-status:mn",
   "precinct-gis:rehearsal:mn:verify",
   "precinct-gis:release-candidate:mn",
   "precinct-gis:release-candidate:mn:write",

@@ -86,7 +86,7 @@ Caveat: the precinct ZIP is valid for same-grain review rows and registration-de
 - Turnout denominator: `REG7AM + EDR`
 - County boundary: `data/mn-counties.geojson`
 - Historical native-baseline status: still not loaded through the ordinary 2024 native staging artifact. A separate guarded four-election planner has normalized and locally validated the official 2012, 2016, 2020, and 2024 certified precinct result identities against election-applicable LCC-GIS geometry.
-- Local four-election GIS release candidate: 16,435 precinct reporting units, 49,305 candidate rows, 16,435 geometry features, and 16,435 reviewed exact-ID crosswalks. A content-addressed release-overlay builder, deterministic 23-surface shared-diff classifier, release-specific read-only preflight, and separately guarded atomic migration-plus-hidden-load transaction are implemented locally. Independent confirmation/clean application, canonical manifests, and public delivery remain blocked.
+- Local four-election GIS release candidate: 16,435 precinct reporting units, 49,305 candidate rows, 16,435 geometry features, and 16,435 reviewed exact-ID crosswalks. The production-safe delivery path from PR #209 is merged. The follow-on activation path verifies the exact hidden-load and 352-object Blob receipts, produces only the five deterministic registry/coverage preview surfaces, requires a fresh protected-preview verification and two independent people, and performs the database publication-status transition atomically with an explicit rollback acknowledgement. Canonical manifests and public delivery remain blocked until those production gates pass.
 
 Expected validation:
 

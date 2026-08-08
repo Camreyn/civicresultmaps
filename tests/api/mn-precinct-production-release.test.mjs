@@ -31,7 +31,7 @@ import {
 } from "../../scripts/lib/mn-precinct-production-release.mjs";
 
 const PACKAGE_SHA = "a".repeat(64);
-const ENDPOINT = "123456789abc";
+const ENDPOINT = "1".repeat(64);
 const NOW = new Date("2026-08-08T01:00:00.000Z");
 
 function candidateDocument() {
@@ -130,6 +130,22 @@ test("Minnesota preflight requires a remote read-only exact package", () => {
   assert.throws(
     () => productionEndpointFingerprint("postgresql://user:pass@127.0.0.1/db"),
     /refuses a loopback/,
+  );
+  const defaultEndpoint = productionEndpointFingerprint(
+    "postgresql://user:pass@db.example.com/crm_production?sslmode=require",
+  );
+  assert.match(defaultEndpoint, /^[a-f0-9]{64}$/);
+  assert.notEqual(
+    defaultEndpoint,
+    productionEndpointFingerprint(
+      "postgresql://user:pass@db.example.com:6432/crm_production?sslmode=require",
+    ),
+  );
+  assert.notEqual(
+    defaultEndpoint,
+    productionEndpointFingerprint(
+      "postgresql://user:pass@db.example.com/other_database?sslmode=require",
+    ),
   );
   const report = preflightReport();
   assert.equal(report.migration0008.status, "absent");
@@ -346,6 +362,9 @@ test("Minnesota production CLIs do not load env files or authorize public cutove
   assert.doesNotMatch(backupSource, /--exclude-table-data/);
   assert.match(backupSource, /exactSourceRowCounts = \$true/);
   assert.match(backupSource, /releaseCandidate = \$releaseCandidate/);
+  assert.match(backupSource, /CRM_MN_PRECINCT_BACKUP_ENDPOINT_FINGERPRINT/);
+  assert.match(backupSource, /Get-LegacyEndpointFingerprint/);
+  assert.match(backupSource, /@\(\$uri\.Host\.ToLowerInvariant\(\), \$port, \$database\)/);
   assert.doesNotMatch(backupSource, /docker compose|-f \$ComposeFile/);
   assert.doesNotMatch(applySource, /canonicalManifestChanged: true|publicFileWritten: true/);
 });

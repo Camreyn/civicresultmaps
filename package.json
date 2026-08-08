@@ -226,6 +226,8 @@
     "precinct-gis:production-preflight:mn": "node --experimental-strip-types scripts/report-mn-precinct-production-preflight.mjs",
     "precinct-gis:production-backup:mn": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-mn-precinct-production.ps1",
     "precinct-gis:production-release:mn": "node --experimental-strip-types scripts/apply-mn-precinct-release.mjs",
+    "precinct-gis:public-activation:mn": "node --experimental-strip-types scripts/prepare-mn-precinct-public-activation.mjs",
+    "precinct-gis:publication-status:mn": "node --experimental-strip-types scripts/publish-mn-precinct-geography-status.mjs",
     "precinct-gis:rehearsal:mn:verify": "node --experimental-strip-types scripts/verify-mn-precinct-rehearsal.mjs",
     "precinct-gis:release-candidate:mn": "node --experimental-strip-types scripts/prepare-mn-precinct-release-candidate.mjs",
     "precinct-gis:release-candidate:mn:write": "node --experimental-strip-types scripts/prepare-mn-precinct-release-candidate.mjs --write",

@@ -7,6 +7,7 @@ import {
 } from "@/lib/api";
 import { readParentScopedPrecinctDelivery } from "@/lib/precinct-delivery-server";
 import { listPrecinctGeometryManifestViews } from "@/lib/precinct-geography";
+import { isPrecinctGeometryManifestPublished } from "@/lib/data-access";
 import {
   findMinnesotaPrecinctRehearsalManifest,
   readMinnesotaPrecinctRehearsalDelivery,
@@ -63,6 +64,9 @@ export async function GET(request: NextRequest) {
       "parent-scoped GeoJSON delivery is unavailable for this manifest",
       409,
     );
+  }
+  if (manifest && !(await isPrecinctGeometryManifestPublished(manifest))) {
+    return errorResponse("precinct geography publication is not active", 404);
   }
 
   try {
