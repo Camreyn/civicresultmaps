@@ -156,3 +156,124 @@ test("server rejects unreviewed and path-escaping deliveries", async () => {
     /unsafe path segment/,
   );
 });
+
+test("server reads only the hash-pinned parent asset behind a remote index", async () => {
+  const metadata = {
+    schemaVersion: 1,
+    manifestId: "ia-2024-11-05-precinct-v1",
+    state: "IA",
+    electionId: "2024-11-05-general",
+    boundaryVintage: "2024-11-05",
+    sourceAuthority: "Iowa Secretary of State",
+    sourceUrl: "https://example.gov/precincts",
+    licenseOrTerms: "Retain this source notice.",
+  };
+  const parentCollections = new Map([
+    ["19001", {
+      type: "FeatureCollection",
+      metadata,
+      features: [feature("P1", "19001")],
+    }],
+    ["19003", {
+      type: "FeatureCollection",
+      metadata,
+      features: [feature("P2", "19003")],
+    }],
+  ]);
+  const parentArtifacts = [...parentCollections].map(
+    ([parentGeoid, collection]) => {
+      const bytes = Buffer.from(JSON.stringify(collection) + "\n");
+      const sha256 = createHash("sha256").update(bytes).digest("hex");
+      return {
+        parentGeoid,
+        path: "parents/" + parentGeoid + "-" + sha256.slice(0, 12) + ".geojson",
+        sha256,
+        byteCount: bytes.byteLength,
+        featureCount: collection.features.length,
+        bytes,
+      };
+    },
+  );
+  const index = {
+    schemaVersion: 1,
+    format: "parent_scoped_geojson",
+    metadata,
+    featureIdProperty: "geometryFeatureId",
+    resultUnitProperty: "resultUnitCode",
+    parentGeoidProperty: "parentGeoid",
+    parentCount: parentArtifacts.length,
+    featureCount: 2,
+    parents: parentArtifacts.map(({ bytes: _bytes, ...artifact }) => artifact),
+  };
+  const indexBytes = Buffer.from(JSON.stringify(index) + "\n");
+  const indexSha256 = createHash("sha256").update(indexBytes).digest("hex");
+  const indexUrl =
+    "/data/geography/ia/2024/precinct/ia-v1-"
+    + indexSha256.slice(0, 12)
+    + "/index.json";
+  const remote = new Map([
+    [indexUrl, indexBytes],
+    ...parentArtifacts.map((artifact) => [
+      indexUrl.slice(0, indexUrl.lastIndexOf("/") + 1) + artifact.path,
+      artifact.bytes,
+    ]),
+  ]);
+  const requested = [];
+  const fetchImpl = async (url) => {
+    const pathname = new URL(url).pathname;
+    requested.push(pathname);
+    const bytes = remote.get(pathname);
+    return new Response(bytes ?? "missing", { status: bytes ? 200 : 404 });
+  };
+  const manifest = {
+    id: metadata.manifestId,
+    state: metadata.state,
+    election: { id: metadata.electionId },
+    geography: { boundaryVintage: metadata.boundaryVintage },
+    source: {
+      authority: metadata.sourceAuthority,
+      url: metadata.sourceUrl,
+      licenseOrTerms: metadata.licenseOrTerms,
+    },
+    eligible: true,
+    delivery: {
+      format: "parent_scoped_geojson",
+      url: indexUrl,
+      byteCount: indexBytes.byteLength,
+      sha256: indexSha256,
+      featureIdProperty: "geometryFeatureId",
+      resultUnitProperty: "resultUnitCode",
+      parentGeoidProperty: "parentGeoid",
+      parentCount: 2,
+      featureCount: 2,
+    },
+  };
+
+  const delivery = await readParentScopedPrecinctDelivery(
+    manifest,
+    "19001",
+    {
+      deliveryOrigin: "https://public-geometry.example/",
+      fetchImpl,
+    },
+  );
+  assert.equal(delivery.collection.features.length, 1);
+  assert.equal(delivery.collection.features[0].properties.parentGeoid, "19001");
+  assert.equal(delivery.indexSha256, indexSha256);
+  assert.deepEqual(requested, [
+    indexUrl,
+    indexUrl.slice(0, indexUrl.lastIndexOf("/") + 1)
+      + parentArtifacts[0].path,
+  ]);
+
+  const badParent = Buffer.from(parentArtifacts[0].bytes);
+  badParent[badParent.length - 2] ^= 1;
+  remote.set(requested[1], badParent);
+  await assert.rejects(
+    () => readParentScopedPrecinctDelivery(manifest, "19001", {
+      deliveryOrigin: "https://public-geometry.example/",
+      fetchImpl,
+    }),
+    /SHA-256 does not match index/,
+  );
+});

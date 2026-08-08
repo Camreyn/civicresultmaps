@@ -439,8 +439,19 @@ export async function listResults(input: {
   year: number;
   level: string;
   office?: string;
+  parentGeoid?: string;
 }): Promise<ResultRow[]> {
   const normalizedOffice = input.office?.trim().toLowerCase() || null;
+  const parentGeoid = input.parentGeoid?.trim() || null;
+  if (parentGeoid && (input.level !== "precinct" || !/^\d{5}$/.test(parentGeoid))) {
+    throw new Error(
+      "parentGeoid requires precinct results and a five-digit county GEOID",
+    );
+  }
+  const matchesParent = (row: ResultRow) => !parentGeoid
+    || row.jurisdictionCode.startsWith(
+      "reporting:" + input.state + ":",
+    ) && row.jurisdictionCode.includes(":precinct:" + parentGeoid + ":");
   if (!hasReadableDatabase()) {
     return seedResults
       .filter(
@@ -451,7 +462,8 @@ export async function listResults(input: {
           && (
             normalizedOffice === null
             || row.office.toLowerCase() === normalizedOffice
-          ),
+          )
+          && matchesParent(row),
       )
       .map((row) => ({
         ...row,
@@ -477,7 +489,40 @@ export async function listResults(input: {
 
   try {
     const sql = getReadSql();
-    rows = (await sql`
+    rows = parentGeoid
+      ? (await sql`
+        select
+          result_rows.state_code as "stateCode",
+          elections.office,
+          result_rows.level,
+          result_rows.jurisdiction_tag as "jurisdictionTag",
+          result_rows.jurisdiction_code as "jurisdictionCode",
+          result_rows.jurisdiction_name as "jurisdictionName",
+          result_rows.candidate_name as "candidateName",
+          result_rows.party,
+          result_rows.votes,
+          result_rows.source_document_id as "sourceDocumentId",
+          source_documents.slug as "sourceSlug"
+        from result_rows
+        inner join contests on result_rows.contest_id = contests.id
+        inner join elections on contests.election_id = elections.id
+        inner join reporting_units
+          on result_rows.reporting_unit_id = reporting_units.id
+          and reporting_units.election_id = elections.id
+          and reporting_units.state_code = result_rows.state_code
+          and reporting_units.reporting_grain = 'precinct'
+        left join source_documents on result_rows.source_document_id = source_documents.id
+        where result_rows.state_code = ${input.state}
+          and result_rows.level = ${input.level}
+          and elections.year = ${input.year}
+          and reporting_units.parent_geoid = ${parentGeoid}
+          and (
+            ${normalizedOffice}::text is null
+            or lower(elections.office) = ${normalizedOffice}
+          )
+        order by result_rows.jurisdiction_name, result_rows.candidate_name
+      `) as typeof rows
+      : (await sql`
       select
         result_rows.state_code as "stateCode",
         elections.office,
@@ -513,6 +558,7 @@ export async function listResults(input: {
         normalizedOffice === null
         || row.office.toLowerCase() === normalizedOffice
       )
+      && matchesParent(row)
     );
   }
 

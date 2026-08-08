@@ -5,6 +5,7 @@ import {
   joinPrecinctDeliveryResults,
   parentScopedPrecinctDeliveryApiPath,
   selectPrecinctDeliveryFeatures,
+  selectPrecinctParentDeliveryArtifact,
 } from "../../src/lib/precinct-map-delivery.ts";
 
 function metadata() {
@@ -121,6 +122,55 @@ test("delivery selection is parent-qualified and bounded", () => {
         1,
       ),
     /above the safe client limit/,
+  );
+});
+
+test("parent delivery index is hash-pinned, parent-qualified, and bounded", () => {
+  const index = {
+    schemaVersion: 1,
+    format: "parent_scoped_geojson",
+    metadata: metadata(),
+    featureIdProperty: "geometryFeatureId",
+    resultUnitProperty: "resultUnitCode",
+    parentGeoidProperty: "parentGeoid",
+    parentCount: 2,
+    featureCount: 3,
+    parents: [
+      {
+        parentGeoid: "19001",
+        path: "parents/19001-aaaaaaaaaaaa.geojson",
+        sha256: "a".repeat(64),
+        byteCount: 100,
+        featureCount: 2,
+      },
+      {
+        parentGeoid: "19003",
+        path: "parents/19003-bbbbbbbbbbbb.geojson",
+        sha256: "b".repeat(64),
+        byteCount: 80,
+        featureCount: 1,
+      },
+    ],
+  };
+  const selected = selectPrecinctParentDeliveryArtifact(index, "19001");
+  assert.equal(selected.artifact.featureCount, 2);
+  assert.equal(selected.index.featureCount, 3);
+  assert.throws(
+    () => selectPrecinctParentDeliveryArtifact({
+      ...index,
+      parents: [{
+        ...index.parents[0],
+        path: "../private.geojson",
+      }, index.parents[1]],
+    }, "19001"),
+    /safe content-addressed parent artifact/,
+  );
+  assert.throws(
+    () => selectPrecinctParentDeliveryArtifact({
+      ...index,
+      featureCount: 4,
+    }, "19001"),
+    /feature counts must equal/,
   );
 });
 

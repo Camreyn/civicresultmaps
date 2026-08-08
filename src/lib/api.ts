@@ -80,6 +80,11 @@ export const levelQuery = z
   .enum(["county", "state", "district", "precinct", "city", "city_town", "town", "federal_precincts", "non_geographic"])
   .default("county");
 
+export const parentGeoidQuery = z
+  .string()
+  .trim()
+  .regex(/^\d{5}$/, "parentGeoid must be a five-digit county GEOID");
+
 export function apiEnvelope<T>(data: T, meta: Record<string, unknown> = {}) {
   return {
     data,

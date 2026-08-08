@@ -38,6 +38,26 @@ export type PrecinctDeliveryFeatureCollection = {
   features: PrecinctDeliveryFeature[];
 };
 
+export type PrecinctParentDeliveryArtifact = {
+  parentGeoid: string;
+  path: string;
+  sha256: string;
+  byteCount: number;
+  featureCount: number;
+};
+
+export type PrecinctParentDeliveryIndex = {
+  schemaVersion: 1;
+  format: "parent_scoped_geojson";
+  metadata: PrecinctDeliveryMetadata;
+  featureIdProperty: string;
+  resultUnitProperty: string;
+  parentGeoidProperty: string;
+  parentCount: number;
+  featureCount: number;
+  parents: PrecinctParentDeliveryArtifact[];
+};
+
 export type JoinedPrecinctDeliveryFeature = {
   feature: PrecinctDeliveryFeature;
   result: ResultRow | null;
@@ -57,6 +77,175 @@ function requiredString(
     throw new Error(context + "." + key + " must be a nonempty string");
   }
   return result;
+}
+
+function requiredPositiveInteger(
+  value: Record<string, unknown>,
+  key: string,
+  context: string,
+) {
+  const result = value[key];
+  if (
+    typeof result !== "number"
+    || !Number.isSafeInteger(result)
+    || result <= 0
+  ) {
+    throw new Error(context + "." + key + " must be a positive integer");
+  }
+  return Number(result);
+}
+
+function deliveryMetadata(value: unknown): PrecinctDeliveryMetadata {
+  if (!isRecord(value) || value.schemaVersion !== 1) {
+    throw new Error("precinct delivery metadata schemaVersion must equal 1");
+  }
+  const metadata = {
+    schemaVersion: 1 as const,
+    manifestId: requiredString(value, "manifestId", "metadata"),
+    state: requiredString(value, "state", "metadata"),
+    electionId: requiredString(value, "electionId", "metadata"),
+    boundaryVintage: requiredString(value, "boundaryVintage", "metadata"),
+    sourceAuthority: requiredString(value, "sourceAuthority", "metadata"),
+    sourceUrl: requiredString(value, "sourceUrl", "metadata"),
+    licenseOrTerms: requiredString(value, "licenseOrTerms", "metadata"),
+  };
+  if (!/^[A-Z]{2}$/.test(metadata.state)) {
+    throw new Error("metadata.state must be a two-letter state code");
+  }
+  if (!metadata.sourceUrl.startsWith("https://")) {
+    throw new Error("metadata.sourceUrl must use HTTPS");
+  }
+  return metadata;
+}
+
+function isSafeParentArtifactPath(value: string, parentGeoid: string) {
+  if (
+    !new RegExp(
+      "^parents/" + parentGeoid + "-[a-f0-9]{12}\\.geojson$",
+    ).test(value)
+    || value.includes("\\")
+    || value.includes("?")
+    || value.includes("#")
+  ) {
+    return false;
+  }
+  try {
+    return value.split("/").every((segment) => {
+      const decoded = decodeURIComponent(segment);
+      return decoded !== "."
+        && decoded !== ".."
+        && !decoded.includes("/")
+        && !decoded.includes("\\");
+    });
+  } catch {
+    return false;
+  }
+}
+
+export function selectPrecinctParentDeliveryArtifact(
+  value: unknown,
+  parentGeoid: string,
+  limit = MAX_SELECTED_PARENT_PRECINCT_FEATURES,
+): {
+  index: PrecinctParentDeliveryIndex;
+  artifact: PrecinctParentDeliveryArtifact;
+} {
+  if (!/^\d{5}$/.test(parentGeoid)) {
+    throw new Error("parentGeoid must be a five-digit county GEOID");
+  }
+  if (
+    !isRecord(value)
+    || value.schemaVersion !== 1
+    || value.format !== "parent_scoped_geojson"
+  ) {
+    throw new Error(
+      "precinct parent delivery index must use schemaVersion 1 and parent_scoped_geojson",
+    );
+  }
+  const metadata = deliveryMetadata(value.metadata);
+  const featureIdProperty = requiredString(
+    value,
+    "featureIdProperty",
+    "index",
+  );
+  const resultUnitProperty = requiredString(
+    value,
+    "resultUnitProperty",
+    "index",
+  );
+  const parentGeoidProperty = requiredString(
+    value,
+    "parentGeoidProperty",
+    "index",
+  );
+  const parentCount = requiredPositiveInteger(value, "parentCount", "index");
+  const featureCount = requiredPositiveInteger(value, "featureCount", "index");
+  if (!Array.isArray(value.parents) || value.parents.length !== parentCount) {
+    throw new Error("index.parents length must equal index.parentCount");
+  }
+
+  const seen = new Set<string>();
+  let indexedFeatures = 0;
+  const parents = value.parents.map((candidate, index) => {
+    if (!isRecord(candidate)) {
+      throw new Error("index.parents[" + index + "] must be an object");
+    }
+    const context = "index.parents[" + index + "]";
+    const candidateParent = requiredString(candidate, "parentGeoid", context);
+    if (!/^\d{5}$/.test(candidateParent) || seen.has(candidateParent)) {
+      throw new Error(context + ".parentGeoid must be unique and five digits");
+    }
+    seen.add(candidateParent);
+    const artifactPath = requiredString(candidate, "path", context);
+    if (!isSafeParentArtifactPath(artifactPath, candidateParent)) {
+      throw new Error(context + ".path is not a safe content-addressed parent artifact");
+    }
+    const artifactSha256 = requiredString(candidate, "sha256", context)
+      .toLowerCase();
+    if (!/^[a-f0-9]{64}$/.test(artifactSha256)) {
+      throw new Error(context + ".sha256 must be a SHA-256 value");
+    }
+    const byteCount = requiredPositiveInteger(candidate, "byteCount", context);
+    const candidateFeatureCount = requiredPositiveInteger(
+      candidate,
+      "featureCount",
+      context,
+    );
+    if (candidateFeatureCount > limit) {
+      throw new Error(
+        context + ".featureCount is above the safe client limit " + limit,
+      );
+    }
+    indexedFeatures += candidateFeatureCount;
+    return {
+      parentGeoid: candidateParent,
+      path: artifactPath,
+      sha256: artifactSha256,
+      byteCount,
+      featureCount: candidateFeatureCount,
+    };
+  });
+  if (indexedFeatures !== featureCount) {
+    throw new Error("indexed parent feature counts must equal index.featureCount");
+  }
+  const artifact = parents.find((entry) => entry.parentGeoid === parentGeoid);
+  if (!artifact) {
+    throw new Error("requested parent is not present in the delivery index");
+  }
+  return {
+    index: {
+      schemaVersion: 1,
+      format: "parent_scoped_geojson",
+      metadata,
+      featureIdProperty,
+      resultUnitProperty,
+      parentGeoidProperty,
+      parentCount,
+      featureCount,
+      parents,
+    },
+    artifact,
+  };
 }
 
 export function geographyManifestApiPath(options: {
@@ -118,37 +307,7 @@ export function selectPrecinctDeliveryFeatures(
   if (!Array.isArray(value.features)) {
     throw new Error("precinct delivery features must be an array");
   }
-  if (!isRecord(value.metadata) || value.metadata.schemaVersion !== 1) {
-    throw new Error("precinct delivery metadata schemaVersion must equal 1");
-  }
-  const metadata = {
-    schemaVersion: 1 as const,
-    manifestId: requiredString(value.metadata, "manifestId", "metadata"),
-    state: requiredString(value.metadata, "state", "metadata"),
-    electionId: requiredString(value.metadata, "electionId", "metadata"),
-    boundaryVintage: requiredString(
-      value.metadata,
-      "boundaryVintage",
-      "metadata",
-    ),
-    sourceAuthority: requiredString(
-      value.metadata,
-      "sourceAuthority",
-      "metadata",
-    ),
-    sourceUrl: requiredString(value.metadata, "sourceUrl", "metadata"),
-    licenseOrTerms: requiredString(
-      value.metadata,
-      "licenseOrTerms",
-      "metadata",
-    ),
-  };
-  if (!/^[A-Z]{2}$/.test(metadata.state)) {
-    throw new Error("metadata.state must be a two-letter state code");
-  }
-  if (!metadata.sourceUrl.startsWith("https://")) {
-    throw new Error("metadata.sourceUrl must use HTTPS");
-  }
+  const metadata = deliveryMetadata(value.metadata);
 
   const selected = value.features.flatMap((candidate, index) => {
     if (!isRecord(candidate) || candidate.type !== "Feature") {

@@ -8,6 +8,9 @@ import {
   buildMinnesotaPrecinctGisPlan,
 } from "./mn-precinct-gis-plan.mjs";
 import {
+  buildParentScopedPrecinctDeliveryPackage,
+} from "./precinct-parent-delivery-builder.mjs";
+import {
   inspectPrecinctGeometryManifest,
 } from "../../src/lib/precinct-geography.ts";
 
@@ -39,6 +42,7 @@ const RELEASE_DEPENDENCY_PATHS = Object.freeze([
   "drizzle/meta/_journal.json",
   "drizzle/meta/0008_snapshot.json",
   "scripts/apply-mn-precinct-release.mjs",
+  "scripts/backup-mn-precinct-production.ps1",
   "scripts/build-precinct-delivery-geometry.mjs",
   "scripts/clone-production-db.ps1",
   "scripts/collect-mn-2012-precinct-geometry-reviewed.mjs",
@@ -49,13 +53,16 @@ const RELEASE_DEPENDENCY_PATHS = Object.freeze([
   "scripts/lib/mn-precinct-gis-plan.mjs",
   "scripts/lib/mn-precinct-production-preflight.mjs",
   "scripts/lib/mn-precinct-production-release.mjs",
+  "scripts/lib/mn-precinct-blob-publication.mjs",
   "scripts/lib/mn-precinct-release-candidate.mjs",
   "scripts/lib/mn-precinct-release-overlay.mjs",
   "scripts/lib/mn-precinct-release-review.mjs",
   "scripts/lib/precinct-delivery-builder.mjs",
+  "scripts/lib/precinct-parent-delivery-builder.mjs",
   "scripts/lib/precinct-geometry-validation.mjs",
   "scripts/prepare-mn-precinct-release-candidate.mjs",
   "scripts/prepare-mn-precinct-release-overlay.mjs",
+  "scripts/publish-mn-precinct-delivery-assets.mjs",
   "scripts/promote-native-staging-local.mjs",
   "scripts/review-mn-precinct-release-overlay.mjs",
   "scripts/report-mn-precinct-production-preflight.mjs",
@@ -77,6 +84,7 @@ const RELEASE_DEPENDENCY_PATHS = Object.freeze([
   "src/db/neon-transaction.ts",
   "src/db/read-sql.ts",
   "src/db/schema.ts",
+  "src/lib/api.ts",
   "src/lib/api-version.ts",
   "src/lib/data-access.ts",
   "src/lib/mn-precinct-rehearsal-server.ts",
@@ -98,11 +106,13 @@ const RELEASE_DEPENDENCY_PATHS = Object.freeze([
   "tests/api/mn-precinct-gis-local-setup.test.mjs",
   "tests/api/mn-precinct-local-rehearsal.test.mjs",
   "tests/api/mn-precinct-production-release.test.mjs",
+  "tests/api/mn-precinct-blob-publication.test.mjs",
   "tests/api/mn-precinct-release-candidate.test.mjs",
   "tests/api/mn-precinct-release-overlay.test.mjs",
   "tests/api/mn-precinct-release-review.test.mjs",
   "tests/api/mn-zero-vote-precinct-display.test.mjs",
   "tests/api/precinct-openstreetmap-basemap.test.mjs",
+  "tests/api/precinct-parent-delivery-builder.test.mjs",
   "tests/api/precinct-delivery-server.test.mjs",
   "tests/api/precinct-geography-schema.test.mjs",
   "tests/api/precinct-map-delivery.test.mjs",
@@ -364,12 +374,14 @@ function validateLocalDatabaseReport(report, plan) {
   };
 }
 
-function proposedPublicUrl(year) {
+function proposedPublicUrl(year, indexSha256) {
   return "/data/geography/mn/"
     + year.electionDate
     + "/precinct/"
     + year.manifest.id
-    + ".geojson";
+    + "-"
+    + indexSha256.slice(0, 12)
+    + "/index.json";
 }
 
 function draftManifestForYear(year, delivery) {
@@ -384,12 +396,15 @@ function draftManifestForYear(year, delivery) {
     warnings: [...editorial.warnings],
   };
   draft.delivery = {
-    format: "geojson",
-    url: proposedPublicUrl(year),
-    sha256: delivery.sha256,
-    byteCount: delivery.byteCount,
+    format: "parent_scoped_geojson",
+    url: proposedPublicUrl(year, delivery.indexSha256),
+    sha256: delivery.indexSha256,
+    byteCount: delivery.indexByteCount,
     featureIdProperty: "geometryFeatureId",
     resultUnitProperty: "resultUnitCode",
+    parentGeoidProperty: "parentGeoid",
+    parentCount: delivery.parentCount,
+    featureCount: delivery.featureCount,
   };
   draft.caveats = [...editorial.caveats];
   const inspection = inspectPrecinctGeometryManifest(draft);
@@ -425,18 +440,36 @@ function buildYearRelease(root, year, registryManifest, dataPaths) {
     byteCount: candidateBuild.byteCount,
     sha256: candidateBuild.sha256,
   });
-  const draftManifest = draftManifestForYear(year, candidateArtifact);
-  const publicDryRun = buildPrecinctDeliveryArtifact({
+  const candidateCollection = readJsonArtifact(
     root,
-    manifest: draftManifest,
-    candidate: false,
-    write: false,
-  });
+    candidateBuild.output,
+    [".etl/precinct-delivery-candidates/"],
+  ).value;
+  const parentPackage = buildParentScopedPrecinctDeliveryPackage(
+    candidateCollection,
+  );
+  const draftManifest = draftManifestForYear(year, parentPackage);
+  const publicDryRun = {
+    output: draftManifest.delivery.url,
+    declarationMatches:
+      draftManifest.delivery.sha256 === parentPackage.indexSha256
+      && draftManifest.delivery.byteCount === parentPackage.indexByteCount,
+    publicEligible:
+      inspectPrecinctGeometryManifest(draftManifest)
+        .publicEligibilityReasons.length === 0,
+    featureCount: parentPackage.featureCount,
+    parentCount: parentPackage.parentCount,
+    resultUnitCount: parentPackage.resultUnitCount,
+    byteCount: parentPackage.indexByteCount,
+    sha256: parentPackage.indexSha256,
+    writeRequested: false,
+    writeDisposition: "dry_run",
+  };
   if (
     publicDryRun.declarationMatches !== true
     || publicDryRun.publicEligible !== true
-    || publicDryRun.sha256 !== candidateArtifact.sha256
-    || publicDryRun.byteCount !== candidateArtifact.byteCount
+    || publicDryRun.sha256 !== parentPackage.indexSha256
+    || publicDryRun.byteCount !== parentPackage.indexByteCount
     || publicDryRun.featureCount !== year.reportingUnits.length
   ) {
     throw new Error("Minnesota " + year.year + " public delivery dry run drifted");
@@ -447,6 +480,20 @@ function buildYearRelease(root, year, registryManifest, dataPaths) {
     "draft-manifests",
     draftManifest.id + ".json",
   );
+  const deliveryAssetRoot = path.posix.join(
+    "delivery-assets",
+    draftManifest.id + "-" + parentPackage.indexSha256.slice(0, 12),
+  );
+  const deliveryFiles = [
+    {
+      path: path.posix.join(deliveryAssetRoot, "index.json"),
+      bytes: parentPackage.indexBytes,
+    },
+    ...parentPackage.parentArtifacts.map((artifact) => ({
+      path: path.posix.join(deliveryAssetRoot, artifact.path),
+      bytes: artifact.bytes,
+    })),
+  ];
 
   for (const artifactPath of [
     year.manifestPath,
@@ -507,6 +554,38 @@ function buildYearRelease(root, year, registryManifest, dataPaths) {
       parentCount: candidateBuild.parentCount,
       resultUnitCount: candidateBuild.resultUnitCount,
     },
+    parentScopedDelivery: {
+      format: "parent_scoped_geojson",
+      originEnvironmentVariable: "CRM_PRECINCT_GEOGRAPHY_ORIGIN",
+      index: {
+        packageRelativePath: path.posix.join(
+          deliveryAssetRoot,
+          "index.json",
+        ),
+        publicUrl: draftManifest.delivery.url,
+        byteCount: parentPackage.indexByteCount,
+        sha256: parentPackage.indexSha256,
+      },
+      parentCount: parentPackage.parentCount,
+      featureCount: parentPackage.featureCount,
+      resultUnitCount: parentPackage.resultUnitCount,
+      parentArtifactByteCount: parentPackage.parentArtifactByteCount,
+      parentArtifacts: parentPackage.parentArtifacts.map(
+        ({ bytes: _bytes, path: artifactPath, ...artifact }) => ({
+          ...artifact,
+          packageRelativePath: path.posix.join(
+            deliveryAssetRoot,
+            artifactPath,
+          ),
+          publicUrl: path.posix.join(
+            path.posix.dirname(draftManifest.delivery.url),
+            artifactPath,
+          ),
+        }),
+      ),
+      electionValuesInDelivery: false,
+      publicationPerformed: false,
+    },
     proposedPublicDelivery: draftManifest.delivery,
     draftManifest: {
       path: draftPath,
@@ -529,6 +608,7 @@ function buildYearRelease(root, year, registryManifest, dataPaths) {
     },
     draftManifestValue: draftManifest,
     draftManifestBytes: draftBytes,
+    deliveryFiles,
   };
 }
 
@@ -583,7 +663,12 @@ export function buildMinnesotaPrecinctReleaseCandidate(options = {}) {
       dataPaths,
     ));
 
-  const years = yearBuilds.map(({ draftManifestValue, draftManifestBytes, ...year }) => year);
+  const years = yearBuilds.map(({
+    draftManifestValue,
+    draftManifestBytes,
+    deliveryFiles: _deliveryFiles,
+    ...year
+  }) => year);
   const migration = artifactSummary(root, "drizzle/0008_typical_thunderbolts.sql");
   const releaseDependencies = inventoryPaths(root, RELEASE_DEPENDENCY_PATHS);
   const sharedReviewFiles = inventoryPaths(root, SHARED_REVIEW_PATHS);
@@ -688,7 +773,7 @@ export function buildMinnesotaPrecinctReleaseCandidate(options = {}) {
       {
         order: 6,
         phase: "application_cutover",
-        action: "Deploy the four immutable GeoJSON files and reviewed canonical manifests together, validate the protected preview, then atomically promote the application deployment alias.",
+        action: "Upload the four immutable parent indexes and 348 county GeoJSON files, configure the pinned HTTPS delivery origin, and deploy the reviewed canonical manifests together; validate the protected preview, then atomically promote the application deployment alias.",
         productionWrite: true,
       },
       {
@@ -712,7 +797,7 @@ export function buildMinnesotaPrecinctReleaseCandidate(options = {}) {
     },
     goNoGoGates: [
       { id: "pinned_sources_and_geometry", status: "passed", evidence: "Every retained source, canonical manifest, normalized geometry, and crosswalk is hash inventoried." },
-      { id: "candidate_delivery_bytes", status: "passed", evidence: "All four candidate files match the declared 16,435-feature delivery set and draft public declarations." },
+      { id: "candidate_delivery_bytes", status: "passed", evidence: "The four reviewed statewide candidates deterministically produce four hash-pinned indexes and 348 county GeoJSON files covering all 16,435 features; draft public declarations match the index bytes." },
       { id: "local_database_exact_join", status: "passed", evidence: validationReport.path },
       { id: "draft_public_manifest_contract", status: "passed", evidence: "Each draft is contract-valid and public-builder dry-run eligible; canonical files remain unchanged." },
       { id: "production_transaction_implementation", status: "passed", evidence: "The separate runner applies migration 0008 and all four hidden Minnesota data sets atomically, validates before commit, and leaves public/canonical delivery unchanged; production execution remains evidence- and authorization-gated." },
@@ -740,5 +825,6 @@ export function buildMinnesotaPrecinctReleaseCandidate(options = {}) {
       bytes: year.draftManifestBytes,
       manifest: year.draftManifestValue,
     })),
+    deliveryAssets: yearBuilds.flatMap((year) => year.deliveryFiles),
   };
 }

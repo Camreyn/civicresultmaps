@@ -23,6 +23,17 @@ export type GeographyDelivery =
       resultUnitProperty: string;
     }
   | {
+      format: "parent_scoped_geojson";
+      url: string;
+      sha256: string;
+      byteCount: number;
+      featureIdProperty: string;
+      resultUnitProperty: string;
+      parentGeoidProperty: string;
+      parentCount: number;
+      featureCount: number;
+    }
+  | {
       format: "pmtiles";
       url: string;
       sha256: string;
@@ -755,7 +766,7 @@ export function inspectPrecinctGeometryManifest(
     const format = enumValue(
       delivery,
       "format",
-      ["geojson", "pmtiles"],
+      ["geojson", "parent_scoped_geojson", "pmtiles"],
       "manifest.delivery",
       errors,
     );
@@ -790,6 +801,32 @@ export function inspectPrecinctGeometryManifest(
       "manifest.delivery",
       errors,
     );
+    if (format === "parent_scoped_geojson") {
+      requiredString(
+        delivery,
+        "parentGeoidProperty",
+        "manifest.delivery",
+        errors,
+      );
+      const parentCount = nonNegativeInteger(
+        delivery,
+        "parentCount",
+        "manifest.delivery",
+        errors,
+      );
+      const featureCount = nonNegativeInteger(
+        delivery,
+        "featureCount",
+        "manifest.delivery",
+        errors,
+      );
+      if (parentCount === 0) {
+        errors.push("manifest.delivery.parentCount must be greater than zero");
+      }
+      if (featureCount === 0) {
+        errors.push("manifest.delivery.featureCount must be greater than zero");
+      }
+    }
     if (format === "pmtiles") {
       requiredString(delivery, "sourceLayer", "manifest.delivery", errors);
       const minZoom = nonNegativeInteger(

@@ -29,7 +29,22 @@ runbook are satisfied and the project owner explicitly authorizes activation.
 | 2016 | 4,120 | 12,360 | 31 | 26,793,881 | `ce27114ad1971cca472f635f0b2292c60be0c3104c44f49c794c7cfc5e74d207` |
 | 2020 | 4,110 | 12,330 | 33 | 25,998,261 | `c06e1b9712c44c031262872faa70924dd9198928f0ae4274d2259787125e3e8c` |
 | 2024 | 4,103 | 12,309 | 28 | 27,550,483 | `df94482464f9cd7065b2e6cf624eb6d19ab5717bb477ac57e798dd23066f9f06` |
-| Total | 16,435 | 49,305 | 125 | 123,564,636 | Four immutable files |
+| Total | 16,435 | 49,305 | 125 | 123,564,636 | Four reviewed statewide candidates |
+
+The four statewide files are frozen review inputs, not the production serving
+shape. The release builder deterministically divides each one into 87 county
+GeoJSON files and one small parent index. The proposed public set therefore has
+348 county files and four indexes. Each county file is independently
+content-addressed and carries the same source authority, source URL, boundary
+vintage, and complete LCC terms as its statewide input. Each draft manifest
+pins the index hash, byte count, parent count, and feature count; the index in
+turn pins every county file's hash, byte count, GEOID, and feature count.
+
+The precinct API reads and verifies the index plus the one requested county.
+It does not read a 26-43 MB statewide file on each request. The results API also
+accepts a five-digit `parentGeoid` only with `level=precinct` and joins through
+the same-election `reporting_units` row, so the browser receives only the
+selected county's result rows.
 
 Every feature has one reviewed `one_to_one`, `exact_official_id`, high-confidence
 relationship to one same-election certified reporting unit. Each year covers all
@@ -96,7 +111,8 @@ The package contains:
   crosswalks;
 - hashes for the migration, database/runtime dependencies, API/map code, tests,
   national registries, and shared inventories involved in the release;
-- the exact four candidate delivery hashes and proposed immutable public URLs;
+- the exact four statewide candidate hashes, four parent-index hashes, all 348
+  county artifact hashes, and proposed immutable public URLs;
 - local-only draft reviewed manifests that preserve source authority, URLs,
   terms, warnings, and caveats;
 - expected database counts and totals;
@@ -223,6 +239,43 @@ rollback backup manifest whose purpose is
 `public`, whose excluded-table-data list is empty, and whose restoration check
 is recorded.
 
+Generate the full-backup plan from the exact release package without connecting
+to production:
+
+```powershell
+npm.cmd run precinct-gis:production-backup:mn -- -ReleasePackagePath .etl/precinct-release-candidates/MN/<candidate>/release-candidate.json -ReleasePackageSha256 <sha256>
+```
+
+Execution additionally requires `-Execute`, the exact package hash in
+`CRM_MN_PRECINCT_BACKUP_PACKAGE_SHA256`, the literal
+`CRM_MN_PRECINCT_BACKUP_ACK=CREATE_FULL_PUBLIC_SCHEMA_ROLLBACK_BACKUP`, and an
+explicitly supplied unpooled production URL. The script uses the verified
+loopback-only Postgres 17 clone container to make a custom-format dump of the
+entire `public` schema with no exclusions. It restores into the fixed isolated
+`crm_mn_precinct_restore_verify` database, compares every public table and
+exact row count, checks constraints and archive `TABLE DATA` coverage, makes
+the verification database read-only by default, and emits an ACL-restricted,
+package-bound manifest under `C:\tmp\crm-db-clone\mn-release-backups`.
+
+The immutable geometry publisher is also plan-only by default:
+
+```powershell
+npm.cmd run precinct-gis:delivery-publish:mn -- --package=.etl/precinct-release-candidates/MN/<candidate>/release-candidate.json --package-sha256=<sha256>
+```
+
+It verifies all 352 packaged files locally. A real upload is a separate public
+production action: it requires `--write`, the exact package hash in
+`CRM_MN_PRECINCT_PUBLIC_FILE_PACKAGE_SHA256`, the literal
+`CRM_MN_PRECINCT_PUBLIC_FILE_WRITES=I_ACKNOWLEDGE_PUBLIC_IMMUTABLE_GEOMETRY_UPLOAD`,
+and a nonempty `CRM_MN_PRECINCT_PUBLIC_FILE_AUTHORIZATION_ID`. It uses a public
+Vercel Blob store, refuses overwrites and random suffixes, uploads every county
+file before any index, re-downloads and re-hashes every object, and records the
+single HTTPS origin. The project currently has no Blob store installed; store
+provisioning and any associated cost are an explicit external-resource choice,
+not an implied part of local preparation. The resulting origin must be set as
+the server-only `CRM_PRECINCT_GEOGRAPHY_ORIGIN` in a protected preview before
+manifest activation.
+
 ## Required go/no-go gates
 
 All of these gates must be `passed` in the reviewed release record:
@@ -325,11 +378,14 @@ console error, or framework error overlay.
 
 ### 6. Cut over the application
 
-Place the four immutable delivery files at their draft manifest URLs and apply
-the reviewed canonical manifest/registry changes in the same application
-deployment. Validate that protected deployment before promoting its alias to
-production. The alias promotion is the public application cutover; database
-results and geometry must already be validated before it occurs.
+Upload and verify the 348 immutable county GeoJSON files first, then the four
+immutable parent indexes. Configure the exact resulting HTTPS origin as
+`CRM_PRECINCT_GEOGRAPHY_ORIGIN` in a protected preview. Apply the reviewed
+canonical manifest/registry changes only after that preview can verify each
+index, the selected county artifact, and its county-filtered results. Validate
+the protected deployment before promoting its alias to production. The alias
+promotion is the public application cutover; database results and geometry
+must already be validated before it occurs.
 
 Never overwrite an immutable delivery URL. Any changed byte requires a new
 manifest ID or delivery URL and a new review package.
@@ -376,7 +432,8 @@ The following are separate, explicit production decisions:
 - applying migration 0008;
 - running a production Minnesota data transaction;
 - changing geography-version publication status;
-- copying geometry into the public application bundle;
+- provisioning public immutable-object storage and uploading geometry;
+- setting the server-side immutable geometry origin;
 - changing canonical manifest validation/delivery fields or registry rows;
 - promoting the deployment alias;
 - publishing a Git branch or pull request.

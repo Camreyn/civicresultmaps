@@ -53,7 +53,12 @@ export async function GET(request: NextRequest) {
   if (!manifest && !rehearsal) {
     return errorResponse("eligible precinct geography manifest not found", 404);
   }
-  if (manifest && manifest.delivery?.format !== "geojson") {
+  if (
+    manifest
+    && !["geojson", "parent_scoped_geojson"].includes(
+      manifest.delivery?.format ?? "",
+    )
+  ) {
     return errorResponse(
       "parent-scoped GeoJSON delivery is unavailable for this manifest",
       409,
@@ -81,6 +86,12 @@ export async function GET(request: NextRequest) {
         publicEligible: selectedManifest.eligible,
         sourceByteCount: delivery.sourceByteCount,
         sourceSha256: delivery.sourceSha256,
+        indexByteCount: "indexByteCount" in delivery
+          ? delivery.indexByteCount ?? null
+          : null,
+        indexSha256: "indexSha256" in delivery
+          ? delivery.indexSha256 ?? null
+          : null,
         sourceAuthority: delivery.collection.metadata.sourceAuthority,
         sourceUrl: delivery.collection.metadata.sourceUrl,
         licenseOrTerms: delivery.collection.metadata.licenseOrTerms,

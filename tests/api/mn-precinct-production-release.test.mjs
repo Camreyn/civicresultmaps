@@ -1,6 +1,17 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import test from "node:test";
+import {
+  verifyBackupDump,
+} from "../../scripts/apply-mn-precinct-release.mjs";
 import {
   buildMinnesotaPrecinctExecutionContext,
 } from "../../scripts/lib/mn-precinct-gis-db.mjs";
@@ -196,6 +207,10 @@ test("Minnesota backup evidence requires a fresh restoration verification", () =
     createdAtUtc: "2026-08-08T00:20:00.000Z",
     dumpFile: "public-sanitized.dump",
     dumpSha256: "f".repeat(64),
+    releaseCandidate: {
+      id: "mn-precinct-gis-four-election-v1",
+      sha256: PACKAGE_SHA,
+    },
     sourceEndpointFingerprint: ENDPOINT,
     includedSchemas: ["public"],
     excludedTableDataPatterns: [],
@@ -209,6 +224,7 @@ test("Minnesota backup evidence requires a fresh restoration verification", () =
     validateMinnesotaProductionBackupEvidence(manifest, {
       now: NOW,
       endpointFingerprint: ENDPOINT,
+      releaseCandidate: releaseCandidate(),
     }).dumpSha256,
     "f".repeat(64),
   );
@@ -216,9 +232,57 @@ test("Minnesota backup evidence requires a fresh restoration verification", () =
     () => validateMinnesotaProductionBackupEvidence({
       ...manifest,
       restoreVerification: { verified: false },
-    }, { now: NOW, endpointFingerprint: ENDPOINT }),
+    }, {
+      now: NOW,
+      endpointFingerprint: ENDPOINT,
+      releaseCandidate: releaseCandidate(),
+    }),
     /incomplete or incompatible/,
   );
+  assert.throws(
+    () => validateMinnesotaProductionBackupEvidence({
+      ...manifest,
+      releaseCandidate: {
+        ...manifest.releaseCandidate,
+        sha256: "0".repeat(64),
+      },
+    }, {
+      now: NOW,
+      endpointFingerprint: ENDPOINT,
+      releaseCandidate: releaseCandidate(),
+    }),
+    /incomplete or incompatible/,
+  );
+});
+
+test("Minnesota production runner verifies a dump beside its backup manifest", () => {
+  const root = mkdtempSync(path.join(tmpdir(), "crm-mn-production-backup-"));
+  try {
+    const backupDirectory = path.join(root, "mn-release-backups");
+    mkdirSync(backupDirectory, { recursive: true });
+    const dumpBytes = Buffer.from("package-bound rollback dump", "utf8");
+    const dumpFile = "mn-precinct-full-public-test.dump";
+    const dumpPath = path.join(backupDirectory, dumpFile);
+    writeFileSync(dumpPath, dumpBytes);
+    const verified = verifyBackupDump({
+      path: path.join(backupDirectory, "rollback.manifest.json"),
+      value: {
+        dumpFile,
+        dumpSha256: sha256(dumpBytes),
+      },
+    }, root);
+    assert.equal(verified.path, dumpPath);
+    assert.equal(verified.byteCount, dumpBytes.length);
+    assert.throws(
+      () => verifyBackupDump({
+        path: path.join(root, "outside.manifest.json"),
+        value: { dumpFile, dumpSha256: sha256(dumpBytes) },
+      }, path.join(root, "different-root")),
+      /manifest directory is outside its fixed root/,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("migration 0008 is hash checked and applied inside the supplied transaction", async () => {
@@ -274,5 +338,14 @@ test("Minnesota production CLIs do not load env files or authorize public cutove
   assert.match(applySource, /CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_ID/);
   assert.match(preflightSource, /CRM_MN_PRODUCTION_PREFLIGHT_ACK/);
   assert.match(applySource, /publicDeliveryAuthorized: false/);
+  const backupSource = readFileSync(
+    "scripts/backup-mn-precinct-production.ps1",
+    "utf8",
+  );
+  assert.match(backupSource, /--format=custom --schema=public/);
+  assert.doesNotMatch(backupSource, /--exclude-table-data/);
+  assert.match(backupSource, /exactSourceRowCounts = \$true/);
+  assert.match(backupSource, /releaseCandidate = \$releaseCandidate/);
+  assert.doesNotMatch(backupSource, /docker compose|-f \$ComposeFile/);
   assert.doesNotMatch(applySource, /canonicalManifestChanged: true|publicFileWritten: true/);
 });
