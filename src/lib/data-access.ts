@@ -6,6 +6,7 @@ import {
   requiresPrecinctGeometryPublicationGate,
   requiresPrecinctResultPublicationGate,
 } from "./precinct-result-publication";
+import { resolveMinnesotaPrecinctRehearsal } from "./mn-precinct-rehearsal-server";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 import {
   getCoverage,
@@ -546,7 +547,8 @@ export async function listResults(input: {
 }): Promise<ResultRow[]> {
   const normalizedOffice = input.office?.trim().toLowerCase() || null;
   const parentGeoid = input.parentGeoid?.trim() || null;
-  const requiresPublicationGate = requiresPrecinctResultPublicationGate(input);
+  const requiresPublicationGate = requiresPrecinctResultPublicationGate(input)
+    && !resolveMinnesotaPrecinctRehearsal().enabled;
   if (parentGeoid && (input.level !== "precinct" || !/^\d{5}$/.test(parentGeoid))) {
     throw new Error(
       "parentGeoid requires precinct results and a five-digit county GEOID",

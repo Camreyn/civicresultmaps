@@ -167,6 +167,7 @@ export const listReviewRows = cachePublicData(
 export const listResults = cachePublicData(
   uncachedListResults,
   "results",
+  { persistent: process.env.CRM_PRECINCT_REHEARSAL !== "mn" },
 );
 
 export const listSecurityIncidents = cachePublicData(

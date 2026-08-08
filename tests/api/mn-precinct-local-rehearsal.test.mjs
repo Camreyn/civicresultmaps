@@ -136,6 +136,8 @@ test("the API and UI use the marked rehearsal path without requesting blocked la
     "utf8",
   );
   const component = readFileSync("src/app/precinct-detail-map.tsx", "utf8");
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+  const api = readFileSync("src/lib/api.ts", "utf8");
   assert.match(
     manifestRoute,
     /listPrecinctGeometryManifestViewsWithMinnesotaRehearsal/,
@@ -147,6 +149,15 @@ test("the API and UI use the marked rehearsal path without requesting blocked la
   assert.match(component, /localRehearsal\.publicEligible === false/);
   assert.match(component, /Local rehearsal - not public/);
   assert.doesNotMatch(component, /includeBlocked/);
+  assert.match(dataAccess, /resolveMinnesotaPrecinctRehearsal/);
+  assert.match(
+    dataAccess,
+    /requiresPrecinctResultPublicationGate\(input\)\s*&& !resolveMinnesotaPrecinctRehearsal\(\)\.enabled/,
+  );
+  assert.match(
+    api,
+    /persistent: process\.env\.CRM_PRECINCT_REHEARSAL !== "mn"/,
+  );
 });
 
 test("all four pinned candidates can be read and county-filtered locally", {

@@ -6743,3 +6743,22 @@ evidence against its verified top-level package.
   promotion, database mutation, environment change, or Minnesota public
   activation. Restoring the complete production result corpus remains a
   separate reviewed production operation.
+
+### 2026-08-08 - Minnesota local rehearsal publication-gate repair
+
+- The clean merged-main release rehearsal found that the production
+  publication gate correctly hid blocked Minnesota precinct result rows but
+  also hid them from the explicitly guarded local-only rehearsal. The result
+  API now bypasses that gate only after
+  `resolveMinnesotaPrecinctRehearsal()` proves the process is running in
+  development or test mode, uses the PostgreSQL driver in strict mode, and is
+  connected to the loopback `crm_clone_dev` database on port 54329.
+
+- Canonical manifests remain blocked and public production requests still
+  require the exact reviewed database publication state. The rehearsal test
+  now checks that the result-query path is wired to the guarded local adapter.
+  Rehearsal result reads also bypass the persistent public-result cache so a
+  blocked response cached before the guarded adapter is enabled cannot mask
+  valid clone rows. These checks prevent another production-gate or cache
+  change from silently making the required four-year browser rehearsal
+  impossible.
