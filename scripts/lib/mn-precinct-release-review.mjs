@@ -231,9 +231,10 @@ const POLICY = Object.freeze([
     phase: "public_cutover",
     requiredMarkers: [
       "officeQuery",
-      "listResults({ state, year, level, office })",
+      "parentGeoidQuery",
+      "parentGeoid is supported only for precinct results",
     ],
-    rationale: "The complete diff makes contest selection explicit for multi-year precinct result delivery.",
+    rationale: "The complete diff keeps contest selection explicit and adds county-qualified precinct result delivery.",
   },
   {
     path: "drizzle/meta/_journal.json",
@@ -253,6 +254,216 @@ const POLICY = Object.freeze([
       "results API keeps contest offices separated",
     ],
     rationale: "The complete diff updates the repository API contract for the guarded precinct endpoints, strict local-clone reads, and explicit contest selection introduced by this integration.",
+  },
+  {
+    path: "docs/developer/mn-precinct-release-runbook.md",
+    decision: "include_entire_patch",
+    phase: "provenance",
+    requiredMarkers: [
+      "348 immutable county GeoJSON files",
+      "CRM_PRECINCT_GEOGRAPHY_ORIGIN",
+      "CRM_MN_PRECINCT_BACKUP_ACK=CREATE_FULL_PUBLIC_SCHEMA_ROLLBACK_BACKUP",
+    ],
+    rationale: "The complete diff documents the county-scoped serving shape, immutable-object publication gate, and package-bound full backup procedure.",
+  },
+  {
+    path: "scripts/lib/mn-precinct-production-release.mjs",
+    decision: "include_entire_patch",
+    phase: "production_safety",
+    requiredMarkers: [
+      "manifest?.releaseCandidate?.sha256",
+      "releaseCandidateSha256",
+    ],
+    rationale: "The complete diff binds rollback evidence to the exact reviewed release package.",
+  },
+  {
+    path: "scripts/lib/mn-precinct-release-candidate.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "buildParentScopedPrecinctDeliveryPackage",
+      "parent_scoped_geojson",
+      "deliveryAssets",
+    ],
+    rationale: "The complete diff seals deterministic county artifacts, indexes, publication tooling, and their dependencies into the release candidate.",
+  },
+  {
+    path: "scripts/lib/mn-precinct-release-overlay.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "precinct-gis:delivery-publish:mn",
+      "precinct-gis:production-backup:mn",
+      "src/lib/api.ts",
+    ],
+    rationale: "The complete diff includes the publication and backup commands and treats the shared API query contract as a reviewed hunk.",
+  },
+  {
+    path: "scripts/prepare-mn-precinct-release-candidate.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "built.deliveryAssets.map",
+      "deliveryAssetCount",
+    ],
+    rationale: "The complete diff writes every sealed county/index asset into the immutable local release package.",
+  },
+  {
+    path: "scripts/run-mn-precinct-geometry-tests.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "precinct-parent-delivery-builder.test.mjs",
+      "mn-precinct-blob-publication.test.mjs",
+    ],
+    rationale: "The complete diff adds the county package and guarded publication checks to the Minnesota suite.",
+  },
+  {
+    path: "src/app/api/precinct-geography/route.ts",
+    decision: "include_entire_patch",
+    phase: "public_cutover",
+    requiredMarkers: [
+      "parent_scoped_geojson",
+      "indexSha256",
+      "indexByteCount",
+    ],
+    rationale: "The complete diff allows reviewed parent-scoped delivery and returns its verified index metadata.",
+  },
+  {
+    path: "src/app/precinct-detail-map.tsx",
+    decision: "include_entire_patch",
+    phase: "public_cutover",
+    requiredMarkers: [
+      "parent_scoped_geojson",
+      "parentGeoid,",
+    ],
+    rationale: "The complete diff accepts the parent-scoped format and requests results only for the selected county.",
+  },
+  {
+    path: "src/lib/api.ts",
+    decision: "include_entire_patch",
+    phase: "public_cutover",
+    requiredMarkers: ["parentGeoidQuery"],
+    rationale: "The complete diff defines the strict five-digit county GEOID query contract used by precinct results.",
+  },
+  {
+    path: "src/lib/precinct-delivery-server.ts",
+    decision: "include_entire_patch",
+    phase: "public_cutover",
+    requiredMarkers: [
+      "CRM_PRECINCT_GEOGRAPHY_ORIGIN",
+      "selectPrecinctParentDeliveryArtifact",
+      "delivery artifact SHA-256 does not match index",
+    ],
+    rationale: "The complete diff verifies the pinned index and one pinned county artifact from a credential-free HTTPS origin before returning geometry.",
+  },
+  {
+    path: "src/lib/precinct-geography.ts",
+    decision: "include_entire_patch",
+    phase: "public_cutover",
+    requiredMarkers: [
+      "parent_scoped_geojson",
+      "parentGeoidProperty",
+      "parentCount must be greater than zero",
+    ],
+    rationale: "The complete diff adds the validated parent-scoped delivery declaration to the canonical manifest contract.",
+  },
+  {
+    path: "src/lib/precinct-map-delivery.ts",
+    decision: "include_entire_patch",
+    phase: "public_cutover",
+    requiredMarkers: [
+      "selectPrecinctParentDeliveryArtifact",
+      "isSafeParentArtifactPath",
+      "indexed parent feature counts must equal index.featureCount",
+    ],
+    rationale: "The complete diff validates safe content-addressed county paths, hashes, counts, and parent selection.",
+  },
+  {
+    path: "tests/api/mn-precinct-production-release.test.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "releaseCandidate: releaseCandidate()",
+      "exactSourceRowCounts = \\$true",
+    ],
+    rationale: "The complete diff tests exact package binding and full-backup safeguards.",
+  },
+  {
+    path: "tests/api/mn-precinct-release-candidate.test.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "parent_scoped_geojson",
+      "four indexes and 348 county assets",
+    ],
+    rationale: "The complete diff verifies the new package shape and all delivery declarations.",
+  },
+  {
+    path: "tests/api/precinct-delivery-server.test.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "hash-pinned parent asset behind a remote index",
+      "SHA-256 does not match index",
+    ],
+    rationale: "The complete diff proves that remote delivery reads only and verifies the requested county artifact.",
+  },
+  {
+    path: "tests/api/precinct-map-delivery.test.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "selectPrecinctParentDeliveryArtifact",
+      "parent delivery index is hash-pinned, parent-qualified, and bounded",
+    ],
+    rationale: "The complete diff covers safe parent-index validation and selection bounds.",
+  },
+  {
+    path: "tests/api/precinct-map-ui.test.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "parentGeoid,",
+      "parent_scoped_geojson",
+    ],
+    rationale: "The complete diff checks the browser's county-filtered result request and parent-scoped format handling.",
+  },
+  {
+    path: "scripts/apply-mn-precinct-release.mjs",
+    decision: "include_entire_patch",
+    phase: "production_safety",
+    requiredMarkers: [
+      "export function verifyBackupDump",
+      "path.dirname(path.resolve(manifest.path))",
+      "manifest directory is outside its fixed root",
+    ],
+    rationale: "The complete diff resolves and verifies the rollback dump beside its package-bound manifest under the fixed backup root.",
+  },
+  {
+    path: "scripts/lib/mn-precinct-release-review.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "docs/developer/mn-precinct-release-runbook.md",
+      "scripts/apply-mn-precinct-release.mjs",
+      "sealed_file_and_patch",
+      "sealed_unchanged_file",
+      "src/lib/api.ts",
+      "tests/api/precinct-map-ui.test.mjs",
+    ],
+    rationale: "The complete diff explicitly classifies every new production-delivery integration surface in the fail-closed review policy.",
+  },
+  {
+    path: "tests/api/mn-precinct-release-review.test.mjs",
+    decision: "include_entire_patch",
+    phase: "shared_release_tooling",
+    requiredMarkers: [
+      "policy.length, 45",
+      "include_entire_patch\").length, 30",
+      "validates unchanged merged surfaces from sealed bytes",
+    ],
+    rationale: "The complete diff locks the expanded review-policy coverage and decision counts.",
   },
 ]);
 
@@ -346,9 +557,11 @@ function validateProjection(sourcePath, value) {
   validateStateProjection(value, sourcePath);
 }
 
-function markerReview(text, policy) {
-  const missingRequired = (policy.requiredMarkers ?? []).filter((marker) => !text.includes(marker));
-  const presentExcluded = (policy.excludedMarkers ?? []).filter((marker) => text.includes(marker));
+function markerReview(workingText, patchText, policy) {
+  const missingRequired = (policy.requiredMarkers ?? [])
+    .filter((marker) => !workingText.includes(marker));
+  const presentExcluded = (policy.excludedMarkers ?? [])
+    .filter((marker) => patchText.includes(marker));
   if (missingRequired.length) {
     throw new Error(policy.path + " patch is missing required review markers: " + missingRequired.join(", "));
   }
@@ -417,9 +630,22 @@ export function buildMinnesotaReleaseReview(options) {
     let markers = { includedMarkers: [], excludedMarkers: [] };
     if (file.patchArtifact) {
       patch = overlayChild(root, options.overlayPath, file.patchArtifact);
-      markers = markerReview(patch.bytes.toString("utf8"), policy);
+      markers = {
+        ...markerReview(
+          copied.bytes.toString("utf8"),
+          patch.bytes.toString("utf8"),
+          policy,
+        ),
+        markerSource: "sealed_file_and_patch",
+      };
     } else if ((policy.requiredMarkers ?? []).length || (policy.excludedMarkers ?? []).length) {
-      throw new Error(policy.path + " requires a patch marker review but has no patch artifact");
+      if (file.gitDisposition !== "unchanged") {
+        throw new Error(policy.path + " requires a patch marker review but has no patch artifact");
+      }
+      markers = {
+        ...markerReview(copied.bytes.toString("utf8"), "", policy),
+        markerSource: "sealed_unchanged_file",
+      };
     }
     let projection = null;
     if (policy.decision === "include_semantic_projection") {

@@ -128,6 +128,8 @@ export function validateMinnesotaProductionBackupEvidence(
     || manifest?.backupPurpose !== "mn-precinct-production-release-rollback"
     || !/^[a-f0-9]{64}$/.test(manifest?.dumpSha256 ?? "")
     || manifest?.sourceEndpointFingerprint !== context.endpointFingerprint
+    || manifest?.releaseCandidate?.id !== context.releaseCandidate.id
+    || manifest?.releaseCandidate?.sha256 !== context.releaseCandidate.sha256
     || manifest?.remoteMutationPerformed !== false
     || JSON.stringify(manifest?.includedSchemas) !== JSON.stringify(["public"])
     || !Array.isArray(manifest?.excludedTableDataPatterns)
@@ -147,6 +149,7 @@ export function validateMinnesotaProductionBackupEvidence(
     dumpSha256: manifest.dumpSha256,
     createdAtUtc: manifest.createdAtUtc,
     restoreVerifiedAtUtc: manifest.restoreVerification.verifiedAtUtc,
+    releaseCandidateSha256: manifest.releaseCandidate.sha256,
   };
 }
 

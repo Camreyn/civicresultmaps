@@ -13,6 +13,7 @@ test("precinct detail stays county-gated and eligible-manifest-only", () => {
   assert.match(component, /parentScopedPrecinctDeliveryApiPath/);
   assert.match(component, /Promise\.all/);
   assert.match(component, /office: manifestOffice/);
+  assert.match(component, /parentGeoid,/);
   assert.match(component, /row\.office\.toLowerCase\(\) === manifestOffice\.toLowerCase\(\)/);
   assert.match(component, /level: "precinct"/);
   assert.match(component, /joinPrecinctDeliveryResults/);
@@ -21,6 +22,7 @@ test("precinct detail stays county-gated and eligible-manifest-only", () => {
   assert.match(component, /source\.licenseOrTerms/);
   assert.match(component, /2012: "2012-11-06"/);
   assert.doesNotMatch(component, /manifest\.delivery\.url/);
+  assert.match(component, /parent_scoped_geojson/);
 });
 
 test("precinct geography API accompanies geometry with source terms", () => {

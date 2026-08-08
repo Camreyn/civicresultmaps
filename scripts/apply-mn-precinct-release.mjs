@@ -148,8 +148,15 @@ function safeTmpBackupManifest(requested) {
   };
 }
 
-function verifyBackupDump(manifest) {
-  const root = path.resolve("C:/tmp/crm-db-clone");
+export function verifyBackupDump(
+  manifest,
+  allowedRoot = "C:/tmp/crm-db-clone",
+) {
+  const root = path.resolve(allowedRoot);
+  const manifestDirectory = path.dirname(path.resolve(manifest.path));
+  if (!manifestDirectory.startsWith(root + path.sep)) {
+    throw new Error("Minnesota backup manifest directory is outside its fixed root");
+  }
   const filename = manifest.value.dumpFile;
   if (
     typeof filename !== "string"
@@ -158,9 +165,9 @@ function verifyBackupDump(manifest) {
   ) {
     throw new Error("Minnesota backup dump filename is unsafe");
   }
-  const target = path.resolve(root, filename);
-  if (!target.startsWith(root + path.sep)) {
-    throw new Error("Minnesota backup dump escapes its fixed directory");
+  const target = path.resolve(manifestDirectory, filename);
+  if (!target.startsWith(manifestDirectory + path.sep)) {
+    throw new Error("Minnesota backup dump escapes its manifest directory");
   }
   const bytes = readFileSync(target);
   const digest = sha256(bytes);

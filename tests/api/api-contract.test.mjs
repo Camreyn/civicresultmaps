@@ -199,8 +199,10 @@ test("results API keeps contest offices separated", () => {
   assert.match(route, /officeQuery\.parse\(officeParam\)/);
   assert.match(
     route,
-    /listResults\(\{ state, year, level, office \}\)/,
+    /listResults\(\{[\s\S]*?state,[\s\S]*?year,[\s\S]*?level,[\s\S]*?office,[\s\S]*?parentGeoid,/,
   );
+  assert.match(route, /parentGeoidQuery\.safeParse/);
+  assert.match(route, /parentGeoid is supported only for precinct results/);
   assert.match(
     dataAccess,
     /lower\(elections\.office\) = \$\{normalizedOffice\}/,
@@ -209,6 +211,8 @@ test("results API keeps contest offices separated", () => {
     dataAccess,
     /row\.office\.toLowerCase\(\) \+ "\\|" \+ row\.jurisdictionCode/,
   );
+  assert.match(dataAccess, /inner join reporting_units/);
+  assert.match(dataAccess, /reporting_units\.parent_geoid = \$\{parentGeoid\}/);
 });
 
 test("map joins support repository GeoJSON county name variants", () => {

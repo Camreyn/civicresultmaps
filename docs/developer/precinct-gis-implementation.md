@@ -6463,3 +6463,92 @@ evidence against its verified top-level package.
   production package must be resealed and reviewed. No database, canonical
   delivery eligibility, public geometry, certified result, crosswalk, or
   production environment changed.
+
+### 2026-08-08 - Minnesota production-safe county delivery implementation
+
+- A clean worktree on `feature/mn-precinct-production-release` was created from
+  merged `origin/main` commit `8230621`. The existing development checkout and
+  its uncommitted work were left untouched. Fresh local validation again proved
+  all four reviewed elections: 16,435 reporting units, 49,305 certified
+  candidate rows, 16,435 features, 16,435 exact reviewed crosswalks, 125
+  zero-vote units, and zero invalid constraints.
+
+- The merged delivery path would have read and parsed one 26-43 MB statewide
+  GeoJSON file in the server function for every county request. The browser
+  also requested every precinct result row in Minnesota. That shape was not a
+  safe Vercel production contract even though the underlying reviewed bytes
+  were correct.
+
+- The release builder now preserves those four statewide files as frozen
+  evidence and deterministically produces 87 content-addressed county GeoJSON
+  files plus one hash-pinned index per election. The proposed serving set is
+  348 county files and four indexes. Both index and county bytes retain the
+  complete source metadata and LCC terms; no election value is added to
+  geometry. Draft manifests use the explicit `parent_scoped_geojson` contract
+  and pin index byte/hash, parent count, feature count, and property names.
+
+- The server accepts either the legacy reviewed GeoJSON contract or the new
+  parent-scoped index. For the new contract it verifies the manifest-pinned
+  index, selects the requested five-digit county GEOID, verifies only that
+  county's index-pinned byte count and SHA-256, validates metadata against the
+  manifest, and rejects extra or missing county features. A server-only
+  `CRM_PRECINCT_GEOGRAPHY_ORIGIN` can point to a credential-free HTTPS immutable
+  origin; local rehearsal retains filesystem delivery.
+
+- `/api/results` now accepts `parentGeoid` only for `level=precinct`. That
+  branch joins `result_rows.reporting_unit_id` to the same-election
+  `reporting_units` row and filters its county parent. The ordinary query stays
+  separate so pre-migration county/state APIs do not acquire a dependency on
+  migration 0008. The precinct UI sends the selected county GEOID.
+
+- Added a plan-first Vercel Blob publication tool. It verifies every packaged
+  asset, requires exact package/public-write acknowledgements before any remote
+  mutation, refuses overwrite and random suffix behavior, uploads all parent
+  files before indexes, re-downloads and re-hashes each object, and leaves
+  canonical manifests blocked. No Blob store is currently installed, and no
+  store was provisioned or file uploaded during this implementation.
+
+- Added a plan-first full production backup tool bound to the exact release
+  package. Its execution path makes a complete custom-format `public` schema
+  dump with no excluded table data, restores it to the fixed isolated local
+  verification database, compares every public table and exact row count,
+  checks constraints and archive coverage, and writes restrictive rollback
+  evidence. The existing sanitized development clone remains intentionally
+  insufficient for release rollback.
+
+- Focused parent-index, server-delivery, UI/API contract, Blob-plan, release
+  candidate, and backup-evidence tests pass, as does TypeScript validation at
+  this checkpoint. An exact overlay dry run then correctly failed closed because
+  16 modified delivery surfaces lacked explicit review-policy classifications
+  and `src/lib/api.ts` was missing from the dependency inventory. The inventory,
+  hunk-review set, policy, and regression contracts now cover those surfaces;
+  the policy tests pass and the corrected package must be resealed before the
+  overlay/review check is repeated.
+
+- Final package resealing, full suite/build, protected-preview validation, fresh
+  package-bound production preflight/backup, named release roles/window, Blob
+  provisioning/upload, database mutation, canonical activation, and public
+  cutover remain separate pending gates. No production write, public file
+  upload, environment mutation, manifest activation, Git publication, or
+  deployment promotion occurred.
+
+- The fresh package-bound production preflight opened a read-only transaction
+  against endpoint fingerprint `bf2bf2213814` and confirmed PostgreSQL 17, 27
+  public tables, zero invalid constraints, migration 0008 absent, and only the
+  existing 261 Minnesota 2024 county result rows. The full-backup execution
+  check then found that its clean-worktree path unnecessarily depended on an
+  untracked developer-local Compose file. The backup now inspects the fixed
+  `crm-db-clone-postgres` container directly and still independently verifies
+  its name, labels, health, loopback binding, backup mount, and PostgreSQL 17
+  tools. This correction requires one final package reseal; production remained
+  read-only and no backup or public change had occurred at this checkpoint.
+
+- The full backup then completed and restored successfully with all 27 public
+  tables and exact row counts matching production. A subsequent release-runner
+  handoff audit caught that the consumer looked for the verified dump at the
+  backup root even though the manifest and dump live together in the guarded
+  `mn-release-backups` directory. The runner now resolves the basename beside
+  the already root-validated manifest, re-hashes it, and has a direct sibling-
+  path and root-escape regression test. This is a local evidence-consumption
+  correction; the production backup session remained read-only and no schema,
+  data, public geometry, environment, or canonical manifest was changed.

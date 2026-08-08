@@ -325,7 +325,10 @@ export function PrecinctDetailMap({
         }
         const deliveryFormat = manifest.delivery?.format
           ?? manifest.localRehearsal?.delivery.format;
-        if (deliveryFormat !== "geojson") {
+        if (
+          deliveryFormat !== "geojson"
+          && deliveryFormat !== "parent_scoped_geojson"
+        ) {
           setManifestLoad({
             queryKey: manifestQueryKey,
             status: "unavailable",
@@ -394,6 +397,7 @@ export function PrecinctDetailMap({
                 year: String(electionYear),
                 level: "precinct",
                 office: manifestOffice,
+                parentGeoid,
               }).toString(),
             controller.signal,
           ),

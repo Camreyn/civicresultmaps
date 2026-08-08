@@ -77,12 +77,34 @@ test("Minnesota release candidate freezes four exact deliveries and remains prod
     assert.ok(expected);
     assert.equal(year.candidateDelivery.byteCount, expected.byteCount);
     assert.equal(year.candidateDelivery.sha256, expected.sha256);
-    assert.equal(year.proposedPublicDelivery.byteCount, expected.byteCount);
-    assert.equal(year.proposedPublicDelivery.sha256, expected.sha256);
-    assert.equal(year.proposedPublicDelivery.format, "geojson");
+    assert.ok(year.proposedPublicDelivery.byteCount > 1_000);
+    assert.ok(year.proposedPublicDelivery.byteCount < 100_000);
+    assert.match(year.proposedPublicDelivery.sha256, /^[a-f0-9]{64}$/);
+    assert.equal(
+      year.proposedPublicDelivery.format,
+      "parent_scoped_geojson",
+    );
     assert.match(
       year.proposedPublicDelivery.url,
-      new RegExp("^/data/geography/mn/" + year.year + "-"),
+      new RegExp(
+        "^/data/geography/mn/" + year.year
+        + "-[^/]+/precinct/[^/]+-[a-f0-9]{12}/index\\.json$",
+      ),
+    );
+    assert.equal(year.proposedPublicDelivery.parentCount, 87);
+    assert.equal(
+      year.proposedPublicDelivery.featureCount,
+      year.certifiedResults.reportingUnits,
+    );
+    assert.equal(year.parentScopedDelivery.parentArtifacts.length, 87);
+    assert.equal(year.parentScopedDelivery.publicationPerformed, false);
+    assert.equal(year.parentScopedDelivery.electionValuesInDelivery, false);
+    assert.equal(
+      year.parentScopedDelivery.parentArtifacts.reduce(
+        (sum, artifact) => sum + artifact.featureCount,
+        0,
+      ),
+      year.certifiedResults.reportingUnits,
     );
     assert.equal(year.canonicalManifest.validationStatus, "blocked");
     assert.equal(year.canonicalManifest.rowLevelRenderingSafe, false);
@@ -127,7 +149,11 @@ test("Minnesota local draft manifests pass the public contract without changing 
     assert.equal(draft.manifest.validation.status, "reviewed");
     assert.equal(draft.manifest.validation.rowLevelRenderingSafe, true);
     assert.deepEqual(draft.manifest.validation.errors, []);
-    assert.equal(draft.manifest.delivery.format, "geojson");
+    assert.equal(
+      draft.manifest.delivery.format,
+      "parent_scoped_geojson",
+    );
+    assert.equal(draft.manifest.delivery.parentCount, 87);
     assert.equal(draft.manifest.source.licenseOrTerms.length > 100, true);
     assert.equal(
       draft.manifest.caveats.some((caveat) => /delivery remains null|delivery remains blocked/i.test(caveat)),
@@ -140,6 +166,22 @@ test("Minnesota local draft manifests pass the public contract without changing 
   for (const [relativePath, bytes] of before) {
     assert.equal(after.get(relativePath).equals(bytes), true, relativePath);
   }
+});
+
+test("Minnesota release package carries four indexes and 348 county assets", () => {
+  assert.equal(built.deliveryAssets.length, 352);
+  assert.equal(
+    built.deliveryAssets.filter((artifact) => artifact.path.endsWith("/index.json")).length,
+    4,
+  );
+  assert.equal(
+    built.deliveryAssets.filter((artifact) => artifact.path.includes("/parents/")).length,
+    348,
+  );
+  assert.equal(
+    built.deliveryAssets.every((artifact) => artifact.bytes.length > 0),
+    true,
+  );
 });
 
 test("Minnesota release package serialization and dependency inventory are hash reviewable", () => {
@@ -164,6 +206,10 @@ test("Minnesota release package serialization and dependency inventory are hash 
 
   const inventory = built.packageDocument.scopedFileInventory;
   assert.ok(inventory.releaseDependencies.length > 35);
+  assert.equal(
+    inventory.releaseDependencies.some((item) => item.path === "src/lib/api.ts"),
+    true,
+  );
   assert.ok(inventory.sourceAndDataArtifacts.length > 20);
   assert.ok(inventory.sharedReviewFiles.length >= 8);
   for (const group of [

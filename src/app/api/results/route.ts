@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, levelQuery, listResults, officeQuery, publicDataCacheHeaders, stateQuery, yearQuery } from "@/lib/api";
+import {
+  apiEnvelope,
+  apiErrorEnvelope,
+  levelQuery,
+  listResults,
+  officeQuery,
+  parentGeoidQuery,
+  publicApiErrorHeaders,
+  publicDataCacheHeaders,
+  stateQuery,
+  yearQuery,
+} from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -8,8 +19,31 @@ export async function GET(request: NextRequest) {
   const level = levelQuery.parse(params.get("level") ?? "county");
   const officeParam = params.get("office");
   const office = officeParam ? officeQuery.parse(officeParam) : undefined;
+  const parentGeoidParam = params.get("parentGeoid");
+  const parsedParentGeoid = parentGeoidParam
+    ? parentGeoidQuery.safeParse(parentGeoidParam)
+    : null;
+  if (parsedParentGeoid && !parsedParentGeoid.success) {
+    return NextResponse.json(
+      apiErrorEnvelope("parentGeoid must be a five-digit county GEOID"),
+      { status: 400, headers: publicApiErrorHeaders },
+    );
+  }
+  const parentGeoid = parsedParentGeoid?.data;
+  if (parentGeoid && level !== "precinct") {
+    return NextResponse.json(
+      apiErrorEnvelope("parentGeoid is supported only for precinct results"),
+      { status: 400, headers: publicApiErrorHeaders },
+    );
+  }
 
-  return NextResponse.json(apiEnvelope(await listResults({ state, year, level, office })), {
+  return NextResponse.json(apiEnvelope(await listResults({
+    state,
+    year,
+    level,
+    office,
+    parentGeoid,
+  })), {
     headers: publicDataCacheHeaders,
   });
 }

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   mkdtempSync,
@@ -75,7 +76,11 @@ function fixture() {
   const policy = minnesotaReleaseReviewPolicy();
   const files = [];
   for (const item of policy) {
-    const working = Buffer.from("reviewed working bytes for " + item.path + "\n");
+    const working = Buffer.from([
+      "reviewed working bytes for " + item.path,
+      ...(item.requiredMarkers ?? []),
+      "",
+    ].join("\n"));
     const copied = write(root, path.posix.join(overlayRoot, "files", item.path), working);
     let patchArtifact = null;
     if (item.decision === "include_entire_patch" || item.decision === "include_curated_hunks") {
@@ -140,12 +145,41 @@ function fixture() {
 
 test("Minnesota release review policy classifies every shared or modified integration surface", () => {
   const policy = minnesotaReleaseReviewPolicy();
-  assert.equal(policy.length, 25);
-  assert.equal(new Set(policy.map((item) => item.path)).size, 25);
-  assert.equal(policy.filter((item) => item.decision === "include_entire_patch").length, 10);
+  assert.equal(policy.length, 45);
+  assert.equal(new Set(policy.map((item) => item.path)).size, 45);
+  assert.equal(policy.filter((item) => item.decision === "include_entire_patch").length, 30);
   assert.equal(policy.filter((item) => item.decision === "include_curated_hunks").length, 5);
   assert.equal(policy.filter((item) => item.decision === "include_semantic_projection").length, 9);
   assert.equal(policy.filter((item) => item.decision === "retain_as_external_ledger").length, 1);
+});
+
+test("Minnesota release review markers match the current patch or sealed file", () => {
+  for (const policy of minnesotaReleaseReviewPolicy()) {
+    const result = spawnSync(
+      "git",
+      ["diff", "--binary", "--full-index", "--no-color", "HEAD", "--", policy.path],
+      { encoding: "utf8", windowsHide: true },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    const patch = result.stdout;
+    const text = readFileSync(policy.path, "utf8");
+    for (const marker of policy.requiredMarkers ?? []) {
+      assert.equal(
+        text.includes(marker),
+        true,
+        policy.path + " is missing required marker " + marker,
+      );
+    }
+    if (patch) {
+      for (const marker of policy.excludedMarkers ?? []) {
+        assert.equal(
+          patch.includes(marker),
+          false,
+          policy.path + " contains excluded patch marker " + marker,
+        );
+      }
+    }
+  }
 });
 
 test("Minnesota release review produces a no-production confirmation record", () => {
@@ -158,11 +192,11 @@ test("Minnesota release review produces a no-production confirmation record", ()
       "pending_human_confirmation_and_clean_application",
     );
     assert.deepEqual(built.document.summary, {
-      reviewedFiles: 25,
-      originalHumanReviewQueue: 22,
+      reviewedFiles: 45,
+      originalHumanReviewQueue: 42,
       additionalModifiedDependenciesReviewed: 3,
       decisions: {
-        include_entire_patch: 10,
+        include_entire_patch: 30,
         include_curated_hunks: 5,
         include_semantic_projection: 9,
         retain_as_external_ledger: 1,
@@ -170,6 +204,46 @@ test("Minnesota release review produces a no-production confirmation record", ()
     });
     assert.equal(built.document.safety.productionContacted, false);
     assert.equal(built.document.safety.gitMutationPerformed, false);
+  } finally {
+    rmSync(item.root, { recursive: true, force: true });
+  }
+});
+
+test("Minnesota release review validates unchanged merged surfaces from sealed bytes", () => {
+  const item = fixture();
+  try {
+    const overlayTarget = path.join(item.root, ...item.overlayPath.split("/"));
+    const overlay = JSON.parse(readFileSync(overlayTarget, "utf8"));
+    const file = overlay.files.find(
+      (entry) => entry.path === "src/app/api/results/route.ts",
+    );
+    const policy = minnesotaReleaseReviewPolicy().find(
+      (entry) => entry.path === file.path,
+    );
+    const copiedTarget = path.join(
+      item.root,
+      ...path.posix.join(
+        path.posix.dirname(item.overlayPath),
+        file.overlayPath,
+      ).split("/"),
+    );
+    const copiedBytes = Buffer.from(
+      (policy.requiredMarkers ?? []).join("\n") + "\n",
+      "utf8",
+    );
+    writeFileSync(copiedTarget, copiedBytes);
+    file.byteCount = copiedBytes.length;
+    file.sha256 = sha256(copiedBytes);
+    file.gitDisposition = "unchanged";
+    file.patchPath = null;
+    file.patchArtifact = null;
+    writeFileSync(overlayTarget, serialize(overlay));
+
+    const built = buildMinnesotaReleaseReview(item);
+    const reviewed = built.document.reviewItems.find(
+      (entry) => entry.path === file.path,
+    );
+    assert.equal(reviewed.markerSource, "sealed_unchanged_file");
   } finally {
     rmSync(item.root, { recursive: true, force: true });
   }

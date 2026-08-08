@@ -98,6 +98,10 @@ export function prepareMinnesotaPrecinctReleaseCandidate(options = {}) {
       path: path.posix.join(releaseRoot, draftPath),
       bytes,
     })),
+    ...built.deliveryAssets.map(({ path: assetPath, bytes }) => ({
+      path: path.posix.join(releaseRoot, assetPath),
+      bytes,
+    })),
   ];
   const dispositions = options.write
     ? preflightImmutableOutputs(root, files)
@@ -117,6 +121,7 @@ export function prepareMinnesotaPrecinctReleaseCandidate(options = {}) {
     packageByteCount: built.packageBytes.length,
     packageSha256,
     draftManifestCount: built.draftManifests.length,
+    deliveryAssetCount: built.deliveryAssets.length,
     totalReportingUnits: built.packageDocument.totals.reportingUnits,
     totalGeometryFeatures: built.packageDocument.totals.geometryFeatures,
     pendingGates: built.packageDocument.goNoGoGates
