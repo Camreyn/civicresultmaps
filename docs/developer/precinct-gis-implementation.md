@@ -6807,3 +6807,33 @@ evidence against its verified top-level package.
   compatibility path that does not reference precinct-only tables, while both
   Minnesota precinct paths retain the exact publication gate. The production
   database was not mutated during this incident response.
+
+### 2026-08-09 - Minnesota post-repair release reseal
+
+- A clean `feature/mn-precinct-map-activation` worktree was created from merged
+  production commit `ccb8fa89e5816e80461cd07f40e388883f4b7eaa`. The 55
+  reviewed local-only Minnesota source/normalized/crosswalk artifacts and four
+  statewide delivery candidates were copied from the prior clean release
+  worktree only after byte-for-byte SHA-256 comparison with the primary local
+  copies found no difference. They remain untracked release inputs and are not
+  candidates for Git publication.
+
+- The strict loopback `crm_clone_dev` validator again proved 16,435 reporting
+  units, 49,305 certified candidate rows, 16,435 geometry features, 16,435
+  reviewed exact-ID crosswalks, 125 zero-vote units, and zero invalid
+  constraints. The focused Minnesota precinct suite, complete repository test
+  suite, TypeScript validation, and optimized production build passed.
+
+- The guarded local rehearsal passed for all four tracked elections while the
+  canonical manifests remained blocked. Hennepin County rendered and joined
+  405/405 precincts for 2012, 422/422 for 2016, 425/425 for 2020, and 396/396
+  for 2024. The browser check retained the official source terms and visible
+  OpenStreetMap attribution and reported no failed API response, browser error,
+  or framework overlay.
+
+- A provisional post-repair package/overlay/review chain was generated as
+  `d56a0bd04069...`, `e55e382a50a7...`, and `e8da7ac12601...`. This required
+  ledger entry is itself a package-pinned dependency, so that provisional chain
+  is intentionally superseded by the final reseal after this entry is
+  committed. No production database write, Blob upload, Vercel environment
+  change, canonical activation, deployment, or Git publication occurred.
