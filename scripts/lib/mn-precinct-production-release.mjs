@@ -21,6 +21,9 @@ const MAX_EVIDENCE_AGE_MS = 4 * 60 * 60 * 1000;
 export const MINNESOTA_OWNER_CONFIRMATION_TEXT =
   "I confirm the exact hash-pinned Minnesota release review and clean integration tree. This confirmation does not authorize a production write, public geometry publication, canonical activation, deployment, or Git publication.";
 
+export const MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT =
+  "I am the sole human maintainer of this project. I authorize this release without a second human participant and accept responsibility for authorization, operation, verification, and rollback.";
+
 function query(client, lines, params = []) {
   return client.unsafe(Array.isArray(lines) ? lines.join("\n") : lines, params);
 }
@@ -61,6 +64,56 @@ export function normalizeMinnesotaReleaseIdentity(value) {
     .toLocaleLowerCase("en-US");
 }
 
+export function buildMinnesotaReleaseHumanControlTemplate() {
+  return {
+    mode: "TWO_PERSON",
+    soleOwnerApprovedBy: null,
+    soleOwnerAcknowledgement: null,
+  };
+}
+
+export function validateMinnesotaReleaseHumanControl(
+  people,
+  humanControl,
+  label,
+) {
+  const identityKeys = Object.values(people).map(normalizeMinnesotaReleaseIdentity);
+  if (
+    humanControl?.mode === "SOLE_OWNER"
+    && typeof humanControl?.soleOwnerApprovedBy === "string"
+    && humanControl.soleOwnerApprovedBy.trim()
+    && humanControl?.soleOwnerAcknowledgement
+      === MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT
+  ) {
+    const ownerKey = normalizeMinnesotaReleaseIdentity(
+      humanControl.soleOwnerApprovedBy,
+    );
+    if (!ownerKey || identityKeys.some((identity) => identity !== ownerKey)) {
+      throw new Error(label + " sole-owner roles must all name the approved owner");
+    }
+    return {
+      mode: "SOLE_OWNER",
+      soleOwnerApprovedBy: humanControl.soleOwnerApprovedBy.trim(),
+      soleOwnerAcknowledgement: MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
+    };
+  }
+  if (
+    humanControl?.mode !== "TWO_PERSON"
+    || humanControl?.soleOwnerApprovedBy !== null
+    || humanControl?.soleOwnerAcknowledgement !== null
+  ) {
+    throw new Error(label + " human-control declaration is incompatible");
+  }
+  if (
+    new Set(identityKeys).size < 2
+    || normalizeMinnesotaReleaseIdentity(people.operator)
+      === normalizeMinnesotaReleaseIdentity(people.verifier)
+  ) {
+    throw new Error(label + " requires two independent people");
+  }
+  return buildMinnesotaReleaseHumanControlTemplate();
+}
+
 export function buildMinnesotaProductionAuthorizationTemplate(
   releaseCandidate,
 ) {
@@ -81,6 +134,7 @@ export function buildMinnesotaProductionAuthorizationTemplate(
       verifier: null,
       rollbackOwner: null,
     },
+    humanControl: buildMinnesotaReleaseHumanControlTemplate(),
     deploymentWindow: {
       startsAtUtc: null,
       endsAtUtc: null,
@@ -395,13 +449,21 @@ export function validateMinnesotaProductionReviewEvidence(
   ) {
     throw new Error("Minnesota release confirmation postdates its authorization");
   }
-  if (
-    typeof context.operator === "string"
-    && context.operator.trim()
-    && normalizeMinnesotaReleaseIdentity(confirmation.confirmedBy)
-      === normalizeMinnesotaReleaseIdentity(context.operator)
-  ) {
-    throw new Error("Minnesota release owner confirmer and production operator must be different people");
+  if (typeof context.operator === "string" && context.operator.trim()) {
+    const confirmerKey = normalizeMinnesotaReleaseIdentity(confirmation.confirmedBy);
+    const operatorKey = normalizeMinnesotaReleaseIdentity(context.operator);
+    if (context.humanControl?.mode === "SOLE_OWNER") {
+      if (
+        confirmerKey !== operatorKey
+        || confirmerKey !== normalizeMinnesotaReleaseIdentity(
+          context.humanControl.soleOwnerApprovedBy,
+        )
+      ) {
+        throw new Error("Minnesota release sole-owner confirmation must name the approved owner");
+      }
+    } else if (confirmerKey === operatorKey) {
+      throw new Error("Minnesota release owner confirmer and production operator must be different people");
+    }
   }
   return {
     overlay: {
@@ -476,16 +538,11 @@ export function validateMinnesotaProductionAuthorization(
     verifier: requireNonEmpty(authorization.people?.verifier, "verifier"),
     rollbackOwner: requireNonEmpty(authorization.people?.rollbackOwner, "rollbackOwner"),
   };
-  const identityKeys = Object.values(people).map(normalizeMinnesotaReleaseIdentity);
-  if (new Set(identityKeys).size < 2) {
-    throw new Error("Minnesota production authorization requires independent named roles");
-  }
-  if (
-    normalizeMinnesotaReleaseIdentity(people.operator)
-      === normalizeMinnesotaReleaseIdentity(people.verifier)
-  ) {
-    throw new Error("Minnesota production operator and verifier must be different people");
-  }
+  const humanControl = validateMinnesotaReleaseHumanControl(
+    people,
+    authorization.humanControl,
+    "Minnesota production authorization",
+  );
   if (
     authorization.evidence?.preflight?.path !== context.preflightPath
     || authorization.evidence?.preflight?.sha256 !== context.preflightSha256
@@ -511,6 +568,7 @@ export function validateMinnesotaProductionAuthorization(
       "an authorization ID",
     ),
     people,
+    humanControl,
     deploymentWindow: authorization.deploymentWindow,
   };
 }

@@ -615,21 +615,6 @@ export async function runMinnesotaProductionRelease(options = {}) {
         preflightCapturedAtUtc: preflightEvidence.capturedAtUtc,
       },
     );
-    const releaseReviewEvidence = validateMinnesotaProductionReviewEvidence({
-      overlay: overlayDocument,
-      review: reviewDocument,
-      confirmation: confirmationDocument,
-    }, {
-      now,
-      authorizedAtUtc: authorization.authorizedAtUtc,
-      operator: authorization.people?.operator,
-      releaseCandidate: loaded.releaseCandidate,
-      releaseCandidatePath: parsed.packagePath,
-      overlay: overlayArtifact,
-      review: reviewArtifact,
-      confirmation: confirmationArtifact,
-      cleanIntegration,
-    });
     const authorizationEvidence = validateMinnesotaProductionAuthorization(
       authorization,
       {
@@ -646,6 +631,22 @@ export async function runMinnesotaProductionRelease(options = {}) {
         releaseConfirmationSha256: confirmationArtifact.sha256,
       },
     );
+    const releaseReviewEvidence = validateMinnesotaProductionReviewEvidence({
+      overlay: overlayDocument,
+      review: reviewDocument,
+      confirmation: confirmationDocument,
+    }, {
+      now,
+      authorizedAtUtc: authorization.authorizedAtUtc,
+      operator: authorization.people?.operator,
+      humanControl: authorizationEvidence.humanControl,
+      releaseCandidate: loaded.releaseCandidate,
+      releaseCandidatePath: parsed.packagePath,
+      overlay: overlayArtifact,
+      review: reviewArtifact,
+      confirmation: confirmationArtifact,
+      cleanIntegration,
+    });
     return {
       preflightEvidence,
       backupEvidence,

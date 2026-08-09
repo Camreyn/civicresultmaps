@@ -8,7 +8,8 @@ import {
   inspectMinnesotaPrecinctBlobPublicationPlan,
 } from "./mn-precinct-blob-publication.mjs";
 import {
-  normalizeMinnesotaReleaseIdentity,
+  buildMinnesotaReleaseHumanControlTemplate,
+  validateMinnesotaReleaseHumanControl,
 } from "./mn-precinct-production-release.mjs";
 import {
   inspectPrecinctGeometryManifest,
@@ -685,6 +686,7 @@ export function buildMinnesotaPublicActivationAuthorizationTemplate(plan, activa
       verifier: null,
       rollbackOwner: null,
     },
+    humanControl: buildMinnesotaReleaseHumanControlTemplate(),
     deploymentWindow: {
       startsAtUtc: null,
       endsAtUtc: null,
@@ -906,18 +908,15 @@ export function validateMinnesotaPublicActivationAuthorization(
     verifier: requiredPerson(value, "verifier"),
     rollbackOwner: requiredPerson(value, "rollbackOwner"),
   };
-  if (
-    normalizeMinnesotaReleaseIdentity(people.operator)
-      === normalizeMinnesotaReleaseIdentity(people.verifier)
-    || new Set(
-      Object.values(people).map(normalizeMinnesotaReleaseIdentity),
-    ).size < 2
-  ) {
-    throw new Error("Minnesota public activation requires two independent people");
-  }
+  const humanControl = validateMinnesotaReleaseHumanControl(
+    people,
+    value.humanControl,
+    "Minnesota public activation",
+  );
   return {
     activationId: value.activationId.trim(),
     people,
+    humanControl,
     deploymentWindow: value.deploymentWindow,
     protectedPreview: value.protectedPreview,
     productionDeployment: value.productionDeployment,
@@ -954,6 +953,7 @@ export function buildMinnesotaPublicRollbackAuthorizationTemplate(
       verifier: null,
       rollbackOwner: null,
     },
+    humanControl: buildMinnesotaReleaseHumanControlTemplate(),
     rollbackWindow: {
       startsAtUtc: null,
       endsAtUtc: null,
@@ -1022,20 +1022,17 @@ export function validateMinnesotaPublicRollbackAuthorization(value, context) {
     verifier: requiredPerson(value, "verifier"),
     rollbackOwner: requiredPerson(value, "rollbackOwner"),
   };
-  if (
-    normalizeMinnesotaReleaseIdentity(people.operator)
-      === normalizeMinnesotaReleaseIdentity(people.verifier)
-    || new Set(
-      Object.values(people).map(normalizeMinnesotaReleaseIdentity),
-    ).size < 2
-  ) {
-    throw new Error("Minnesota rollback requires two independent people");
-  }
+  const humanControl = validateMinnesotaReleaseHumanControl(
+    people,
+    value.humanControl,
+    "Minnesota rollback",
+  );
   return {
     activationId: value.rollbackId.trim(),
     rollbackId: value.rollbackId.trim(),
     publicationActivationId: receipt.activationId,
     people,
+    humanControl,
     rollbackWindow: value.rollbackWindow,
     applicationRollback: value.applicationRollback,
   };

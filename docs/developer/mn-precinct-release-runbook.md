@@ -163,7 +163,7 @@ indicator presentation, browser-R, security-version, MCP dependency,
 other-state script, registry-row, and documentation changes.
 
 `READY_FOR_HUMAN_CONFIRMATION` means the machine classification is complete;
-it does not pass the clean-diff gate. An independent human must confirm the
+it does not pass the clean-diff gate. The project owner must confirm the
 include/exclude policy and apply it in a clean integration worktree. The
 national continuation ledger remains an external hash-pinned review artifact
 instead of being misrepresented as a Minnesota-only file.
@@ -197,9 +197,13 @@ project owner may complete only `decision` (`GO_OWNER_CONFIRMATION`),
 `confirmedAtUtc`, `confirmedBy`, and `review.confirmed` (`true`). Do not alter
 the fixed confirmation text, hashes, Git evidence, or the all-false production,
 publication, activation, deployment, and Git authorization fields. The hidden-
-load runner rechecks the same clean Git tree and requires the confirmer and
-database operator to be different people. This confirmation still authorizes
-no production action by itself.
+load runner rechecks the same clean Git tree. Its default two-person mode
+requires the confirmer and database operator to be different people. A project
+with exactly one human maintainer may instead use the explicit `SOLE_OWNER`
+authorization described below, in which case the confirmer, operator,
+verifier, authorizer, rollback owner, and approved owner must all normalize to
+the same identifier. This confirmation still authorizes no production action
+by itself.
 
 ## Production-readiness commands
 
@@ -241,8 +245,10 @@ the following simultaneously:
 - exact hash-pinned overlay, machine review, and project-owner confirmation
   artifacts whose package/overlay/review relationships all match;
 - a `GO_PRODUCTION` authorization record naming authorizer, operator, verifier,
-  and rollback owner, with at least two independent people after Unicode/case
-  normalization;
+  and rollback owner. The default `TWO_PERSON` mode requires at least two
+  independent people after Unicode/case normalization. A one-maintainer project
+  may use `SOLE_OWNER` only with the exact declaration below and the same owner
+  identifier in all four roles;
 - an active deployment window whose rollback decision time has not passed;
 - the exact database scopes for migration 0008, hidden Minnesota load, and
   public-revision increment;
@@ -252,6 +258,24 @@ the following simultaneously:
 - the SHA-256 of the exact completed authorization file both in
   `CRM_MN_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256` and the required
   `--authorization-sha256` option.
+
+For an explicitly approved one-maintainer project, set every `people` value to
+the same stable owner identifier and complete the generated authorization's
+`humanControl` object exactly as follows:
+
+```json
+{
+  "mode": "SOLE_OWNER",
+  "soleOwnerApprovedBy": "<same stable owner identifier>",
+  "soleOwnerAcknowledgement": "I am the sole human maintainer of this project. I authorize this release without a second human participant and accept responsibility for authorization, operation, verification, and rollback."
+}
+```
+
+This is an explicit accountability model, not a reduced evidence path. It does
+not relax package or evidence hashes, clean-tree checks, time windows, backup
+and restore verification, transaction validation, Blob authorization,
+deployment proof, endpoint gates, or rollback binding. Do not put an automated
+agent into a field to imply a second human participant.
 
 When those guards pass, migration 0008 and the four-election hidden load run in
 one PostgreSQL transaction. The evidence freshness, authorization expiry,
@@ -515,8 +539,8 @@ activation-branch HEAD, its tree SHA is `git rev-parse HEAD^{tree}`, and its fiv
 tracked output hashes match the activation candidate. An environment change is
 not retroactive: an older preview deployment cannot be used as evidence.
 
-After an independent person verifies the preview, generate the separate public
-authorization template. Leave it at `NO_GO_PUBLIC` until the production
+After the required human verification of the preview, generate the separate
+public authorization template. Leave it at `NO_GO_PUBLIC` until the production
 deployment proof described below exists:
 
 ```powershell
@@ -525,9 +549,12 @@ npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --act
 
 The eventually completed record must change `decision` to `GO_PUBLIC`, bind the exact
 release and activation hashes and both receipt hashes, name authorizer,
-operator, verifier, and rollback owner, use at least two distinct people with
-operator different from verifier, record an active UTC deployment/rollback
-window, identify a protected preview verified within four hours, and include a
+operator, verifier, and rollback owner, and record an active UTC deployment/
+rollback window. `TWO_PERSON` requires two distinct people with operator
+different from verifier. An approved one-maintainer project may instead use the
+same exact `SOLE_OWNER` `humanControl` declaration and the same owner identifier
+in all four roles. The authorization must identify a protected preview verified
+within four hours and include a
 production deployment verified within four hours and no earlier than the
 preview verification. The production evidence must record its deployment ID,
 URL, 40-hex Git commit SHA, 40-hex Git tree SHA, READY and PROMOTED checks, exact
@@ -557,9 +584,9 @@ that both Minnesota precinct endpoints still fail closed against the blocked
 database state. Its tree SHA must equal the protected preview tree SHA even if
 the merge commit SHA differs. Place a hold on unrelated `main` merges for the
 remainder of the cutover/rollback window. Fill those facts into
-`productionDeployment` and the pinned facts into `rollbackTarget`, have the two
-people complete the final `GO_PUBLIC` record, and hash that exact authorization
-artifact.
+`productionDeployment` and the pinned facts into `rollbackTarget`, complete the
+final `GO_PUBLIC` record under its declared human-control mode, and hash that
+exact authorization artifact.
 
 Only after that deployment proof, set all exact acknowledgements and run the
 atomic database status transition as the single public data switch:
@@ -610,9 +637,11 @@ Rollback is a separate decision. Hold all new `main` merges and automatic
 production cutovers. Verify that the exact `rollbackTarget` pinned in the
 publish receipt is still available, but do not restore it yet. Use the exact
 publish receipt to create a rollback template and complete it as `GO_ROLLBACK`
-with a new rollback ID, two people, an active window, the unchanged pinned
-target, and explicit acknowledgements that the database will be blocked first
-and the application will be restored only afterward:
+with a new rollback ID, the same declared human-control mode, an active window,
+the unchanged pinned target, and explicit acknowledgements that the database
+will be blocked first and the application will be restored only afterward. A
+sole-owner rollback again requires all four roles and `soleOwnerApprovedBy` to
+name the same owner and requires the exact acknowledgement text:
 
 ```powershell
 npm.cmd run precinct-gis:publication-status:mn -- --activation=$ACTIVATION --activation-sha256=$ACTIVATION_SHA --rollback --publication-receipt=$PUBLICATION_RECEIPT --publication-receipt-sha256=$PUBLICATION_RECEIPT_SHA --write-authorization-template

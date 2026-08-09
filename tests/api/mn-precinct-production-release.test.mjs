@@ -34,6 +34,7 @@ import {
   ensureMinnesotaPrecinctSchema,
   MINNESOTA_OWNER_CONFIRMATION_TEXT,
   MINNESOTA_PRODUCTION_DATABASE_SCOPES,
+  MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
   readAndVerifyEvidenceFile,
   validateMinnesotaProductionAuthorization,
   validateMinnesotaProductionBackupEvidence,
@@ -252,7 +253,7 @@ function writeJsonArtifact(root, relativePath, value) {
   return { path: relativePath, absolute, bytes, sha256: sha256(bytes) };
 }
 
-function productionRunnerFixture() {
+function productionRunnerFixture({ soleOwner = false } = {}) {
   const root = mkdtempSync(path.join(tmpdir(), "crm-mn-production-runner-"));
   const databaseUrl = "postgresql://user:pass@db.example.com/crm_production?sslmode=require";
   const endpointFingerprint = productionEndpointFingerprint(databaseUrl);
@@ -425,11 +426,25 @@ function productionRunnerFixture() {
     releaseCandidate: candidate,
     authorizedAtUtc: "2026-08-08T00:50:00.000Z",
     expiresAtUtc: "2026-08-08T02:00:00.000Z",
-    people: {
+    people: soleOwner ? {
+      authorizedBy: "Project owner",
+      operator: "Project owner",
+      verifier: "Project owner",
+      rollbackOwner: "Project owner",
+    } : {
       authorizedBy: "Project owner",
       operator: "Database operator",
       verifier: "Independent verifier",
       rollbackOwner: "Project owner",
+    },
+    humanControl: soleOwner ? {
+      mode: "SOLE_OWNER",
+      soleOwnerApprovedBy: "Project owner",
+      soleOwnerAcknowledgement: MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
+    } : {
+      mode: "TWO_PERSON",
+      soleOwnerApprovedBy: null,
+      soleOwnerAcknowledgement: null,
     },
     deploymentWindow: {
       startsAtUtc: "2026-08-08T00:55:00.000Z",
@@ -561,6 +576,11 @@ test("Minnesota authorization template is no-go and approval requires evidence a
   const candidate = releaseCandidate();
   const template = buildMinnesotaProductionAuthorizationTemplate(candidate);
   assert.equal(template.decision, "NO_GO_PRODUCTION");
+  assert.deepEqual(template.humanControl, {
+    mode: "TWO_PERSON",
+    soleOwnerApprovedBy: null,
+    soleOwnerAcknowledgement: null,
+  });
   assert.deepEqual(template.scopes, [...MINNESOTA_PRODUCTION_DATABASE_SCOPES]);
   assert.throws(
     () => validateMinnesotaProductionAuthorization(template, {
@@ -635,7 +655,7 @@ test("Minnesota authorization template is no-go and approval requires evidence a
       releaseConfirmationPath: ".etl/confirmation.json",
       releaseConfirmationSha256: CONFIRMATION_SHA,
     }),
-    /operator and verifier must be different/,
+    /requires two independent people/,
   );
   assert.throws(
     () => validateMinnesotaProductionAuthorization({
@@ -659,7 +679,7 @@ test("Minnesota authorization template is no-go and approval requires evidence a
       releaseConfirmationPath: ".etl/confirmation.json",
       releaseConfirmationSha256: CONFIRMATION_SHA,
     }),
-    /operator and verifier must be different/,
+    /requires two independent people/,
   );
   assert.throws(
     () => validateMinnesotaProductionAuthorization({
@@ -683,6 +703,82 @@ test("Minnesota authorization template is no-go and approval requires evidence a
       releaseConfirmationSha256: CONFIRMATION_SHA,
     }),
     /outside its deployment window/,
+  );
+  const soleOwnerAuthorization = {
+    ...authorization,
+    people: {
+      authorizedBy: "Camreyn",
+      operator: "Camreyn",
+      verifier: "Camreyn",
+      rollbackOwner: "Camreyn",
+    },
+    humanControl: {
+      mode: "SOLE_OWNER",
+      soleOwnerApprovedBy: "Camreyn",
+      soleOwnerAcknowledgement: MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
+    },
+  };
+  const soleOwnerChecked = validateMinnesotaProductionAuthorization(
+    soleOwnerAuthorization,
+    {
+      now: NOW,
+      releaseCandidate: candidate,
+      preflightPath: ".etl/preflight.json",
+      preflightSha256: "d".repeat(64),
+      backupManifestPath: "C:/tmp/backup.json",
+      backupManifestSha256: "e".repeat(64),
+      releaseOverlayPath: ".etl/overlay.json",
+      releaseOverlaySha256: OVERLAY_SHA,
+      releaseReviewPath: ".etl/review.json",
+      releaseReviewSha256: REVIEW_SHA,
+      releaseConfirmationPath: ".etl/confirmation.json",
+      releaseConfirmationSha256: CONFIRMATION_SHA,
+    },
+  );
+  assert.equal(soleOwnerChecked.humanControl.mode, "SOLE_OWNER");
+  assert.equal(soleOwnerChecked.humanControl.soleOwnerApprovedBy, "Camreyn");
+  assert.throws(
+    () => validateMinnesotaProductionAuthorization({
+      ...soleOwnerAuthorization,
+      humanControl: {
+        ...soleOwnerAuthorization.humanControl,
+        soleOwnerAcknowledgement: "I approve.",
+      },
+    }, {
+      now: NOW,
+      releaseCandidate: candidate,
+      preflightPath: ".etl/preflight.json",
+      preflightSha256: "d".repeat(64),
+      backupManifestPath: "C:/tmp/backup.json",
+      backupManifestSha256: "e".repeat(64),
+      releaseOverlayPath: ".etl/overlay.json",
+      releaseOverlaySha256: OVERLAY_SHA,
+      releaseReviewPath: ".etl/review.json",
+      releaseReviewSha256: REVIEW_SHA,
+      releaseConfirmationPath: ".etl/confirmation.json",
+      releaseConfirmationSha256: CONFIRMATION_SHA,
+    }),
+    /human-control declaration is incompatible/,
+  );
+  assert.throws(
+    () => validateMinnesotaProductionAuthorization({
+      ...soleOwnerAuthorization,
+      people: { ...soleOwnerAuthorization.people, verifier: "Someone else" },
+    }, {
+      now: NOW,
+      releaseCandidate: candidate,
+      preflightPath: ".etl/preflight.json",
+      preflightSha256: "d".repeat(64),
+      backupManifestPath: "C:/tmp/backup.json",
+      backupManifestSha256: "e".repeat(64),
+      releaseOverlayPath: ".etl/overlay.json",
+      releaseOverlaySha256: OVERLAY_SHA,
+      releaseReviewPath: ".etl/review.json",
+      releaseReviewSha256: REVIEW_SHA,
+      releaseConfirmationPath: ".etl/confirmation.json",
+      releaseConfirmationSha256: CONFIRMATION_SHA,
+    }),
+    /sole-owner roles must all name the approved owner/,
   );
 });
 
@@ -727,6 +823,20 @@ test("Minnesota hidden release requires exact overlay, review, and human confirm
       },
     }, reviewContext()),
     /owner confirmer and production operator must be different/,
+  );
+  const soleOwnerContext = {
+    ...reviewContext(),
+    operator: "Project owner",
+    humanControl: {
+      mode: "SOLE_OWNER",
+      soleOwnerApprovedBy: "Project owner",
+      soleOwnerAcknowledgement: MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
+    },
+  };
+  assert.equal(
+    validateMinnesotaProductionReviewEvidence(evidence, soleOwnerContext)
+      .confirmation.confirmedBy,
+    "Project owner",
   );
 });
 
@@ -1051,7 +1161,7 @@ test("migration 0008 is hash checked and applied inside the supplied transaction
 });
 
 test("Minnesota production runner carries every pinned audit input into one receipt", async () => {
-  const item = productionRunnerFixture();
+  const item = productionRunnerFixture({ soleOwner: true });
   try {
     let transactionCalls = 0;
     const result = await runMinnesotaProductionRelease({

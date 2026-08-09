@@ -290,8 +290,9 @@ const POLICY = Object.freeze([
       "348 immutable county GeoJSON files",
       "CRM_PRECINCT_GEOGRAPHY_ORIGIN",
       "CRM_MN_PRECINCT_BACKUP_ACK=CREATE_FULL_PUBLIC_SCHEMA_ROLLBACK_BACKUP",
+      "SOLE_OWNER",
     ],
-    rationale: "The complete diff documents the county-scoped serving shape, immutable-object publication gate, and package-bound full backup procedure.",
+    rationale: "The complete diff documents the county-scoped serving shape, immutable-object publication gate, package-bound full backup procedure, and explicit sole-owner accountability model.",
   },
   {
     path: "scripts/lib/mn-precinct-production-release.mjs",
@@ -300,8 +301,10 @@ const POLICY = Object.freeze([
     requiredMarkers: [
       "manifest?.releaseCandidate?.sha256",
       "releaseCandidateSha256",
+      "MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT",
+      "validateMinnesotaReleaseHumanControl",
     ],
-    rationale: "The complete diff binds rollback evidence to the exact reviewed release package.",
+    rationale: "The complete diff binds rollback evidence to the exact reviewed release package and validates either default two-person or explicit sole-owner human control.",
   },
   {
     path: "scripts/lib/mn-precinct-release-candidate.mjs",
@@ -417,8 +420,9 @@ const POLICY = Object.freeze([
     requiredMarkers: [
       "releaseCandidate: releaseCandidate()",
       "exactSourceRowCounts = \\$true",
+      "sole-owner roles must all name the approved owner",
     ],
-    rationale: "The complete diff tests exact package binding and full-backup safeguards.",
+    rationale: "The complete diff tests exact package binding, full-backup safeguards, and fail-closed sole-owner authorization.",
   },
   {
     path: "tests/api/mn-precinct-release-candidate.test.mjs",
@@ -504,7 +508,7 @@ const POLICY = Object.freeze([
       "validateMinnesotaHiddenLoadReceipt",
       "validateMinnesotaBlobPublicationEvidence",
       "PROTECTED_PREVIEW_REQUIRED",
-      "two independent people",
+      "validateMinnesotaReleaseHumanControl",
       "GO_ROLLBACK",
       "protectionVerified",
       "productionDeployment",
@@ -552,10 +556,10 @@ const POLICY = Object.freeze([
     requiredMarkers: [
       "receipt-bound and plan-only by default",
       "changes only five deterministic tracked files",
-      "requires verified preview and production deployments plus two people",
+      "requires verified preview and production deployments plus declared human control",
       "atomically publishes exact versions and crosswalks",
     ],
-    rationale: "The complete test file proves receipt binding, deterministic static activation, two-person preview authorization, tamper rejection, and the exact database transition.",
+    rationale: "The complete test file proves receipt binding, deterministic static activation, declared human-control validation, tamper rejection, and the exact database transition.",
   },
   {
     path: "tests/api/mn-precinct-result-publication-gate.test.mjs",
@@ -816,7 +820,7 @@ export function buildMinnesotaReleaseReview(options) {
       status: "pending_human_confirmation_and_clean_application",
       machineClassificationsComplete: true,
       unclassifiedReviewFiles: 0,
-      reason: "The exact include/exclude policy is reproducible, but an independent human must confirm it and apply it in a clean integration worktree before the release gate passes.",
+      reason: "The exact include/exclude policy is reproducible, but the project owner must confirm it and apply it in a clean integration worktree before the release gate passes.",
     },
     safety: {
       productionContacted: false,
@@ -841,10 +845,10 @@ export function buildMinnesotaReleaseReview(options) {
       "other-state precinct scripts, registry rows, and documentation",
     ],
     remainingGates: [
-      "independent human confirmation and clean-worktree application of this review",
+      "project-owner confirmation and clean-worktree application of this review",
       "current read-only production schema and row preflight",
       "current full production backup with verified restoration",
-      "named independent deployment and rollback roles in an active window",
+      "named deployment and rollback roles under the declared human-control mode in an active window",
       "explicit production authorization",
       "separate public file and canonical-manifest cutover review",
     ],

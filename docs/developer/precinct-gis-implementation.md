@@ -6762,3 +6762,25 @@ evidence against its verified top-level package.
   valid clone rows. These checks prevent another production-gate or cache
   change from silently making the required four-year browser rehearsal
   impossible.
+
+### 2026-08-08 - Minnesota sole-owner release authorization
+
+- The project owner confirmed that CivicResultMaps has one human maintainer.
+  Minnesota production, public-activation, and rollback authorization templates
+  therefore retain `TWO_PERSON` as the default while adding an explicit
+  `SOLE_OWNER` human-control declaration for that operating model.
+
+- Sole-owner authorization is fail-closed: all authorizer, operator, verifier,
+  rollback-owner, confirmer, and approved-owner identifiers must normalize to
+  the same person, and the exact acknowledgement records responsibility for
+  authorization, execution, verification, and rollback. Automated agents must
+  not be represented as a second human.
+
+- The exception changes no release-data or cutover guard. Exact artifact
+  hashes, clean Git evidence, production read-only preflight, full restore-
+  verified backup, active windows, authorization-byte acknowledgement,
+  transactional database validation, immutable Blob verification, deployment
+  proof, fail-closed endpoint gates, and receipt-bound rollback remain required.
+  Existing candidates and evidence must be resealed after this reviewed code
+  change; no production mutation or public activation is authorized by the
+  template alone.
