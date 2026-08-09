@@ -152,6 +152,23 @@ test("both precinct result query paths fail closed until exact DB publication", 
   );
 });
 
+test("non-gated results do not require the precinct-only database schema", () => {
+  const source = readFileSync("src/lib/data-access.ts", "utf8");
+  const start = source.indexOf(
+    "// County/state and other non-gated results must remain readable",
+  );
+  const end = source.indexOf(": (await sql`", start);
+  assert.notEqual(start, -1);
+  assert.notEqual(end, -1);
+  const compatibilityQuery = source.slice(start, end);
+  assert.match(compatibilityQuery, /: !requiresPublicationGate/);
+  assert.match(compatibilityQuery, /from result_rows/);
+  assert.match(compatibilityQuery, /inner join elections/);
+  assert.doesNotMatch(compatibilityQuery, /reporting_units/);
+  assert.doesNotMatch(compatibilityQuery, /geography_versions/);
+  assert.doesNotMatch(compatibilityQuery, /reporting_unit_geometry_crosswalks/);
+});
+
 test("precinct geometry fails closed on the same database publication state", () => {
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
   const route = readFileSync(

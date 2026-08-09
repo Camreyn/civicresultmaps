@@ -6798,3 +6798,12 @@ evidence against its verified top-level package.
   rejects the unsafe direct-cast form. The attempted transaction produced no
   receipt, public file, canonical activation, or production data change; a new
   package and evidence chain is required after this repair is merged.
+
+- The same production investigation found that the public result query joined
+  `reporting_units` even for county rows. Because migration 0008 correctly
+  rolled back with the hidden load, that table did not exist; the caught SQL
+  error silently returned the Minnesota, Washington, and Wisconsin starter
+  rows and left 48 state maps empty. Non-gated county/state queries now use a
+  compatibility path that does not reference precinct-only tables, while both
+  Minnesota precinct paths retain the exact publication gate. The production
+  database was not mutated during this incident response.
