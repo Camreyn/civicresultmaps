@@ -6784,3 +6784,17 @@ evidence against its verified top-level package.
   Existing candidates and evidence must be resealed after this reviewed code
   change; no production mutation or public activation is authorized by the
   template alone.
+
+### 2026-08-09 - Minnesota durable-audit JSONB validation repair
+
+- The first guarded Minnesota hidden-load attempt reached its in-transaction
+  validation and rolled back before commit because the durable release-audit
+  comparison cast serialized JSON parameters directly to `jsonb`. With
+  Postgres.js, that encodes the parameter as a JSON string scalar instead of
+  decoding the serialized object.
+
+- Reporting-unit and import-run audit comparisons now cast the parameters
+  through `text` before `jsonb`. A focused regression test pins both casts and
+  rejects the unsafe direct-cast form. The attempted transaction produced no
+  receipt, public file, canonical activation, or production data change; a new
+  package and evidence chain is required after this repair is merged.
