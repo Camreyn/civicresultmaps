@@ -30,6 +30,9 @@ import {
   prepareMinnesotaPublicActivation,
   writeMinnesotaActivationTrackedOutputs,
 } from "../../scripts/prepare-mn-precinct-public-activation.mjs";
+import {
+  MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
+} from "../../scripts/lib/mn-precinct-production-release.mjs";
 
 const YEARS = [2012, 2016, 2020, 2024];
 const ELECTION_DATES = new Map([
@@ -574,7 +577,7 @@ test("Minnesota activation writer changes only five deterministic tracked files"
   }
 });
 
-test("Minnesota public authorization requires verified preview and production deployments plus two people", () => {
+test("Minnesota public authorization requires verified preview and production deployments plus declared human control", () => {
   const item = fixture();
   try {
     const built = inspectMinnesotaPublicActivationPlan(item.options);
@@ -606,6 +609,40 @@ test("Minnesota public authorization requires verified preview and production de
       "dpl_fixture_production",
     );
     assert.equal(checked.rollbackTarget.deploymentId, "dpl_fixture_previous");
+    const soleOwnerAuthorization = {
+      ...authorization,
+      people: {
+        authorizedBy: "Camreyn",
+        operator: "Camreyn",
+        verifier: "Camreyn",
+        rollbackOwner: "Camreyn",
+      },
+      humanControl: {
+        mode: "SOLE_OWNER",
+        soleOwnerApprovedBy: "Camreyn",
+        soleOwnerAcknowledgement: MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
+      },
+    };
+    const soleOwnerChecked = validateMinnesotaPublicActivationAuthorization(
+      soleOwnerAuthorization,
+      {
+        now: Date.parse("2026-08-08T01:00:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+      },
+    );
+    assert.equal(soleOwnerChecked.humanControl.mode, "SOLE_OWNER");
+    assert.throws(
+      () => validateMinnesotaPublicActivationAuthorization({
+        ...soleOwnerAuthorization,
+        people: { ...soleOwnerAuthorization.people, verifier: "Other person" },
+      }, {
+        now: Date.parse("2026-08-08T01:00:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+      }),
+      /sole-owner roles must all name the approved owner/,
+    );
     assert.throws(
       () => validateMinnesotaPublicActivationAuthorization({
         ...authorization,
@@ -746,6 +783,29 @@ test("Minnesota rollback requires a separate decision bound to the publish recei
     assert.equal(
       checked.applicationRollback.target.deploymentId,
       "dpl_previous",
+    );
+    const soleOwnerAuthorization = {
+      ...authorization,
+      people: {
+        authorizedBy: "Camreyn",
+        operator: "Camreyn",
+        verifier: "Camreyn",
+        rollbackOwner: "Camreyn",
+      },
+      humanControl: {
+        mode: "SOLE_OWNER",
+        soleOwnerApprovedBy: "Camreyn",
+        soleOwnerAcknowledgement: MINNESOTA_SOLE_OWNER_ACKNOWLEDGEMENT,
+      },
+    };
+    assert.equal(
+      validateMinnesotaPublicRollbackAuthorization(soleOwnerAuthorization, {
+        now: Date.parse("2026-08-08T01:20:00.000Z"),
+        plan: built.plan,
+        activationSha256: built.sha256,
+        publicationReceipt,
+      }).humanControl.mode,
+      "SOLE_OWNER",
     );
     assert.throws(
       () => validateMinnesotaPublicRollbackAuthorization({
