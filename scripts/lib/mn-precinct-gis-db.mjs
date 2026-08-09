@@ -878,9 +878,11 @@ async function validateStoredProductionAudit(
 ) {
   if (!context.releaseCandidate) return;
   const audit = JSON.stringify(context.productionReleaseAudit);
+  // `audit` is serialized JSON text. Preserve the intermediate text cast so
+  // Postgres.js does not encode the parameter as a JSON string scalar.
   const units = await query(sql, [
     "select count(*)::int total,",
-    " count(*) filter (where metadata->'productionReleaseAudit'=$3::jsonb)::int exact_audit",
+    " count(*) filter (where metadata->'productionReleaseAudit'=$3::text::jsonb)::int exact_audit",
     "from reporting_units where state_code=$1 and election_id=$2::uuid",
     " and reporting_grain='precinct'",
   ], [STATE, electionId, audit]);
@@ -892,7 +894,7 @@ async function validateStoredProductionAudit(
   }
   const imports = await query(sql, [
     "select count(distinct ir.id)::int import_runs,count(rr.id)::int result_rows,",
-    " count(rr.id) filter (where ir.metadata->'productionReleaseAudit'=$4::jsonb)::int exact_audit_rows",
+    " count(rr.id) filter (where ir.metadata->'productionReleaseAudit'=$4::text::jsonb)::int exact_audit_rows",
     "from import_runs ir",
     "join result_rows rr on rr.import_run_id=ir.id and rr.state_code=$1",
     "join contests c on c.id=rr.contest_id and c.election_id=$2::uuid",

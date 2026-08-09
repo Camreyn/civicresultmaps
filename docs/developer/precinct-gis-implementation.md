@@ -6784,3 +6784,26 @@ evidence against its verified top-level package.
   Existing candidates and evidence must be resealed after this reviewed code
   change; no production mutation or public activation is authorized by the
   template alone.
+
+### 2026-08-09 - Minnesota durable-audit JSONB validation repair
+
+- The first guarded Minnesota hidden-load attempt reached its in-transaction
+  validation and rolled back before commit because the durable release-audit
+  comparison cast serialized JSON parameters directly to `jsonb`. With
+  Postgres.js, that encodes the parameter as a JSON string scalar instead of
+  decoding the serialized object.
+
+- Reporting-unit and import-run audit comparisons now cast the parameters
+  through `text` before `jsonb`. A focused regression test pins both casts and
+  rejects the unsafe direct-cast form. The attempted transaction produced no
+  receipt, public file, canonical activation, or production data change; a new
+  package and evidence chain is required after this repair is merged.
+
+- The same production investigation found that the public result query joined
+  `reporting_units` even for county rows. Because migration 0008 correctly
+  rolled back with the hidden load, that table did not exist; the caught SQL
+  error silently returned the Minnesota, Washington, and Wisconsin starter
+  rows and left 48 state maps empty. Non-gated county/state queries now use a
+  compatibility path that does not reference precinct-only tables, while both
+  Minnesota precinct paths retain the exact publication gate. The production
+  database was not mutated during this incident response.

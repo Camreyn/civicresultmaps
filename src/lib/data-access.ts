@@ -664,7 +664,36 @@ export async function listResults(input: {
           )
         order by result_rows.jurisdiction_name, result_rows.candidate_name
       `) as typeof rows
-      : (await sql`
+      // County/state and other non-gated results must remain readable before
+      // the precinct-only migration 0008 schema is installed.
+      : !requiresPublicationGate
+        ? (await sql`
+          select
+            result_rows.state_code as "stateCode",
+            elections.office,
+            result_rows.level,
+            result_rows.jurisdiction_tag as "jurisdictionTag",
+            result_rows.jurisdiction_code as "jurisdictionCode",
+            result_rows.jurisdiction_name as "jurisdictionName",
+            result_rows.candidate_name as "candidateName",
+            result_rows.party,
+            result_rows.votes,
+            result_rows.source_document_id as "sourceDocumentId",
+            source_documents.slug as "sourceSlug"
+          from result_rows
+          inner join contests on result_rows.contest_id = contests.id
+          inner join elections on contests.election_id = elections.id
+          left join source_documents on result_rows.source_document_id = source_documents.id
+          where result_rows.state_code = ${input.state}
+            and result_rows.level = ${input.level}
+            and elections.year = ${input.year}
+            and (
+              ${normalizedOffice}::text is null
+              or lower(elections.office) = ${normalizedOffice}
+            )
+          order by result_rows.jurisdiction_name, result_rows.candidate_name
+        `) as typeof rows
+        : (await sql`
       select
         result_rows.state_code as "stateCode",
         elections.office,

@@ -57,6 +57,25 @@ const EMPTY_STATUS_SHA = sha256(Buffer.from("", "utf8"));
 const PACKAGE_PATH = ".etl/package.json";
 const NOW = new Date("2026-08-08T01:00:00.000Z");
 
+test("Minnesota durable-audit SQL decodes serialized parameters as JSON objects", () => {
+  const source = readFileSync(
+    path.resolve(process.cwd(), "scripts/lib/mn-precinct-gis-db.mjs"),
+    "utf8",
+  );
+  assert.match(
+    source,
+    /metadata->'productionReleaseAudit'=\$3::text::jsonb/,
+  );
+  assert.match(
+    source,
+    /ir\.metadata->'productionReleaseAudit'=\$4::text::jsonb/,
+  );
+  assert.doesNotMatch(
+    source,
+    /(?:ir\.)?metadata->'productionReleaseAudit'=\$[34]::jsonb/,
+  );
+});
+
 function candidateDocument() {
   return {
     schemaVersion: 1,
