@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-04T05:16:40.6785927Z",
+  "updatedAt": "2026-08-10T01:20:59.259Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2016-11-08-general",
@@ -34,12 +34,12 @@
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 0,
+      "mapped": 1,
       "partial": 0,
       "official_geometry_unavailable": 0,
-      "blocked": 1
+      "blocked": 0
     },
-    "publicEligibleJurisdictions": 0
+    "publicEligibleJurisdictions": 1
   },
   "states": [
     {
@@ -48,8 +48,8 @@
       "electionId": "2016-11-08-general",
       "programStatus": "reviewed",
       "wave": 2,
-      "disposition": "blocked",
-      "checkedAt": "2026-08-03T06:45:00.000Z",
+      "disposition": "mapped",
+      "checkedAt": "2026-08-10T01:20:59.259Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -81,7 +81,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 4120,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 4120,
@@ -91,10 +91,8 @@
         "nonGeographicResultUnits": 0,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "The 4,120 one-to-one VTDID relationships are reviewed and the certified SOS workbook reconciles across all 87 county parents and statewide, but relationship review establishes identity—not a public certified-result activation path. The retained LCC elec2016 layer is an unofficial November 9 snapshot with 2,938,405 presidential votes, 6,408 fewer than the certified/recount-inclusive SOS workbook, and differs in 261 VTDs. Delivery remains null until a separately reviewed importer/display path explicitly uses the certified SOS workbook, excludes LCC vote fields, preserves zero-vote units, and is authorized for public activation."
-      ],
-      "nextAction": "Resolve the listed election-vintage, source-coverage, and result-to-feature blockers; do not publish until every fail-closed eligibility gate passes.",
+      "blockers": [],
+      "nextAction": "Verify the protected deployment and post-cutover APIs against the exact hidden-load and immutable-delivery receipts.",
       "notes": []
     }
   ]

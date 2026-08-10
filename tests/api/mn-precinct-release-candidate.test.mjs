@@ -33,6 +33,17 @@ const EXPECTED_DELIVERIES = new Map([
   [2024, { byteCount: 27_550_483, sha256: "df94482464f9cd7065b2e6cf624eb6d19ab5717bb477ac57e798dd23066f9f06" }],
 ]);
 
+const canonicalRegistry = JSON.parse(
+  readFileSync("data/precinct-geometry-manifests.json", "utf8"),
+);
+const canonicalRegistryActivated = canonicalRegistry.manifests
+  .filter((manifest) => manifest.state === "MN")
+  .every((manifest) =>
+    manifest.validation?.status === "reviewed"
+    && manifest.validation?.rowLevelRenderingSafe === true
+    && manifest.delivery?.format === "parent_scoped_geojson"
+  );
+
 function canonicalPreimages() {
   return new Map(
     ["data/precinct-geometry-manifests.json", ...MANIFEST_PATHS]
@@ -41,9 +52,23 @@ function canonicalPreimages() {
 }
 
 const before = canonicalPreimages();
-const built = buildMinnesotaPrecinctReleaseCandidate();
+const built = canonicalRegistryActivated
+  ? null
+  : buildMinnesotaPrecinctReleaseCandidate();
 
-test("Minnesota release candidate freezes four exact deliveries and remains production no-go", () => {
+function preActivationTest(name, callback) {
+  test(name, (context) => {
+    if (canonicalRegistryActivated) {
+      context.skip(
+        "The canonical registry is already activated; the pre-activation package is immutable evidence.",
+      );
+      return;
+    }
+    return callback();
+  });
+}
+
+preActivationTest("Minnesota release candidate freezes four exact deliveries and remains production no-go", () => {
   const document = built.packageDocument;
   assert.equal(document.id, "mn-precinct-gis-four-election-v1");
   assert.equal(document.state, "MN");
@@ -140,7 +165,7 @@ test("Minnesota release candidate freezes four exact deliveries and remains prod
   assert.equal(document.localValidation.database.readOnlySession, true);
 });
 
-test("Minnesota local draft manifests pass the public contract without changing canonical files", () => {
+preActivationTest("Minnesota local draft manifests pass the public contract without changing canonical files", () => {
   assert.equal(built.draftManifests.length, 4);
   for (const draft of built.draftManifests) {
     const inspection = inspectPrecinctGeometryManifest(draft.manifest);
@@ -168,7 +193,7 @@ test("Minnesota local draft manifests pass the public contract without changing 
   }
 });
 
-test("Minnesota release package carries four indexes and 348 county assets", () => {
+preActivationTest("Minnesota release package carries four indexes and 348 county assets", () => {
   assert.equal(built.deliveryAssets.length, 352);
   assert.equal(
     built.deliveryAssets.filter((artifact) => artifact.path.endsWith("/index.json")).length,
@@ -184,7 +209,7 @@ test("Minnesota release package carries four indexes and 348 county assets", () 
   );
 });
 
-test("Minnesota release package serialization and dependency inventory are hash reviewable", () => {
+preActivationTest("Minnesota release package serialization and dependency inventory are hash reviewable", () => {
   assert.equal(
     built.packageBytes.equals(
       serializeMinnesotaReleaseDocument(built.packageDocument),
@@ -238,6 +263,17 @@ test("Minnesota release package serialization and dependency inventory are hash 
     assert.equal(group.every((item) => /^[a-f0-9]{64}$/.test(item.sha256)), true);
   }
   assert.ok(inventory.patchIsolationWarnings.length >= 4);
+});
+
+test("Minnesota activated registry cannot be resealed as a blocked release preimage", (context) => {
+  if (!canonicalRegistryActivated) {
+    context.skip("The canonical registry has not reached the public-activation lifecycle state.");
+    return;
+  }
+  assert.throws(
+    () => buildMinnesotaPrecinctReleaseCandidate(),
+    /registry manifest differs from its canonical file|canonical manifest is no longer fail-closed/,
+  );
 });
 
 test("Minnesota release artifact inspection rejects hash or byte tampering", () => {

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-06T23:33:53.561Z",
+  "updatedAt": "2026-08-10T01:20:59.259Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -73,26 +73,33 @@
         ]
       },
       "validation": {
-        "status": "blocked",
+        "status": "reviewed",
         "geometryValid": true,
-        "rowLevelRenderingSafe": false,
+        "rowLevelRenderingSafe": true,
         "parentTotalsReconciled": true,
-        "errors": [
-          "Geometry and exact result identity are reviewed, but public delivery remains null until separately authorized production result activation and immutable delivery review."
-        ],
+        "errors": [],
         "warnings": [
           "All 4,102 VTDIDs are reviewed exact one-to-one relationships across 87 county parents and statewide.",
-          "The 33 zero-presidential-vote VTDs remain geographic reporting units."
+          "The 33 zero-presidential-vote VTDs remain geographic reporting units.",
+          "LCC-GIS attribution and the complete disclaimer must accompany every delivered copy."
         ]
       },
-      "delivery": null,
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/mn/2012-11-06/precinct/mn-2012-11-06-lcc-2012generalresults-v1-c02f663a25c5/index.json",
+        "sha256": "c02f663a25c51329d88df67d003e4b19c0fa2b2c3292189f4d2300e378aba482",
+        "byteCount": 18116,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 87,
+        "featureCount": 4102
+      },
       "caveats": [
-        "The SOS certified workbook is the sole authority for result values; LCC election-result attributes are retained only for exact source reconciliation.",
-        "Two source PCTNAME values differ from the certified workbook. They are display-only, retained in evidence, and do not affect exact VTDID/PCTCODE/county-parent identity.",
-        "LCC-GIS metadata contains historical spelling/field-description typos; such prose is nonbinding and is not used for identity or vote assignment.",
-        "No election values are emitted in normalized geometry or crosswalk rows.",
-        "Public delivery remains null pending separately authorized public data activation and delivery review.",
-        "Geometry and exact result identity are reviewed, but public delivery remains null until separately authorized production result activation and immutable delivery review."
+        "The certified Minnesota Secretary of State workbook is the sole authority for vote values; LCC election-result attributes are retained only for source reconciliation.",
+        "Two source PCTNAME values differ from the certified workbook. They are display-only differences and do not affect VTDID, PCTCODE, county parent, or result assignment.",
+        "LCC-GIS metadata contains historical spelling and field-description typos; those descriptions are not used for identity or vote assignment.",
+        "The public delivery is presentation-only geometry joined by exact VTDID to certified result rows and contains no election values."
       ]
     },
     {
@@ -166,26 +173,33 @@
         ]
       },
       "validation": {
-        "status": "blocked",
+        "status": "reviewed",
         "geometryValid": true,
-        "rowLevelRenderingSafe": false,
+        "rowLevelRenderingSafe": true,
         "parentTotalsReconciled": true,
-        "errors": [
-          "The 4,120 one-to-one VTDID relationships are reviewed and the certified SOS workbook reconciles across all 87 county parents and statewide, but relationship review establishes identity—not a public certified-result activation path. The retained LCC elec2016 layer is an unofficial November 9 snapshot with 2,938,405 presidential votes, 6,408 fewer than the certified/recount-inclusive SOS workbook, and differs in 261 VTDs. Delivery remains null until a separately reviewed importer/display path explicitly uses the certified SOS workbook, excludes LCC vote fields, preserves zero-vote units, and is authorized for public activation."
-        ],
+        "errors": [],
         "warnings": [
-          "The LCC preliminary election layer is retained only to prove the exact three-way VTDID relationship and document its pre-canvass difference; none of its election values enter normalized geometry, crosswalk relationships, or certified reconciliation.",
+          "The LCC preliminary election layer is retained only for geometry and exact identity review; none of its election values enter normalized geometry, delivery, or certified result rows.",
           "The 31 official zero-presidential-vote VTDIDs remain geographic one-to-one result units.",
-          "LCC attribution, disclaimer, and redistribution terms must accompany any future public geometry delivery."
+          "LCC-GIS attribution and the complete disclaimer must accompany every delivered copy."
         ]
       },
-      "delivery": null,
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/mn/2016-11-08/precinct/mn-2016-11-08-lcc-vtd2016general-v1-df59572f067e/index.json",
+        "sha256": "df59572f067e51645b9871d334beb141bb5cf89053bbea0d6b5e1c5dfc57f5e8",
+        "byteCount": 18063,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 87,
+        "featureCount": 4120
+      },
       "caveats": [
-        "The 4,120 one-to-one VTDID relationships are reviewed and the certified SOS workbook reconciles across all 87 county parents and statewide, but relationship review establishes identity—not a public certified-result activation path. The retained LCC elec2016 layer is an unofficial November 9 snapshot with 2,938,405 presidential votes, 6,408 fewer than the certified/recount-inclusive SOS workbook, and differs in 261 VTDs. Delivery remains null until a separately reviewed importer/display path explicitly uses the certified SOS workbook, excludes LCC vote fields, preserves zero-vote units, and is authorized for public activation.",
-        "The reviewed one-to-one relationship proves identity and cardinality only. It does not make the preliminary LCC vote fields certified and does not authorize public delivery without an explicitly reviewed certified-result importer/display path.",
-        "All election values are confined to retained source evidence and reconciliation summaries. Normalized geometry and crosswalk relationship rows contain no election values.",
-        "PCTNAME and MCDNAME display strings differ in some boundary/workbook rows; exact official IDs, county parents, and PCTCODE—not names—govern every relationship.",
-        "The retained SOS landing-page HTML is one byte-pinned official response captured during this task. The upstream page is dynamically regenerated, so retrievedAt records this retained response's collection context and does not assert that later upstream HTML bytes will remain identical."
+        "The certified and recount-inclusive Minnesota Secretary of State workbook is the sole authority for vote values. The LCC election snapshot is 6,408 votes below the certified total and is never used as a public vote source.",
+        "All 4,120 public relationships use reviewed exact VTDID identity; PCTNAME and MCDNAME differences do not determine result assignment.",
+        "The public delivery is presentation-only geometry and contains no election values.",
+        "The retained SOS landing-page HTML is a byte-pinned response; later upstream HTML may be regenerated without changing the retained evidence."
       ]
     },
     {
@@ -259,23 +273,32 @@
         ]
       },
       "validation": {
-        "status": "blocked",
+        "status": "reviewed",
         "geometryValid": true,
-        "rowLevelRenderingSafe": false,
+        "rowLevelRenderingSafe": true,
         "parentTotalsReconciled": true,
-        "errors": [
-          "Public delivery remains null until separately authorized activation using certified SOS result rows."
-        ],
+        "errors": [],
         "warnings": [
-          "The 4,110 reviewed relationships use LCC geometry/identity only. No preliminary election values are present in normalized geometry or crosswalk relationships.",
-          "The 33 certified zero-vote VTDs remain geographic one-to-one units."
+          "All 4,110 relationships use LCC geometry and identity only. Preliminary election values are excluded from normalized geometry, delivery, and public results.",
+          "The 33 certified zero-vote VTDs remain geographic one-to-one units.",
+          "LCC-GIS attribution and the complete disclaimer must accompany every delivered copy."
         ]
       },
-      "delivery": null,
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/mn/2020-11-03/precinct/mn-2020-11-03-lcc-preliminary-identity-geometry-v1-871a8df40d68/index.json",
+        "sha256": "871a8df40d682ebf790aa8f755ecf3b995b7a8a7c8569d10807b26ca26a5cb9d",
+        "byteCount": 17041,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 87,
+        "featureCount": 4110
+      },
       "caveats": [
-        "PCTNAME display/capitalization differences (4,110), MCDNAME differences (133), and COUNTYNAME differences (46) are nonbinding; exact VTDID and county/precinct-code construction govern relationships.",
-        "The preliminary LCC archive is not a vote source. Certified SOS results are the only vote authority.",
-        "Public delivery remains blocked pending separately authorized activation."
+        "PCTNAME, MCDNAME, and COUNTYNAME display differences are nonbinding; exact VTDID and county/precinct-code construction govern every relationship.",
+        "The preliminary LCC archive is not a vote source. The certified Minnesota Secretary of State workbook is the sole authority for vote values.",
+        "The public delivery is presentation-only geometry joined by exact VTDID and contains no election values."
       ]
     },
     {
@@ -347,23 +370,32 @@
         ]
       },
       "validation": {
-        "status": "blocked",
+        "status": "reviewed",
         "geometryValid": true,
-        "rowLevelRenderingSafe": false,
+        "rowLevelRenderingSafe": true,
         "parentTotalsReconciled": true,
-        "errors": [
-          "The independently reviewed local Minnesota importer retains 87 county aggregates and emits 4,103 precinct ResultRows keyed to the reviewed VTDIDs; zero-vote outcomes and source-disclaimer delivery are covered by regression tests. Public geometry delivery remains null until an explicitly authorized production promotion and geometry release are coordinated, because deploying geometry before those result rows exist would render uncolored precincts."
-        ],
+        "errors": [],
         "warnings": [
-          "All 4,103 official VTDID relationships are reviewed one-to-one and reconcile across all 87 counties and statewide; the remaining blocker is independent importer review and public-data activation, not geometry or vote reconciliation.",
-          "The 28 official zero-presidential-vote precincts remain geographic reporting units and are retained in the crosswalk."
+          "All 4,103 official VTDID relationships are reviewed one-to-one and reconcile across all 87 counties and statewide.",
+          "The 28 official zero-presidential-vote precincts remain geographic reporting units.",
+          "LCC-GIS attribution and the complete disclaimer must accompany every delivered copy."
         ]
       },
-      "delivery": null,
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/mn/2024-11-05/precinct/mn-2024-11-05-lcc-vtd2024general-v1-436ed4d5ca13/index.json",
+        "sha256": "436ed4d5ca1328a7d7c1505daf4137b96cb9efc608d354b4da6747a31b0af40a",
+        "byteCount": 17006,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 87,
+        "featureCount": 4103
+      },
       "caveats": [
-        "The independently reviewed local Minnesota importer retains 87 county aggregates and emits 4,103 precinct ResultRows keyed to the reviewed VTDIDs; zero-vote outcomes and source-disclaimer delivery are covered by regression tests. Public geometry delivery remains null until an explicitly authorized production promotion and geometry release are coordinated, because deploying geometry before those result rows exist would render uncolored precincts.",
-        "One zero-vote VTD has a County Commissioner District attribute difference; exact precinct identity fields still agree and no result assignment depends on that district attribute.",
-        "The LCC-GIS source disclaimer and attribution requirements must accompany any future public delivery."
+        "The certified Minnesota Secretary of State workbook is the sole authority for vote values; delivery geometry contains no election values.",
+        "One zero-vote VTD has a County Commissioner District attribute difference. Exact precinct identity fields still agree and result assignment does not depend on that district attribute.",
+        "Public precinct geometry and certified result rows must remain coordinated so every delivered feature resolves to its exact reporting unit."
       ]
     }
   ]

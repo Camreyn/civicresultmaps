@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-06T23:34:01.344Z",
+  "updatedAt": "2026-08-10T01:20:59.259Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -34,12 +34,12 @@
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 0,
+      "mapped": 1,
       "partial": 0,
       "official_geometry_unavailable": 0,
-      "blocked": 1
+      "blocked": 0
     },
-    "publicEligibleJurisdictions": 0
+    "publicEligibleJurisdictions": 1
   },
   "states": [
     {
@@ -48,8 +48,8 @@
       "electionId": "2024-11-05-general",
       "programStatus": "reviewed",
       "wave": 5,
-      "disposition": "blocked",
-      "checkedAt": "2026-08-02T06:00:00.000Z",
+      "disposition": "mapped",
+      "checkedAt": "2026-08-10T01:20:59.259Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -81,7 +81,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 4103,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 4103,
@@ -91,10 +91,8 @@
         "nonGeographicResultUnits": 0,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "The independently reviewed local Minnesota importer retains 87 county aggregates and emits 4,103 precinct ResultRows keyed to the reviewed VTDIDs; zero-vote outcomes and source-disclaimer delivery are covered by regression tests. Public geometry delivery remains null until an explicitly authorized production promotion and geometry release are coordinated, because deploying geometry before those result rows exist would render uncolored precincts."
-      ],
-      "nextAction": "Resolve the listed election-vintage, source-coverage, and result-to-feature blockers; do not publish until every fail-closed eligibility gate passes.",
+      "blockers": [],
+      "nextAction": "Verify the protected deployment and post-cutover APIs against the exact hidden-load and immutable-delivery receipts.",
       "notes": []
     }
   ]

@@ -68,11 +68,11 @@ test("Minnesota durable-audit SQL decodes serialized parameters as JSON objects"
   );
   assert.match(
     source,
-    /ir\.metadata->'productionReleaseAudit'=\$4::text::jsonb/,
+    /ir\.summary->'productionReleaseAudit'=\$4::text::jsonb/,
   );
   assert.doesNotMatch(
     source,
-    /(?:ir\.)?metadata->'productionReleaseAudit'=\$[34]::jsonb/,
+    /(?:ir\.)?(?:metadata|summary)->'productionReleaseAudit'=\$[34]::jsonb/,
   );
 });
 

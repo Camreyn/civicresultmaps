@@ -894,7 +894,7 @@ async function validateStoredProductionAudit(
   }
   const imports = await query(sql, [
     "select count(distinct ir.id)::int import_runs,count(rr.id)::int result_rows,",
-    " count(rr.id) filter (where ir.metadata->'productionReleaseAudit'=$4::text::jsonb)::int exact_audit_rows",
+    " count(rr.id) filter (where ir.summary->'productionReleaseAudit'=$4::text::jsonb)::int exact_audit_rows",
     "from import_runs ir",
     "join result_rows rr on rr.import_run_id=ir.id and rr.state_code=$1",
     "join contests c on c.id=rr.contest_id and c.election_id=$2::uuid",

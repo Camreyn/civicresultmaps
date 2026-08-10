@@ -8,7 +8,6 @@ import {
   findMinnesotaPrecinctRehearsalManifest,
   listPrecinctGeometryManifestViewsWithMinnesotaRehearsal,
   MINNESOTA_PRECINCT_REHEARSAL_CANDIDATES,
-  readMinnesotaPrecinctRehearsalDelivery,
   resolveMinnesotaPrecinctRehearsal,
   verifyMinnesotaPrecinctRehearsalCandidateBytes,
 } from "../../src/lib/mn-precinct-rehearsal-server.ts";
@@ -49,11 +48,15 @@ test.beforeEach(restoreEnvironment);
 test("Minnesota rehearsal is absent unless the explicit local clone guard passes", () => {
   process.env.NODE_ENV = "test";
   assert.deepEqual(resolveMinnesotaPrecinctRehearsal(), { enabled: false });
+  const publicViews = listPrecinctGeometryManifestViewsWithMinnesotaRehearsal(
+    registry,
+    { state: "MN" },
+  );
+  assert.equal(publicViews.length, 4);
+  assert.equal(publicViews.every((view) => view.eligible), true);
   assert.equal(
-    listPrecinctGeometryManifestViewsWithMinnesotaRehearsal(registry, {
-      state: "MN",
-    }).length,
-    0,
+    publicViews.every((view) => !("localRehearsal" in view)),
+    true,
   );
 
   configureRehearsal();
@@ -84,44 +87,16 @@ test("Minnesota rehearsal is absent unless the explicit local clone guard passes
   assert.throws(resolveMinnesotaPrecinctRehearsal, /only permits localhost/);
 });
 
-test("the local manifest overlay preserves all canonical release blockers", () => {
+test("the local rehearsal refuses to override activated canonical manifests", () => {
   configureRehearsal();
   const before = JSON.stringify(registry);
-  const views = listPrecinctGeometryManifestViewsWithMinnesotaRehearsal(
-    registry,
-    { state: "MN" },
+  assert.throws(
+    () => listPrecinctGeometryManifestViewsWithMinnesotaRehearsal(
+      registry,
+      { state: "MN" },
+    ),
+    /no longer matches its reviewed blocked contract/,
   );
-
-  assert.equal(views.length, 4);
-  assert.deepEqual(
-    views.map((view) => view.election.year),
-    [2012, 2016, 2020, 2024],
-  );
-  for (const view of views) {
-    const candidate = MINNESOTA_PRECINCT_REHEARSAL_CANDIDATES.find(
-      (entry) => entry.manifestId === view.id,
-    );
-    assert.ok(candidate);
-    assert.equal(view.eligible, false);
-    assert.equal(view.delivery, null);
-    assert.equal(view.validation.status, "blocked");
-    assert.equal(view.validation.rowLevelRenderingSafe, false);
-    assert.deepEqual(view.publicEligibilityReasons, [
-      "validation status is not reviewed",
-      "row-level rendering is not safe",
-      "validation errors remain",
-      "no immutable delivery artifact is declared",
-    ]);
-    assert.equal(view.localRehearsal.active, true);
-    assert.equal(view.localRehearsal.mode, "local_only");
-    assert.equal(view.localRehearsal.publicEligible, false);
-    assert.equal(view.localRehearsal.delivery.sha256, candidate.sha256);
-    assert.equal(view.localRehearsal.delivery.byteCount, candidate.byteCount);
-    assert.equal(
-      view.localRehearsal.delivery.featureCount,
-      candidate.featureCount,
-    );
-  }
   assert.equal(JSON.stringify(registry), before);
   assert.equal(existsSync("public/data/geography/mn"), false);
 });
@@ -160,47 +135,33 @@ test("the API and UI use the marked rehearsal path without requesting blocked la
   );
 });
 
-test("all four pinned candidates can be read and county-filtered locally", {
-  timeout: 120_000,
-}, async () => {
+test("all four activated manifests reject the obsolete local rehearsal lookup", () => {
   configureRehearsal();
   for (const candidate of MINNESOTA_PRECINCT_REHEARSAL_CANDIDATES) {
-    const lookup = findMinnesotaPrecinctRehearsalManifest(
-      registry,
-      candidate.manifestId,
-    );
-    assert.ok(lookup);
-    const delivery = await readMinnesotaPrecinctRehearsalDelivery(
-      lookup,
-      "27053",
-    );
-    assert.equal(delivery.sourceByteCount, candidate.byteCount);
-    assert.equal(delivery.sourceSha256, candidate.sha256);
-    assert.ok(delivery.collection.features.length > 0);
-    assert.equal(
-      delivery.collection.features.every(
-        (feature) => feature.properties.parentGeoid === "27053",
+    assert.throws(
+      () => findMinnesotaPrecinctRehearsalManifest(
+        registry,
+        candidate.manifestId,
       ),
-      true,
+      /no longer matches its reviewed blocked contract/,
     );
-    assert.equal(delivery.collection.metadata.manifestId, candidate.manifestId);
-    assert.equal(delivery.collection.metadata.state, "MN");
   }
 });
 
-test("a wrong local candidate is rejected before it can be served", () => {
-  configureRehearsal();
+test("activated manifest bytes cannot be served through the local rehearsal path", () => {
   const candidate = MINNESOTA_PRECINCT_REHEARSAL_CANDIDATES[3];
-  const lookup = findMinnesotaPrecinctRehearsalManifest(
+  const publicView = listPrecinctGeometryManifestViewsWithMinnesotaRehearsal(
     registry,
-    candidate.manifestId,
-  );
-  assert.ok(lookup);
+    { state: "MN" },
+  )
+    .find((view) => view.id === candidate.manifestId);
+  assert.ok(publicView);
+  configureRehearsal();
   assert.throws(
     () => verifyMinnesotaPrecinctRehearsalCandidateBytes(
-      lookup,
+      { candidate, manifest: publicView },
       Buffer.from("not pinned"),
     ),
-    /byte count does not match its pin/,
+    /no longer matches its reviewed blocked contract/,
   );
 });
