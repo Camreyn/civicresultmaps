@@ -6837,3 +6837,25 @@ evidence against its verified top-level package.
   is intentionally superseded by the final reseal after this entry is
   committed. No production database write, Blob upload, Vercel environment
   change, canonical activation, deployment, or Git publication occurred.
+
+### 2026-08-09 - Minnesota import-run durable-audit schema repair
+
+- The next guarded hidden-load attempt passed migration execution and reached
+  the in-transaction durable-audit checks, where it rolled back because the
+  import-run audit query referenced a nonexistent `import_runs.metadata`
+  column. The established import-run JSON document is stored in the required
+  `summary` column, and the loader already writes `productionReleaseAudit`
+  there.
+
+- The validator now reads `import_runs.summary` while retaining the serialized
+  text-to-`jsonb` comparison required by the prior repair. The focused SQL
+  regression test pins the real schema column and continues to reject unsafe
+  direct JSONB parameter casts. The failed transaction created no hidden-load
+  receipt and made no production database, public-file, canonical-manifest, or
+  deployment change.
+
+- Because the validator and this ledger are package-pinned inputs, the prior
+  `aec5476e19a3...` package and its preflight, backup authorization, and review
+  chain are superseded. A fresh clean commit, local validation, package seal,
+  preflight, and restore-verified backup are required before another production
+  attempt.
