@@ -6859,3 +6859,37 @@ evidence against its verified top-level package.
   chain are superseded. A fresh clean commit, local validation, package seal,
   preflight, and restore-verified backup are required before another production
   attempt.
+
+### 2026-08-09 - Minnesota hidden load and immutable delivery completed
+
+- Corrected release package `d0804cf50313...` passed strict loopback
+  validation, the complete repository test suite, TypeScript validation, and
+  the production build. A fresh production read-only preflight found migration
+  0008 absent and zero invalid constraints. The subsequent full `public`
+  backup restored and exactly matched all 27 tables before the guarded write.
+
+- The coupled migration and four-election load committed as
+  `COMMITTED_HIDDEN_NOT_PUBLIC` under receipt `fe5fc5cede9...`. Production now
+  contains 16,435 Minnesota precinct reporting units, 49,305 certified
+  candidate rows, 16,435 geometry features, and 16,435 reviewed exact-ID
+  crosswalks. The transaction retained blocked geography-version status and
+  `publicDeliveryAuthorized=false`; live Hennepin checks returned zero precinct
+  rows and 404 geometry responses for 2012, 2016, 2020, and 2024.
+
+- All 352 parent-scoped delivery objects (348 county GeoJSON files and four
+  indexes, 124,197,990 bytes total) were uploaded to the existing public Vercel
+  Blob store, downloaded again, and SHA-256 verified. Publication evidence
+  `83ff6a673fdb...` records the single credential-free origin
+  `https://ehnlruzhgkm5byoi.public.blob.vercel-storage.com`; canonical manifests
+  and database publication status remained unchanged by the upload.
+
+- The receipt-bound activation generator updated exactly the four annual
+  coverage inventories and canonical manifest registry. Local rehearsal tests
+  now prove that the obsolete blocked-manifest rehearsal cannot override an
+  activated canonical manifest, and the release-candidate test proves an
+  activated registry cannot be resealed as a blocked preimage. The 24-file
+  Minnesota suite, national map/provenance validators, and production build
+  pass. Public access remains fail-closed until the activation branch has a
+  protected preview, is merged and deployed with the exact Blob origin, and a
+  separately authorized database publication transaction completes the final
+  cutover.

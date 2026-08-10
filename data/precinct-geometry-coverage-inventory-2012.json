@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-06T22:26:35.991Z",
+  "updatedAt": "2026-08-10T01:20:59.259Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -34,12 +34,12 @@
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 0,
+      "mapped": 1,
       "partial": 0,
       "official_geometry_unavailable": 0,
-      "blocked": 1
+      "blocked": 0
     },
-    "publicEligibleJurisdictions": 0
+    "publicEligibleJurisdictions": 1
   },
   "states": [
     {
@@ -48,8 +48,8 @@
       "electionId": "2012-11-06-general",
       "programStatus": "reviewed",
       "wave": 2,
-      "disposition": "blocked",
-      "checkedAt": "2026-08-06T22:26:35.991Z",
+      "disposition": "mapped",
+      "checkedAt": "2026-08-10T01:20:59.259Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -81,7 +81,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 4102,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 4102,
@@ -91,10 +91,8 @@
         "nonGeographicResultUnits": 0,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Geometry and exact result identity are reviewed, but public delivery remains null until separately authorized production result activation and immutable delivery review."
-      ],
-      "nextAction": "Resolve the listed election-vintage, source-coverage, and result-to-feature blockers; do not publish until every fail-closed eligibility gate passes.",
+      "blockers": [],
+      "nextAction": "Verify the protected deployment and post-cutover APIs against the exact hidden-load and immutable-delivery receipts.",
       "notes": []
     }
   ]
