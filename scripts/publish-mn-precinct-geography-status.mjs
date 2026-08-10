@@ -489,11 +489,11 @@ async function verifyMinnesotaPublicationPostconditions(
     "  and gv.metadata->'publicActivation'->>'blobPublicationSha256'=$6",
     "  and gv.metadata->'publicActivation'->>'deliveryOrigin'=$7",
     "  and gv.metadata->'publicActivation'->>'authorizationSha256'=$8",
-    "  and gv.metadata->'publicActivation'->'rollbackTarget'=$9::jsonb",
+    "  and gv.metadata->'publicActivation'->'rollbackTarget'=$9::text::jsonb",
     "  and gv.metadata->'publicActivation'->>'mode'='publish')::int bound_activation,",
     context.mode === "publish"
       ? " count(*) filter (where not (gv.metadata->'publicActivation' ? 'rollback'))::int operation_bound,"
-      : " count(*) filter (where gv.metadata->'publicActivation'->'rollback'->>'rollbackId'=$10 and gv.metadata->'publicActivation'->'rollback'->>'activationCandidateSha256'=$4 and gv.metadata->'publicActivation'->'rollback'->>'blobPublicationSha256'=$6 and gv.metadata->'publicActivation'->'rollback'->>'authorizationSha256'=$11 and gv.metadata->'publicActivation'->'rollback'->>'publicationReceiptSha256'=$12 and gv.metadata->'publicActivation'->'rollback'->'rollbackTarget'=$9::jsonb and (gv.metadata->'publicActivation'->>'revision')::int=$13 and gv.metadata->'publicActivation'->>'changedAtUtc'=$14)::int operation_bound,",
+      : " count(*) filter (where gv.metadata->'publicActivation'->'rollback'->>'rollbackId'=$10 and gv.metadata->'publicActivation'->'rollback'->>'activationCandidateSha256'=$4 and gv.metadata->'publicActivation'->'rollback'->>'blobPublicationSha256'=$6 and gv.metadata->'publicActivation'->'rollback'->>'authorizationSha256'=$11 and gv.metadata->'publicActivation'->'rollback'->>'publicationReceiptSha256'=$12 and gv.metadata->'publicActivation'->'rollback'->'rollbackTarget'=$9::text::jsonb and (gv.metadata->'publicActivation'->>'revision')::int=$13 and gv.metadata->'publicActivation'->>'changedAtUtc'=$14)::int operation_bound,",
     context.mode === "publish"
       ? " min((gv.metadata->'publicActivation'->>'revision')::int)::int revision_min, max((gv.metadata->'publicActivation'->>'revision')::int)::int revision_max"
       : " min((gv.metadata->'publicActivation'->'rollback'->>'revision')::int)::int revision_min, max((gv.metadata->'publicActivation'->'rollback'->>'revision')::int)::int revision_max",

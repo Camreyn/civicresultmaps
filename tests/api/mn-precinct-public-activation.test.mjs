@@ -1133,6 +1133,7 @@ test("Minnesota publication transaction atomically publishes exact versions and 
         },
       },
     }));
+    let versionPostconditionSql = null;
     const tx = {
       async unsafe(sql) {
         if (sql.includes("current_database()")) {
@@ -1156,6 +1157,7 @@ test("Minnesota publication transaction atomically publishes exact versions and 
           return [{ count: 4 }];
         }
         if (sql.includes("select count(*)::int versions")) {
+          versionPostconditionSql = sql;
           return [{
             versions: 4,
             expected_status: 4,
@@ -1224,6 +1226,10 @@ test("Minnesota publication transaction atomically publishes exact versions and 
       },
       productionMutationPerformed: true,
     });
+    assert.match(
+      versionPostconditionSql,
+      /rollbackTarget'=\$9::text::jsonb/,
+    );
   } finally {
     rmSync(item.root, { recursive: true, force: true });
   }
@@ -1270,6 +1276,7 @@ test("Minnesota rollback restores original caveats and rejects a substituted rol
       },
     }));
     const restoredCaveats = [];
+    let rollbackPostconditionSql = null;
     const tx = {
       async unsafe(sql, parameters = []) {
         if (sql.includes("current_database()")) {
@@ -1299,6 +1306,7 @@ test("Minnesota rollback restores original caveats and rejects a substituted rol
           return [{ revision: 30 }];
         }
         if (sql.includes("select count(*)::int versions")) {
+          rollbackPostconditionSql = sql;
           return [{
             versions: 4,
             expected_status: 4,
@@ -1390,6 +1398,10 @@ test("Minnesota rollback restores original caveats and rejects a substituted rol
     assert.equal(result.revision, 30);
     assert.equal(result.committedAtUtc, "2026-08-08T01:30:00.000Z");
     assert.deepEqual(restoredCaveats, Array(4).fill("Public delivery is not authorized."));
+    assert.match(
+      rollbackPostconditionSql,
+      /rollbackTarget'=\$9::text::jsonb/,
+    );
 
     await assert.rejects(
       () => applyMinnesotaGeographyPublicationTransaction(tx, {
