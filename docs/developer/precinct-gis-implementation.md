@@ -6893,3 +6893,28 @@ evidence against its verified top-level package.
   protected preview, is merged and deployed with the exact Blob origin, and a
   separately authorized database publication transaction completes the final
   cutover.
+
+### 2026-08-10 - Minnesota publication postcondition JSONB cast repair
+
+- Activation PR #215 merged and the exact activation tree was rebuilt in
+  Production with the reviewed Blob origin. Fresh protected-Preview,
+  Production, and prior gate-capable rollback-deployment checks all passed
+  while the database remained blocked.
+
+- The first guarded publication transaction revalidated the complete
+  Minnesota GIS plan and performed its status changes inside PostgreSQL, but
+  its final geography-version postcondition rejected the transaction and
+  rolled everything back. Live precinct results remained empty, geometry
+  remained 404, and no publication receipt was issued.
+
+- Forced-rollback diagnostics proved that status, authorization flags,
+  activation/package/Blob hashes, delivery origin, operation mode, and revision
+  all matched for four versions. Only the rollback target comparison failed:
+  the stored value was a JSON object, while the direct `$9::jsonb` parameter
+  comparison interpreted the serialized expectation as a JSON string.
+
+- Both publish and rollback postconditions now use the established
+  `$9::text::jsonb` boundary used elsewhere in this release tooling. Focused
+  regression assertions pin that exact cast for both operations. This repair
+  requires its own reviewed deployment and fresh deployment-bound public
+  authorization before the atomic database cutover is retried.
