@@ -280,7 +280,7 @@ export const geographyVersions = pgTable(
     ),
     derivationMethodCheck: check(
       "geography_versions_derivation_method_check",
-      sql`${table.derivationMethod} in ('official_export', 'official_service', 'digitized_map', 'official_crosswalk')`,
+      sql`${table.derivationMethod} in ('official_export', 'official_service', 'digitized_map', 'official_crosswalk', 'secondary_reconstruction', 'hybrid_reconstruction')`,
     ),
     statusCheck: check(
       "geography_versions_status_check",

@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "state": "NV",
+  "electionId": "2012-11-06-general",
+  "generatedAt": "2026-08-11T12:00:00.000Z",
+  "disposition": "blocked_pending_election_date_washoe_archive",
+  "source": {
+    "featureCount": 2020,
+    "parentCount": 17,
+    "sourceResultUnits": 2023
+  },
+  "crosswalk": {
+    "resultUnits": 1760,
+    "colorableResultUnits": 1760,
+    "matchedResultUnits": 1760,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 1755,
+      "oneToMany": 5,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 1778,
+    "reviewedNoDataFeatures": 242
+  },
+  "exclusions": {
+    "count": 263,
+    "byReason": {
+      "major-party vote cell suppressed by the Nevada Secretary of State": 130,
+      "no reviewed geometry relationship": 84,
+      "non-geographic or special reporting category": 38,
+      "only a later Washoe proxy polygon exists and the official change log records a post-2012 boundary change": 11
+    }
+  },
+  "artifacts": {
+    "normalizedGeometry": {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/normalized/nv-2012-precincts.geojson.gz",
+      "byteCount": 3735292,
+      "sha256": "e9555edf56241aa6c562422e5553f022afc07d21d6ae72d5fc001c6f7d4d642b"
+    },
+    "normalizedGeometryUncompressed": {
+      "byteCount": 16176464,
+      "sha256": "b9057b195896542bdef66edd1f945c131f06acaf1ae75920f69c2a43e42d26bc"
+    },
+    "normalizedResults": {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/normalized/nv-2012-president-results.json.gz",
+      "byteCount": 36912,
+      "sha256": "7499c911720914cccbc513ada60e12853ca6ebcd72e947b864561d2c4061e6ee"
+    },
+    "normalizedResultsUncompressed": {
+      "byteCount": 550281,
+      "sha256": "d2528572758a70d263c8df35d98c641e0f9a52eb7df9397d0803fed546e1f938"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/crosswalk/nv-2012-precinct-result-crosswalk.json",
+      "byteCount": 1180593,
+      "sha256": "0682209a2145e80f5a7f868c916bbc508337243d7c5e895f4873bca9db13ada7"
+    }
+  },
+  "caveats": [
+    "No election-result value is embedded in the normalized geometry or crosswalk.",
+    "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
+    "Washoe uses a clearly labeled 2016 proxy partition; the 2012 manifest remains blocked pending the election-date archive held by Nevada custodians."
+  ]
+}

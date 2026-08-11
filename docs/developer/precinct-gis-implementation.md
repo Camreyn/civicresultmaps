@@ -6986,3 +6986,92 @@ evidence against its verified top-level package.
   (`vote_share_pattern`, `average_down_ballot_difference`, and one
   `down_ballot_outliers` row). Those are source-review signals only, not
   findings of fraud or misconduct.
+
+### 2026-08-11 - Nevada four-election precinct-source reconstruction
+
+- A deterministic four-election collector now verifies every retained raw
+  source by exact byte count and SHA-256 before writing normalized artifacts.
+  Each year produces a source-evidence document, a vote-free EPSG:4326 GeoJSON
+  archive, a separately compressed presidential-result document, a reviewed
+  result-to-feature crosswalk, a reconciliation report, and a fail-closed
+  manifest. Replaying all four collectors produces byte-identical output.
+
+- The 2012 candidate starts from the official Nevada Secretary of State
+  precinct export: 2,023 presidential source units across all 17
+  county-equivalents. Cells suppressed for ballot secrecy remain unknown and
+  are never coerced to zero or estimated. Official Clark election GIS and
+  reviewed Census rural VTD relationships are retained. Washoe uses a clearly
+  labeled 2016 proxy partition only where the county change log does not record
+  a post-2012 boundary change; 14 known changed precinct codes are rejected.
+  The resulting local plan has 2,020 polygon features, 1,760 safely colorable
+  units, 1,778 reviewed relationship records, and 263 exclusions. Its boundary
+  vintage remains `unknown`, and 242 retained polygons have no result data.
+  Five result units use reviewed one-to-many geometry relationships, which the
+  public delivery builder deliberately rejects until an aggregate-rendering
+  contract is designed. The year cannot be published until the election-date
+  Washoe archive is obtained from the Nevada SOS, LCB Research Library, or
+  Washoe County custodian and that rendering decision is reviewed.
+
+- The 2016 VEST V1.2 election-specific reconstruction has 2,067 polygons and
+  2,067 exact source-record relationships across all 17 county-equivalents.
+  Its three-bucket presidential total is 1,125,385. The database content is
+  documented as CC BY 4.0 and must be credited to VEST. The retained official
+  LCB `ElectionResults2016USPres.pdf` has SHA-256
+  `e61953a77b75326fbfb577eae4e3261e07dd97a253aa32ee0a4cfd19f8cec53a`,
+  attributes its election data to the Nevada Secretary of State, and publishes
+  47.92% Democratic, 45.50% Republican, and 6.58% other. The collector proves
+  those percentages from the exact normalized totals. This remains a secondary
+  reconstruction, not an official Nevada row-level export, so public release is
+  blocked pending the original machine-readable source/crosswalk or an explicit
+  reviewed supplemental-source decision.
+
+- The 2020 VEST artifact is pinned to Harvard Dataverse file `4863168`, dataset
+  version `21.0`, with SHA-256
+  `bc6befa8917bb309540ff3414c036a577730bd301ecef119797b919c0abb2d90`.
+  It has 2,094 statewide polygons and exact source-record relationships and a
+  three-bucket presidential total of 1,405,376. The current DOI has advanced to
+  later dataset versions and advertises custom terms. Because the exact
+  version-21 redistribution terms have not been retained, this year remains
+  publication-blocked even though its geometry and crosswalk validate.
+
+- The 2024 candidate pairs the official April 5, 2024 Nevada Legislative
+  Counsel Bureau precinct layer with the official Nevada Secretary of State
+  presidential precinct export. It retains all 1,726 official polygons and all
+  17 county-equivalents, colors 1,518 reviewed exact-ID units, and excludes 153
+  unsafe result identities. Exactly 208 polygons are reviewed no-data features:
+  115 correspond to excluded major-party-suppressed result identities and 93
+  lack a retained joinable result identity. Twenty-nine source result identities
+  have no matching feature and are not invented as polygons. The safely
+  colorable three-bucket total is 1,484,382. Retained ArcGIS item metadata
+  (SHA-256 `72b5f30fc8eafb7e790c559858afe94c9f9419a9078ee09a9ee39ea849edef70`)
+  identifies the public-authoritative layer as Nevada voting precincts for the
+  2024 election cycle; retained layer metadata (SHA-256
+  `23f1c9cd1d2ec61d07f84b6b7befef723fa5e31720f16d66da9e02348cdb4643`)
+  records static Query/Extract data and April 2024 edit timestamps. Both
+  `licenseInfo` and `copyrightText` are empty, so public derivative
+  redistribution remains blocked pending affirmative retained terms.
+
+- Migration `0009_public_wolfpack.sql` adds the explicit
+  `secondary_reconstruction` and `hybrid_reconstruction` derivation methods.
+  The shared publication matcher now distinguishes total polygon count from
+  reviewed relationship and reporting-unit counts, which is required for
+  legitimate no-data polygons without weakening the public gate. The manifest
+  contract now pins reviewed relationship-record and reviewed no-data-feature
+  counts; the delivery builder preserves declared no-data polygons with
+  non-result identities. One-to-many or many-to-one relationships remain
+  explicitly public-ineligible until aggregate rendering is implemented.
+
+- The loopback-only `crm_clone_dev` load and independent read-only validation
+  pass with 7,439 reporting units, 22,317 candidate rows, 7,907 polygon
+  features, 7,457 reviewed relationship records, four safely blocked geography
+  versions, and zero invalid constraints. The focused Nevada suite passes all
+  collector replay, suppression, source-gate, plan, schema, and publication-
+  gate assertions.
+
+- This work does not authorize public delivery. All four years retain explicit
+  source gates: the 2012 Washoe archive, official row-level provenance or an
+  approved supplemental-source decision for 2016, exact version-specific terms
+  for 2020, and affirmative LCB derivative-redistribution terms for 2024. The
+  2012 aggregate-rendering decision also remains unresolved. No production
+  database row, canonical manifest, Blob object, Vercel setting, or deployment
+  was changed.

@@ -50,6 +50,10 @@
 /data/mn-sos-2024-bomb-threats-county-election-offices.html -text whitespace=-trailing-space
 /data/pa-2024-election-day-security-philadelphia-order.pdf -text -diff
 
+# Preserve retained Nevada ArcGIS metadata responses byte-for-byte for source hash verification.
+/data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-item-metadata.json -text whitespace=-trailing-space
+/data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-layer-metadata.json -text whitespace=-trailing-space
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

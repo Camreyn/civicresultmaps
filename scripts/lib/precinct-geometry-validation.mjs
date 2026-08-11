@@ -880,6 +880,56 @@ export function validateManifestArtifacts(manifest, options = {}) {
           geometry?.featureParents,
         );
         errors.push(...crosswalkInspection.errors);
+        const relationships = Array.isArray(crosswalkDocument?.rows)
+          ? crosswalkDocument.rows.flatMap((row) =>
+            Array.isArray(row?.relationships) ? row.relationships : []
+          )
+          : [];
+        const reviewedRelationships = relationships.filter(
+          (relationship) => relationship?.reviewStatus === "reviewed",
+        );
+        if (
+          manifest.crosswalk.reviewedRelationshipRecords !== undefined
+          && reviewedRelationships.length
+            !== manifest.crosswalk.reviewedRelationshipRecords
+        ) {
+          errors.push(
+            "reviewed crosswalk relationship record count "
+            + reviewedRelationships.length
+            + " does not match manifest "
+            + manifest.crosswalk.reviewedRelationshipRecords,
+          );
+        }
+        if (geometry && manifest.crosswalk.status === "reviewed") {
+          const linkedFeatureIds = new Set(
+            reviewedRelationships
+              .map((relationship) => relationship?.sourceFeatureId)
+              .filter((featureId) => typeof featureId === "string" && featureId),
+          );
+          const reviewedNoDataFeatures = geometry.featureIds.size
+            - linkedFeatureIds.size;
+          if (
+            reviewedNoDataFeatures > 0
+            && manifest.crosswalk.reviewedNoDataFeatures === undefined
+          ) {
+            errors.push(
+              "reviewed crosswalk leaves "
+              + reviewedNoDataFeatures
+              + " geometry features without result data but does not declare reviewedNoDataFeatures",
+            );
+          } else if (
+            manifest.crosswalk.reviewedNoDataFeatures !== undefined
+            && reviewedNoDataFeatures
+              !== manifest.crosswalk.reviewedNoDataFeatures
+          ) {
+            errors.push(
+              "reviewed no-data feature count "
+              + reviewedNoDataFeatures
+              + " does not match manifest "
+              + manifest.crosswalk.reviewedNoDataFeatures,
+            );
+          }
+        }
       }
     } catch (error) {
       errors.push("unable to parse crosswalk artifact: " + error.message);

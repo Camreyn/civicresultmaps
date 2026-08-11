@@ -1,0 +1,2 @@
+ALTER TABLE "geography_versions" DROP CONSTRAINT "geography_versions_derivation_method_check";--> statement-breakpoint
+ALTER TABLE "geography_versions" ADD CONSTRAINT "geography_versions_derivation_method_check" CHECK ("geography_versions"."derivation_method" in ('official_export', 'official_service', 'digitized_map', 'official_crosswalk', 'secondary_reconstruction', 'hybrid_reconstruction'));

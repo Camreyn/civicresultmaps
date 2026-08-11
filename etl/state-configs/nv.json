@@ -112,7 +112,51 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is used for Nevada county map joins; precinct boundary geometry is not included in this package.",
+      "confidence": "County geometry is used for Nevada county map joins. The separate four-election precinct GIS package is retained under data/precinct-geometry/NV and remains publication-gated.",
+      "status": "loaded"
+    },
+    {
+      "id": "nv-2012-precinct-gis-evidence",
+      "category": "Nevada 2012 precinct GIS source evidence and reviewed local crosswalk",
+      "url": "https://www.nvsos.gov/silverstate2012gen/",
+      "localFile": "data/precinct-geometry/NV/2012-11-06-general/manifest.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Nevada Secretary of State with Clark County, U.S. Census Bureau, and Washoe County evidence",
+      "timestampBasis": "Deterministic four-source reconstruction generated August 11, 2026 for the November 6, 2012 general election.",
+      "confidence": "Context-only reviewed precinct GIS manifest. Clark and rural relationships are retained, but Washoe uses a clearly labeled later proxy partition; public delivery remains blocked until the election-date Washoe archive is obtained.",
+      "status": "loaded"
+    },
+    {
+      "id": "nv-2016-precinct-gis-evidence",
+      "category": "Nevada 2016 precinct GIS source evidence and reviewed crosswalk",
+      "url": "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/",
+      "localFile": "data/precinct-geometry/NV/2016-11-08-general/manifest.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Voting and Election Science Team, reconciled to a Nevada Legislative Counsel Bureau map using Nevada Secretary of State election data",
+      "timestampBasis": "VEST Nevada 2016 election-specific database V1.2 plus the official LCB 2016 presidential precinct map, normalized, reconciled, and hash-pinned August 11, 2026.",
+      "confidence": "Context-only reviewed precinct GIS manifest covering all 17 county-equivalents. The CC BY 4.0 VEST rows reproduce the statewide percentages printed by the official LCB map, but they remain a secondary reconstruction and public release is blocked pending the official machine-readable precinct source/crosswalk or an explicit reviewed supplemental-source decision.",
+      "status": "loaded"
+    },
+    {
+      "id": "nv-2020-precinct-gis-evidence",
+      "category": "Nevada 2020 precinct GIS source evidence and reviewed crosswalk",
+      "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4863168&version=21.0",
+      "localFile": "data/precinct-geometry/NV/2020-11-03-general/manifest.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Voting and Election Science Team",
+      "timestampBasis": "Harvard Dataverse file 4863168, dataset version 21.0, normalized and hash-pinned August 11, 2026.",
+      "confidence": "Context-only reviewed precinct GIS manifest covering all 17 county-equivalents. Public redistribution remains blocked until the exact version-21 custom terms are retained and reviewed.",
+      "status": "loaded"
+    },
+    {
+      "id": "nv-2024-precinct-gis-evidence",
+      "category": "Nevada 2024 official precinct GIS source evidence and reviewed crosswalk",
+      "url": "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0",
+      "localFile": "data/precinct-geometry/NV/2024-11-05-general/manifest.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Nevada Legislative Counsel Bureau and Nevada Secretary of State",
+      "timestampBasis": "Official public-authoritative static LCB 2024 election-cycle precinct layer and retained ArcGIS metadata paired to the November 5, 2024 NVSOS presidential precinct export and normalized August 11, 2026.",
+      "confidence": "Context-only reviewed precinct GIS manifest covering all 17 county-equivalents. All 1,726 polygons are retained, including 208 explicitly reviewed no-data features. Public derivative redistribution remains blocked because the retained item licenseInfo and layer copyrightText fields are empty.",
       "status": "loaded"
     },
     {
@@ -196,7 +240,7 @@
   "expected": {
     "jurisdictions": 17,
     "resultRows": 17,
-    "sources": 11,
+    "sources": 15,
     "geometryFeatures": 17,
     "stateTotal": 1484840,
     "trump": 751205,
