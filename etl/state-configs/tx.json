@@ -58,7 +58,7 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is used for Texas county map joins; precinct boundary geometry is not included in this package.",
+      "confidence": "County geometry remains the certified-county map join. A separate reviewed four-election Texas Legislative Council VTD/precinct-approximation pipeline now covers 2012, 2016, 2020, and 2024; those local rows and boundaries remain fail-closed until their guarded production release completes.",
       "status": "loaded"
     }
   ],

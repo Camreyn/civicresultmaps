@@ -14,6 +14,8 @@ For the private workspace layout editor, immutable revision model, protected Ver
 
 For the guarded layout MCP endpoint, constrained LLM operation vocabulary, authentication, and Codex plugin, read [`docs/developer/layout-agent-tooling.md`](layout-agent-tooling.md).
 
+For the guarded Texas 2012/2016/2020/2024 VTD / precinct-approximation release, including the hidden load, immutable Blob publication, database-gated deployment, and atomic public cutover, read [`docs/developer/tx-precinct-release-runbook.md`](tx-precinct-release-runbook.md).
+
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
 ## Coordinator Protocol

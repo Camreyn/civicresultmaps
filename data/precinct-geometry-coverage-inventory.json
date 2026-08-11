@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-10T01:20:59.259Z",
+  "updatedAt": "2026-08-11T03:34:09.050Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -26,20 +26,20 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 1,
+    "totalJurisdictions": 2,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 1
+      "reviewed": 2
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 1,
+      "mapped": 2,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
     },
-    "publicEligibleJurisdictions": 1
+    "publicEligibleJurisdictions": 2
   },
   "states": [
     {
@@ -94,6 +94,61 @@
       "blockers": [],
       "nextAction": "Verify the protected deployment and post-cutover APIs against the exact hidden-load and immutable-delivery receipts.",
       "notes": []
+    },
+    {
+      "state": "TX",
+      "stateName": "Texas",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 6,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-11T03:34:09.050Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://data.capitol.texas.gov/dataset/4d8298d0-d176-4c19-b174-42837027b73e/resource/906f47e4-4e39-4156-b1bd-4969be0b2780/download/vtds_24pg.zip",
+        "https://data.capitol.texas.gov/",
+        "https://www.sos.state.tx.us/elections/historical/index.shtml"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "tx-2024-11-05-tlc-vtd-geometry-candidate-v2"
+        ],
+        "officialSourceLeads": [
+          "https://data.capitol.texas.gov/dataset/4d8298d0-d176-4c19-b174-42837027b73e/resource/906f47e4-4e39-4156-b1bd-4969be0b2780/download/vtds_24pg.zip"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/TX/2024-11-05-general/source-evidence.json",
+          "data/precinct-geometry/TX/2024-11-05-general/normalized/tx-2024-11-05-vtds-candidate.geojson.gz",
+          "data/precinct-geometry/TX/2024-11-05-general/crosswalk/tx-2024-11-05-vtdkey-reviewed-evidence.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 9712,
+        "publicEligibleManifestCount": 1
+      },
+      "crosswalk": {
+        "resultUnits": 9712,
+        "colorableResultUnits": 9712,
+        "matchedResultUnits": 9712,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
+      "notes": [
+        "Texas Legislative Council VTDs are presented as VTD / precinct approximations; exact official IDs, not display names, govern joins.",
+        "TLC VTD totals remain a distinct official local product and do not replace certified Texas Secretary of State county or statewide totals."
+      ]
     }
   ]
 }

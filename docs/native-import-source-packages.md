@@ -822,3 +822,27 @@ The canonical registry now contains all 3,144 current Census county and county-e
 The production backfill is year-scoped and county-only. It updates only null tags, rejects conflicts and unresolved county-grain rows, requires the exact SHA-256 plan hash, and verifies row counts and numeric totals remain unchanged. Future equipment promotion now persists canonical county tags.
 
 Live production acceptance on July 11, 2026 confirmed 3,144 canonical registry tags and 3,114 exact county/county-equivalent election rows in each of 2016, 2020, and 2024. The 30-row difference is Alaska's registry-only county-equivalent set; exact official allocation remains unavailable. The guarded production transaction persisted 11,480 previously null result/history tags, and the post-apply audit returned zero pending, conflicting, or unresolved county rows. Live flip joins matched all 3,114 exact rows: 64 red-to-blue and 15 blue-to-red for 2016-2020; 31 red-to-blue and 69 blue-to-red for 2016-2024; and 0 red-to-blue and 87 blue-to-red for 2020-2024.
+
+## Texas Four-Election Precinct GIS Update
+
+- Config: `etl/state-configs/tx.json`
+- Authorities: Texas Secretary of State for certified county/state totals;
+  Texas Legislative Council Capitol Data Portal for election-specific VTD
+  results, turnout, geometry, and official join documentation.
+- Tracked geometry/result years: 2012, 2016, 2020, and 2024.
+- Reviewed local package: 36,762 VTD reporting units, 110,286 grouped
+  presidential result rows, 36,762 official one-to-one geometry relationships,
+  254 county parents per election, and 1,280 zero-vote units.
+- Public label: `VTD / precinct approximation`. These census-geographic VTDs
+  are not represented as exact administrative county voting-precinct polygons.
+- Release state: local database and immutable county-scoped delivery validation
+  pass, and the guarded canonical static manifests are included in the reviewed
+  change. The production hidden load, Blob publication, deployment verification,
+  and database public-status cutover remain fail-closed and pending.
+
+The TLC VTD result totals remain source-specific local reporting context and do
+not replace certified SOS county/state totals. The 2024 VTD total is 15,854
+votes above the SOS county total, principally because TLC exposes a generic
+Write-In row while the SOS package names declared write-in candidates. This is
+a documented source-scope difference, not an advisory finding or a claim about
+election conduct.
