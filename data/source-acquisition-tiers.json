@@ -2372,7 +2372,9 @@
       "exportFormats": [
         "compressed CSV ZIP",
         "VTD returns CSV",
-        "VTD VRTO CSV"
+        "VTD VRTO CSV",
+        "official ESRI Shapefile ZIP",
+        "parent-scoped GeoJSON release candidate"
       ],
       "sourceUrls": [
         "https://data.capitol.texas.gov/topic/elections"
@@ -2385,18 +2387,20 @@
         "VTD President rows",
         "VTD U.S. Senate comparison rows",
         "VTD registered-voter and turnout rows",
-        "VTD reconciliation summary for certified county versus VTD presidential scope"
+        "VTD reconciliation summary for certified county versus VTD presidential scope",
+        "election-specific 2012, 2016, 2020, and 2024 VTD geometry",
+        "36,762 reviewed one-to-one official result/geometry relationships across 254 counties per election"
       ],
       "missingFields": [
         "ballot method fields",
-        "precinct/VTD boundary geometry",
-        "source-side explanation for generic VTD write-in rows versus named certified write-in candidates"
+        "source-side explanation for generic VTD write-in rows versus named certified write-in candidates",
+        "guarded production hidden load, immutable delivery publication, and public activation"
       ],
-      "parserStatus": "texasCountyJsonVtdReview loaded with VTD write-in reconciliation summary",
+      "parserStatus": "texasCountyJsonVtdReview remains the certified-county/native-review path. Four deterministic TLC collectors, scripts/lib/tx-precinct-gis-plan.mjs, the loopback-only database loader, and the content-addressed parent-delivery builder now validate 36,762 VTD reporting units and 110,286 grouped presidential result rows for 2012, 2016, 2020, and 2024.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674. The reconciliation artifact identifies the primary source as VTD generic Write-In rows: 24,730 VTD generic write-in votes versus 8,569 SOS named declared write-in votes. Use VTD rows as official local screening context, not as replacement certified totals.",
-      "nextAction": "Request source-side notes or county crosswalk documentation for VTD generic write-in handling, then add VTD boundary geometry."
+      "caveats": "The TLC VTD layers are census-geographic precinct approximations and must retain that label. The 2024 VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674; the documented primary scope difference is 24,730 generic VTD Write-In votes versus 8,569 SOS named declared write-in votes. TLC VTD rows never replace certified SOS county/state totals, and no conclusion about vote tabulation or election conduct follows from this source-scope difference.",
+      "nextAction": "Merge and deploy the guarded Texas release tooling, then complete the hash-pinned production hidden load, immutable Blob publication, protected-preview verification, and database publication cutover."
     },
     {
       "state": "TX",

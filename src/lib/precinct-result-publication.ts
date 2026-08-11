@@ -1,17 +1,21 @@
 import { createHash } from "node:crypto";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 
+const PRECINCT_PUBLICATION_GATED_STATES = new Set(["MN", "TX"]);
+
 export function requiresPrecinctResultPublicationGate(input: {
   state: string;
   level: string;
 }) {
-  return input.state === "MN" && input.level === "precinct";
+  return PRECINCT_PUBLICATION_GATED_STATES.has(input.state.toUpperCase())
+    && input.level === "precinct";
 }
 
 export function requiresPrecinctGeometryPublicationGate(
   manifest: Pick<PrecinctGeometryManifest, "state" | "geography">,
 ) {
-  return manifest.state === "MN" && manifest.geography.level === "precinct";
+  return PRECINCT_PUBLICATION_GATED_STATES.has(manifest.state)
+    && manifest.geography.level === "precinct";
 }
 
 function canonicalize(value: unknown): unknown {
@@ -76,7 +80,7 @@ function credentialFreeHttpsOrigin(value: unknown) {
 }
 
 /**
- * Binds one eligible static Minnesota manifest to the exact publication audit
+ * Binds one eligible static guarded-state manifest to the exact publication audit
  * stored by the guarded database transaction. This is intentionally stricter
  * than checking geography_versions.status alone: a stale or foreign publish
  * cannot authorize a different set of static delivery bytes.
@@ -103,7 +107,9 @@ export function matchesPrecinctGeometryPublicationMetadata(
     && metadata.publicDeliveryAuthorized === true
     && releaseCandidate.publicDeliveryAuthorized === true
     && typeof releaseCandidate.id === "string"
-    && /^mn-precinct-gis-four-election-v\d+$/.test(releaseCandidate.id)
+    && new RegExp(
+      "^" + manifest.state.toLowerCase() + "-precinct-gis-four-election-v\\d+$",
+    ).test(releaseCandidate.id)
     && typeof releaseSha256 === "string"
     && /^[a-f0-9]{64}$/.test(releaseSha256)
     && recordValue(metadata.normalization)?.featureCount === expectedFeatureCount

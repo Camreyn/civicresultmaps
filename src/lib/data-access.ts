@@ -338,7 +338,10 @@ export async function isPrecinctGeometryManifestPublished(
             and result_sources.metadata->'releaseCandidate'->>'sha256'
               = geography_versions.metadata->'releaseCandidate'->>'sha256'
             and reporting_unit_geometry_crosswalks.relationship_type = 'one_to_one'
-            and reporting_unit_geometry_crosswalks.match_method = 'exact_official_id'
+            and reporting_unit_geometry_crosswalks.match_method in (
+              'exact_official_id',
+              'official_crosswalk'
+            )
             and reporting_unit_geometry_crosswalks.review_status = 'reviewed'
             and reporting_unit_geometry_crosswalks.confidence = 'high'
             and reporting_unit_geometry_crosswalks.metadata->>'manifestId'
@@ -547,8 +550,13 @@ export async function listResults(input: {
 }): Promise<ResultRow[]> {
   const normalizedOffice = input.office?.trim().toLowerCase() || null;
   const parentGeoid = input.parentGeoid?.trim() || null;
+  // The local rehearsal bypass belongs only to Minnesota. A Minnesota rehearsal
+  // must never disable another guarded state's production-publication gate.
+  const minnesotaRehearsal = input.state.toUpperCase() === "MN"
+    ? resolveMinnesotaPrecinctRehearsal()
+    : { enabled: false } as const;
   const requiresPublicationGate = requiresPrecinctResultPublicationGate(input)
-    && !resolveMinnesotaPrecinctRehearsal().enabled;
+    && !minnesotaRehearsal.enabled;
   if (parentGeoid && (input.level !== "precinct" || !/^\d{5}$/.test(parentGeoid))) {
     throw new Error(
       "parentGeoid requires precinct results and a five-digit county GEOID",
@@ -650,7 +658,10 @@ export async function listResults(input: {
                   and gate_version.metadata->>'manifestId'
                     = gate_crosswalk.metadata->>'manifestId'
                   and gate_crosswalk.relationship_type = 'one_to_one'
-                  and gate_crosswalk.match_method = 'exact_official_id'
+                  and gate_crosswalk.match_method in (
+                    'exact_official_id',
+                    'official_crosswalk'
+                  )
                   and gate_crosswalk.review_status = 'reviewed'
                   and gate_crosswalk.confidence = 'high'
                   and gate_crosswalk.metadata->>'publicDeliveryAuthorized' = 'true'
@@ -745,7 +756,10 @@ export async function listResults(input: {
                 and gate_version.metadata->>'manifestId'
                   = gate_crosswalk.metadata->>'manifestId'
                 and gate_crosswalk.relationship_type = 'one_to_one'
-                and gate_crosswalk.match_method = 'exact_official_id'
+                and gate_crosswalk.match_method in (
+                  'exact_official_id',
+                  'official_crosswalk'
+                )
                 and gate_crosswalk.review_status = 'reviewed'
                 and gate_crosswalk.confidence = 'high'
                 and gate_crosswalk.metadata->>'publicDeliveryAuthorized' = 'true'

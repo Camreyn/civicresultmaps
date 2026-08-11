@@ -6918,3 +6918,71 @@ evidence against its verified top-level package.
   regression assertions pin that exact cast for both operations. This repair
   requires its own reviewed deployment and fresh deployment-bound public
   authorization before the atomic database cutover is retried.
+
+### 2026-08-10 - Texas four-election VTD precinct-map release preparation
+
+- The official Texas Legislative Council election-specific VTD geometry and
+  paired election-result products now cover every tracked presidential year.
+  The reviewed plans contain 8,952 reporting units for 2012, 8,941 for 2016,
+  9,157 for 2020, and 9,712 for 2024: 36,762 exact one-to-one relationships
+  across all 254 county parents per election. The result pipeline groups each
+  official candidate set into Democratic, Republican, and Other rows, yielding
+  110,286 result rows and retaining 1,280 zero-presidential-vote VTDs.
+
+- The former 2024 blocker was a source-layer mismatch. `Precincts24G` has
+  9,657 administrative precinct polygons and cannot exactly color the 9,712
+  TLC VTD result identities. The official `VTDs_24PG` resource instead has
+  exactly 9,712 `VTDKEY` polygons and matches every result unit with no missing
+  or extra geometry. `Precincts24G` remains contextual evidence only.
+
+- Texas VTDs are census-geographic precinct approximations. CivicResultMaps
+  stores them at the product's public `precinct` reporting grain so the shared
+  county detail-map contract can resolve them, while every manifest, source
+  note, and UI caveat must retain the explicit `VTD / precinct approximation`
+  label. TLC VTD totals remain a distinct official local product and never
+  replace certified Texas SOS county or statewide totals. The documented 2024
+  difference remains 15,854 votes, principally the generic VTD Write-In scope;
+  it is a source limitation, not evidence of misconduct.
+
+- The loopback-only `crm_clone_dev` load and independent read-only validation
+  passed with 36,762 reporting units, 110,286 result rows, 36,762 geometry
+  features, 36,762 reviewed official crosswalks, four safely blocked geography
+  versions, and zero invalid constraints. Production was not contacted or
+  changed, and every public-delivery authorization flag remains false.
+
+- Content-addressed package `41c2cc7f901b...` deterministically produces four
+  immutable indexes and 1,016 county GeoJSON files. Public presentation
+  coordinates are rounded to five decimal degrees without changing source
+  artifacts, reporting identities, parents, or joins. The complete delivery is
+  391,854,609 bytes; the largest county response is 4,254,829 bytes, below the
+  enforced 4,350,000-byte response guard. The shared per-county feature cap is
+  now 1,500 because Harris County has 1,070 election-specific VTD features.
+
+- The package remains `NO_GO_PRODUCTION`, and no Blob object or production row
+  was changed. A deterministic guarded-static activation added the four exact
+  public draft manifests to the tracked registry and added Texas to each
+  coverage inventory. This does not expose data by itself: both Texas precinct
+  APIs now require the matching database geography version and all linked
+  result/crosswalk/source flags to be published in one final transaction.
+
+- The loopback SQL rehearsal performed the complete hidden load followed by the
+  exact public cutover, verified 36,762 authorized units/crosswalks and 110,286
+  result rows, then forced the enclosing transaction to roll back. The database
+  revision and published-version count returned to their pre-test values.
+  Production was not contacted. The operational sequence is pinned in
+  `docs/developer/tx-precinct-release-runbook.md`.
+
+- Independent release review found and closed three fail-closed gaps before the
+  branch was published. Minnesota's local rehearsal bypass is now explicitly
+  state-scoped and cannot bypass Texas. Both the read-only preflight and the
+  write transaction reject any prior Texas precinct load, and the SQL rehearsal
+  proves a second hidden load cannot re-block an already published release.
+  Hidden-load and public-cutover runners now also provide hash-bound, read-only
+  receipt recovery for ambiguous post-commit connection or filesystem failures;
+  reused `.pending` evidence is preserved on unsuccessful recovery.
+
+- The existing 2024 Texas advisory path remains separate: 9,348 native review
+  rows calculate 309 advisory indicators across 172 county/jurisdiction areas
+  (`vote_share_pattern`, `average_down_ballot_difference`, and one
+  `down_ballot_outliers` row). Those are source-review signals only, not
+  findings of fraud or misconduct.

@@ -704,7 +704,7 @@
       "state": "TX",
       "name": "Texas",
       "priority": 5,
-      "nativeReadiness": "complete_county_map_vtd_review_turnout_partial_reconciliation",
+      "nativeReadiness": "complete_county_map_vtd_review_turnout_partial_reconciliation_four_year_vtd_geometry_release_ready",
       "authority": "Texas Secretary of State; Texas Legislative Council Capitol Data Portal",
       "configFile": "etl/state-configs/tx.json",
       "legacyReferenceBundle": "data/tx-app-data.js",
@@ -743,6 +743,21 @@
           "localFile": "data/tx-2024-vtd-reconciliation-summary.json",
           "countyDeltaFile": "data/tx-2024-vtd-county-reconciliation.csv",
           "parserHint": "Run npm run etl:reconcile:tx:vtd after replacing the Texas SOS County.json or Capitol Data Portal VTD ZIP artifacts."
+        },
+        "precinctGeometry": {
+          "sourceTitle": "Texas Legislative Council election-specific VTD geometry and paired presidential VTD results",
+          "sourceUrl": "https://data.capitol.texas.gov/topic/elections",
+          "localPackageRoot": "data/precinct-geometry/TX",
+          "years": [
+            2012,
+            2016,
+            2020,
+            2024
+          ],
+          "reportingUnits": 36762,
+          "groupedPresidentialResultRows": 110286,
+          "parentsPerElection": 254,
+          "parserHint": "Use the four precinct-gis:replay:tx aliases, then precinct-gis:plan:tx, precinct-gis:validate:tx:local, and precinct-gis:release-candidate:tx. Public maps must retain the VTD/precinct-approximation label and the SOS certified-total boundary."
         }
       },
       "expected": {
@@ -759,13 +774,15 @@
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff_vtd_export_with_certified_total_gap",
-        "turnoutMode": "capitol_data_portal_vtd_vrto"
+        "turnoutMode": "capitol_data_portal_vtd_vrto",
+        "precinctGeometryMode": "reviewed_four_election_vtd_exact_official_crosswalk_guarded_static_activation_included"
       },
       "caveats": [
         "Certified county result rows remain sourced from Texas SOS County.json.",
         "The Capitol Data Portal VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674. The reconciliation summary attributes the main scope difference to VTD generic Write-In rows totaling 24,730 versus 8,569 SOS named declared write-in votes.",
         "VTD rows are official local screening context, not replacement certified totals.",
-        "VTD boundary GeoJSON is not present in this package."
+        "Election-specific 2012, 2016, 2020, and 2024 VTD geometry is retained in a separate hash-pinned local release package. Guarded static manifests are included; the production hidden load, Blob publication, and database cutover remain pending.",
+        "Texas VTDs are precinct approximations, not silently relabeled administrative county voting-precinct polygons."
       ]
     },
     {

@@ -1,6 +1,8 @@
 import type { ResultRow } from "./types";
 
-export const MAX_SELECTED_PARENT_PRECINCT_FEATURES = 1000;
+// Harris County, Texas has 1,070 election-specific VTD features in 2024.
+// Keep the guard bounded while allowing complete county-scoped delivery.
+export const MAX_SELECTED_PARENT_PRECINCT_FEATURES = 1500;
 
 export type PrecinctDeliveryGeometry = {
   type: "Polygon" | "MultiPolygon";

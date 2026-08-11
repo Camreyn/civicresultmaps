@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-10T01:20:59.259Z",
+  "updatedAt": "2026-08-11T03:34:09.050Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -396,6 +396,411 @@
         "The certified Minnesota Secretary of State workbook is the sole authority for vote values; delivery geometry contains no election values.",
         "One zero-vote VTD has a County Commissioner District attribute difference. Exact precinct identity fields still agree and result assignment does not depend on that district attribute.",
         "Public precinct geometry and certified result rows must remain coordinated so every delivered feature resolves to its exact reporting unit."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "tx-2012-11-06-tlc-vtd-geometry-candidate-v1",
+      "state": "TX",
+      "election": {
+        "id": "2012-11-06-general",
+        "date": "2012-11-06",
+        "year": 2012,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "2012 General Election VTDs (2010 Census geography)",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export"
+      },
+      "source": {
+        "authority": "Texas Legislative Council Capitol Data Portal; Texas Secretary of State",
+        "url": "https://data.capitol.texas.gov/dataset/6381bd0b-3ad4-4556-bb3f-6c579a60d00a/resource/eff06678-c69a-4a64-9187-a426e174a228/download/vtd12g.zip",
+        "retrievedAt": "2026-08-04T00:00:00.000Z",
+        "artifact": "data/precinct-geometry/TX/2012-11-06-general/source-evidence.json",
+        "sha256": "6461b3f7cd75a166244df57e2e24ee5c0eca1c066151982820118557a5569fca",
+        "byteCount": 7185,
+        "format": "vtd-source-evidence+json",
+        "licenseOrTerms": "Creative Commons Attribution per retained TLC metadata."
+      },
+      "normalization": {
+        "script": "scripts/collect-tx-2012-precinct-geometry-diagnostic.mjs",
+        "sourceCrs": "TLC shapefile PRJ retained in ZIP",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/TX/2012-11-06-general/normalized/tx-2012-11-06-vtds-candidate.geojson.gz",
+        "sha256": "e6c6de37717c5ec32effff66006a83bfe776dcc404fce3850c0b59b84195cd84",
+        "byteCount": 58082085,
+        "featureCount": 8952,
+        "sourceFeatureIdFields": [
+          "CNTYVTD"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "tx-2012-capitol-vtd-results-zip",
+        "artifact": "data/precinct-geometry/TX/2012-11-06-general/crosswalk/tx-2012-11-06-reviewed-evidence.json",
+        "sha256": "7ae0767197b3a0717ee87d5c9586ed47060cbac60ab89d4277d216fd3fa41899",
+        "byteCount": 5822583,
+        "resultUnits": 8952,
+        "colorableResultUnits": 8952,
+        "matchedResultUnits": 8952,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 8952,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "The official join applies VTDs only, not administrative county voting precincts.",
+          "No vote values are included in normalized geometry or crosswalk artifacts.",
+          "The TLC local VTD totals are source-specific and do not replace certified SOS county or statewide canvass totals.",
+          "All 8952 election-specific VTD relationships are reviewed one-to-one across all 254 Texas counties and statewide.",
+          "The 278 zero-presidential-vote VTDs remain geographic reporting units.",
+          "Public presentation coordinates are rounded to five decimal degrees; source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/tx/2012-11-06/precinct/tx-2012-11-06-tlc-vtd-geometry-candidate-v1-e138096120b5/index.json",
+        "sha256": "e138096120b57f7e9651aafbae7451d1236a31550bb5e6b8a1717fc95b74b9c8",
+        "byteCount": 46752,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 254,
+        "featureCount": 8952
+      },
+      "caveats": [
+        "The official join applies VTDs only, not administrative county voting precincts.",
+        "No vote values are included in normalized geometry or crosswalk artifacts.",
+        "The TLC local VTD totals are source-specific and do not replace certified SOS county or statewide canvass totals.",
+        "CivicResultMaps exposes this source at its precinct-map reporting grain while retaining the official Texas VTD/precinct-approximation label."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "tx-2016-11-08-tlc-vtd-geometry-candidate-v1",
+      "state": "TX",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "2016 General Election VTDs (2010 Census geography; corrected February 9, 2017)",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export"
+      },
+      "source": {
+        "authority": "Texas Legislative Council Capitol Data Portal; Texas Secretary of State",
+        "url": "https://data.capitol.texas.gov/dataset/6381bd0b-3ad4-4556-bb3f-6c579a60d00a/resource/d6428c75-be5c-47fe-adf0-5c0efe1ab295/download/vtds_2016g.zip",
+        "retrievedAt": "2026-08-03T06:00:00.000Z",
+        "artifact": "data/precinct-geometry/TX/2016-11-08-general/source-evidence.json",
+        "sha256": "66e46a66916f9d5457bd14ececedbdc953f09a5b821a66ceb697de00cb037a25",
+        "byteCount": 9420,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "Creative Commons Attribution per retained TLC CKAN metadata; VTD boundaries are census-geographic approximations."
+      },
+      "normalization": {
+        "script": "scripts/collect-tx-2016-precinct-geometry-diagnostic.mjs",
+        "sourceCrs": "PROJCS[\"NAD_1983_Lambert_Conformal_Conic\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",1000000.0],PARAMETER[\"False_Northing\",1000000.0],PARAMETER[\"Central_Meridian\",-100.0],PARAMETER[\"Standard_Parallel_1\",27.41666666666667],PARAMETER[\"Standard_Parallel_2\",34.91666666666666],PARAMETER[\"Latitude_Of_Origin\",31.16666666666667],UNIT[\"Meter\",1.0]]",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/TX/2016-11-08-general/normalized/tx-2016-11-08-vtds-candidate.geojson.gz",
+        "sha256": "60041b237deb985284a5c01d1263f5e65ed69f4325dcad58980333f6c9a3f4a6",
+        "byteCount": 58262673,
+        "featureCount": 8941,
+        "sourceFeatureIdFields": [
+          "CNTYVTD"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "tx-2016-capitol-vtd-results-zip",
+        "artifact": "data/precinct-geometry/TX/2016-11-08-general/crosswalk/tx-2016-11-08-cntyvtd-reviewed-evidence.json",
+        "sha256": "08853dcfe7f4a06c3ebe2beb877c82e6d23ff188590b0462e4b5c424804e5fd6",
+        "byteCount": 7004395,
+        "resultUnits": 8941,
+        "colorableResultUnits": 8941,
+        "matchedResultUnits": 8941,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 8941,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "The documented relationship is VTD-to-VTD; VTDs are not silently relabeled as administrative county voting precincts.",
+          "The TLC local VTD totals are source-specific and do not replace certified SOS county/state totals.",
+          "All 8941 election-specific VTD relationships are reviewed one-to-one across all 254 Texas counties and statewide.",
+          "The 285 zero-presidential-vote VTDs remain geographic reporting units.",
+          "Public presentation coordinates are rounded to five decimal degrees; source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/tx/2016-11-08/precinct/tx-2016-11-08-tlc-vtd-geometry-candidate-v1-387cb1b12a79/index.json",
+        "sha256": "387cb1b12a7999fc5a42bbf1df3ca34406fb4e76e7895eaeec9ed1b4ae19becb",
+        "byteCount": 46841,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 254,
+        "featureCount": 8941
+      },
+      "caveats": [
+        "The retained official 2016 readme documents CNTYVTD, not VTDKEY, as the paired VTD join. VTDs remain distinct from administrative county voting precincts.",
+        "The TLC local VTD totals are source-specific and do not replace certified SOS county or statewide canvass totals.",
+        "No vote values are included in candidate geometry or crosswalk artifacts, and no county voting-precinct layer is substituted for the documented VTD relationship.",
+        "CivicResultMaps exposes this source at its precinct-map reporting grain while retaining the official Texas VTD/precinct-approximation label."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "tx-2020-11-03-tlc-vtd-geometry-candidate-v1",
+      "state": "TX",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "2020 General Election VTDs (2020 Census)",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export"
+      },
+      "source": {
+        "authority": "Texas Legislative Council Capitol Data Portal",
+        "url": "https://data.capitol.texas.gov/dataset/4d8298d0-d176-4c19-b174-42837027b73e/resource/06157b97-40b8-43af-99d5-bd9b5850b15e/download/vtds20g_2020.zip",
+        "retrievedAt": "2026-08-03T03:00:00.000Z",
+        "artifact": "data/precinct-geometry/TX/2020-11-03-general/source-evidence.json",
+        "sha256": "3fdb442d18a5844d3aba9f41276258d031b1b34953440a5307be6505c9240871",
+        "byteCount": 8642,
+        "format": "VTD-source-evidence+json",
+        "licenseOrTerms": "Creative Commons Attribution as stated by the Capitol Data Portal resources."
+      },
+      "normalization": {
+        "script": "scripts/collect-tx-2020-precinct-geometry-diagnostic.mjs",
+        "sourceCrs": "NAD_1983_Lambert_Conformal_Conic (NAD83; meters)",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/TX/2020-11-03-general/normalized/tx-2020-11-03-vtds-candidate.geojson.gz",
+        "sha256": "b8a2d4a1039abb53f073ccbd2a37654713edd1838ed70d7bfb74b086556c5f20",
+        "byteCount": 58973880,
+        "featureCount": 9157,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "tx-2020-capitol-vtd-results-zip",
+        "artifact": "data/precinct-geometry/TX/2020-11-03-general/crosswalk/tx-2020-11-03-vtdkey-reviewed-evidence.json",
+        "sha256": "09b219b080ce0e8b7ae46ad57270d1e862f64e8517059dfefb55d77a09e48e74",
+        "byteCount": 7402837,
+        "resultUnits": 9157,
+        "colorableResultUnits": 9157,
+        "matchedResultUnits": 9157,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 9157,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "The separate TLC 2020 county voting-precinct ZIP is retained but is not the geometry paired by TLC's documented election-data join.",
+          "The VTDKEY relationship is reviewed official evidence for the VTD layer and must not be relabeled as an administrative county voting-precinct relationship.",
+          "The TLC local VTD totals are source-specific and do not replace certified SOS county/state totals.",
+          "All 9157 election-specific VTD relationships are reviewed one-to-one across all 254 Texas counties and statewide.",
+          "The 353 zero-presidential-vote VTDs remain geographic reporting units.",
+          "Public presentation coordinates are rounded to five decimal degrees; source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/tx/2020-11-03/precinct/tx-2020-11-03-tlc-vtd-geometry-candidate-v1-8d0339e8bc4a/index.json",
+        "sha256": "8d0339e8bc4ab1a72c3a215421f833b3bd9e910e7b9e233969483198854ec289",
+        "byteCount": 46742,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 254,
+        "featureCount": 9157
+      },
+      "caveats": [
+        "No vote field appears anywhere in the crosswalk or normalized geometry; the relationship evidence is retained solely to document the official VTDKEY pairing.",
+        "The TLC local VTD totals are source-specific and do not replace certified SOS county or statewide canvass totals.",
+        "The VTD relationship must not be relabeled as an administrative county voting precinct relationship.",
+        "No conclusion about vote tabulation or election conduct follows from this source pairing.",
+        "CivicResultMaps exposes this source at its precinct-map reporting grain while retaining the official Texas VTD/precinct-approximation label."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "tx-2024-11-05-tlc-vtd-geometry-candidate-v2",
+      "state": "TX",
+      "election": {
+        "id": "2024-11-05-general",
+        "date": "2024-11-05",
+        "year": 2024,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "2024 Primary & General Elections VTDs",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export"
+      },
+      "source": {
+        "authority": "Texas Legislative Council Capitol Data Portal",
+        "url": "https://data.capitol.texas.gov/dataset/4d8298d0-d176-4c19-b174-42837027b73e/resource/906f47e4-4e39-4156-b1bd-4969be0b2780/download/vtds_24pg.zip",
+        "retrievedAt": "2026-08-11T02:49:35.000Z",
+        "artifact": "data/precinct-geometry/TX/2024-11-05-general/source-evidence.json",
+        "sha256": "2ccabbc414de1225d6f59407deb4395bbcd18befe3a8eb7ba43207372c87d3e1",
+        "byteCount": 8091,
+        "format": "VTD-source-evidence+json",
+        "licenseOrTerms": "Creative Commons Attribution as stated by the Capitol Data Portal resources."
+      },
+      "normalization": {
+        "script": "scripts/collect-tx-2024-precinct-geometry.mjs",
+        "sourceCrs": "NAD_1983_Lambert_Conformal_Conic (NAD83; meters)",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/TX/2024-11-05-general/normalized/tx-2024-11-05-vtds-candidate.geojson.gz",
+        "sha256": "ce17178e8a7122e257b59e913de3b04f3148c9d2cd3b8e69c655ae77c3149c5f",
+        "byteCount": 59059795,
+        "featureCount": 9712,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "tx-2024-capitol-vtd-results-zip",
+        "artifact": "data/precinct-geometry/TX/2024-11-05-general/crosswalk/tx-2024-11-05-vtdkey-reviewed-evidence.json",
+        "sha256": "baa75bdef85dc8799dd8917e47b7ed306d65ca8718b94f84722c6ed5f18e070e",
+        "byteCount": 7623952,
+        "resultUnits": 9712,
+        "colorableResultUnits": 9712,
+        "matchedResultUnits": 9712,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 9712,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "TLC VTDs are precinct approximations and must remain labeled as VTD geography.",
+          "The paired TLC VTD President total is 15,854 votes above the certified SOS county total, principally because the VTD product uses a generic Write-In row; the VTD source cannot replace certified county/state totals.",
+          "The separate Precincts24G administrative boundary layer is retained only as context and is not used for result coloring.",
+          "All 9712 election-specific VTD relationships are reviewed one-to-one across all 254 Texas counties and statewide.",
+          "The 364 zero-presidential-vote VTDs remain geographic reporting units.",
+          "Public presentation coordinates are rounded to five decimal degrees; source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/tx/2024-11-05/precinct/tx-2024-11-05-tlc-vtd-geometry-candidate-v2-410392149eda/index.json",
+        "sha256": "410392149eda33bdf862be0311373053709fb39cb2aad2168baff9a7d4302222",
+        "byteCount": 46729,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 254,
+        "featureCount": 9712
+      },
+      "caveats": [
+        "No vote field appears in the crosswalk or normalized geometry; vote values remain in the result-source pipeline.",
+        "This layer must be labeled VTD or precinct approximation, not an exact administrative county voting-precinct boundary layer.",
+        "The TLC local VTD totals are source-specific and do not replace the certified SOS county or statewide canvass totals.",
+        "No conclusion about vote tabulation or election conduct follows from the documented source-scope difference.",
+        "CivicResultMaps exposes this source at its precinct-map reporting grain while retaining the official Texas VTD/precinct-approximation label."
       ]
     }
   ]
