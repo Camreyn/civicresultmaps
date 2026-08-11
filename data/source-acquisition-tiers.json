@@ -545,7 +545,7 @@
       "stateName": "Florida",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_precinct_gis",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct_location",
       "exportFormats": [
@@ -1833,7 +1833,11 @@
         "county election pages",
         "records-request path",
         "county source request matrix TSV",
-        "non-Clark jurisdiction request packet JSON"
+        "non-Clark jurisdiction request packet JSON",
+        "official NVSOS 2012 and 2024 precinct result exports",
+        "official 2024 LCB precinct GeoJSON",
+        "VEST 2016 and 2020 election-specific shapefiles",
+        "normalized precinct GeoJSON, result, crosswalk, and validation artifacts"
       ],
       "sourceUrls": [
         "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
@@ -1843,7 +1847,11 @@
         "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
         "https://www.humboldtcountynv.gov/317/Elections",
         "https://www.humboldtcountynv.gov/DocumentCenter/View/7893",
-        "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information"
+        "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+        "https://www.nvsos.gov/silverstate2012gen/",
+        "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/",
+        "https://dataverse.harvard.edu/file.xhtml?fileId=4863168&version=21.0",
+        "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -1854,20 +1862,27 @@
         "Humboldt County precinct President/Senate CVR review rows",
         "county equipment context",
         "14-jurisdiction result/turnout/geometry/admin request matrix",
-        "14-jurisdiction operational request packets"
+        "14-jurisdiction operational request packets",
+        "2012 reviewed hybrid candidate geometry: 2,020 features and 1,760 colorable presidential units",
+        "2016 reviewed statewide secondary reconstruction: 2,067 features and units",
+        "2020 reviewed statewide secondary reconstruction: 2,094 features and units",
+        "2024 official statewide LCB geometry: 1,726 features and 1,518 safely colorable presidential units"
       ],
       "missingFields": [
-        "local/precinct rows for 14 non-Clark/non-Washoe/non-Humboldt jurisdictions",
+        "same-grain U.S. Senate/local review rows for 14 non-Clark/non-Washoe/non-Humboldt jurisdictions",
         "state-native turnout denominator",
-        "precinct/local reporting-unit geometry or crosswalks",
+        "election-date Washoe 2012 precinct archive needed to replace the labeled proxy partition",
+        "official machine-readable 2016 precinct rows/boundaries/crosswalk or an explicit reviewed supplemental-source decision for the reconciled VEST reconstruction",
+        "exact Harvard Dataverse version-21 custom terms needed before redistributing the 2020 VEST geometry",
+        "affirmative public derivative-redistribution terms for the public-authoritative Nevada LCB 2024 Precincts layer because retained licenseInfo and copyrightText are empty",
         "official 2012/2016/2020 historical baseline replacement for secondary context rows",
         "post-election audit, L&A, tabulator-log, custody, incident/correction, recount, litigation, and remaining CVR availability artifacts"
       ],
-      "parserStatus": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; data/nv-2024-county-source-request-matrix.tsv tracks the remaining 14 jurisdiction request paths; scripts/create-nv-county-request-packets.mjs generates data/nv-2024-non-clark-county-request-packets.json for county-specific request follow-through; active turnout remains EAC fallback",
-      "manualReviewBurden": "medium",
-      "confidence": "loaded",
-      "caveats": "Clark County, Washoe County, and Humboldt County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained. The July 4, 2026 NV source pass rechecked Eureka and generated county-specific request packets for the remaining 14 jurisdictions plus state-native turnout, precinct geometry, historical-baseline replacement, and audit/CVR/L&A/tabulator-log/custody/incident evidence needs.",
-      "nextAction": "Use data/nv-2024-non-clark-county-request-packets.json and data/nv-2024-county-source-request-matrix.tsv to request official local result exports or records-request productions for the 14 non-Clark/non-Washoe/non-Humboldt jurisdictions, starting with Eureka County, then collect a state-native turnout denominator and administration evidence artifacts."
+      "parserStatus": "scripts/collect-nv-precinct-geometry.mjs deterministically normalizes and hash-pins all four presidential precinct GIS years; scripts/setup-nv-precinct-gis-local.mjs loads the reviewed rows into the loopback clone with public status blocked. localComparisonCsv remains the separate President-versus-Senate advisory path for Clark, Washoe, and Humboldt; active turnout remains EAC fallback.",
+      "manualReviewBurden": "high",
+      "confidence": "loaded_with_caveats",
+      "caveats": "All four presidential precinct GIS years now have reproducible normalized artifacts and reviewed relationship evidence. Every year remains nonpublic: 2012 uses a labeled 2016 Washoe proxy and has five one-to-many result units; 2016 is a VEST secondary reconstruction whose statewide percentages reconcile to an official LCB map but whose official row-level source is not retained; 2020 lacks exact Dataverse version-21 terms; and 2024 retains 208 reviewed no-data polygons but lacks affirmative derivative-redistribution terms because the official ArcGIS licenseInfo and copyrightText fields are empty. These gaps are source limitations, not evidence of misconduct.",
+      "nextAction": "Request the 2012 Washoe election-date GIS/map submission, the official 2016 machine-readable source/crosswalk or an explicit supplemental-source decision, exact 2020 Dataverse version-21 terms, and affirmative 2024 LCB derivative-redistribution terms. Design the 2012 aggregate-rendering contract before immutable parent-scoped packaging and guarded release review. Continue collecting same-grain U.S. Senate review rows and state-native turnout separately."
     },
     {
       "state": "NY",

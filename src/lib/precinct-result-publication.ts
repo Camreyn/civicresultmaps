@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 
-const PRECINCT_PUBLICATION_GATED_STATES = new Set(["MN", "TX"]);
+const PRECINCT_PUBLICATION_GATED_STATES = new Set(["MN", "NV", "TX"]);
 
 export function requiresPrecinctResultPublicationGate(input: {
   state: string;
@@ -98,9 +98,12 @@ export function matchesPrecinctGeometryPublicationMetadata(
   const metadata = recordValue(metadataValue);
   const releaseCandidate = recordValue(metadata?.releaseCandidate);
   const activation = recordValue(metadata?.publicActivation);
+  const crosswalkMetadata = recordValue(metadata?.crosswalk);
   if (!metadata || !releaseCandidate || !activation) return false;
 
   const expectedFeatureCount = manifest.delivery.featureCount;
+  const expectedRelationshipCount = manifest.crosswalk.reviewedRelationshipRecords
+    ?? expectedFeatureCount;
   const releaseSha256 = releaseCandidate.sha256;
   const changedAtUtc = activation.changedAtUtc;
   return metadata.manifestId === manifest.id
@@ -113,8 +116,13 @@ export function matchesPrecinctGeometryPublicationMetadata(
     && typeof releaseSha256 === "string"
     && /^[a-f0-9]{64}$/.test(releaseSha256)
     && recordValue(metadata.normalization)?.featureCount === expectedFeatureCount
-    && recordValue(metadata.crosswalk)?.reviewedRelationships
-      === expectedFeatureCount
+    && crosswalkMetadata?.reviewedRelationships
+      === expectedRelationshipCount
+    && (
+      manifest.crosswalk.reviewedNoDataFeatures === undefined
+      || crosswalkMetadata?.reviewedNoDataFeatures
+        === manifest.crosswalk.reviewedNoDataFeatures
+    )
     && typeof activation.activationId === "string"
     && activation.activationId.trim().length > 0
     && typeof activation.activationCandidateSha256 === "string"

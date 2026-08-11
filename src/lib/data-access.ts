@@ -306,11 +306,17 @@ export async function isPrecinctGeometryManifestPublished(
   }
 
   const expectedFeatureCount = manifest.delivery.featureCount;
+  const expectedRelationshipCount = manifest.crosswalk.reviewedRelationshipRecords
+    ?? expectedFeatureCount;
+  const expectedNoDataFeatureCount = manifest.crosswalk.reviewedNoDataFeatures
+    ?? expectedFeatureCount - expectedRelationshipCount;
+  const expectedReportingUnitCount = manifest.crosswalk.matchedResultUnits;
   const publicManifestSha256 = precinctGeometryPublicManifestSha256(manifest);
   let rows: Array<{
     metadata: unknown;
     crosswalkCount: number;
-    featureCount: number;
+    linkedFeatureCount: number;
+    totalFeatureCount: number;
     reportingUnitCount: number;
     authorizedLinkCount: number;
   }>;
@@ -320,7 +326,12 @@ export async function isPrecinctGeometryManifestPublished(
       select
         geography_versions.metadata,
         count(*)::int as "crosswalkCount",
-        count(distinct geography_features.id)::int as "featureCount",
+        count(distinct geography_features.id)::int as "linkedFeatureCount",
+        (
+          select count(*)::int
+          from geography_features all_features
+          where all_features.geometry_version_id = geography_versions.id
+        ) as "totalFeatureCount",
         count(distinct reporting_units.id)::int as "reportingUnitCount",
         count(*) filter (
           where geography_features.id is not null
@@ -385,10 +396,13 @@ export async function isPrecinctGeometryManifestPublished(
   const row = rows.length === 1 ? rows[0] : null;
   return Boolean(
     row
-    && Number(row.crosswalkCount) === expectedFeatureCount
-    && Number(row.featureCount) === expectedFeatureCount
-    && Number(row.reportingUnitCount) === expectedFeatureCount
-    && Number(row.authorizedLinkCount) === expectedFeatureCount
+    && Number(row.crosswalkCount) === expectedRelationshipCount
+    && Number(row.linkedFeatureCount) === expectedRelationshipCount
+    && Number(row.totalFeatureCount) === expectedFeatureCount
+    && Number(row.totalFeatureCount) - Number(row.linkedFeatureCount)
+      === expectedNoDataFeatureCount
+    && Number(row.reportingUnitCount) === expectedReportingUnitCount
+    && Number(row.authorizedLinkCount) === expectedRelationshipCount
     && matchesPrecinctGeometryPublicationMetadata(manifest, row.metadata),
   );
 }

@@ -77,6 +77,8 @@ export type PrecinctGeometryManifest = {
       | "official_service"
       | "digitized_map"
       | "official_crosswalk"
+      | "secondary_reconstruction"
+      | "hybrid_reconstruction"
       | "availability_diagnostic";
     digitizationReview?: DigitizedMapReview;
   };
@@ -111,6 +113,8 @@ export type PrecinctGeometryManifest = {
     unmatchedResultUnits: number;
     nonGeographicResultUnits: number;
     sourceAliasResultUnits: number;
+    reviewedRelationshipRecords?: number;
+    reviewedNoDataFeatures?: number;
     relationships: {
       oneToOne: number;
       oneToMany: number;
@@ -396,6 +400,14 @@ function publicEligibilityReasons(
     reasons.push("crosswalk relationships remain unmatched or pending");
   }
   if (
+    manifest.crosswalk.relationships.oneToMany !== 0
+    || manifest.crosswalk.relationships.manyToOne !== 0
+  ) {
+    reasons.push(
+      "aggregate precinct rendering is not implemented for one-to-many or many-to-one relationships",
+    );
+  }
+  if (
     manifest.crosswalk.matchedResultUnits
     !== manifest.crosswalk.colorableResultUnits
   ) {
@@ -462,6 +474,8 @@ export function inspectPrecinctGeometryManifest(
       "official_service",
       "digitized_map",
       "official_crosswalk",
+      "secondary_reconstruction",
+      "hybrid_reconstruction",
       "availability_diagnostic",
     ],
     "manifest.geography",
@@ -603,7 +617,7 @@ export function inspectPrecinctGeometryManifest(
     errors,
   );
   validateSha256(normalizedHash, "manifest.normalization.sha256", errors);
-  nonNegativeInteger(
+  const normalizationFeatureCount = nonNegativeInteger(
     normalization,
     "featureCount",
     "manifest.normalization",
@@ -687,6 +701,22 @@ export function inspectPrecinctGeometryManifest(
     "manifest.crosswalk",
     errors,
   );
+  const reviewedRelationshipRecords = crosswalk.reviewedRelationshipRecords === undefined
+    ? null
+    : nonNegativeInteger(
+      crosswalk,
+      "reviewedRelationshipRecords",
+      "manifest.crosswalk",
+      errors,
+    );
+  const reviewedNoDataFeatures = crosswalk.reviewedNoDataFeatures === undefined
+    ? null
+    : nonNegativeInteger(
+      crosswalk,
+      "reviewedNoDataFeatures",
+      "manifest.crosswalk",
+      errors,
+    );
   if (
     colorableResultUnits + nonGeographicResultUnits + sourceAliasResultUnits
     !== resultUnits
@@ -698,6 +728,22 @@ export function inspectPrecinctGeometryManifest(
   if (matchedResultUnits + unmatchedResultUnits !== colorableResultUnits) {
     errors.push(
       "manifest.crosswalk colorableResultUnits must equal matchedResultUnits plus unmatchedResultUnits",
+    );
+  }
+  if (
+    reviewedRelationshipRecords !== null
+    && reviewedRelationshipRecords < matchedResultUnits
+  ) {
+    errors.push(
+      "manifest.crosswalk.reviewedRelationshipRecords cannot be less than matchedResultUnits",
+    );
+  }
+  if (
+    reviewedNoDataFeatures !== null
+    && reviewedNoDataFeatures > normalizationFeatureCount
+  ) {
+    errors.push(
+      "manifest.crosswalk.reviewedNoDataFeatures cannot exceed normalization.featureCount",
     );
   }
 

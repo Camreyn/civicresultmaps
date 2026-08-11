@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "state": "NV",
+  "electionId": "2016-11-08-general",
+  "generatedAt": "2026-08-11T12:00:00.000Z",
+  "disposition": "blocked_pending_official_row_level_provenance_review",
+  "source": {
+    "featureCount": 2067,
+    "parentCount": 17,
+    "sourceResultUnits": 2067
+  },
+  "crosswalk": {
+    "resultUnits": 2067,
+    "colorableResultUnits": 2067,
+    "matchedResultUnits": 2067,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2067,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 2067,
+    "reviewedNoDataFeatures": 0
+  },
+  "exclusions": {
+    "count": 0,
+    "byReason": {}
+  },
+  "artifacts": {
+    "normalizedGeometry": {
+      "localArtifactPath": "data/precinct-geometry/NV/2016-11-08-general/normalized/nv-2016-precincts.geojson.gz",
+      "byteCount": 3545018,
+      "sha256": "a680c349698babc316669d86b605b82bbe5f88ac26902ceb213258f83b673548"
+    },
+    "normalizedGeometryUncompressed": {
+      "byteCount": 16356530,
+      "sha256": "ad9416c59735d835ef964730136b42f0d95876fbf4238ad3c19b04efd16784d4"
+    },
+    "normalizedResults": {
+      "localArtifactPath": "data/precinct-geometry/NV/2016-11-08-general/normalized/nv-2016-president-results.json.gz",
+      "byteCount": 41489,
+      "sha256": "d3aeb7ccc54f2e6d0546c250f9ea8f581cb82cde6a51556829e7a45e99c45da8"
+    },
+    "normalizedResultsUncompressed": {
+      "byteCount": 581262,
+      "sha256": "cebbda1aca9a94b0649bfd3e1e0774fb861405ac92ed0660e4063a4f83993781"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/NV/2016-11-08-general/crosswalk/nv-2016-precinct-result-crosswalk.json",
+      "byteCount": 1527266,
+      "sha256": "c1d5b212ea2ced6463a44c93a99453a54b73bd87aa8c30d5db4b5a016c0a101f"
+    }
+  },
+  "caveats": [
+    "No election-result value is embedded in the normalized geometry or crosswalk.",
+    "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
+    "VEST is a secondary election-specific reconstruction. The retained official LCB map reconciles its statewide presidential percentages and attributes election data to the Nevada Secretary of State, but it does not establish official row-level identity or geometry provenance."
+  ]
+}

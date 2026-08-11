@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "nv-2012-precinct-geometry-source-evidence",
+  "state": "NV",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Nevada Secretary of State with official Clark County, Census, and Washoe evidence",
+  "retrievedAt": "2026-08-11T12:00:00.000Z",
+  "sourceCrs": "mixed retained source CRS normalized by shpjs and reviewed Clark converter",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/raw/nevada-secretary-of-state/2012-general-precinct.csv",
+      "sourceUrl": "https://www.nvsos.gov/silverstate2012gen/",
+      "authority": "Nevada Secretary of State",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 7177507,
+      "sha256": "1611ea13fd2f67b4d23fcc26b01ab84d3a23d7b18beaae1cd994e9d1b87a6948",
+      "format": "CSV",
+      "note": "Official statewide precinct result export; low-count cells are suppressed with an asterisk."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/raw/us-census/tl_2012_32_vtd10.zip",
+      "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_32_vtd10.zip",
+      "authority": "U.S. Census Bureau",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 5144311,
+      "sha256": "eb52fc52993abc152911b509d5d567675113bf5782b187e2033cc1772579a855",
+      "format": "ESRI Shapefile ZIP",
+      "note": "Statewide 2010-vintage VTD geography retained from the 2012 TIGER archive."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/raw/clark-county/Election_Archive.zip",
+      "sourceUrl": "https://mapsrv.clarkcountynv.gov/pub/crgeodb/Election_Archive.zip",
+      "authority": "Clark County GIS Management Office",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 8604501,
+      "sha256": "97cd8af08bd142263a5c956c1b818be42f5703d51e71fa87ed32fe24ae06bd2e",
+      "format": "Esri File Geodatabase ZIP",
+      "note": "Official historical archive containing the prec2012_p layer."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/raw/clark-county/prec2012_p.geojson",
+      "sourceUrl": "https://mapsrv.clarkcountynv.gov/pub/crgeodb/Election_Archive.zip",
+      "authority": "Clark County GIS Management Office",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 3016512,
+      "sha256": "15d595cc43fcc7ea0af77a190382bfbdcd4466a5c9417e017e45e228e0141f68",
+      "format": "GeoJSON",
+      "note": "Deterministic WGS84 conversion of official FileGDB layer prec2012_p."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2012-11-06-general/raw/washoe-county/Precinct-Changelog.xlsx",
+      "sourceUrl": "https://www.washoecounty.gov/voters/data/files/Precinct%20Changelog.xlsx",
+      "authority": "Washoe County Registrar of Voters",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 150410,
+      "sha256": "67ad36111d16b28e8f6ea90a5a219cbbbfd9fd8ced3f41931eecd239bae7845c",
+      "format": "XLSX",
+      "note": "Official precinct lineage used to reject known post-2012 proxy changes."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2016-11-08-general/raw/vest/nv_2016.zip",
+      "sourceUrl": "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/",
+      "authority": "Voting and Election Science Team",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 6798273,
+      "sha256": "4e3ddd59f31d61f55ff2d94bd03eb9d3ba0771c910b9509889b76eea209e476d",
+      "format": "ESRI Shapefile ZIP",
+      "note": "Secondary 2016 Washoe partition used only as an explicitly labeled proxy; not proof of 2012 vintage."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "nv-2012-president-precinct-results",
+    "sourceResultUnits": 2023,
+    "colorableResultUnits": 1760,
+    "excludedResultUnits": 263,
+    "knownColorablePresidentVotes": 1005652,
+    "normalizedResultArtifact": {
+      "path": "data/precinct-geometry/NV/2012-11-06-general/normalized/nv-2012-president-results.json.gz",
+      "sha256": "7499c911720914cccbc513ada60e12853ca6ebcd72e947b864561d2c4061e6ee",
+      "byteCount": 36912
+    }
+  },
+  "boundaryContext": {
+    "vintage": "Hybrid 2012 Clark/Census boundaries with a 2016 Washoe proxy partition",
+    "vintageStatus": "unknown",
+    "licenseOrTerms": "U.S. government Census data are public domain; Clark and Nevada public-record reuse terms are not separately stated; VEST database content is CC BY 4.0."
+  },
+  "caveats": [
+    "No election-result value is embedded in the normalized geometry or crosswalk.",
+    "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
+    "Washoe uses a clearly labeled 2016 proxy partition; the 2012 manifest remains blocked pending the election-date archive held by Nevada custodians."
+  ]
+}

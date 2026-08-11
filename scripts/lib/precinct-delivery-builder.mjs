@@ -172,6 +172,66 @@ function buildPrecinctDeliveryFeatureCollectionInternal(
     }
   }
 
+  const unlinkedFeatures = normalizedGeometry.features.filter(
+    (feature) => !resultUnitByFeature.has(featureIdentity(feature, manifest)),
+  );
+  const reviewedNoDataFeatures = manifest.crosswalk.reviewedNoDataFeatures;
+  if (
+    unlinkedFeatures.length > 0
+    && reviewedNoDataFeatures === undefined
+  ) {
+    throw new Error(
+      "precinct delivery has "
+      + unlinkedFeatures.length
+      + " unlinked geometry features without a reviewed no-data declaration",
+    );
+  }
+  if (
+    reviewedNoDataFeatures !== undefined
+    && unlinkedFeatures.length !== reviewedNoDataFeatures
+  ) {
+    throw new Error(
+      "precinct delivery no-data feature count "
+      + unlinkedFeatures.length
+      + " does not match manifest "
+      + reviewedNoDataFeatures,
+    );
+  }
+  for (const feature of unlinkedFeatures) {
+    const sourceFeatureId = featureIdentity(feature, manifest);
+    const parentGeoid = featureParentIdentity(feature, manifest);
+    if (!parentGeoid) {
+      throw new Error(
+        "reviewed no-data feature requires a parent identity: "
+        + sourceFeatureId,
+      );
+    }
+    const properties = feature?.properties ?? {};
+    const displayName = String(
+      properties.SOURCE_NAME
+      ?? properties.SOURCE_PRECINCT
+      ?? properties.CRM_FEATURE_ID
+      ?? sourceFeatureId,
+    ).trim() || sourceFeatureId;
+    deliveryFeatures.push({
+      type: "Feature",
+      properties: {
+        geometryFeatureId: sourceFeatureId,
+        resultUnitCode:
+          "no-data:"
+          + manifest.id
+          + ":"
+          + encodeURIComponent(sourceFeatureId),
+        parentGeoid,
+        sourceFeatureId,
+        displayName,
+        geographyType: manifest.geography.level,
+        relationshipType: "no_data",
+      },
+      geometry: feature.geometry,
+    });
+  }
+
   deliveryFeatures.sort((left, right) =>
     left.properties.geometryFeatureId.localeCompare(
       right.properties.geometryFeatureId,

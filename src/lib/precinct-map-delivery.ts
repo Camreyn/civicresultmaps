@@ -18,7 +18,7 @@ export type PrecinctDeliveryFeature = {
     sourceFeatureId: string;
     displayName: string;
     geographyType: string;
-    relationshipType: "one_to_one" | "one_to_many";
+    relationshipType: "one_to_one" | "one_to_many" | "no_data";
   };
   geometry: PrecinctDeliveryGeometry;
 };
@@ -336,6 +336,17 @@ export function selectPrecinctDeliveryFeatures(
       "relationshipType",
     ]) {
       requiredString(properties, key, "features[" + index + "].properties");
+    }
+    if (
+      !["one_to_one", "one_to_many", "no_data"].includes(
+        String(properties.relationshipType),
+      )
+    ) {
+      throw new Error(
+        "features["
+        + index
+        + "].properties.relationshipType must be one_to_one, one_to_many, or no_data",
+      );
     }
     if (
       !isRecord(candidate.geometry)
