@@ -18,7 +18,9 @@ test("Nevada static activation exactly matches three sealed public manifests", (
   assert.equal(built.plan.manifests.length, 3);
   assert.equal(built.outputs.length, 4);
   assert.ok(built.outputs.every((output) =>
-    output.disposition === "verified_existing"));
+    output.disposition === "verified_existing"
+    || output.disposition === "upgrade_reviewed_preimage_to_v2"));
+  assert.ok(built.outputs.every((output) => output.disposition !== "activate"));
   assert.ok(built.plan.manifests.every((row) =>
     row.draftManifest.delivery.format === "parent_scoped_geojson"
     && row.draftManifest.delivery.parentCount === 17));
@@ -44,4 +46,11 @@ test("Nevada activation writer preflights all four files and rolls back partial 
   assert.match(source, /target preimage drifted/);
   assert.match(source, /committed\.reverse\(\)/);
   assert.match(source, /renameSync/);
+  const library = readFileSync(
+    "scripts/lib/nv-precinct-public-activation.mjs",
+    "utf8",
+  );
+  assert.match(library, /REVIEWED_PUBLIC_MANIFEST_PREIMAGE_SHA256/);
+  assert.match(library, /REVIEWED_COVERAGE_ROW_PREIMAGE_SHA256/);
+  assert.match(library, /upgrade_reviewed_preimage_to_v2/);
 });

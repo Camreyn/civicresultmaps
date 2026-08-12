@@ -27,6 +27,8 @@ test("Nevada local GIS commands remain loopback-only and public-fail-closed", ()
   assert.match(database, /async function clearLocalReplayRows/);
   assert.match(database, /context\.mode !== "local"/);
   assert.match(database, /metadata->>'setupTool'=\$3/);
+  assert.match(database, /and status='blocked'/);
+  assert.match(database, /metadata->'releaseCandidate' is null/);
   assert.doesNotMatch(database, /runNeonTransaction|@neondatabase/);
   assert.match(migration, /secondary_reconstruction/);
   assert.match(migration, /hybrid_reconstruction/);
@@ -45,7 +47,7 @@ test("Nevada precinct results and geometry require publication evidence", () => 
   }), true);
 });
 
-test("Nevada local replay rejects duplicate or boundary-drifted geography versions before writing", () => {
+test("Nevada release precondition rejects duplicate or boundary-drifted geography versions", () => {
   const yearPlan = {
     year: 2024,
     manifest: {

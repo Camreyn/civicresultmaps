@@ -10,7 +10,7 @@ import {
 } from "../../scripts/lib/nv-precinct-publication.mjs";
 
 const releaseCandidate = {
-  id: "nv-precinct-gis-three-election-v1",
+  id: "nv-precinct-gis-three-election-v2",
   path: ".etl/precinct-release-candidates/NV/example/release-candidate.json",
   sha256: "1".repeat(64),
 };
@@ -34,7 +34,7 @@ const audit = {
 const yearRows = [
   [2016, 1843, 5529, 2067, 206],
   [2020, 1869, 5607, 2094, 207],
-  [2024, 1518, 4554, 1726, 234],
+  [2024, 1576, 4612, 1635, 234],
 ].map(([year, units, rows, features, zero]) => ({
   year,
   reportingUnits: units,
@@ -96,8 +96,8 @@ test("Nevada publication accepts only the exact hidden-load audit and totals", (
     releaseCandidate,
   });
   assert.equal(inspected.databaseName, "neondb");
-  assert.equal(inspected.totals.reportingUnits, 5_230);
-  assert.equal(inspected.totals.candidateResultRows, 15_690);
+  assert.equal(inspected.totals.reportingUnits, 5_288);
+  assert.equal(inspected.totals.candidateResultRows, 15_748);
   const recovered = structuredClone(value);
   recovered.recovery = {
     recoveredAtUtc: "2026-08-11T03:30:00.000Z",
@@ -234,8 +234,8 @@ test("Nevada public cutover remains one guarded transaction", () => {
   assert.match(source, /CRM_NV_PRECINCT_PUBLICATION_RECEIPT_RECOVERY/);
   assert.match(source, /RECOVERED_PUBLICATION_RECEIPT/);
   assert.match(source, /disposition === "created"/);
-  assert.match(source, /crosswalks\.length !== 5_230/);
-  assert.match(source, /units\.length !== 5_230/);
+  assert.match(source, /crosswalks\.length !== 5_288/);
+  assert.match(source, /units\.length !== 5_288/);
   assert.match(source, /sources\.length !== 6/);
   assert.match(source, /runs\.length !== 3/);
 });

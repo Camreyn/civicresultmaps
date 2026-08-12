@@ -115,7 +115,7 @@ export function inspectNevadaPrecinctBlobPublicationPlan(options) {
   const document = JSON.parse(packageBytes.toString("utf8"));
   if (
     document?.schemaVersion !== 1
-    || document?.id !== "nv-precinct-gis-three-election-v1"
+    || document?.id !== "nv-precinct-gis-three-election-v2"
     || document?.state !== "NV"
     || document?.decision !== "NO_GO_PRODUCTION"
     || document?.safety?.publicFileWritten !== false

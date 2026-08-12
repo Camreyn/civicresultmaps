@@ -10,7 +10,7 @@ import {
 } from "../../scripts/lib/nv-precinct-production-release.mjs";
 
 const releaseCandidate = {
-  id: "nv-precinct-gis-three-election-v1",
+  id: "nv-precinct-gis-three-election-v2",
   sha256: "1".repeat(64),
 };
 const endpointFingerprint = "2".repeat(64);
@@ -119,7 +119,7 @@ test("Nevada hidden release requires fresh exact preflight and restored backup",
   );
 
   const alreadyLoaded = preflight();
-  alreadyLoaded.nevada.precinctYearRows[2].reportingUnits = 1518;
+  alreadyLoaded.nevada.precinctYearRows[2].reportingUnits = 1576;
   assert.throws(
     () => validateNevadaProductionPreflightEvidence(alreadyLoaded, {
       releaseCandidate,

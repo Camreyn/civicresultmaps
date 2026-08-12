@@ -105,6 +105,7 @@ const INPUTS = Object.freeze({
   ],
   2024: [
     ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-secretary-of-state/2024-general-president.csv", 898_445, "5a7c94660e3e0f32229cfb4e816b2819360277973b80ac3308c531fd7a08dda7"],
+    ["data/precinct-geometry/NV/2024-11-05-general/raw/clark-county-election-department/2024-general-president-statement-of-vote.txt", 197_621, "2fedeb8f8457b9a66d05ee9f6141a2bbf6b1074281198858dec1c0cbd0041380"],
     ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts.geojson", 20_148_616, "04accb644e45d137ccf0b0e7ca414c9b0af49a3efb74a70687d29ffcdf7c84cc"],
     ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-item-metadata.json", 1_775, "72b5f30fc8eafb7e790c559858afe94c9f9419a9078ee09a9ee39ea849edef70"],
     ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-layer-metadata.json", 14_575, "098702342f6784da672afae2039712a4086366adfa7532f9c7667ef50fc38bb2"],
@@ -229,7 +230,19 @@ function groupVotes(candidateVotes, democraticField, republicanField) {
   return { democratic, republican, other, total: democratic + republican + other };
 }
 
-function createUnit({ county, sourceUnitId, sourceDisplayName, candidateVotes, suppressedCandidates = [], mapping = null, exclusionReason = null }) {
+function createUnit({
+  county,
+  sourceUnitId,
+  sourceDisplayName,
+  candidateVotes,
+  suppressedCandidates = [],
+  mapping = null,
+  exclusionReason = null,
+  resultStatus = "candidate_detail_complete",
+  reportedRegistration = null,
+  reportedTurnout = null,
+  reportedTotalVotes = null,
+}) {
   const fips = COUNTY_FIPS[county];
   if (!fips) throw new Error(`Unknown Nevada county-equivalent: ${county}`);
   return {
@@ -241,6 +254,10 @@ function createUnit({ county, sourceUnitId, sourceDisplayName, candidateVotes, s
     suppressedCandidates,
     mapping,
     exclusionReason,
+    resultStatus,
+    reportedRegistration,
+    reportedTurnout,
+    reportedTotalVotes,
   };
 }
 
@@ -272,6 +289,9 @@ function crosswalkRow(unit, electionId) {
     parentGeoid: unit.parentGeoid,
     reportingGrain: "precinct",
     isGeographic: true,
+    ...(unit.resultStatus === "candidate_detail_suppressed"
+      ? { resultAvailability: unit.resultStatus }
+      : {}),
     relationships: unit.mapping.featureIds.map((featureId) => ({
       sourceFeatureId: `${unit.parentGeoid}|${featureId}`,
       relationshipType,
@@ -355,6 +375,73 @@ async function validate2016OfficialMapReconciliation(units) {
     limitation:
       "The official map confirms the statewide source authority and published percentages. The normalized known-colorable totals are intentionally lower because official privacy-suppressed major-party cells and non-geographic categories are excluded rather than estimated.",
   };
+}
+
+function parseClark2024StatementOfVote() {
+  const file = "data/precinct-geometry/NV/2024-11-05-general/raw/clark-county-election-department/2024-general-president-statement-of-vote.txt";
+  const expectedHeader = '"Precinct","Tally Type","Registration","Turnout","Total Votes","Harris, Kamala D.","Oliver, Chase","Skousen, Joel","Trump, Donald J.","None of These Candidates"';
+  const text = readText(file);
+  if (text.split(/\r?\n/, 1)[0] !== expectedHeader) {
+    throw new Error("Clark County 2024 presidential Statement of Vote header drifted");
+  }
+  const rows = parseCsv(
+    text,
+    (row) => row[0] === "Precinct" && row[1] === "Tally Type",
+  ).filter((row) => row["Tally Type"] === "Totals" && /^\d+$/.test(row.Precinct));
+  const byCode = new Map();
+  for (const row of rows) {
+    const code = normalizeNumeric(row.Precinct);
+    if (byCode.has(code)) {
+      throw new Error(`Clark County 2024 Statement of Vote duplicate precinct ${code}`);
+    }
+    const registration = Number(row.Registration);
+    const turnout = Number(row.Turnout);
+    const totalVotes = Number(row["Total Votes"]);
+    if (![registration, turnout, totalVotes].every(Number.isSafeInteger)
+      || [registration, turnout, totalVotes].some((value) => value < 0)) {
+      throw new Error(`Clark County 2024 Statement of Vote numeric drift at ${code}`);
+    }
+    const candidateValues = [
+      "Harris, Kamala D.",
+      "Oliver, Chase",
+      "Skousen, Joel",
+      "Trump, Donald J.",
+      "None of These Candidates",
+    ].map((candidate) => row[candidate]);
+    const candidateDetailSuppressed = candidateValues.some((value) => value === "*");
+    if (!candidateDetailSuppressed) {
+      const allocated = candidateValues.reduce((sum, value) => sum + Number(value), 0);
+      if (allocated !== totalVotes) {
+        throw new Error(`Clark County 2024 Statement of Vote candidate total drift at ${code}`);
+      }
+    } else if (!candidateValues.every((value) => value === "*")) {
+      throw new Error(`Clark County 2024 Statement of Vote partial suppression drift at ${code}`);
+    }
+    byCode.set(code, {
+      code,
+      registration,
+      turnout,
+      totalVotes,
+      candidateDetailSuppressed,
+      candidateValues,
+    });
+  }
+  const totals = [...byCode.values()].reduce((sum, row) => ({
+    registration: sum.registration + row.registration,
+    turnout: sum.turnout + row.turnout,
+    totalVotes: sum.totalVotes + row.totalVotes,
+  }), { registration: 0, turnout: 0, totalVotes: 0 });
+  const suppressed = [...byCode.values()].filter((row) => row.candidateDetailSuppressed);
+  if (
+    byCode.size !== 916
+    || suppressed.length !== 60
+    || totals.registration !== 1_491_072
+    || totals.turnout !== 1_033_285
+    || totals.totalVotes !== 1_031_223
+  ) {
+    throw new Error("Clark County 2024 Statement of Vote cardinality or totals drifted");
+  }
+  return { byCode, totals, suppressed };
 }
 
 function isReviewedSpecialResultUnit(targetYear, unit) {
@@ -541,6 +628,7 @@ async function build2024() {
     }
   }
   const rows = parseCsv(readText(resultPath));
+  const clarkStatement = parseClark2024StatementOfVote();
   const unitMap = new Map();
   for (const row of rows) {
     const county = String(row.Jurisdiction).trim();
@@ -551,8 +639,27 @@ async function build2024() {
     else unit.candidateVotes[row.Candidate] = Number(row.Votes);
     unitMap.set(key, unit);
   }
+  const clarkSourceUnits = [...unitMap.values()].filter((unit) => unit.county === "Clark");
+  const clarkSourceCodes = new Set(clarkSourceUnits.map((unit) => unit.sourceUnitId));
+  if (
+    clarkSourceCodes.size !== 917
+    || [...clarkStatement.byCode.keys()].some((code) => !clarkSourceCodes.has(code))
+    || [...clarkSourceCodes].filter((code) => !clarkStatement.byCode.has(code)).join(",") !== "9995"
+  ) {
+    throw new Error("Clark County 2024 official precinct reporting universe drifted");
+  }
+  for (const [code, statementRow] of clarkStatement.byCode) {
+    const stateUnit = unitMap.get(`Clark|${code}`);
+    if (!stateUnit) throw new Error(`Clark County 2024 Statement of Vote unit ${code} is absent from the state export`);
+    if (stateUnit.suppressedCandidates.length === 0) {
+      const stateTotal = Object.values(stateUnit.candidateVotes).reduce((sum, votes) => sum + Number(votes), 0);
+      if (stateTotal !== statementRow.totalVotes) {
+        throw new Error(`Clark County and Nevada 2024 presidential totals disagree at precinct ${code}`);
+      }
+    }
+  }
   const geometry = JSON.parse(readText(geometryPath));
-  const features = geometry.features.map((feature) => {
+  const rawFeatures = geometry.features.map((feature) => {
     const county = String(feature.properties.County).trim();
     const fips = COUNTY_FIPS[county];
     const code = normalized2024Code(county, feature.properties.PRECINCT);
@@ -561,9 +668,22 @@ async function build2024() {
       SOURCE_COUNTY: county,
       SOURCE_KIND: "Nevada LCB 2024 Precincts",
     });
-  }).sort((left, right) => `${left.properties.CRM_PARENT_GEOID}|${left.properties.CRM_FEATURE_ID}`.localeCompare(`${right.properties.CRM_PARENT_GEOID}|${right.properties.CRM_FEATURE_ID}`, "en", { numeric: true }));
+  });
+  const excludedClarkGeometry = rawFeatures.filter((feature) =>
+    feature.properties.CRM_PARENT_GEOID === parentGeoid(COUNTY_FIPS.Clark)
+    && !clarkSourceCodes.has(String(feature.properties.CRM_FEATURE_ID))
+  );
+  const features = rawFeatures.filter((feature) => !excludedClarkGeometry.includes(feature))
+    .sort((left, right) => `${left.properties.CRM_PARENT_GEOID}|${left.properties.CRM_FEATURE_ID}`.localeCompare(`${right.properties.CRM_PARENT_GEOID}|${right.properties.CRM_FEATURE_ID}`, "en", { numeric: true }));
   const featureKeys = new Set(features.map((feature) => `${feature.properties.CRM_PARENT_GEOID}|${feature.properties.CRM_FEATURE_ID}`));
-  if (features.length !== 1_726 || featureKeys.size !== features.length || unitMap.size !== 1_671 || rows.length !== 8_355) {
+  if (
+    rawFeatures.length !== 1_726
+    || excludedClarkGeometry.length !== 91
+    || features.length !== 1_635
+    || featureKeys.size !== features.length
+    || unitMap.size !== 1_671
+    || rows.length !== 8_355
+  ) {
     throw new Error("Nevada 2024 official source cardinality drifted");
   }
   const demName = "Harris, Kamala D. and Walz, Tim";
@@ -573,7 +693,15 @@ async function build2024() {
   for (const unit of unitMap.values()) {
     const key = `${unit.parentGeoid}|${unit.sourceUnitId}`;
     const majorSuppressed = unit.suppressedCandidates.some((candidate) => [demName, repName].includes(candidate));
-    if (majorSuppressed) unit.exclusionReason = "major-party vote cell suppressed by the Nevada Secretary of State";
+    const clarkSov = unit.county === "Clark"
+      ? clarkStatement.byCode.get(unit.sourceUnitId)
+      : null;
+    if (majorSuppressed && clarkSov?.candidateDetailSuppressed && featureKeys.has(key)) {
+      unit.resultStatus = "candidate_detail_suppressed";
+      unit.reportedRegistration = clarkSov.registration;
+      unit.reportedTurnout = clarkSov.turnout;
+      unit.reportedTotalVotes = clarkSov.totalVotes;
+    } else if (majorSuppressed) unit.exclusionReason = "major-party vote cell suppressed by the Nevada Secretary of State";
     else if (!featureKeys.has(key)) unit.exclusionReason = "no matching feature in the official LCB 2024 precinct layer";
     if (unit.exclusionReason) excluded.push(unit);
     else {
@@ -583,14 +711,48 @@ async function build2024() {
         confidence: "high",
         note: "Exact county/precinct identity between the official Nevada Secretary of State result export and the official Nevada Legislative Counsel Bureau 2024 precinct layer.",
       };
-      unit.groupedVotes = groupVotes(unit.candidateVotes, demName, repName);
+      unit.groupedVotes = unit.resultStatus === "candidate_detail_suppressed"
+        ? { democratic: null, republican: null, other: null, total: unit.reportedTotalVotes }
+        : groupVotes(unit.candidateVotes, demName, repName);
       included.push(unit);
     }
   }
-  if (included.length !== 1_518 || excluded.length !== 153) {
-    throw new Error(`Nevada 2024 reviewed privacy/geography counts drifted: included=${included.length}, excluded=${excluded.length}`);
+  const suppressedMapped = included.filter((unit) => unit.resultStatus === "candidate_detail_suppressed");
+  if (
+    included.length !== 1_576
+    || excluded.length !== 95
+    || suppressedMapped.length !== 58
+    || suppressedMapped.reduce((sum, unit) => sum + unit.reportedTotalVotes, 0) !== 164
+    || features.filter((feature) => feature.properties.CRM_PARENT_GEOID === "32003").length !== 910
+  ) {
+    throw new Error("Nevada 2024 reviewed privacy/geography counts drifted: " + JSON.stringify({
+      included: included.length,
+      excluded: excluded.length,
+      suppressedMapped: suppressedMapped.length,
+      suppressedMappedVotes: suppressedMapped.reduce((sum, unit) => sum + unit.reportedTotalVotes, 0),
+      clarkFeatures: features.filter((feature) => feature.properties.CRM_PARENT_GEOID === "32003").length,
+    }));
   }
-  return { features, units: included, excluded, sourceUnitCount: unitMap.size };
+  return {
+    features,
+    units: included,
+    excluded,
+    sourceUnitCount: unitMap.size,
+    sourceFeatureCount: rawFeatures.length,
+    excludedSourceFeatures: excludedClarkGeometry.map((feature) => ({
+      parentGeoid: feature.properties.CRM_PARENT_GEOID,
+      sourceFeatureId: `${feature.properties.CRM_PARENT_GEOID}|${feature.properties.CRM_FEATURE_ID}`,
+      sourceUnitId: feature.properties.CRM_FEATURE_ID,
+      reason: "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes",
+    })),
+    clarkStatement: {
+      reportingUnits: clarkStatement.byCode.size,
+      candidateDetailSuppressedUnits: clarkStatement.suppressed.length,
+      mappedCandidateDetailSuppressedUnits: suppressedMapped.length,
+      mappedCandidateDetailSuppressedVotes: suppressedMapped.reduce((sum, unit) => sum + unit.reportedTotalVotes, 0),
+      totals: clarkStatement.totals,
+    },
+  };
 }
 
 function geometryParts(geometry) {
@@ -856,14 +1018,15 @@ function evidenceFor(targetYear, result) {
   }
   const base = `data/precinct-geometry/NV/${election.id}/raw`;
   return {
-    authority: "Nevada Legislative Counsel Bureau and Nevada Secretary of State",
+    authority: "Nevada Legislative Counsel Bureau, Nevada Secretary of State, and Clark County Election Department",
     sourceUrl: "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0",
     license: "The retained ArcGIS item is public_authoritative and permits Query and Extract. ArcGIS Online Terms of Use expressly grant end users permission to use, reproduce, prepare derivative works of, and distribute publicly shared content, subject to owner-stated constraints; this item states no additional constraint.",
-    boundaryVintage: "Nevada LCB 2024 Precincts snapshot published April 5, 2024",
+    boundaryVintage: "Nevada LCB April 2024 precinct layer filtered to official 2024 election reporting identities",
     vintageStatus: "election_date_confirmed",
     derivationMethod: "official_service",
-    artifacts: [
+  artifacts: [
       rawArtifact(`${base}/nevada-secretary-of-state/2024-general-president.csv`, "https://www.nvsos.gov/electionresults/RaceResults.aspx", "Nevada Secretary of State", "CSV", "Official statewide presidential precinct export; low-count cells are suppressed with an asterisk."),
+      rawArtifact(`${base}/clark-county-election-department/2024-general-president-statement-of-vote.txt`, "https://elections.clarkcountynv.gov/electionresultsTV/SOV/24G/PRESIDENT.txt", "Clark County Election Department", "CSV-compatible text", "Official 2024 General Election presidential Statement of Vote. Exact precinct registration, turnout, and total-vote values preserve mapped low-count precinct results without estimating the legally suppressed candidate allocation."),
       rawArtifact(`${base}/nevada-legislative-counsel-bureau/2024-precincts.geojson`, "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson", "Nevada Legislative Counsel Bureau", "GeoJSON", "Official statewide 2024 Precincts FeatureServer snapshot."),
       rawArtifact(`${base}/nevada-legislative-counsel-bureau/2024-precincts-item-metadata.json`, "https://www.arcgis.com/sharing/rest/content/items/6303f14785fb401c8e4c53e333f44472?f=json", "Nevada Legislative Counsel Bureau / ArcGIS Online", "JSON", "Retained item metadata identifies this public_authoritative layer as Nevada voting precincts for the 2024 election cycle; licenseInfo is empty."),
       rawArtifact(`${base}/nevada-legislative-counsel-bureau/2024-precincts-layer-metadata.json`, "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0?f=pjson", "Nevada Legislative Counsel Bureau / ArcGIS Online", "JSON", "Retained layer metadata records static data, Query and Extract capabilities, and April 2024 edit timestamps; copyrightText is empty."),
@@ -923,9 +1086,20 @@ const resultDocument = {
     sourceUnitId: unit.sourceUnitId,
     sourceDisplayName: unit.sourceDisplayName,
     parentGeoid: unit.parentGeoid,
-    democratic: unit.groupedVotes.democratic,
-    republican: unit.groupedVotes.republican,
-    other: unit.groupedVotes.other,
+    ...(unit.resultStatus === "candidate_detail_suppressed"
+      ? { resultStatus: unit.resultStatus }
+      : {}),
+    ...(unit.resultStatus === "candidate_detail_suppressed"
+      ? {
+        reportedRegistration: unit.reportedRegistration,
+        reportedTurnout: unit.reportedTurnout,
+        reportedTotalVotes: unit.reportedTotalVotes,
+      }
+      : {
+        democratic: unit.groupedVotes.democratic,
+        republican: unit.groupedVotes.republican,
+        other: unit.groupedVotes.other,
+      }),
     total: unit.groupedVotes.total,
   })),
   exclusions: built.excluded.map((unit) => ({
@@ -964,6 +1138,13 @@ const evidence = {
     colorableResultUnits: built.units.length,
     excludedResultUnits: built.excluded.length,
     knownColorablePresidentVotes: built.units.reduce((sum, unit) => sum + unit.groupedVotes.total, 0),
+    ...(year === 2024
+      ? {
+        candidateDetailCompleteResultUnits: built.units.filter((unit) => unit.resultStatus === "candidate_detail_complete").length,
+        candidateDetailSuppressedResultUnits: built.units.filter((unit) => unit.resultStatus === "candidate_detail_suppressed").length,
+        candidateDetailSuppressedReportedVotes: built.units.filter((unit) => unit.resultStatus === "candidate_detail_suppressed").reduce((sum, unit) => sum + unit.groupedVotes.total, 0),
+      }
+      : {}),
     normalizedResultArtifact: { path: resultsArtifact.localArtifactPath, sha256: resultsArtifact.sha256, byteCount: resultsArtifact.byteCount },
     ...(built.officialReconciliation
       ? { officialStatewideReconciliation: built.officialReconciliation }
@@ -976,7 +1157,12 @@ const evidence = {
     ...(year === 2012 ? ["Washoe uses a clearly labeled 2016 proxy partition; the 2012 manifest remains blocked pending the election-date archive held by Nevada custodians."] : []),
     ...(year === 2016 ? ["All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under CC BY 4.0 attribution; it must not be presented as an official Nevada GIS export. The official LCB map independently confirms the statewide source context."] : []),
     ...(year === 2020 ? ["All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under the retained Harvard Dataverse version-21 CC BY 4.0 terms; it must not be presented as an official Nevada GIS export."] : []),
-    ...(year === 2024 ? ["The reviewed delivery contract retains all 1,726 official LCB polygons: 1,518 have result relationships and 208 remain visible as no-data. Of the no-data polygons, 115 correspond to result identities excluded because a major-party cell is suppressed and 93 lack a retained joinable result identity; 29 source result identities have no matching feature.", "The official LCB layer is public_authoritative, has no item-level use constraint, and is covered by retained ArcGIS Online public-sharing permission for end-user use, reproduction, derivative works, and distribution."] : []),
+    ...(year === 2024 ? [
+      "The official Clark County presidential Statement of Vote supplies exact reported totals for 58 mapped low-count precincts (164 votes total). Two additional Statement-of-Vote rows totaling 20 votes are suppressed in the county file but already carry complete candidate detail in the Nevada Secretary of State export. Candidate allocation for the 58 unresolved rows remains legally suppressed and is displayed as suppressed rather than estimated or assigned to a candidate.",
+      "The April 2024 LCB layer contains 91 Clark feature identities absent from both official 2024 result universes. They are excluded from the election-specific normalized layer rather than displayed as precincts with missing results. Clark retains 910 mapped reporting precincts; six Statement-of-Vote identities lack geometry, of which five report zero votes and special unit 9996 reports 40 votes without a geographic feature.",
+      "The reviewed statewide delivery contract retains 1,635 election-relevant polygons: 1,576 have result relationships and 59 remain explicit no-data features outside Clark County.",
+      "The official LCB layer is public_authoritative, has no item-level use constraint, and is covered by retained ArcGIS Online public-sharing permission for end-user use, reproduction, derivative works, and distribution.",
+    ] : []),
   ],
 };
 const evidenceArtifact = write(evidencePath, evidence);
@@ -990,6 +1176,12 @@ const report = {
     : "source_and_crosswalk_gates_passed_delivery_pending",
   source: {
     featureCount: built.features.length,
+    ...(built.sourceFeatureCount !== undefined
+      ? {
+        rawFeatureCount: built.sourceFeatureCount,
+        excludedSourceFeatureCount: built.excludedSourceFeatures.length,
+      }
+      : {}),
     parentCount: new Set(built.features.map((feature) => feature.properties.CRM_PARENT_GEOID)).size,
     sourceResultUnits: built.sourceUnitCount,
   },
@@ -1001,7 +1193,11 @@ const report = {
   exclusions: {
     count: built.excluded.length,
     byReason: Object.fromEntries([...new Set(built.excluded.map((unit) => unit.exclusionReason))].sort().map((reason) => [reason, built.excluded.filter((unit) => unit.exclusionReason === reason).length])),
+    ...(built.excludedSourceFeatures
+      ? { sourceFeatures: built.excludedSourceFeatures }
+      : {}),
   },
+  ...(built.clarkStatement ? { clarkStatementOfVote: built.clarkStatement } : {}),
   artifacts: {
     normalizedGeometry: normalizedArtifact,
     normalizedGeometryUncompressed: { byteCount: normalizedPlain.length, sha256: sha256(normalizedPlain) },

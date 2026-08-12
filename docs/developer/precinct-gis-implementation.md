@@ -7102,8 +7102,10 @@ evidence against its verified top-level package.
   2024 election cycle, permits Query and Extract, and states no additional use
   constraint. Retained ArcGIS Online Terms of Use expressly grant end users
   permission to use, reproduce, prepare derivative works of, and distribute
-  publicly shared content subject to owner-stated constraints. All 1,726
-  official polygons remain retained, including 208 explicit no-data polygons.
+  publicly shared content subject to owner-stated constraints. A subsequent
+  Clark County Statement-of-Vote review, documented below, narrows this raw
+  1,726-feature source layer to 1,635 election-relevant polygons rather than
+  treating every administrative shape as a reporting precinct.
 
 - The 2012 rendering blocker is also closed locally. Five reviewed multipart
   precincts, formerly represented by 23 relationship records, are
@@ -7126,9 +7128,10 @@ evidence against its verified top-level package.
 ### 2026-08-11 - Nevada three-election guarded release implementation
 
 - Nevada 2016, 2020, and 2024 now have a deterministic content-addressed
-  release package. It contains 5,230 safely colorable reporting units, 15,690
-  candidate result rows, 647 zero-vote units, 5,887 polygons, 5,230 reviewed
-  exact one-to-one relationships, and 657 reviewed no-data polygons. Each year
+  release package. Its corrected v2 contract contains 5,288 displayable
+  reporting units, 15,748 result rows, 647 zero-vote units, 5,796 polygons,
+  5,288 reviewed exact one-to-one relationships, and 508 reviewed no-data
+  polygons. Each year
   covers all 17 county-equivalents. Nevada 2012 is excluded from the package
   and canonical registry; the election-date Washoe archive is tracked in
   GitHub issue #220.
@@ -7149,9 +7152,9 @@ evidence against its verified top-level package.
   publication commits. The static manifests do not open either API while the
   database status remains blocked.
 
-- A loopback transaction rehearsed the exact three-year hidden load and final
-  public publication, validated 5,230 authorized units and crosswalks, 15,690
-  result rows, and 5,887 features, rejected a replay, and then deliberately
+- A loopback transaction rehearses the exact three-year hidden load and final
+  public publication, validates 5,288 authorized units and crosswalks, 15,748
+  result rows, and 5,796 features, rejects a replay, and then deliberately
   rolled back. The local public revision and published-version count returned
   to their pre-test values. No production database, Blob object, Vercel setting,
   deployment, or GitHub merge was changed by the rehearsal.
@@ -7160,3 +7163,40 @@ evidence against its verified top-level package.
   `nv-precinct-gis-three-election-v*` identity while preserving Minnesota and
   Texas four-election identities. The end-to-end sequence and stop conditions
   are documented in `docs/developer/nv-precinct-gis-runbook.md`.
+
+### 2026-08-12 - Clark County 2024 result-completeness correction
+
+- The official Clark County Election Department presidential Statement of
+  Vote is now retained at
+  `data/precinct-geometry/NV/2024-11-05-general/raw/clark-county-election-department/2024-general-president-statement-of-vote.txt`.
+  The collector verifies its 197,621 bytes and SHA-256
+  `2fedeb8f8457b9a66d05ee9f6141a2bbf6b1074281198858dec1c0cbd0041380`
+  before parsing. Its 916 `Totals` rows reconcile to 1,491,072 registered
+  voters, 1,033,285 ballots cast, and 1,031,223 presidential votes.
+
+- The prior 2024 delivery incorrectly treated 149 raw Clark LCB shapes as
+  no-data map features. The official result-universe comparison now retains
+  exactly 910 Clark election-reporting polygons, and every one has an official
+  result relationship. Eight hundred fifty-two have complete candidate
+  detail. For 58 low-count precincts the Statement of Vote supplies exact
+  registration, turnout, and total presidential votes (164 votes combined),
+  while candidate allocation remains legally suppressed. The normalized
+  result contract records those exact totals in a distinct
+  `candidate_detail_suppressed` state; it never estimates a candidate split,
+  winner, or margin.
+
+- Ninety-one Clark shapes in the raw LCB layer do not occur in either the
+  official statewide result export or the county Statement of Vote. They are
+  retained in the reconciliation report as source-feature exclusions and are
+  omitted from the election-specific map rather than mislabeled as precincts
+  with missing results. Six county Statement-of-Vote identities have no LCB
+  geometry: five are zero-vote units and special unit 9996 reports 40 votes.
+  None is assigned an invented polygon.
+
+- The corrected 2024 statewide contract has 1,635 election-relevant polygons,
+  1,576 reviewed one-to-one result relationships, 59 reviewed no-data polygons
+  outside Clark, 4,612 result rows, and a displayable presidential total of
+  1,484,546. The three-year immutable release identity is bumped to
+  `nv-precinct-gis-three-election-v2`; all production count guards and public
+  activation inputs are resealed so the old blank-feature package cannot be
+  replayed as this release.

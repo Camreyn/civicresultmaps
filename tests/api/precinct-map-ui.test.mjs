@@ -19,6 +19,8 @@ test("precinct detail stays county-gated and eligible-manifest-only", () => {
   assert.match(component, /joinPrecinctDeliveryResults/);
   assert.match(component, /resultOutcomeDescription/);
   assert.match(component, /No votes reported/);
+  assert.match(component, /Candidate detail suppressed/);
+  assert.match(component, /does not estimate the hidden/);
   assert.match(component, /source\.licenseOrTerms/);
   assert.match(component, /2012: "2012-11-06"/);
   assert.doesNotMatch(component, /manifest\.delivery\.url/);

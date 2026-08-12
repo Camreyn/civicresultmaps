@@ -8,6 +8,7 @@ const TEST_FILES = [
   "tests/api/mn-precinct-result-publication-gate.test.mjs",
   "tests/api/nv-precinct-geometry.test.mjs",
   "tests/api/nv-precinct-gis-plan.test.mjs",
+  "tests/api/nv-privacy-suppressed-precinct-display.test.mjs",
   "tests/api/nv-precinct-gis-local.test.mjs",
   "tests/api/nv-precinct-release-candidate.test.mjs",
   "tests/api/nv-precinct-blob-publication.test.mjs",
@@ -16,6 +17,7 @@ const TEST_FILES = [
   "tests/api/nv-precinct-publication.test.mjs",
   "tests/api/nv-precinct-publication-gate.test.mjs",
   "tests/api/nv-precinct-publication-local-rehearsal.test.mjs",
+  "tests/api/precinct-map-ui.test.mjs",
   "tests/api/tx-precinct-publication-gate.test.mjs",
 ];
 

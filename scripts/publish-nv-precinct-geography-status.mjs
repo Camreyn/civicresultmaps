@@ -244,7 +244,7 @@ async function verifyPostconditions(nv, context, revision) {
     "join geography_versions gv on gv.id=x.geometry_version_id",
     "where gv.state_code='NV' and gv.metadata->'releaseCandidate'->>'sha256'=$1",
   ].join("\n"), [context.plan.releaseCandidate.sha256]);
-  if (Number(linked[0]?.total) !== 5_230 || Number(linked[0]?.exact) !== 5_230) {
+  if (Number(linked[0]?.total) !== 5_288 || Number(linked[0]?.exact) !== 5_288) {
     throw new Error("Nevada publication crosswalk postcondition failed");
   }
   const units = await nv.unsafe([
@@ -254,7 +254,7 @@ async function verifyPostconditions(nv, context, revision) {
     "from reporting_units where state_code='NV' and reporting_grain='precinct'",
     " and metadata->'releaseCandidate'->>'sha256'=$1",
   ].join("\n"), [context.plan.releaseCandidate.sha256]);
-  if (Number(units[0]?.total) !== 5_230 || Number(units[0]?.exact) !== 5_230) {
+  if (Number(units[0]?.total) !== 5_288 || Number(units[0]?.exact) !== 5_288) {
     throw new Error("Nevada publication reporting-unit postcondition failed");
   }
   const sources = await nv.unsafe([
@@ -283,7 +283,7 @@ async function verifyPostconditions(nv, context, revision) {
     "where rr.state_code='NV' and rr.level='precinct'",
     " and ru.metadata->'releaseCandidate'->>'sha256'=$1",
   ].join("\n"), [context.plan.releaseCandidate.sha256]);
-  if (Number(results[0]?.total) !== 15_690) {
+  if (Number(results[0]?.total) !== 15_748) {
     throw new Error("Nevada publication result-row postcondition failed");
   }
   const invalid = await nv.unsafe(
@@ -294,11 +294,11 @@ async function verifyPostconditions(nv, context, revision) {
   }
   return {
     geographyVersions: 3,
-    crosswalks: 5_230,
-    reportingUnits: 5_230,
+    crosswalks: 5_288,
+    reportingUnits: 5_288,
     sourceDocuments: 6,
     importRuns: 3,
-    resultRows: 15_690,
+    resultRows: 15_748,
     invalidConstraints: 0,
   };
 }
@@ -388,7 +388,7 @@ export async function applyNevadaGeographyPublicationTransaction(nv, context) {
     " and gv.state_code='NV' and gv.metadata->'releaseCandidate'->>'sha256'=$1",
     "returning x.id",
   ].join("\n"), [context.plan.releaseCandidate.sha256]);
-  if (crosswalks.length !== 5_230) {
+  if (crosswalks.length !== 5_288) {
     throw new Error("Nevada publication crosswalk update count drifted");
   }
   const units = await nv.unsafe([
@@ -398,7 +398,7 @@ export async function applyNevadaGeographyPublicationTransaction(nv, context) {
     "where state_code='NV' and reporting_grain='precinct'",
     " and metadata->'releaseCandidate'->>'sha256'=$1 returning id",
   ].join("\n"), [context.plan.releaseCandidate.sha256]);
-  if (units.length !== 5_230) {
+  if (units.length !== 5_288) {
     throw new Error("Nevada publication reporting-unit update count drifted");
   }
   const sources = await nv.unsafe([

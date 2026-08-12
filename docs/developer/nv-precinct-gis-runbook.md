@@ -17,12 +17,22 @@ values remain in PostgreSQL behind the shared publication gate.
 | 2012 | 1,760 | 5,280 | 177 | 2,002 | 242 | Blocked: the retained 2016 Washoe proxy is not election-date 2012 geometry. |
 | 2016 | 1,843 | 5,529 | 206 | 2,067 | 224 | Official NVSOS results with attributed, CC BY 4.0 VEST election-specific geometry. |
 | 2020 | 1,869 | 5,607 | 207 | 2,094 | 225 | Official NVSOS results with the exact retained VEST Dataverse v21 geometry and terms. |
-| 2024 | 1,518 | 4,554 | 234 | 1,726 | 208 | Official Nevada LCB public-authoritative election-cycle precinct layer and NVSOS results. |
+| 2024 | 1,576 | 4,612 | 234 | 1,635 | 59 | Official Nevada LCB public-authoritative election-cycle precinct layer, NVSOS results, and Clark County Statement of Vote. |
 
-The three-year release totals are 5,230 colorable reporting units, 15,690
-candidate result rows, 647 zero-vote units, 5,887 polygons, 5,230 reviewed
-one-to-one relationships, and 657 reviewed no-data polygons. All 17 Nevada
+The three-year release totals are 5,288 displayable reporting units, 15,748
+result rows, 647 zero-vote units, 5,796 polygons, 5,288 reviewed one-to-one
+relationships, and 508 reviewed no-data polygons. All 17 Nevada
 county-equivalents are present in every released year.
+
+For 2024 Clark County, every one of the 910 retained election-reporting
+polygons has an official result relationship. Candidate detail is complete for
+852. The county Statement of Vote supplies exact registration, turnout, and
+total presidential votes for the remaining 58, which together report 164
+votes. Their candidate allocation is legally suppressed, so the map renders a
+distinct "candidate detail suppressed" state and the exact total; it never
+estimates a winner or candidate split. Ninety-one LCB Clark shapes absent from
+both official result universes are excluded from the election-specific layer
+instead of being mislabeled as precincts with missing results.
 
 Public presentation geometry is rounded to seven decimals and simplified at a
 0.000005-degree tolerance. This is a sub-meter, presentation-only operation.
@@ -229,8 +239,8 @@ npm.cmd run precinct-gis:publication-status:nv -- --package=$PKG --package-sha25
 ```
 
 That one database transaction is the public cutover for both APIs. It publishes
-three geography versions, authorizes 5,230 reporting units and crosswalks,
-validates 15,690 result rows and 5,887 features, and increments the public
+three geography versions, authorizes 5,288 reporting units and crosswalks,
+validates 15,748 result rows and 5,796 features, and increments the public
 revision once.
 
 If the public transaction becomes ambiguous after its body completes, preserve
@@ -242,7 +252,9 @@ authorization hashes, and
 ## Verification and stop conditions
 
 After public cutover, verify every released year and all 17 county-equivalents,
-including reviewed no-data polygons. Confirm 2012 remains unavailable. Stop and
+including reviewed no-data polygons. In Clark 2024, verify 910 map features,
+852 candidate-complete precincts, and 58 privacy-suppressed precincts totaling
+164 votes. Confirm 2012 remains unavailable. Stop and
 do not publish if any hash, endpoint fingerprint, year set, row count, feature
 count, crosswalk count, source attribution, privacy caveat, deployment SHA,
 registry hash, or database publication flag differs from the sealed evidence.

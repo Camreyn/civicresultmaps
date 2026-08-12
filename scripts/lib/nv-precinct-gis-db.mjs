@@ -262,11 +262,18 @@ async function electionAndContest(tx, yearPlan) {
 }
 
 async function candidates(tx, contestId, yearPlan) {
-  const records = [
-    { name: yearPlan.resultRows[0].candidateName, party: yearPlan.resultRows[0].party, order: 1 },
-    { name: yearPlan.resultRows[1].candidateName, party: yearPlan.resultRows[1].party, order: 2 },
-    { name: "Other", party: "OTHER", order: 3 },
-  ];
+  const records = [];
+  const seen = new Set();
+  for (const row of yearPlan.resultRows) {
+    const key = row.candidateName + "|" + row.party;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    records.push({
+      name: row.candidateName,
+      party: row.party,
+      order: records.length + 1,
+    });
+  }
   for (const record of records) {
     await query(tx, [
       "insert into candidates (contest_id,name,party,ballot_order)",
@@ -328,6 +335,14 @@ async function reportingUnits(
         electionEventId: yearPlan.electionId,
         reportingUnitCode: unit.code,
         setupTool: context.resultParser,
+        resultStatus: unit.resultStatus,
+        ...(unit.resultStatus === "candidate_detail_suppressed"
+          ? {
+            reportedRegistration: unit.reportedRegistration,
+            reportedTurnout: unit.reportedTurnout,
+            reportedTotalVotes: unit.reportedTotalVotes,
+          }
+          : {}),
         ...executionMetadata(context),
       },
     }));
@@ -440,6 +455,16 @@ async function clearLocalReplayRows(tx, yearPlan, electionId, contestId, context
     "where crosswalk.geometry_version_id=version.id",
     " and version.state_code=$1 and version.election_id=$2::uuid",
     " and version.geography_type='precinct'",
+  ], [STATE, electionId]);
+  // A reviewed local replay may legitimately replace an earlier blocked
+  // boundary snapshot. Never delete a release-attributed or published version;
+  // either condition survives this cleanup and the normal precondition below
+  // rejects the replay.
+  await query(tx, [
+    "delete from geography_versions",
+    "where state_code=$1 and election_id=$2::uuid",
+    " and geography_type='precinct' and status='blocked'",
+    " and metadata->'releaseCandidate' is null",
   ], [STATE, electionId]);
   await query(tx, [
     "delete from result_rows",
@@ -658,6 +683,7 @@ async function applyYear(tx, yearPlan, context) {
       reportingUnits: yearPlan.reportingUnits.length,
       zeroVoteUnits: yearPlan.zeroVoteUnits,
       totals: yearPlan.totals,
+      supplementalArtifacts: yearPlan.resultSource.supplementalArtifacts ?? [],
       publicDeliveryAuthorized: false,
       ...executionMetadata(context),
     },
@@ -890,6 +916,8 @@ async function validateSourceDocumentRecords(sql, yearPlan, context) {
     || Number(resultMetadata.byteCount) !== yearPlan.resultSource.byteCount
     || resultMetadata.electionEventId !== yearPlan.electionId
     || resultMetadata.publicDeliveryAuthorized !== false
+    || JSON.stringify(canonicalJson(resultMetadata.supplementalArtifacts ?? []))
+      !== JSON.stringify(canonicalJson(yearPlan.resultSource.supplementalArtifacts ?? []))
     || JSON.stringify(canonicalJson(resultMetadata.releaseCandidate ?? null))
       !== JSON.stringify(canonicalJson(context.releaseCandidate))
     || JSON.stringify(canonicalJson(resultMetadata.productionReleaseAudit ?? null))
@@ -1279,17 +1307,25 @@ export async function validateNevadaPrecinctGisClient(
       const actualTotals = Object.fromEntries(
         totals.map((item) => [String(item.candidate_name), Number(item.votes)]),
       );
+      const democraticName = yearPlan.resultRows.find((row) => row.party === "DEM")?.candidateName;
+      const republicanName = yearPlan.resultRows.find((row) => row.party === "REP")?.candidateName;
+      if (!democraticName || !republicanName) {
+        throw new Error("Nevada " + yearPlan.year + " major-party candidate grouping drifted");
+      }
       const expectedTotals = {
-        [yearPlan.resultRows[0].candidateName]: yearPlan.totals.Democratic,
-        [yearPlan.resultRows[1].candidateName]: yearPlan.totals.Republican,
+        [democraticName]: yearPlan.totals.Democratic,
+        [republicanName]: yearPlan.totals.Republican,
         Other: yearPlan.totals.Other,
+        ...(yearPlan.totals.Suppressed > 0
+          ? { "Candidate detail suppressed by official source": yearPlan.totals.Suppressed }
+          : {}),
       };
       for (const [name, votes] of Object.entries(expectedTotals)) {
         if (actualTotals[name] !== votes) {
           throw new Error("Nevada " + yearPlan.year + " " + name + " total drifted");
         }
       }
-      if (Object.keys(actualTotals).length !== 3) {
+      if (Object.keys(actualTotals).length !== Object.keys(expectedTotals).length) {
         throw new Error("Nevada " + yearPlan.year + " candidate grouping drifted");
       }
       const zero = await query(sql, [

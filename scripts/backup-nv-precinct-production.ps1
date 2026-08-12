@@ -55,7 +55,7 @@ function Assert-ReleasePackage {
   $document = [Text.Encoding]::UTF8.GetString($bytes) | ConvertFrom-Json
   if (
     $document.schemaVersion -ne 1 -or
-    $document.id -ne 'nv-precinct-gis-three-election-v1' -or
+    $document.id -ne 'nv-precinct-gis-three-election-v2' -or
     $document.state -ne 'NV' -or
     $document.decision -ne 'NO_GO_PRODUCTION' -or
     $document.safety.productionMutationPerformed -ne $false -or

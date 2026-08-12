@@ -63,7 +63,7 @@ export function assertNevadaReleaseCandidateDocument(
   }
   if (
     document?.schemaVersion !== 1
-    || document?.id !== "nv-precinct-gis-three-election-v1"
+    || document?.id !== "nv-precinct-gis-three-election-v2"
     || document?.state !== "NV"
     || document?.decision !== "NO_GO_PRODUCTION"
     || document?.safety?.explicitProductionAuthorizationRequired !== true
@@ -76,11 +76,11 @@ export function assertNevadaReleaseCandidateDocument(
   }
   const expectedTotals = {
     elections: 3,
-    reportingUnits: 5_230,
-    candidateResultRows: 15_690,
+    reportingUnits: 5_288,
+    candidateResultRows: 15_748,
     zeroVoteUnits: 647,
-    geometryFeatures: 5_887,
-    reviewedExactCrosswalks: 5_230,
+    geometryFeatures: 5_796,
+    reviewedExactCrosswalks: 5_288,
   };
   for (const [key, value] of Object.entries(expectedTotals)) {
     if (Number(document?.totals?.[key]) !== value) {

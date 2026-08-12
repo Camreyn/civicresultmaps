@@ -22,6 +22,39 @@ const COVERAGE_PATHS = Object.freeze([
   [2024, "data/precinct-geometry-coverage-inventory.json"],
 ]);
 
+// Exact semantic preimages from the merged v1 activation and the reviewed v2
+// correction lineage. A correction may replace only these rows (or the final
+// v2 rows); an unknown, partial, or manually edited activation fails closed.
+const REVIEWED_PUBLIC_MANIFEST_PREIMAGE_SHA256 = Object.freeze({
+  2016: Object.freeze([
+    "5c2b94bb395eb7703aa5e492eb85ea115fcdac4350c2011a86663480a1a36fce",
+    "af78e7da6b6aca042c5aba4b33c72f585b418f42b9c5ba5a47731915de78b11a",
+  ]),
+  2020: Object.freeze([
+    "78d97ec487fe2f782e0a80974e88ee892ed590da8b8e6120b4d180baaa5ac693",
+    "ecc29faa9cebb13c163c64be5e95fd103dfbcaf884178aaf00f3f8c98b41ad7b",
+  ]),
+  2024: Object.freeze([
+    "09a41995e90eff4daeeabc7232d27606926a044597b345cc08ed8eef01424db0",
+    "e0f2ec89b3429efcb97edc0262393537450a2c962c6e06055e5db5334283c2db",
+  ]),
+});
+
+const REVIEWED_COVERAGE_ROW_PREIMAGE_SHA256 = Object.freeze({
+  2016: Object.freeze([
+    "7b2e39f9b3d43c970bdc8a09e01a94759d4028c5c42e7d0c1450eb68ccf29b61",
+    "18d2d8ec9c080e3a4947bceb1b00e83c91b324ba6dc984c8c2c7d304ca91adef",
+  ]),
+  2020: Object.freeze([
+    "6ab709835dd93f7798335d51b42008aad9797a07aaac79ec5b68005310a139f3",
+    "fe282e04bb5ce0ecb55a8a8a60dcee0c82220953cc35017988c0fb73ca7b7d30",
+  ]),
+  2024: Object.freeze([
+    "c31c67ad8cd29e9da961d7164fe8fcc668ca1528e2409d378781e36ed9c66981",
+    "f188f288c1983281b6aaa97eadcf8445a50e463c319c00294241942fd3861f85",
+  ]),
+});
+
 export function sha256(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
 }
@@ -44,6 +77,10 @@ function canonical(value) {
 
 function semanticallyEqual(left, right) {
   return JSON.stringify(canonical(left)) === JSON.stringify(canonical(right));
+}
+
+function semanticSha256(value) {
+  return sha256(Buffer.from(JSON.stringify(canonical(value)), "utf8"));
 }
 
 function readRepositoryJson(root, relativePath) {
@@ -73,7 +110,7 @@ function loadReleasePackage(options) {
   const document = JSON.parse(artifact.bytes.toString("utf8"));
   if (
     document?.schemaVersion !== 1
-    || document?.id !== "nv-precinct-gis-three-election-v1"
+    || document?.id !== "nv-precinct-gis-three-election-v2"
     || document?.state !== "NV"
     || document?.decision !== "NO_GO_PRODUCTION"
     || document?.safety?.canonicalManifestChanged !== false
@@ -188,12 +225,30 @@ function updateRegistry(root, manifests, activatedAtUtc) {
   ) {
     disposition = "verified_existing";
     nextRows = current.value.manifests;
+  } else if (
+    existing.length === drafts.length
+    && drafts.every((draft) => {
+      const predecessor = existing.find((row) =>
+        row?.election?.year === draft.election.year && row?.id === draft.id);
+      return predecessor
+        && (
+          semanticallyEqual(predecessor, draft)
+          || REVIEWED_PUBLIC_MANIFEST_PREIMAGE_SHA256[draft.election.year]
+            ?.includes(semanticSha256(predecessor))
+        );
+    })
+  ) {
+    disposition = "upgrade_reviewed_preimage_to_v2";
+    const byYear = new Map(drafts.map((draft) => [draft.election.year, draft]));
+    nextRows = current.value.manifests.map((row) =>
+      row?.state === "NV" ? byYear.get(row.election.year) : row);
   } else {
     throw new Error("Nevada canonical registry is partially activated or drifted");
   }
   const value = {
     ...current.value,
     updatedAt: disposition === "activate"
+        || disposition === "upgrade_reviewed_preimage_to_v2"
       ? activatedAtUtc
       : current.value.updatedAt,
     manifests: nextRows,
@@ -284,7 +339,9 @@ function nevadaCoverageRow(manifest, activatedAtUtc) {
       manifest.geography.derivationMethod === "official_service"
         ? "The official Nevada Legislative Counsel Bureau election-cycle precinct layer supplies the reviewed presentation geometry."
         : "VEST election-specific geometry is explicitly attributed and used only with the official Nevada Secretary of State precinct result export and retained license evidence.",
-      "Privacy-suppressed result cells remain unknown; no vote value is inferred. Reviewed no-data polygons remain visible without invented result rows.",
+      manifest.election.year === 2024
+        ? "Clark County's official Statement of Vote supplies exact totals for 58 mapped precincts whose candidate allocation remains suppressed; the map displays a distinct privacy-suppressed state and never infers a winner. Reviewed no-data polygons remain visible without invented result rows."
+        : "Privacy-suppressed result cells remain unknown; no vote value is inferred. Reviewed no-data polygons remain visible without invented result rows.",
       "The 2012 election remains separately blocked pending the election-date Washoe County precinct archive tracked in GitHub issue #220.",
     ],
   };
@@ -305,12 +362,21 @@ function updateCoverage(root, manifest, relativePath, activatedAtUtc) {
   } else if (existing.length === 1 && semanticallyEqual(existing[0], expectedRow)) {
     disposition = "verified_existing";
     states = current.value.states;
+  } else if (
+    existing.length === 1
+    && REVIEWED_COVERAGE_ROW_PREIMAGE_SHA256[manifest.election.year]
+      ?.includes(semanticSha256(existing[0]))
+  ) {
+    disposition = "upgrade_reviewed_preimage_to_v2";
+    states = current.value.states.map((row) =>
+      row?.state === "NV" ? expectedRow : row);
   } else {
     throw new Error(relativePath + " contains a partial or drifted Nevada row");
   }
   const value = {
     ...current.value,
     updatedAt: disposition === "activate"
+        || disposition === "upgrade_reviewed_preimage_to_v2"
       ? activatedAtUtc
       : current.value.updatedAt,
     states,

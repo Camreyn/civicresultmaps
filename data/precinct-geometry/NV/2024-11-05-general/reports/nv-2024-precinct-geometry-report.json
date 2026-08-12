@@ -5,19 +5,21 @@
   "generatedAt": "2026-08-11T12:00:00.000Z",
   "disposition": "source_and_crosswalk_gates_passed_delivery_pending",
   "source": {
-    "featureCount": 1726,
+    "featureCount": 1635,
+    "rawFeatureCount": 1726,
+    "excludedSourceFeatureCount": 91,
     "parentCount": 17,
     "sourceResultUnits": 1671
   },
   "crosswalk": {
-    "resultUnits": 1518,
-    "colorableResultUnits": 1518,
-    "matchedResultUnits": 1518,
+    "resultUnits": 1576,
+    "colorableResultUnits": 1576,
+    "matchedResultUnits": 1576,
     "unmatchedResultUnits": 0,
     "nonGeographicResultUnits": 0,
     "sourceAliasResultUnits": 0,
     "relationships": {
-      "oneToOne": 1518,
+      "oneToOne": 1576,
       "oneToMany": 0,
       "manyToOne": 0,
       "unmatched": 0,
@@ -25,45 +27,606 @@
       "sourceAlias": 0,
       "pendingReview": 0
     },
-    "reviewedRelationshipRecords": 1518,
-    "reviewedNoDataFeatures": 208
+    "reviewedRelationshipRecords": 1576,
+    "reviewedNoDataFeatures": 59
   },
   "exclusions": {
-    "count": 153,
+    "count": 95,
     "byReason": {
-      "major-party vote cell suppressed by the Nevada Secretary of State": 124,
+      "major-party vote cell suppressed by the Nevada Secretary of State": 66,
       "no matching feature in the official LCB 2024 precinct layer": 29
+    },
+    "sourceFeatures": [
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1903",
+        "sourceUnitId": "1903",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7905",
+        "sourceUnitId": "7905",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6907",
+        "sourceUnitId": "6907",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7921",
+        "sourceUnitId": "7921",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6923",
+        "sourceUnitId": "6923",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6924",
+        "sourceUnitId": "6924",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6925",
+        "sourceUnitId": "6925",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6926",
+        "sourceUnitId": "6926",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1940",
+        "sourceUnitId": "1940",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7946",
+        "sourceUnitId": "7946",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|5907",
+        "sourceUnitId": "5907",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|5911",
+        "sourceUnitId": "5911",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2920",
+        "sourceUnitId": "2920",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2927",
+        "sourceUnitId": "2927",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2930",
+        "sourceUnitId": "2930",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2946",
+        "sourceUnitId": "2946",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2962",
+        "sourceUnitId": "2962",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2970",
+        "sourceUnitId": "2970",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|4900",
+        "sourceUnitId": "4900",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3908",
+        "sourceUnitId": "3908",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3910",
+        "sourceUnitId": "3910",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3912",
+        "sourceUnitId": "3912",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3914",
+        "sourceUnitId": "3914",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3979",
+        "sourceUnitId": "3979",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3981",
+        "sourceUnitId": "3981",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|4902",
+        "sourceUnitId": "4902",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6914",
+        "sourceUnitId": "6914",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7920",
+        "sourceUnitId": "7920",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1922",
+        "sourceUnitId": "1922",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2906",
+        "sourceUnitId": "2906",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2904",
+        "sourceUnitId": "2904",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6917",
+        "sourceUnitId": "6917",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|5903",
+        "sourceUnitId": "5903",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2934",
+        "sourceUnitId": "2934",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1906",
+        "sourceUnitId": "1906",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3985",
+        "sourceUnitId": "3985",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3984",
+        "sourceUnitId": "3984",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3904",
+        "sourceUnitId": "3904",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3900",
+        "sourceUnitId": "3900",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3909",
+        "sourceUnitId": "3909",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2957",
+        "sourceUnitId": "2957",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7910",
+        "sourceUnitId": "7910",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3989",
+        "sourceUnitId": "3989",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3988",
+        "sourceUnitId": "3988",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2973",
+        "sourceUnitId": "2973",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2972",
+        "sourceUnitId": "2972",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2901",
+        "sourceUnitId": "2901",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7907",
+        "sourceUnitId": "7907",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1912",
+        "sourceUnitId": "1912",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2938",
+        "sourceUnitId": "2938",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2978",
+        "sourceUnitId": "2978",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3938",
+        "sourceUnitId": "3938",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3906",
+        "sourceUnitId": "3906",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2949",
+        "sourceUnitId": "2949",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7923",
+        "sourceUnitId": "7923",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6905",
+        "sourceUnitId": "6905",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2959",
+        "sourceUnitId": "2959",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3915",
+        "sourceUnitId": "3915",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3995",
+        "sourceUnitId": "3995",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3993",
+        "sourceUnitId": "3993",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3994",
+        "sourceUnitId": "3994",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3992",
+        "sourceUnitId": "3992",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7930",
+        "sourceUnitId": "7930",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7915",
+        "sourceUnitId": "7915",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1959",
+        "sourceUnitId": "1959",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1943",
+        "sourceUnitId": "1943",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6929",
+        "sourceUnitId": "6929",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|6928",
+        "sourceUnitId": "6928",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2917",
+        "sourceUnitId": "2917",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|5904",
+        "sourceUnitId": "5904",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|4903",
+        "sourceUnitId": "4903",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7906",
+        "sourceUnitId": "7906",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7926",
+        "sourceUnitId": "7926",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7935",
+        "sourceUnitId": "7935",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2976",
+        "sourceUnitId": "2976",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2900",
+        "sourceUnitId": "2900",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|5905",
+        "sourceUnitId": "5905",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7902",
+        "sourceUnitId": "7902",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7908",
+        "sourceUnitId": "7908",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3907",
+        "sourceUnitId": "3907",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|4904",
+        "sourceUnitId": "4904",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|5906",
+        "sourceUnitId": "5906",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1913",
+        "sourceUnitId": "1913",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2990",
+        "sourceUnitId": "2990",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|1935",
+        "sourceUnitId": "1935",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|7924",
+        "sourceUnitId": "7924",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2980",
+        "sourceUnitId": "2980",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|3614",
+        "sourceUnitId": "3614",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2971",
+        "sourceUnitId": "2971",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2916",
+        "sourceUnitId": "2916",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      },
+      {
+        "parentGeoid": "32003",
+        "sourceFeatureId": "32003|2948",
+        "sourceUnitId": "2948",
+        "reason": "absent from both official Clark County and Nevada Secretary of State 2024 precinct result universes"
+      }
+    ]
+  },
+  "clarkStatementOfVote": {
+    "reportingUnits": 916,
+    "candidateDetailSuppressedUnits": 60,
+    "mappedCandidateDetailSuppressedUnits": 58,
+    "mappedCandidateDetailSuppressedVotes": 164,
+    "totals": {
+      "registration": 1491072,
+      "turnout": 1033285,
+      "totalVotes": 1031223
     }
   },
   "artifacts": {
     "normalizedGeometry": {
       "localArtifactPath": "data/precinct-geometry/NV/2024-11-05-general/normalized/nv-2024-precincts.geojson.gz",
-      "byteCount": 3066961,
-      "sha256": "3867c7b7ebd8fd6ca854fd352c0932c0ec972def8063f7f0a796bd9c0fc295d1"
+      "byteCount": 3008438,
+      "sha256": "78630f01d84609537c172b9bb0b6dcb829b493135021e951a0c70ba31bb33fb0"
     },
     "normalizedGeometryUncompressed": {
-      "byteCount": 12979673,
-      "sha256": "2b83098b032b8837e2c825e458becd79b0b96cb9ccbc9d4b09e4266b5aca019c"
+      "byteCount": 12723132,
+      "sha256": "9f50150407694e2b1fad83a79a1711742656bc29265b8cfb7104e81ffb90405a"
     },
     "normalizedResults": {
       "localArtifactPath": "data/precinct-geometry/NV/2024-11-05-general/normalized/nv-2024-president-results.json.gz",
-      "byteCount": 30391,
-      "sha256": "1a685414d699f40eb2ad8da8b4a9c83e1614107072ab567004942eaf634912fa"
+      "byteCount": 31112,
+      "sha256": "fa38681e967ffa5dab73265f534fe13db29ff7101ea40bf7bfac30c1829bbb41"
     },
     "normalizedResultsUncompressed": {
-      "byteCount": 454248,
-      "sha256": "13d43aadcfaf07d856a04fdb513a4976406cf67451d203122b64efbab63eeab0"
+      "byteCount": 461212,
+      "sha256": "30ee6af78bee5254fc1c31f6ce7f6612d2f5cda40727dcd0d7aff58f75ef7176"
     },
     "crosswalk": {
       "localArtifactPath": "data/precinct-geometry/NV/2024-11-05-general/crosswalk/nv-2024-precinct-result-crosswalk.json",
-      "byteCount": 1056649,
-      "sha256": "39baedf5c3c6c819ebe7a415ed78e55065e41b8c8e6d03aca6af04ca45dc85aa"
+      "byteCount": 1100149,
+      "sha256": "5ddab62991d07b8adac3c06312f4103b8f7cbd01d4257649bc8befa055423c93"
     }
   },
   "caveats": [
     "No election-result value is embedded in the normalized geometry or crosswalk.",
     "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
-    "The reviewed delivery contract retains all 1,726 official LCB polygons: 1,518 have result relationships and 208 remain visible as no-data. Of the no-data polygons, 115 correspond to result identities excluded because a major-party cell is suppressed and 93 lack a retained joinable result identity; 29 source result identities have no matching feature.",
+    "The official Clark County presidential Statement of Vote supplies exact reported totals for 58 mapped low-count precincts (164 votes total). Two additional Statement-of-Vote rows totaling 20 votes are suppressed in the county file but already carry complete candidate detail in the Nevada Secretary of State export. Candidate allocation for the 58 unresolved rows remains legally suppressed and is displayed as suppressed rather than estimated or assigned to a candidate.",
+    "The April 2024 LCB layer contains 91 Clark feature identities absent from both official 2024 result universes. They are excluded from the election-specific normalized layer rather than displayed as precincts with missing results. Clark retains 910 mapped reporting precincts; six Statement-of-Vote identities lack geometry, of which five report zero votes and special unit 9996 reports 40 votes without a geographic feature.",
+    "The reviewed statewide delivery contract retains 1,635 election-relevant polygons: 1,576 have result relationships and 59 remain explicit no-data features outside Clark County.",
     "The official LCB layer is public_authoritative, has no item-level use constraint, and is covered by retained ArcGIS Online public-sharing permission for end-user use, reproduction, derivative works, and distribution."
   ]
 }

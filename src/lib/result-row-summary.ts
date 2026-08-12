@@ -6,7 +6,11 @@ export type ResultOutcomeKind =
   | "other"
   | "tie"
   | "no_votes"
+  | "privacy_suppressed"
   | "missing";
+
+export const PRIVACY_SUPPRESSED_TOTAL_LABEL =
+  "Candidate detail suppressed by official source";
 
 export function finalizeResultRowSummary(row: ResultRow): ResultRow {
   const ranked = Object.entries(row.votes).sort(
@@ -14,6 +18,25 @@ export function finalizeResultRowSummary(row: ResultRow): ResultRow {
       rightVotes - leftVotes || leftName.localeCompare(rightName),
   );
   const totalVotes = ranked.reduce((sum, [, votes]) => sum + votes, 0);
+  if (row.resultStatus === "candidate_detail_suppressed") {
+    if (
+      ranked.length !== 1
+      || ranked[0]?.[0] !== PRIVACY_SUPPRESSED_TOTAL_LABEL
+      || !Number.isSafeInteger(totalVotes)
+      || totalVotes < 0
+    ) {
+      throw new Error(
+        "privacy-suppressed result must contain one exact reported-total row",
+      );
+    }
+    return {
+      ...row,
+      totalVotes,
+      winner: "",
+      marginVotes: 0,
+      marginPct: 0,
+    };
+  }
   if (totalVotes <= 0) {
     return {
       ...row,
@@ -41,6 +64,9 @@ export function resultOutcomeKind(
 ): ResultOutcomeKind {
   if (!result) {
     return "missing";
+  }
+  if (result.resultStatus === "candidate_detail_suppressed") {
+    return "privacy_suppressed";
   }
   if (result.totalVotes <= 0) {
     return "no_votes";
@@ -72,6 +98,10 @@ export function resultOutcomeDescription(result: ResultRow | null) {
   if (kind === "no_votes") {
     return "no votes reported";
   }
+  if (kind === "privacy_suppressed") {
+    return result!.totalVotes.toLocaleString()
+      + " total votes reported; candidate detail suppressed";
+  }
   if (kind === "tie") {
     return "tie";
   }
@@ -82,6 +112,9 @@ export function resultWinnerLabel(result: ResultRow) {
   const kind = resultOutcomeKind(result);
   if (kind === "no_votes") {
     return "No votes reported";
+  }
+  if (kind === "privacy_suppressed") {
+    return "Candidate detail suppressed";
   }
   if (kind === "tie") {
     return "Tie";

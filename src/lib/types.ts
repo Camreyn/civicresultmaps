@@ -38,6 +38,9 @@ export type ResultRow = {
   marginPct: number;
   winner: string;
   sourceId: string;
+  resultStatus?: "candidate_detail_suppressed";
+  reportedRegistration?: number;
+  reportedTurnout?: number;
 };
 
 export type SourceSummary = {

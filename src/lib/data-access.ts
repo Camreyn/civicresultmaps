@@ -614,6 +614,9 @@ export async function listResults(input: {
     votes: number;
     sourceDocumentId: string | null;
     sourceSlug: string | null;
+    resultStatus: string | null;
+    reportedRegistration: number | null;
+    reportedTurnout: number | null;
   }>;
 
   try {
@@ -632,6 +635,9 @@ export async function listResults(input: {
           result_rows.votes,
           result_rows.source_document_id as "sourceDocumentId",
           source_documents.slug as "sourceSlug"
+          ,reporting_units.metadata->>'resultStatus' as "resultStatus"
+          ,nullif(reporting_units.metadata->>'reportedRegistration','')::int as "reportedRegistration"
+          ,nullif(reporting_units.metadata->>'reportedTurnout','')::int as "reportedTurnout"
         from result_rows
         inner join contests on result_rows.contest_id = contests.id
         inner join elections on contests.election_id = elections.id
@@ -705,6 +711,9 @@ export async function listResults(input: {
             result_rows.votes,
             result_rows.source_document_id as "sourceDocumentId",
             source_documents.slug as "sourceSlug"
+            ,null::text as "resultStatus"
+            ,null::int as "reportedRegistration"
+            ,null::int as "reportedTurnout"
           from result_rows
           inner join contests on result_rows.contest_id = contests.id
           inner join elections on contests.election_id = elections.id
@@ -731,6 +740,9 @@ export async function listResults(input: {
         result_rows.votes,
         result_rows.source_document_id as "sourceDocumentId",
         source_documents.slug as "sourceSlug"
+        ,reporting_units.metadata->>'resultStatus' as "resultStatus"
+        ,nullif(reporting_units.metadata->>'reportedRegistration','')::int as "reportedRegistration"
+        ,nullif(reporting_units.metadata->>'reportedTurnout','')::int as "reportedTurnout"
       from result_rows
       inner join contests on result_rows.contest_id = contests.id
       inner join elections on contests.election_id = elections.id
@@ -822,6 +834,13 @@ export async function listResults(input: {
         marginPct: 0,
         winner: "",
         sourceId: row.sourceSlug ?? row.sourceDocumentId ?? "database",
+        ...(row.resultStatus === "candidate_detail_suppressed"
+          ? {
+            resultStatus: "candidate_detail_suppressed" as const,
+            reportedRegistration: Number(row.reportedRegistration ?? 0),
+            reportedTurnout: Number(row.reportedTurnout ?? 0),
+          }
+          : {}),
       } satisfies ResultRow);
 
     current.votes[row.candidateName] = row.votes;
