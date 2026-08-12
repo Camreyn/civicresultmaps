@@ -274,7 +274,15 @@
     "precinct-gis:setup:nv:local": "node --experimental-strip-types scripts/setup-nv-precinct-gis-local.mjs --apply",
     "precinct-gis:validate:nv:local": "node --experimental-strip-types scripts/validate-nv-precinct-gis-local.mjs",
     "precinct-gis:readiness:nv": "node --experimental-strip-types scripts/report-nv-precinct-release-readiness.mjs",
-    "test:precinct-geometry:nv": "node --experimental-strip-types --test tests/api/nv-precinct-geometry.test.mjs tests/api/nv-precinct-gis-plan.test.mjs tests/api/nv-precinct-gis-local.test.mjs"
+    "precinct-gis:release-candidate:nv": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-nv-precinct-release-candidate.mjs",
+    "precinct-gis:release-candidate:nv:write": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-nv-precinct-release-candidate.mjs --write",
+    "precinct-gis:delivery-publish:nv": "node --experimental-strip-types scripts/publish-nv-precinct-delivery-assets.mjs",
+    "precinct-gis:production-preflight:nv": "node --experimental-strip-types scripts/report-nv-precinct-production-preflight.mjs",
+    "precinct-gis:production-backup:nv": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-nv-precinct-production.ps1",
+    "precinct-gis:production-release:nv": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-nv-precinct-release.mjs",
+    "precinct-gis:public-activation:nv": "node --experimental-strip-types scripts/prepare-nv-precinct-public-activation.mjs",
+    "precinct-gis:publication-status:nv": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-nv-precinct-geography-status.mjs",
+    "test:precinct-geometry:nv": "node scripts/run-nv-precinct-geometry-tests.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",

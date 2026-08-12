@@ -3858,7 +3858,7 @@
       "state": "NV",
       "name": "Nevada",
       "priority": 8,
-      "currentStatus": "four_year_presidential_precinct_gis_staged_only_2012_external_source_blocked",
+      "currentStatus": "three_year_precinct_release_tooling_ready_2012_washoe_archive_issue_220_blocked",
       "officialSourcePages": [
         "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
         "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
@@ -3877,13 +3877,13 @@
         "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt, tracked with official contact/custodian paths and expected-field detail in data/nv-2024-county-source-request-matrix.tsv plus operational packets in data/nv-2024-non-clark-county-request-packets.json",
         "state-native turnout denominator rows with ballots-cast, registered-voter denominator, timing, and inactive-voter treatment notes",
         "election-date Washoe County 2012 precinct GIS/map archive to replace the explicitly labeled later proxy partition",
-        "immutable parent-scoped delivery packages and guarded production review for the source-ready 2016, 2020, and 2024 years",
+        "separately authorized production load, immutable Blob upload, deployment verification, and atomic publication for the implemented 2016, 2020, and 2024 release",
         "official 2012, 2016, and 2020 Nevada historical presidential baseline exports if available to replace secondary context rows",
         "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, incident/correction, recount, and litigation artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "scripts/collect-nv-precinct-geometry.mjs reproduces all four presidential precinct geometry, official normalized result identities, reviewed one-to-one crosswalks, source evidence, and explicit no-data polygons. scripts/setup-nv-precinct-gis-local.mjs and scripts/validate-nv-precinct-gis-local.mjs provide a guarded loopback-only database path. Immutable delivery/release tooling remains pending for the source-ready 2016, 2020, and 2024 years. localComparisonCsv remains the separate President-versus-Senate advisory path, and normalizedTurnoutCsv-style work is still needed before replacing EAC fallback turnout.",
-      "blocker": "The four-year presidential GIS pipeline is complete locally and fail-closed. The only remaining external map-source gate is the election-date Washoe 2012 archive; reviewed multipart 2012 units are now deterministic one-to-one MultiPolygon features. Official NVSOS result exports replace VEST vote values for 2016/2020, exact version-21 CC BY terms are retained, and ArcGIS Online public-sharing terms resolve the 2024 redistribution gate. Immutable delivery and guarded production review remain pending. Same-grain Senate advisory coverage remains partial outside Clark, Washoe, and Humboldt.",
+      "parserNeeded": "scripts/collect-nv-precinct-geometry.mjs reproduces all four diagnostic presidential precinct years. The release candidate, Blob publisher, production preflight/backup/hidden-load runner, static activation writer, atomic publication runner, and both read-only receipt-recovery paths are implemented for 2016, 2020, and 2024. No parser may include 2012 until issue #220 supplies election-date Washoe geometry. localComparisonCsv remains the separate President-versus-Senate advisory path, and normalizedTurnoutCsv-style work is still needed before replacing EAC fallback turnout.",
+      "blocker": "The guarded 2016/2020/2024 presidential precinct-map release is implemented and locally rehearsed, but production loading, Blob upload, exact deployment verification, and atomic database publication are separate authorized operations. The only external map-source gate is the election-date Washoe 2012 archive tracked in issue #220; reviewed multipart 2012 units are deterministic one-to-one MultiPolygon features, but the later proxy is never public-eligible. Same-grain Senate advisory coverage remains partial outside Clark, Washoe, and Humboldt.",
       "requestMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
       "requestPacketArtifact": "data/nv-2024-non-clark-county-request-packets.json"
     },

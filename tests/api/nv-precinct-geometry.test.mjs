@@ -172,6 +172,13 @@ test("Nevada public alternatives resolve every external source gate except the 2
       && artifact.sha256 === "17cf2360147e58211b29556303a2a29d5e2ba0f98d13df78e28a983c0b9dc184"),
     true,
   );
+  assert.equal(
+    evidence2016.artifacts.some((artifact) =>
+      artifact.localArtifactPath.endsWith("dataverse-v89-license-evidence.json")
+      && artifact.authority === "Harvard Dataverse / Voting and Election Science Team"
+      && artifact.sha256 === "55f331209a2bd2913185b33e8da94ceb26b141bc597a40c424d98cdde134f7b4"),
+    true,
+  );
 
   const evidence2020 = JSON.parse(readFileSync(
     path.join(base(YEARS[2]), "source-evidence.json"),

@@ -15,7 +15,7 @@ const LOCAL_EXECUTION_CONTEXT = Object.freeze({
   importScope: "local-only",
   resultParser: "scripts/setup-nv-precinct-gis-local.mjs",
   reviewedBy: "repository-reviewed",
-  revisionReason: "Local-only Nevada four-election precinct GIS setup",
+  revisionReason: "Local-only Nevada reviewed precinct GIS setup",
   database: {
     environment: "local",
     host: "loopback",
@@ -105,7 +105,7 @@ export function buildNevadaPrecinctExecutionContext(options = {}) {
   if (!/^[a-f0-9]{64}$/.test(options.releasePackageSha256 ?? "")) {
     throw new Error("Production Nevada execution requires a release-package SHA-256");
   }
-  if (!/^nv-precinct-gis-four-election-v\d+$/.test(options.releaseCandidateId ?? "")) {
+  if (!/^nv-precinct-gis-three-election-v\d+$/.test(options.releaseCandidateId ?? "")) {
     throw new Error("Production Nevada execution requires the reviewed release-candidate ID");
   }
   if (typeof options.databaseName !== "string" || !options.databaseName.trim()) {
@@ -118,7 +118,7 @@ export function buildNevadaPrecinctExecutionContext(options = {}) {
     resultParser: "scripts/apply-nv-precinct-release.mjs",
     reviewedBy: "repository-reviewed-release",
     revisionReason:
-      "Nevada four-election precinct GIS hidden load "
+      "Nevada three-election precinct GIS hidden load "
       + options.releasePackageSha256,
     database: {
       environment: "production",
@@ -1137,7 +1137,7 @@ export async function readNevadaPersistedProductionReleaseAudit(
     " and gv.metadata->'releaseCandidate'->>'sha256'=$2",
     "order by e.year",
   ], [releaseCandidate.id, releaseCandidate.sha256]);
-  const expectedYears = [2012, 2016, 2020, 2024];
+  const expectedYears = [2016, 2020, 2024];
   if (
     rows.length !== expectedYears.length
     || rows.some((row, index) => Number(row.year) !== expectedYears[index])

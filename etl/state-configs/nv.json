@@ -112,7 +112,7 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is used for Nevada county map joins. The separate four-election precinct GIS package is retained under data/precinct-geometry/NV and remains publication-gated.",
+      "confidence": "County geometry is used for Nevada county map joins. The separate 2016/2020/2024 precinct release is represented by reviewed, database-gated manifests; 2012 remains absent from the public registry pending election-date Washoe geometry.",
       "status": "loaded"
     },
     {
@@ -134,7 +134,7 @@
       "parser": "coverageInventoryJson",
       "authority": "Nevada Secretary of State results with attributed VEST geometry and Nevada Legislative Counsel Bureau source context",
       "timestampBasis": "Official NVSOS 2016 statewide precinct export paired by exact county/precinct identity to VEST V1.2 CC BY 4.0 election-specific geometry and independently checked against the official LCB map; regenerated August 11, 2026.",
-      "confidence": "Context-only reviewed precinct GIS manifest covering all 17 county-equivalents. All displayed vote values come from the official NVSOS export; VEST supplies attributed geometry only. Source and crosswalk gates pass, while immutable public delivery and production review remain pending.",
+      "confidence": "Reviewed precinct GIS manifest covering all 17 county-equivalents. All displayed vote values come from the official NVSOS export; VEST supplies attributed geometry only. Immutable county delivery and guarded release tooling are implemented; database publication remains a separate production action.",
       "status": "loaded"
     },
     {
@@ -145,7 +145,7 @@
       "parser": "coverageInventoryJson",
       "authority": "Nevada Secretary of State results with attributed VEST geometry",
       "timestampBasis": "Official NVSOS 2020 statewide precinct export paired by exact county/precinct identity to Harvard Dataverse file 4863168, dataset version 21.0 geometry; exact version-pinned CC BY 4.0 terms retained and reviewed August 11, 2026.",
-      "confidence": "Context-only reviewed precinct GIS manifest covering all 17 county-equivalents. All displayed vote values come from the official NVSOS export; VEST supplies attributed geometry only under retained CC BY 4.0 terms. Source and crosswalk gates pass, while immutable public delivery and production review remain pending.",
+      "confidence": "Reviewed precinct GIS manifest covering all 17 county-equivalents. All displayed vote values come from the official NVSOS export; VEST supplies attributed geometry only under retained CC BY 4.0 terms. Immutable county delivery and guarded release tooling are implemented; database publication remains a separate production action.",
       "status": "loaded"
     },
     {
@@ -156,7 +156,7 @@
       "parser": "coverageInventoryJson",
       "authority": "Nevada Legislative Counsel Bureau and Nevada Secretary of State",
       "timestampBasis": "Official public-authoritative static LCB 2024 election-cycle precinct layer and retained ArcGIS metadata paired to the November 5, 2024 NVSOS presidential precinct export and normalized August 11, 2026.",
-      "confidence": "Context-only reviewed precinct GIS manifest covering all 17 county-equivalents. All 1,726 polygons are retained, including 208 explicitly reviewed no-data features. Retained ArcGIS Online public-sharing terms authorize use, derivatives, and distribution subject to owner constraints, and the public-authoritative item states none. Source and crosswalk gates pass, while immutable public delivery and production review remain pending.",
+      "confidence": "Reviewed precinct GIS manifest covering all 17 county-equivalents. All 1,726 polygons are retained, including 208 explicitly reviewed no-data features. Retained ArcGIS Online public-sharing terms authorize use, derivatives, and distribution subject to owner constraints, and the public-authoritative item states none. Immutable county delivery and guarded release tooling are implemented; database publication remains a separate production action.",
       "status": "loaded"
     },
     {

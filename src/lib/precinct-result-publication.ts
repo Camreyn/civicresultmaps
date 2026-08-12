@@ -111,7 +111,9 @@ export function matchesPrecinctGeometryPublicationMetadata(
     && releaseCandidate.publicDeliveryAuthorized === true
     && typeof releaseCandidate.id === "string"
     && new RegExp(
-      "^" + manifest.state.toLowerCase() + "-precinct-gis-four-election-v\\d+$",
+      "^" + manifest.state.toLowerCase() + "-precinct-gis-"
+        + (manifest.state === "NV" ? "three" : "four")
+        + "-election-v\\d+$",
     ).test(releaseCandidate.id)
     && typeof releaseSha256 === "string"
     && /^[a-f0-9]{64}$/.test(releaseSha256)

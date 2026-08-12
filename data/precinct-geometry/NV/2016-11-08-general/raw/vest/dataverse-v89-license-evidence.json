@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "dataset": {
+    "title": "2016 Precinct-Level Election Results",
+    "persistentId": "doi:10.7910/DVN/NH5S2I",
+    "datasetVersion": "89.0",
+    "nevadaFilePersistentId": "doi:10.7910/DVN/NH5S2I/I2A9FG",
+    "nevadaFileName": "nv_2016.zip",
+    "nevadaFileMd5": "bc4a47f4dbf1ef8883bb494f9c1a0538",
+    "nevadaFileSha256": "4e3ddd59f31d61f55ff2d94bd03eb9d3ba0771c910b9509889b76eea209e476d",
+    "nevadaFileByteCount": 6798273
+  },
+  "review": {
+    "reviewedAt": "2026-08-12T03:30:00.000Z",
+    "versionPinnedTermsUrl": "https://dataverse.harvard.edu/api/datasets/:persistentId/versions/89.0/customlicense?persistentId=doi:10.7910/DVN/NH5S2I",
+    "versionPinnedFileUrl": "https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/NH5S2I/I2A9FG",
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "verificationMethod": "Human review of the public Harvard Dataverse file landing page. The page binds file DOI I2A9FG to dataset version 89.0, reports MD5 bc4a47f4dbf1ef8883bb494f9c1a0538, and displays the version-89 Custom Dataset Terms as Creative Commons Attribution 4.0. The retained ZIP has that exact MD5 plus the recorded SHA-256 and byte count."
+  },
+  "use": {
+    "permitted": [
+      "copy and redistribute the material in any medium or format",
+      "remix, transform, and build upon the material"
+    ],
+    "conditions": [
+      "give appropriate credit",
+      "provide a link to the license",
+      "indicate if changes were made"
+    ]
+  },
+  "caveat": "This retained review evidence applies only to Harvard Dataverse dataset version 89.0 and Nevada file DOI I2A9FG. It does not silently relabel the VEST geometry as an official Nevada GIS export."
+}

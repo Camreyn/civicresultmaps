@@ -95,6 +95,7 @@ const INPUTS = Object.freeze({
   2016: [
     ["data/precinct-geometry/NV/2016-11-08-general/raw/nevada-secretary-of-state/2016-general-precinct.csv", 7_512_605, "17cf2360147e58211b29556303a2a29d5e2ba0f98d13df78e28a983c0b9dc184"],
     ["data/precinct-geometry/NV/2016-11-08-general/raw/vest/nv_2016.zip", 6_798_273, "4e3ddd59f31d61f55ff2d94bd03eb9d3ba0771c910b9509889b76eea209e476d"],
+    ["data/precinct-geometry/NV/2016-11-08-general/raw/vest/dataverse-v89-license-evidence.json", 1_789, "55f331209a2bd2913185b33e8da94ceb26b141bc597a40c424d98cdde134f7b4"],
     ["data/precinct-geometry/NV/2016-11-08-general/raw/nevada-legislative-counsel-bureau/ElectionResults2016USPres.pdf", 8_605_504, "e61953a77b75326fbfb577eae4e3261e07dd97a253aa32ee0a4cfd19f8cec53a"],
   ],
   2020: [
@@ -818,6 +819,13 @@ function evidenceFor(targetYear, result) {
       ),
     ];
     if (targetYear === 2016) {
+      artifacts.push(rawArtifact(
+        "data/precinct-geometry/NV/2016-11-08-general/raw/vest/dataverse-v89-license-evidence.json",
+        "https://dataverse.harvard.edu/api/datasets/:persistentId/versions/89.0/customlicense?persistentId=doi:10.7910/DVN/NH5S2I",
+        "Harvard Dataverse / Voting and Election Science Team",
+        "JSON",
+        "Retained human review of the version-pinned file and Terms pages. The exact Nevada file MD5 binds the retained ZIP to dataset version 89.0 and its Creative Commons Attribution 4.0 terms.",
+      ));
       artifacts.push(rawArtifact(
         "data/precinct-geometry/NV/2016-11-08-general/raw/nevada-legislative-counsel-bureau/ElectionResults2016USPres.pdf",
         "https://www.leg.state.nv.us/Division/Research/Documents/ElectionResults2016USPres.pdf",

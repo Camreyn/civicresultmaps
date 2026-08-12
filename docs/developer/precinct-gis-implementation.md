@@ -7122,3 +7122,41 @@ evidence against its verified top-level package.
   independent read-only validation pass with 6,990 reporting units, 20,970
   result rows, 7,889 features, 6,990 reviewed one-to-one relationships, four
   safely blocked geography versions, and zero invalid constraints.
+
+### 2026-08-11 - Nevada three-election guarded release implementation
+
+- Nevada 2016, 2020, and 2024 now have a deterministic content-addressed
+  release package. It contains 5,230 safely colorable reporting units, 15,690
+  candidate result rows, 647 zero-vote units, 5,887 polygons, 5,230 reviewed
+  exact one-to-one relationships, and 657 reviewed no-data polygons. Each year
+  covers all 17 county-equivalents. Nevada 2012 is excluded from the package
+  and canonical registry; the election-date Washoe archive is tracked in
+  GitHub issue #220.
+
+- The package produces three immutable indexes and 51 county GeoJSON files.
+  Presentation geometry is rounded to seven decimals and simplified at a
+  0.000005-degree tolerance, keeping every precinct feature and join identity
+  while reducing the largest county response below the existing 4,350,000-byte
+  safety limit. Source and normalized geometry artifacts remain unchanged and
+  hash-pinned. One zero-area polygon part in a retained MultiPolygon is omitted
+  from presentation bytes while the feature's valid polygon part remains.
+
+- Guarded operational tooling now covers plan-first Blob publication, read-only
+  production preflight, a full public-schema backup with exact restore proof,
+  hash-bound sole-owner authorization, coupled migration 0009 and hidden load,
+  durable production audit metadata, guarded static activation, atomic database
+  publication, and read-only receipt recovery for ambiguous hidden-load or
+  publication commits. The static manifests do not open either API while the
+  database status remains blocked.
+
+- A loopback transaction rehearsed the exact three-year hidden load and final
+  public publication, validated 5,230 authorized units and crosswalks, 15,690
+  result rows, and 5,887 features, rejected a replay, and then deliberately
+  rolled back. The local public revision and published-version count returned
+  to their pre-test values. No production database, Blob object, Vercel setting,
+  deployment, or GitHub merge was changed by the rehearsal.
+
+- The shared publication matcher now permits Nevada's explicit
+  `nv-precinct-gis-three-election-v*` identity while preserving Minnesota and
+  Texas four-election identities. The end-to-end sequence and stop conditions
+  are documented in `docs/developer/nv-precinct-gis-runbook.md`.

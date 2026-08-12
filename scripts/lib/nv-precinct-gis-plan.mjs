@@ -40,7 +40,7 @@ export const NEVADA_PRECINCT_GIS_YEAR_SPECS = Object.freeze([
     year: 2016,
     electionId: "2016-11-08-general",
     electionDate: "2016-11-08",
-    manifestSha256: "ed5fc033326dbd6c50d0988ab7c14529ee200953ef9292481bb0a77dfe3dcaf9",
+    manifestSha256: "9cccfd6f2fc006c2f3e98e45b1835178383edf092639f6a5dfc0f016a8316999",
     manifestByteCount: 3_910,
     geometryByteCount: 3_550_859,
     resultsSha256: "49df99e5e70b3e800d80366562874dadc2ecac9d6696c3db00b93efd95368952",
