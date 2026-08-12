@@ -2,11 +2,17 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  assertNevadaPublishedReplacementPrecondition,
+} from "../../scripts/lib/nv-precinct-gis-db.mjs";
+import {
   NEVADA_PRODUCTION_RELEASE_SCOPES,
+  NEVADA_PRODUCTION_REPLACEMENT_SCOPE,
+  NEVADA_REVIEWED_V1_PUBLICATION,
   buildNevadaProductionAuthorizationTemplate,
   validateNevadaProductionAuthorization,
   validateNevadaProductionBackupEvidence,
   validateNevadaProductionPreflightEvidence,
+  validateNevadaReviewedReplacementPublicationReceipt,
 } from "../../scripts/lib/nv-precinct-production-release.mjs";
 
 const releaseCandidate = {
@@ -79,6 +85,58 @@ function backup() {
       exactSourceRowCounts: true,
     },
   };
+}
+
+function reviewedV1PublicationReceipt() {
+  const reviewed = NEVADA_REVIEWED_V1_PUBLICATION;
+  return {
+    schemaVersion: 1,
+    state: "NV",
+    decision: "PUBLISHED",
+    activationId: "nv-public-7002cd6-20260812T132755Z",
+    releaseCandidate: { ...reviewed.releaseCandidate },
+    publicationPlan: {
+      id: "nv-precinct-database-publication-v1",
+      sha256: reviewed.publicationPlanSha256,
+    },
+    authorization: {
+      path: ".etl/production-authorizations/NV/nv-public-go.json",
+      sha256: reviewed.authorizationSha256,
+    },
+    hiddenLoad: {
+      path: ".etl/production-release-receipts/NV/nv-hidden.json",
+      sha256: reviewed.hiddenReceiptSha256,
+    },
+    blobPublication: {
+      path: ".etl/precinct-blob-publications/NV/nv-v1.json",
+      sha256: reviewed.blobPublicationSha256,
+      deliveryOrigin: reviewed.deliveryOrigin,
+    },
+    productionDeployment: {
+      readyVerified: true,
+      promotedVerified: true,
+      blockedResultGateVerified: true,
+      blockedGeometryGateVerified: true,
+    },
+    changedAtUtc: "2026-08-12T13:29:01.061Z",
+    revision: 9,
+    postconditions: { ...reviewed.postconditions },
+    productionMutationPerformed: true,
+    publicDeliveryAuthorized: true,
+  };
+}
+
+function replacementSummary() {
+  return validateNevadaReviewedReplacementPublicationReceipt(
+    reviewedV1PublicationReceipt(),
+    {
+      publicationReceiptPath:
+        ".etl/production-publication-receipts/NV/nv-v1.json",
+      publicationReceiptSha256:
+        NEVADA_REVIEWED_V1_PUBLICATION.publicationReceiptSha256,
+      now: new Date("2026-08-12T16:00:00.000Z"),
+    },
+  );
 }
 
 test("Nevada hidden release requires fresh exact preflight and restored backup", () => {
@@ -166,11 +224,179 @@ test("Nevada sole-owner authorization is hash-bound, scoped, and time-limited", 
   );
 });
 
+test("Nevada v2 replacement is bound to the exact reviewed v1 publication", () => {
+  const replacement = replacementSummary();
+  const reviewedYears = NEVADA_REVIEWED_V1_PUBLICATION.years;
+  const report = preflight();
+  report.nevada.precinctYearRows = reviewedYears.map((year) => ({
+    year: year.year,
+    reportingUnits: year.reportingUnits,
+    linkedPrecinctResultRows: year.resultRows,
+    geographyVersions: 1,
+    geometryFeatures: year.geometryFeatures,
+    reviewedExactCrosswalks: year.reviewedExactCrosswalks,
+  }));
+  report.nevada.coreYearRows = reviewedYears.map((year) => ({
+    year: year.year,
+    precinctResultRows: year.resultRows,
+  }));
+  const preflightSummary = validateNevadaProductionPreflightEvidence(report, {
+    releaseCandidate,
+    endpointFingerprint,
+    now,
+    replacement,
+  });
+  assert.equal(preflightSummary.releaseMode, "reviewed_v1_to_v2_replacement");
+  const driftedPreflight = structuredClone(report);
+  driftedPreflight.nevada.precinctYearRows[2].geometryFeatures -= 1;
+  assert.throws(
+    () => validateNevadaProductionPreflightEvidence(driftedPreflight, {
+      releaseCandidate,
+      endpointFingerprint,
+      now,
+      replacement,
+    }),
+    /incompatible or already contains/,
+  );
+
+  const template = buildNevadaProductionAuthorizationTemplate({
+    releaseCandidate,
+    preflightSha256: "4".repeat(64),
+    backupManifestSha256: "5".repeat(64),
+    replacement,
+  });
+  assert.equal(template.decision, "NO_GO_PRODUCTION_UPGRADE");
+  assert.equal(
+    template.scopes.at(-1),
+    NEVADA_PRODUCTION_REPLACEMENT_SCOPE,
+  );
+  const authorization = {
+    ...template,
+    decision: "GO_PRODUCTION_UPGRADE",
+    authorizationId: "nv-v2-replacement-camreyn",
+    approvedBy: "Camreyn",
+    authorizedAtUtc: "2026-08-11T03:45:00.000Z",
+    expiresAtUtc: "2026-08-11T04:30:00.000Z",
+  };
+  const result = validateNevadaProductionAuthorization(authorization, {
+    releaseCandidate,
+    preflightSha256: "4".repeat(64),
+    backupManifestSha256: "5".repeat(64),
+    replacement,
+    now,
+  });
+  assert.equal(result.replacement.publicationReceipt.sha256,
+    NEVADA_REVIEWED_V1_PUBLICATION.publicationReceiptSha256);
+
+  const alteredReceipt = reviewedV1PublicationReceipt();
+  alteredReceipt.postconditions.reportingUnits += 1;
+  assert.throws(
+    () => validateNevadaReviewedReplacementPublicationReceipt(
+      alteredReceipt,
+      {
+        publicationReceiptPath:
+          ".etl/production-publication-receipts/NV/nv-v1.json",
+        publicationReceiptSha256:
+          NEVADA_REVIEWED_V1_PUBLICATION.publicationReceiptSha256,
+        now: new Date("2026-08-12T16:00:00.000Z"),
+      },
+    ),
+    /altered, or incompatible/,
+  );
+});
+
+test("Nevada v2 replacement transaction requires the exact published v1 rows", async () => {
+  const replacement = replacementSummary();
+  const reviewed = NEVADA_REVIEWED_V1_PUBLICATION;
+  const electionIds = Object.fromEntries(
+    reviewed.years.map((year) => [year.year, `election-${year.year}`]),
+  );
+  const buildVersions = () => reviewed.years.map((year) => ({
+    election_id: electionIds[year.year],
+    year: year.year,
+    status: "published",
+    metadata: {
+      manifestId: year.manifestId,
+      manifestSha256: year.manifestSha256,
+      publicDeliveryAuthorized: true,
+      releaseCandidate: {
+        id: replacement.releaseCandidate.id,
+        sha256: replacement.releaseCandidate.sha256,
+        publicDeliveryAuthorized: true,
+      },
+      publicActivation: {
+        activationId: replacement.activationId,
+        activationCandidateSha256: reviewed.publicationPlanSha256,
+        releasePackageSha256: replacement.releaseCandidate.sha256,
+        blobPublicationSha256: reviewed.blobPublicationSha256,
+        deliveryOrigin: reviewed.deliveryOrigin,
+        authorizationSha256: reviewed.authorizationSha256,
+        mode: "publish",
+        year: year.year,
+        manifestId: year.manifestId,
+        publicManifestSha256: "a".repeat(64),
+        changedAtUtc: replacement.changedAtUtc,
+        revision: replacement.revision,
+      },
+    },
+    features: year.geometryFeatures,
+    crosswalks: year.reviewedExactCrosswalks,
+    exact_crosswalks: year.reviewedExactCrosswalks,
+    reporting_units: year.reportingUnits,
+    exact_reporting_units: year.reportingUnits,
+    result_rows: year.resultRows,
+  }));
+  const fakeTransaction = (mutateVersions = (rows) => rows) => ({
+    async unsafe(sql, params) {
+      if (sql.includes("select e.id election_id,e.year")) {
+        return mutateVersions(buildVersions());
+      }
+      if (sql.includes("select candidate_name,sum(votes)")) {
+        const year = Number(String(params[0]).split("-").at(-1));
+        return Object.entries(
+          reviewed.years.find((item) => item.year === year).candidateTotals,
+        ).map(([candidate_name, votes]) => ({ candidate_name, votes }));
+      }
+      if (sql.includes("group by rr.reporting_unit_id having sum(rr.votes)=0")) {
+        const year = Number(String(params[0]).split("-").at(-1));
+        return [{
+          count: reviewed.years.find((item) => item.year === year).zeroVoteUnits,
+        }];
+      }
+      if (sql.includes("source_documents sd")) {
+        return [{
+          source_documents: reviewed.postconditions.sourceDocuments,
+          exact_source_documents: reviewed.postconditions.sourceDocuments,
+          import_runs: reviewed.postconditions.importRuns,
+          exact_import_runs: reviewed.postconditions.importRuns,
+          invalid_constraints: 0,
+        }];
+      }
+      throw new Error("Unexpected replacement precondition SQL: " + sql);
+    },
+  });
+  const result = await assertNevadaPublishedReplacementPrecondition(
+    fakeTransaction(),
+    replacement,
+  );
+  assert.equal(result.years[2].reportingUnits, 1_518);
+
+  await assert.rejects(
+    assertNevadaPublishedReplacementPrecondition(
+      fakeTransaction((rows) => rows.map((row) =>
+        row.year === 2024 ? { ...row, status: "blocked" } : row)),
+      replacement,
+    ),
+    /2024 reviewed v1 replacement precondition drifted/,
+  );
+});
+
 test("Nevada runner preserves public blocks and ambiguous-commit evidence", () => {
   const runner = readFileSync("scripts/apply-nv-precinct-release.mjs", "utf8");
   const database = readFileSync("scripts/lib/nv-precinct-gis-db.mjs", "utf8");
   assert.match(runner, /CRM_NV_PRECINCT_PRODUCTION_WRITES/);
   assert.match(runner, /CRM_NV_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256/);
+  assert.match(runner, /CRM_NV_PRECINCT_PRODUCTION_REPLACEMENT_RECEIPT_SHA256/);
   assert.match(runner, /transactionBodyCompleted/);
   assert.match(runner, /ambiguous-commit recovery marker/);
   assert.match(runner, /--recover-receipt/);
@@ -183,4 +409,5 @@ test("Nevada runner preserves public blocks and ambiguous-commit evidence", () =
   assert.match(runner, /years: \[2016, 2020, 2024\]/);
   assert.match(database, /publicDeliveryAuthorized: false/);
   assert.match(database, /status='blocked'| 'blocked'/);
+  assert.match(database, /assertNevadaPublishedReplacementPrecondition/);
 });

@@ -7200,3 +7200,38 @@ evidence against its verified top-level package.
   `nv-precinct-gis-three-election-v2`; all production count guards and public
   activation inputs are resealed so the old blank-feature package cannot be
   replayed as this release.
+
+### 2026-08-12 - Nevada reviewed v1-to-v2 production replacement guard
+
+- The corrected v2 static registry can be deployed while the database still
+  contains published v1 rows; both geometry delivery and the corrected map stay
+  fail-closed because the registry and database release hashes do not match.
+  The normal hidden-load tool intentionally rejects that existing release, so a
+  separate reviewed replacement contract is required rather than bypassing the
+  replay guard or issuing manual SQL.
+
+- The replacement contract is pinned to the exact retained v1 public receipt
+  SHA-256 `7725db704181321f8dca9717b6902387bcecbd424975a1b29e0e8e0aea43fc4e`,
+  v1 package SHA-256
+  `0546735717fd46f501c23d931160fc45baf8f9b123f97faa5410bf684f951c9a`,
+  public plan, hidden receipt, Blob receipt, authorization, delivery origin,
+  activation ID/time/revision, and per-year predecessor counts and totals. The
+  authorization decision is `GO_PRODUCTION_UPGRADE` and carries the additional
+  `replace_reviewed_nv_precinct_release_v1_with_v2_hidden` scope plus an exact
+  environment receipt-hash acknowledgement.
+
+- Inside the locked transaction, the tool independently verifies the three
+  published v1 geography versions, public flags and activation metadata, 5,230
+  reporting units and crosswalks, 15,690 result rows, 5,887 features, candidate
+  totals, zero-vote units, six source documents, three import runs, and zero
+  invalid constraints. Only then does it remove the three v1 geometry versions,
+  upsert the sealed v2 contract, validate 5,288 units/crosswalks, 15,748 result
+  rows, and 5,796 features, leave every v2 public flag blocked, and increment the
+  public revision. The exact predecessor proof is persisted in the durable
+  release audit and hidden receipt; a replay cannot satisfy the v1 precondition.
+
+- The transaction was rehearsed against the fresh restore-verified production
+  backup in the fixed Docker clone. It upgraded the exact published v1 state to
+  blocked v2, rejected a second replacement attempt, validated all corrected
+  counts, and deliberately rolled back. The clone returned to the original
+  published v1 revision and three-version state.

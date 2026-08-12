@@ -113,8 +113,11 @@ npm.cmd run precinct-gis:production-preflight:nv -- --package=$PKG --connect-rea
 
 Retain `$PREFLIGHT` and `$PREFLIGHT_SHA`. The preflight opens a read-only
 transaction, pins the host/port/database fingerprint, requires migration 0008,
-records whether migration 0009 is already present, and refuses any preexisting
-Nevada 2016/2020/2024 precinct release rows.
+and records whether migration 0009 is already present. The initial-load path
+refuses preexisting Nevada precinct rows. The reviewed v1-to-v2 correction path
+accepts only the exact year/count preimage recorded by the hash-pinned v1
+publication receipt; the write transaction independently verifies its published
+metadata, totals, features, crosswalks, and public activation before changing it.
 
 ### 2. Full backup and restore verification
 
@@ -142,6 +145,17 @@ Generate the immutable NO-GO template:
 npm.cmd run precinct-gis:production-release:nv -- --package=$PKG --package-sha256=$PKG_SHA --preflight-sha256=$PREFLIGHT_SHA --backup-manifest-sha256=$BACKUP_SHA --write-authorization-template
 ```
 
+For the reviewed Clark-result correction of the already-published v1 release,
+also set the exact predecessor evidence and include both arguments in this and
+every hidden-load/recovery command:
+
+```powershell
+$REPLACEMENT_RECEIPT='.etl/production-publication-receipts/NV/nv-publication-b13d531f79b0-nv-public-7002cd6-20260812T132755Z.json'
+$REPLACEMENT_SHA='7725db704181321f8dca9717b6902387bcecbd424975a1b29e0e8e0aea43fc4e'
+
+npm.cmd run precinct-gis:production-release:nv -- --package=$PKG --package-sha256=$PKG_SHA --preflight-sha256=$PREFLIGHT_SHA --backup-manifest-sha256=$BACKUP_SHA --replacement-publication-receipt=$REPLACEMENT_RECEIPT --replacement-publication-receipt-sha256=$REPLACEMENT_SHA --write-authorization-template
+```
+
 The completed record must change the decision to `GO_PRODUCTION`, identify the
 sole project owner in `approvedBy`, set an active authorization ID and expiry,
 and retain exactly these scopes:
@@ -149,6 +163,11 @@ and retain exactly these scopes:
 - `apply_migration_0009`
 - `load_nv_precinct_results_and_geometry_hidden`
 - `increment_public_data_revision`
+
+The v1-to-v2 correction instead uses `GO_PRODUCTION_UPGRADE` and has one
+additional exact scope:
+
+- `replace_reviewed_nv_precinct_release_v1_with_v2_hidden`
 
 Record its path and hash as `$AUTH` and `$AUTH_SHA`.
 
@@ -163,12 +182,29 @@ $env:CRM_NV_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256=$AUTH_SHA
 npm.cmd run precinct-gis:production-release:nv -- --package=$PKG --package-sha256=$PKG_SHA --preflight=$PREFLIGHT --preflight-sha256=$PREFLIGHT_SHA --backup-manifest=$BACKUP_MANIFEST --backup-manifest-sha256=$BACKUP_SHA --authorization=$AUTH --authorization-sha256=$AUTH_SHA --apply
 ```
 
+For the reviewed correction, also set and pass the predecessor receipt:
+
+```powershell
+$env:CRM_NV_PRECINCT_PRODUCTION_REPLACEMENT_RECEIPT_SHA256=$REPLACEMENT_SHA
+npm.cmd run precinct-gis:production-release:nv -- --package=$PKG --package-sha256=$PKG_SHA --preflight=$PREFLIGHT --preflight-sha256=$PREFLIGHT_SHA --backup-manifest=$BACKUP_MANIFEST --backup-manifest-sha256=$BACKUP_SHA --authorization=$AUTH --authorization-sha256=$AUTH_SHA --replacement-publication-receipt=$REPLACEMENT_RECEIPT --replacement-publication-receipt-sha256=$REPLACEMENT_SHA --apply
+```
+
 One PostgreSQL transaction upgrades the derivation-method constraint when
 needed, loads all three years, validates exact rows/features/crosswalks and
 durable audit metadata, and increments the public revision. Geography versions,
 result units, source documents, and import runs remain blocked with
 `publicDeliveryAuthorized=false`. The receipt decision is
 `COMMITTED_HIDDEN_NOT_PUBLIC`.
+
+The correction transaction is deliberately one-use and fail-closed. It accepts
+only the exact v1 receipt SHA embedded in the reviewed code, locks and validates
+all three published predecessor versions, candidate totals, zero-vote counts,
+5,230 reporting units/crosswalks, 15,690 result rows, 5,887 features, six source
+documents, three import runs, and their public-activation metadata. It then
+removes only those three reviewed v1 geometry versions (features and crosswalks
+cascade), upserts the sealed v2 rows, leaves all v2 publication flags blocked,
+validates the complete v2 contract, and increments the revision in the same
+transaction. A retry cannot match the v1 precondition.
 
 If the connection fails after the transaction body completes, do not rerun the
 write. Preserve the `.pending` marker and use the read-only recovery mode after
@@ -180,6 +216,12 @@ $env:CRM_NV_PRECINCT_HIDDEN_RECEIPT_RECOVERY=$PKG_SHA
 $env:CRM_NV_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256=$AUTH_SHA
 npm.cmd run precinct-gis:production-release:nv -- --package=$PKG --package-sha256=$PKG_SHA --preflight=$PREFLIGHT --preflight-sha256=$PREFLIGHT_SHA --backup-manifest=$BACKUP_MANIFEST --backup-manifest-sha256=$BACKUP_SHA --authorization=$AUTH --authorization-sha256=$AUTH_SHA --recover-receipt
 ```
+
+The correction recovery command must also retain
+`CRM_NV_PRECINCT_PRODUCTION_REPLACEMENT_RECEIPT_SHA256` and both
+`--replacement-publication-receipt*` arguments. Recovery opens a read-only
+transaction and requires the persisted v2 audit to contain the exact predecessor
+summary; it cannot perform another replacement.
 
 ### 5. Immutable Blob publication
 

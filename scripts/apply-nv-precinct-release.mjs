@@ -26,6 +26,7 @@ import {
   validateNevadaProductionAuthorization,
   validateNevadaProductionBackupEvidence,
   validateNevadaProductionPreflightEvidence,
+  validateNevadaReviewedReplacementPublicationReceipt,
 } from "./lib/nv-precinct-production-release.mjs";
 
 function parseArguments(args) {
@@ -44,6 +45,9 @@ function parseArguments(args) {
     authorizationPath: value("--authorization"),
     authorizationSha256: value("--authorization-sha256"),
     authorizationTemplatePath: value("--authorization-template"),
+    replacementPublicationReceiptPath: value("--replacement-publication-receipt"),
+    replacementPublicationReceiptSha256:
+      value("--replacement-publication-receipt-sha256"),
     receiptPath: value("--receipt"),
   };
   const known = new Set([
@@ -59,6 +63,8 @@ function parseArguments(args) {
     "--authorization",
     "--authorization-sha256",
     "--authorization-template",
+    "--replacement-publication-receipt",
+    "--replacement-publication-receipt-sha256",
     "--receipt",
   ]);
   for (const arg of args) {
@@ -71,6 +77,12 @@ function parseArguments(args) {
   if ([parsed.apply, parsed.recoverReceipt, parsed.writeAuthorizationTemplate]
     .filter(Boolean).length > 1) {
     throw new Error("Nevada production release modes are mutually exclusive");
+  }
+  if (Boolean(parsed.replacementPublicationReceiptPath)
+    !== Boolean(parsed.replacementPublicationReceiptSha256)) {
+    throw new Error(
+      "Nevada production replacement requires both the publication receipt path and SHA-256",
+    );
   }
   return parsed;
 }
@@ -202,8 +214,9 @@ function finishReceipt(reservation, value) {
   return { byteCount: bytes.length, sha256: sha256(bytes) };
 }
 
-function defaultTemplatePath(packageSha256) {
+function defaultTemplatePath(packageSha256, replacement = false) {
   return ".etl/production-authorizations/NV/nv-precinct-authorization-template-"
+    + (replacement ? "upgrade-" : "")
     + packageSha256.slice(0, 12)
     + ".json";
 }
@@ -285,36 +298,6 @@ export async function runNevadaProductionRelease(options = {}) {
       sha256: migration0009Declaration.sha256,
     },
   );
-  if (parsed.writeAuthorizationTemplate) {
-    const relativePath = parsed.authorizationTemplatePath
-      ?? defaultTemplatePath(packageArtifact.sha256);
-    const artifact = immutableJson(root, relativePath, buildNevadaProductionAuthorizationTemplate({
-      releaseCandidate,
-      preflightSha256: parsed.preflightSha256,
-      backupManifestSha256: parsed.backupManifestSha256,
-    }));
-    return {
-      mode: "write_authorization_template",
-      decision: "NO_GO_PRODUCTION",
-      releaseCandidate,
-      authorizationTemplate: artifact,
-      productionMutationPerformed: false,
-    };
-  }
-  if (!parsed.apply && !parsed.recoverReceipt) {
-    return {
-      mode: "plan",
-      decision: "NO_GO_PRODUCTION",
-      releaseCandidate,
-      productionMutationPerformed: false,
-      publicDeliveryAuthorized: false,
-      requiredEvidence: [
-        "fresh read-only production preflight",
-        "fresh full public-schema backup with exact restore verification",
-        "hash-pinned GO_PRODUCTION authorization",
-      ],
-    };
-  }
   const environment = options.environment ?? process.env;
   const clock = options.nowFactory ?? (() => options.now ?? new Date());
   const currentTime = () => {
@@ -325,6 +308,58 @@ export async function runNevadaProductionRelease(options = {}) {
     }
     return result;
   };
+  const replacementPublication = parsed.replacementPublicationReceiptPath
+    ? readEtlJson(
+      root,
+      parsed.replacementPublicationReceiptPath,
+      parsed.replacementPublicationReceiptSha256,
+      ".etl/production-publication-receipts/NV/",
+    )
+    : null;
+  const replacement = replacementPublication
+    ? validateNevadaReviewedReplacementPublicationReceipt(
+      replacementPublication.value,
+      {
+        publicationReceiptPath: replacementPublication.path,
+        publicationReceiptSha256: replacementPublication.sha256,
+        now: currentTime(),
+      },
+    )
+    : null;
+  if (parsed.writeAuthorizationTemplate) {
+    const relativePath = parsed.authorizationTemplatePath
+      ?? defaultTemplatePath(packageArtifact.sha256, Boolean(replacement));
+    const artifact = immutableJson(root, relativePath, buildNevadaProductionAuthorizationTemplate({
+      releaseCandidate,
+      preflightSha256: parsed.preflightSha256,
+      backupManifestSha256: parsed.backupManifestSha256,
+      replacement,
+    }));
+    return {
+      mode: "write_authorization_template",
+      decision: replacement ? "NO_GO_PRODUCTION_UPGRADE" : "NO_GO_PRODUCTION",
+      releaseCandidate,
+      authorizationTemplate: artifact,
+      productionMutationPerformed: false,
+    };
+  }
+  if (!parsed.apply && !parsed.recoverReceipt) {
+    return {
+      mode: "plan",
+      decision: replacement ? "NO_GO_PRODUCTION_UPGRADE" : "NO_GO_PRODUCTION",
+      releaseCandidate,
+      productionMutationPerformed: false,
+      publicDeliveryAuthorized: false,
+      requiredEvidence: [
+        "fresh read-only production preflight",
+        "fresh full public-schema backup with exact restore verification",
+        "hash-pinned GO_PRODUCTION authorization",
+        ...(replacement
+          ? ["the exact reviewed v1 publication receipt and GO_PRODUCTION_UPGRADE scope"]
+          : []),
+      ],
+    };
+  }
   const databaseUrl = productionUrl(environment);
   const endpointFingerprint = productionEndpointFingerprint(databaseUrl);
   const preflight = readEtlJson(
@@ -347,7 +382,7 @@ export async function runNevadaProductionRelease(options = {}) {
   const validateEvidenceAt = (now) => {
     const preflightSummary = validateNevadaProductionPreflightEvidence(
       preflight.value,
-      { releaseCandidate, endpointFingerprint, now },
+      { releaseCandidate, endpointFingerprint, now, replacement },
     );
     const backupSummary = validateNevadaProductionBackupEvidence(backup.value, {
       releaseCandidate,
@@ -362,6 +397,7 @@ export async function runNevadaProductionRelease(options = {}) {
         preflightSha256: preflight.sha256,
         backupManifestSha256: backup.sha256,
         now,
+        replacement,
       },
     );
     return { preflightSummary, backupSummary, authorizationSummary };
@@ -385,6 +421,9 @@ export async function runNevadaProductionRelease(options = {}) {
         !== packageArtifact.sha256
       || environment.CRM_NV_PRECINCT_PRODUCTION_AUTHORIZATION_SHA256
         !== authorization.sha256
+      || (replacement
+        && environment.CRM_NV_PRECINCT_PRODUCTION_REPLACEMENT_RECEIPT_SHA256
+          !== replacement.publicationReceipt.sha256)
     ) {
       throw new Error("Nevada hidden receipt recovery is not explicitly read-only and hash-authorized");
     }
@@ -435,6 +474,7 @@ export async function runNevadaProductionRelease(options = {}) {
           authorizationId: evidence.authorizationSummary.authorizationId,
           endpointFingerprint,
           transaction: persistedAudit.transaction,
+          ...(replacement ? { replacementPublication: replacement } : {}),
         };
         if (JSON.stringify(persistedAudit) !== JSON.stringify(expectedAudit)) {
           throw new Error("Nevada hidden receipt recovery evidence does not match the durable database audit");
@@ -506,6 +546,7 @@ export async function runNevadaProductionRelease(options = {}) {
       canonicalManifestChanged: false,
       publicFileWritten: false,
       publicDeliveryAuthorized: false,
+      ...(replacement ? { replacement } : {}),
     };
     const receiptArtifact = finishReceipt(reservation, receiptDocument);
     return {
@@ -533,6 +574,13 @@ export async function runNevadaProductionRelease(options = {}) {
       !== authorization.sha256
   ) {
     throw new Error("Nevada production authorization environment acknowledgement drifted");
+  }
+  if (
+    replacement
+    && environment.CRM_NV_PRECINCT_PRODUCTION_REPLACEMENT_RECEIPT_SHA256
+      !== replacement.publicationReceipt.sha256
+  ) {
+    throw new Error("Nevada production replacement receipt acknowledgement drifted");
   }
   const reservation = reserveReceipt(
     root,
@@ -581,6 +629,7 @@ export async function runNevadaProductionRelease(options = {}) {
           executedAtUtc: transactionNow.toISOString(),
           publicRevision: expectedRevision,
         },
+        ...(replacement ? { replacementPublication: replacement } : {}),
       };
       const executionContext = {
         mode: "production_release",
@@ -644,6 +693,7 @@ export async function runNevadaProductionRelease(options = {}) {
     canonicalManifestChanged: false,
     publicFileWritten: false,
     publicDeliveryAuthorized: false,
+    ...(replacement ? { replacement } : {}),
   };
   const receiptArtifact = finishReceipt(reservation, receiptDocument);
   return {
@@ -653,6 +703,7 @@ export async function runNevadaProductionRelease(options = {}) {
     revision: committed.applied.revision,
     productionMutationPerformed: true,
     publicDeliveryAuthorized: false,
+    ...(replacement ? { replacement } : {}),
     receipt: { path: receiptPath, ...receiptArtifact },
   };
 }

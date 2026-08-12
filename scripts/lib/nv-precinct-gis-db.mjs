@@ -4,6 +4,10 @@ import {
   getLocalCloneDatabaseUrl,
 } from "../../src/db/database-driver.ts";
 import { reportingUnitCode } from "../../src/lib/precinct-geography.ts";
+import {
+  NEVADA_REVIEWED_V1_PUBLICATION,
+  validateNevadaProductionReplacementSummary,
+} from "./nv-precinct-production-release.mjs";
 
 const STATE = "NV";
 const SETUP_PARSER = "nevadaLocalPrecinctGisSetup";
@@ -24,6 +28,7 @@ const LOCAL_EXECUTION_CONTEXT = Object.freeze({
   },
   releaseCandidate: null,
   productionReleaseAudit: null,
+  productionReplacement: null,
 });
 
 const PRODUCTION_RELEASE_AUDIT_KEYS = Object.freeze([
@@ -91,7 +96,14 @@ function validatedProductionReleaseAudit(value) {
     executedAtUtc: value.transaction.executedAtUtc,
     publicRevision: Number(value.transaction.publicRevision),
   });
-  if (Object.keys(value).length !== PRODUCTION_RELEASE_AUDIT_KEYS.length) {
+  if (value.replacementPublication) {
+    output.replacementPublication = Object.freeze(
+      validateNevadaProductionReplacementSummary(value.replacementPublication),
+    );
+  }
+  const expectedKeyCount = PRODUCTION_RELEASE_AUDIT_KEYS.length
+    + (value.replacementPublication ? 1 : 0);
+  if (Object.keys(value).length !== expectedKeyCount) {
     throw new Error("Production Nevada execution release-audit metadata has extra fields");
   }
   return Object.freeze(output);
@@ -134,6 +146,12 @@ export function buildNevadaPrecinctExecutionContext(options = {}) {
     productionReleaseAudit: validatedProductionReleaseAudit(
       options.productionReleaseAudit,
     ),
+    productionReplacement:
+      options.productionReleaseAudit?.replacementPublication
+        ? validateNevadaProductionReplacementSummary(
+          options.productionReleaseAudit.replacementPublication,
+        )
+        : null,
   });
 }
 
@@ -185,6 +203,9 @@ function canonicalJson(value) {
   if (Array.isArray(value)) return value.map(canonicalJson);
   if (!value || typeof value !== "object") return value;
   return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonicalJson(value[key])]));
+}
+function semanticallyEqual(left, right) {
+  return JSON.stringify(canonicalJson(left)) === JSON.stringify(canonicalJson(right));
 }
 function query(client, lines, params = []) {
   return client.unsafe(Array.isArray(lines) ? lines.join("\n") : lines, params);
@@ -761,6 +782,188 @@ async function applyYear(tx, yearPlan, context) {
   };
 }
 
+export async function assertNevadaPublishedReplacementPrecondition(
+  tx,
+  replacementValue,
+) {
+  const replacement = validateNevadaProductionReplacementSummary(
+    replacementValue,
+  );
+  const reviewed = NEVADA_REVIEWED_V1_PUBLICATION;
+  const versions = await query(tx, [
+    "select e.id election_id,e.year,gv.status,gv.metadata,",
+    " (select count(*)::int from geography_features gf",
+    "  where gf.geometry_version_id=gv.id) features,",
+    " (select count(*)::int from reporting_unit_geometry_crosswalks x",
+    "  where x.geometry_version_id=gv.id) crosswalks,",
+    " (select count(*)::int from reporting_unit_geometry_crosswalks x",
+    "  join reporting_units ru on ru.id=x.reporting_unit_id",
+    "  where x.geometry_version_id=gv.id and ru.election_id=e.id",
+    "   and x.relationship_type='one_to_one'",
+    "   and x.match_method='exact_official_id'",
+    "   and x.review_status='reviewed' and x.confidence='high'",
+    "   and x.metadata->>'publicDeliveryAuthorized'='true'",
+    "   and x.metadata->'releaseCandidate'->>'publicDeliveryAuthorized'='true')",
+    "  exact_crosswalks,",
+    " (select count(*)::int from reporting_units ru",
+    "  where ru.state_code='NV' and ru.election_id=e.id",
+    "   and ru.reporting_grain='precinct') reporting_units,",
+    " (select count(*)::int from reporting_units ru",
+    "  where ru.state_code='NV' and ru.election_id=e.id",
+    "   and ru.reporting_grain='precinct'",
+    "   and ru.metadata->>'publicDeliveryAuthorized'='true'",
+    "   and ru.metadata->'releaseCandidate'->>'publicDeliveryAuthorized'='true')",
+    "  exact_reporting_units,",
+    " (select count(*)::int from result_rows rr",
+    "  join contests c on c.id=rr.contest_id",
+    "  join reporting_units ru on ru.id=rr.reporting_unit_id",
+    "  where rr.state_code='NV' and rr.level='precinct'",
+    "   and c.election_id=e.id and c.office='president'",
+    "   and ru.election_id=e.id and ru.reporting_grain='precinct') result_rows",
+    "from geography_versions gv join elections e on e.id=gv.election_id",
+    "where gv.state_code='NV' and gv.geography_type='precinct'",
+    " and e.office='president' and e.year=any($1::int[])",
+    "order by e.year for update of gv",
+  ], [reviewed.years.map((year) => year.year)]);
+  if (versions.length !== reviewed.years.length) {
+    throw new Error("Nevada reviewed v1 replacement has an incomplete geography-version set");
+  }
+  for (const [index, row] of versions.entries()) {
+    const expected = reviewed.years[index];
+    const metadata = row.metadata ?? {};
+    const activation = metadata.publicActivation ?? {};
+    if (
+      Number(row.year) !== expected.year
+      || row.status !== "published"
+      || metadata.manifestId !== expected.manifestId
+      || metadata.manifestSha256 !== expected.manifestSha256
+      || metadata.publicDeliveryAuthorized !== true
+      || !semanticallyEqual(metadata.releaseCandidate, {
+        id: replacement.releaseCandidate.id,
+        sha256: replacement.releaseCandidate.sha256,
+        publicDeliveryAuthorized: true,
+      })
+      || activation.activationId !== replacement.activationId
+      || activation.activationCandidateSha256 !== reviewed.publicationPlanSha256
+      || activation.releasePackageSha256 !== replacement.releaseCandidate.sha256
+      || activation.blobPublicationSha256 !== reviewed.blobPublicationSha256
+      || activation.deliveryOrigin !== reviewed.deliveryOrigin
+      || activation.authorizationSha256 !== reviewed.authorizationSha256
+      || activation.mode !== "publish"
+      || Number(activation.year) !== expected.year
+      || activation.manifestId !== expected.manifestId
+      || !/^[a-f0-9]{64}$/.test(activation.publicManifestSha256 ?? "")
+      || activation.changedAtUtc !== replacement.changedAtUtc
+      || Number(activation.revision) !== replacement.revision
+      || Number(row.reporting_units) !== expected.reportingUnits
+      || Number(row.exact_reporting_units) !== expected.reportingUnits
+      || Number(row.result_rows) !== expected.resultRows
+      || Number(row.features) !== expected.geometryFeatures
+      || Number(row.crosswalks) !== expected.reviewedExactCrosswalks
+      || Number(row.exact_crosswalks) !== expected.reviewedExactCrosswalks
+    ) {
+      throw new Error(
+        "Nevada " + expected.year + " reviewed v1 replacement precondition drifted",
+      );
+    }
+    const totals = await query(tx, [
+      "select candidate_name,sum(votes)::bigint votes from result_rows rr",
+      "join contests c on c.id=rr.contest_id",
+      "where rr.state_code='NV' and rr.level='precinct'",
+      " and c.election_id=$1::uuid and c.office='president'",
+      "group by candidate_name order by candidate_name",
+    ], [row.election_id]);
+    const actualTotals = Object.fromEntries(
+      totals.map((item) => [String(item.candidate_name), Number(item.votes)]),
+    );
+    const zero = await query(tx, [
+      "select count(*)::int count from (",
+      " select rr.reporting_unit_id from result_rows rr",
+      " join contests c on c.id=rr.contest_id",
+      " where rr.state_code='NV' and rr.level='precinct'",
+      "  and c.election_id=$1::uuid and c.office='president'",
+      " group by rr.reporting_unit_id having sum(rr.votes)=0) units",
+    ], [row.election_id]);
+    if (
+      !semanticallyEqual(actualTotals, expected.candidateTotals)
+      || Number(zero[0]?.count) !== expected.zeroVoteUnits
+    ) {
+      throw new Error(
+        "Nevada " + expected.year + " reviewed v1 result totals drifted",
+      );
+    }
+  }
+  const supporting = await query(tx, [
+    "select",
+    " (select count(*)::int from source_documents sd",
+    "  where sd.state_code='NV'",
+    "   and sd.metadata->'releaseCandidate'->>'sha256'=$1) source_documents,",
+    " (select count(*)::int from source_documents sd",
+    "  where sd.state_code='NV'",
+    "   and sd.metadata->'releaseCandidate'->>'sha256'=$1",
+    "   and sd.metadata->>'publicDeliveryAuthorized'='true'",
+    "   and sd.metadata->'releaseCandidate'->>'publicDeliveryAuthorized'='true')",
+    "  exact_source_documents,",
+    " (select count(*)::int from import_runs ir",
+    "  where ir.state_code='NV'",
+    "   and ir.summary->'releaseCandidate'->>'sha256'=$1) import_runs,",
+    " (select count(*)::int from import_runs ir",
+    "  where ir.state_code='NV'",
+    "   and ir.summary->'releaseCandidate'->>'sha256'=$1",
+    "   and ir.summary->>'publicDeliveryAuthorized'='true'",
+    "   and ir.summary->'releaseCandidate'->>'publicDeliveryAuthorized'='true')",
+    "  exact_import_runs,",
+    " (select count(*)::int from pg_constraint",
+    "  where connamespace='public'::regnamespace and not convalidated)",
+    "  invalid_constraints",
+  ], [replacement.releaseCandidate.sha256]);
+  const row = supporting[0] ?? {};
+  if (
+    Number(row.source_documents) !== reviewed.postconditions.sourceDocuments
+    || Number(row.exact_source_documents) !== reviewed.postconditions.sourceDocuments
+    || Number(row.import_runs) !== reviewed.postconditions.importRuns
+    || Number(row.exact_import_runs) !== reviewed.postconditions.importRuns
+    || Number(row.invalid_constraints) !== reviewed.postconditions.invalidConstraints
+  ) {
+    throw new Error("Nevada reviewed v1 supporting release metadata drifted");
+  }
+  return {
+    releaseCandidate: replacement.releaseCandidate,
+    publicationReceipt: replacement.publicationReceipt,
+    activationId: replacement.activationId,
+    revision: replacement.revision,
+    years: reviewed.years.map((year) => ({
+      year: year.year,
+      reportingUnits: year.reportingUnits,
+      resultRows: year.resultRows,
+      features: year.geometryFeatures,
+      crosswalks: year.reviewedExactCrosswalks,
+    })),
+  };
+}
+
+async function clearNevadaReviewedReplacementGeometry(tx, replacement) {
+  const reviewed = NEVADA_REVIEWED_V1_PUBLICATION;
+  const removed = await query(tx, [
+    "delete from geography_versions gv using elections e",
+    "where gv.election_id=e.id and gv.state_code='NV'",
+    " and gv.geography_type='precinct' and e.office='president'",
+    " and e.year=any($1::int[])",
+    " and gv.status='published'",
+    " and gv.metadata->'releaseCandidate'->>'id'=$2",
+    " and gv.metadata->'releaseCandidate'->>'sha256'=$3",
+    "returning gv.id",
+  ], [
+    reviewed.years.map((year) => year.year),
+    replacement.releaseCandidate.id,
+    replacement.releaseCandidate.sha256,
+  ]);
+  if (removed.length !== reviewed.years.length) {
+    throw new Error("Nevada reviewed v1 replacement geometry reset drifted");
+  }
+  return removed.length;
+}
+
 export async function applyNevadaPrecinctGisTransaction(
   tx,
   plan,
@@ -800,7 +1003,18 @@ export async function applyNevadaPrecinctGisTransaction(
       context.database.name + " lacks the complete migration 0008 precinct GIS schema",
     );
   }
-  if (context.mode === "production_release") {
+  let replacementPrecondition = null;
+  if (context.mode === "production_release" && context.productionReplacement) {
+    replacementPrecondition = await assertNevadaPublishedReplacementPrecondition(
+      tx,
+      context.productionReplacement,
+    );
+    replacementPrecondition.geometryVersionsRemoved =
+      await clearNevadaReviewedReplacementGeometry(
+        tx,
+        context.productionReplacement,
+      );
+  } else if (context.mode === "production_release") {
     const targetYears = plan.years.map((year) => year.year);
     const existing = await query(tx, [
       "select",
@@ -859,6 +1073,7 @@ export async function applyNevadaPrecinctGisTransaction(
     publicDeliveryAuthorized: false,
     releaseCandidate: context.releaseCandidate,
     productionReleaseAudit: context.productionReleaseAudit,
+    replacementPrecondition,
     revision: Number(revisions[0].revision),
     years,
   };
