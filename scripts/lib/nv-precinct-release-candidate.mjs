@@ -7,7 +7,7 @@ import { buildParentScopedPrecinctDeliveryPackage } from "./precinct-parent-deli
 import { buildNevadaPrecinctGisPlan } from "./nv-precinct-gis-plan.mjs";
 import { inspectPrecinctGeometryManifest } from "../../src/lib/precinct-geography.ts";
 
-export const NEVADA_RELEASE_CANDIDATE_ID = "nv-precinct-gis-three-election-v1";
+export const NEVADA_RELEASE_CANDIDATE_ID = "nv-precinct-gis-three-election-v2";
 export const NEVADA_RELEASE_CANDIDATE_ROOT = ".etl/precinct-release-candidates/NV";
 export const NEVADA_LOCAL_VALIDATION_REPORT = ".etl/local-db/nv-public-precinct-gis-validation.json";
 export const NEVADA_PUBLIC_RELEASE_YEARS = Object.freeze([2016, 2020, 2024]);
@@ -303,7 +303,7 @@ function buildDraftManifest(year, delivery) {
   const warnings = [
     ...draft.validation.warnings,
     "All " + year.reportingUnits.length
-      + " safely colorable precinct relationships are reviewed one-to-one across all 17 Nevada county-equivalents.",
+      + " displayable precinct-result relationships are reviewed one-to-one across all 17 Nevada county-equivalents; privacy-suppressed totals use a distinct non-winner map state.",
     "The " + year.zeroVoteUnits
       + " zero-presidential-vote precincts remain geographic reporting units.",
     "All " + year.manifest.crosswalk.reviewedNoDataFeatures
@@ -418,6 +418,7 @@ function buildYear(root, year) {
         reportingUnits: year.reportingUnits.length,
         resultRows: year.resultRows.length,
         zeroVoteUnits: year.zeroVoteUnits,
+        candidateDetailSuppressedUnits: year.candidateDetailSuppressedUnits,
         totals: year.totals,
       },
       reviewedGeometry: {
@@ -441,6 +442,8 @@ function buildYear(root, year) {
         featureCount: delivery.featureCount,
         deliveryIdentityCount: delivery.resultUnitCount,
         colorableResultUnitCount: year.reportingUnits.length,
+        candidateDetailSuppressedResultUnitCount:
+          year.candidateDetailSuppressedUnits,
         reviewedNoDataFeatureCount:
           year.manifest.crosswalk.reviewedNoDataFeatures,
         parentArtifactByteCount: delivery.parentArtifactByteCount,
@@ -541,18 +544,18 @@ export async function buildNevadaPrecinctReleaseCandidate(options = {}) {
       productionWriterImplemented: true,
       productionWriterEnabled: false,
       expectedPostLoad: {
-        reportingUnits: 5_230,
-        candidateResultRows: 15_690,
+        reportingUnits: 5_288,
+        candidateResultRows: 15_748,
         geographyVersions: 3,
-        geometryFeatures: 5_887,
-        reviewedExactCrosswalks: 5_230,
-        reviewedNoDataFeatures: 657,
+        geometryFeatures: 5_796,
+        reviewedExactCrosswalks: 5_288,
+        reviewedNoDataFeatures: 508,
         zeroVoteUnits: 647,
         invalidConstraints: 0,
       },
     },
     releasePolicy: {
-      officialResultsScope: "Official Nevada Secretary of State precinct presidential exports, grouped to Democratic, Republican, and Other for map display while privacy-suppressed cells remain unknown.",
+      officialResultsScope: "Official Nevada Secretary of State precinct presidential exports, supplemented in Clark County by its official Statement of Vote. Complete rows are grouped to Democratic, Republican, and Other; exact low-count totals are retained in a distinct privacy-suppressed state without estimating candidate allocation.",
       certifiedCanvassBoundary: "These safely colorable precinct rows do not replace separately published certified county or statewide totals; every exclusion and source limitation remains visible as a caveat.",
       publicLabel: "Nevada precinct results with reviewed election-specific geometry",
       blockedYear: {

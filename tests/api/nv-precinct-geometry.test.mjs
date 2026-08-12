@@ -52,11 +52,11 @@ const YEARS = [
   {
     year: 2024,
     electionId: "2024-11-05-general",
-    features: 1726,
-    units: 1518,
-    relationships: 1518,
-    noDataFeatures: 208,
-    exclusions: 153,
+    features: 1635,
+    units: 1576,
+    relationships: 1576,
+    noDataFeatures: 59,
+    exclusions: 95,
     derivationMethod: "official_service",
     vintageStatus: "election_date_confirmed",
   },
@@ -151,7 +151,7 @@ test("Nevada public alternatives resolve every external source gate except the 2
       "An immutable parent-scoped public delivery package and production release review have not been completed.",
     ]);
   }
-  assert.equal(manifests[2024].normalization.featureCount - manifests[2024].crosswalk.matchedResultUnits, 208);
+  assert.equal(manifests[2024].normalization.featureCount - manifests[2024].crosswalk.matchedResultUnits, 59);
 
   const evidence2016 = JSON.parse(readFileSync(
     path.join(base(YEARS[1]), "source-evidence.json"),
@@ -195,6 +195,13 @@ test("Nevada public alternatives resolve every external source gate except the 2
     path.join(base(YEARS[3]), "source-evidence.json"),
     "utf8",
   ));
+  assert.equal(
+    evidence2024.artifacts.some((artifact) =>
+      artifact.localArtifactPath.endsWith("2024-general-president-statement-of-vote.txt")
+      && artifact.authority === "Clark County Election Department"
+      && artifact.sha256 === "2fedeb8f8457b9a66d05ee9f6141a2bbf6b1074281198858dec1c0cbd0041380"),
+    true,
+  );
   assert.equal(
     evidence2024.artifacts.some((artifact) =>
       artifact.localArtifactPath.endsWith("2024-precincts-item-metadata.json")
@@ -245,7 +252,7 @@ test("Nevada 2012 multipart precincts deliver as one-to-one MultiPolygon feature
     feature.properties.relationshipType === "no_data").length, 242);
 });
 
-test("Nevada 2024 delivery preserves all reviewed no-data polygons without inventing results", () => {
+test("Nevada 2024 delivery preserves reviewed no-data polygons and excludes non-reporting Clark shapes", () => {
   const spec = YEARS[3];
   const manifest = JSON.parse(readFileSync(path.join(base(spec), "manifest.json"), "utf8"));
   const geometry = JSON.parse(gunzipSync(readFileSync(
@@ -264,10 +271,10 @@ test("Nevada 2024 delivery preserves all reviewed no-data polygons without inven
     feature.properties.relationshipType === "no_data");
   const linked = delivery.features.filter((feature) =>
     feature.properties.relationshipType === "one_to_one");
-  assert.equal(delivery.features.length, 1726);
-  assert.equal(linked.length, 1518);
-  assert.equal(noData.length, 208);
-  assert.equal(new Set(noData.map((feature) => feature.properties.resultUnitCode)).size, 208);
+  assert.equal(delivery.features.length, 1635);
+  assert.equal(linked.length, 1576);
+  assert.equal(noData.length, 59);
+  assert.equal(new Set(noData.map((feature) => feature.properties.resultUnitCode)).size, 59);
   assert.ok(noData.every((feature) => feature.properties.resultUnitCode.startsWith(
     `no-data:${manifest.id}:`,
   )));
@@ -285,13 +292,63 @@ test("Nevada 2024 delivery preserves all reviewed no-data polygons without inven
     () => buildPrecinctDeliveryCandidateFeatureCollection(
       {
         ...manifest,
-        crosswalk: { ...manifest.crosswalk, reviewedNoDataFeatures: 207 },
+        crosswalk: { ...manifest.crosswalk, reviewedNoDataFeatures: 58 },
       },
       geometry,
       crosswalk,
     ),
-    /no-data feature count 208 does not match manifest 207/,
+    /no-data feature count 59 does not match manifest 58/,
   );
+});
+
+test("Clark 2024 map has an official result relationship for every retained election precinct", () => {
+  const spec = YEARS[3];
+  const manifest = JSON.parse(readFileSync(path.join(base(spec), "manifest.json"), "utf8"));
+  const geometry = JSON.parse(gunzipSync(readFileSync(
+    path.join(base(spec), `normalized/nv-${spec.year}-precincts.geojson.gz`),
+  )));
+  const results = JSON.parse(gunzipSync(readFileSync(
+    path.join(base(spec), `normalized/nv-${spec.year}-president-results.json.gz`),
+  )));
+  const crosswalk = JSON.parse(readFileSync(
+    path.join(base(spec), `crosswalk/nv-${spec.year}-precinct-result-crosswalk.json`),
+    "utf8",
+  ));
+  const report = JSON.parse(readFileSync(
+    path.join(base(spec), `reports/nv-${spec.year}-precinct-geometry-report.json`),
+    "utf8",
+  ));
+  const delivery = buildPrecinctDeliveryCandidateFeatureCollection(
+    manifest,
+    geometry,
+    crosswalk,
+  );
+  const clarkFeatures = delivery.features.filter((feature) =>
+    feature.properties.parentGeoid === "32003");
+  const clarkResults = results.rows.filter((row) => row.parentGeoid === "32003");
+  const suppressed = clarkResults.filter((row) =>
+    row.resultStatus === "candidate_detail_suppressed");
+
+  assert.equal(clarkFeatures.length, 910);
+  assert.ok(clarkFeatures.every((feature) =>
+    feature.properties.relationshipType === "one_to_one"));
+  assert.equal(clarkResults.length, 910);
+  assert.equal(suppressed.length, 58);
+  assert.equal(suppressed.reduce((sum, row) => sum + row.reportedTotalVotes, 0), 164);
+  assert.ok(suppressed.every((row) =>
+    row.total === row.reportedTotalVotes
+    && Number.isSafeInteger(row.reportedRegistration)
+    && Number.isSafeInteger(row.reportedTurnout)
+    && row.democratic === undefined
+    && row.republican === undefined
+    && row.other === undefined));
+  assert.equal(report.source.rawFeatureCount, 1726);
+  assert.equal(report.source.excludedSourceFeatureCount, 91);
+  assert.equal(report.clarkStatementOfVote.reportingUnits, 916);
+  assert.equal(report.clarkStatementOfVote.candidateDetailSuppressedUnits, 60);
+  assert.equal(report.clarkStatementOfVote.mappedCandidateDetailSuppressedUnits, 58);
+  assert.equal(report.clarkStatementOfVote.mappedCandidateDetailSuppressedVotes, 164);
+  assert.equal(report.clarkStatementOfVote.totals.totalVotes, 1031223);
 });
 
 test("Nevada collector rejects an unreviewed retrieval timestamp before writes", () => {

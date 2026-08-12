@@ -1835,6 +1835,7 @@
         "county source request matrix TSV",
         "non-Clark jurisdiction request packet JSON",
         "official NVSOS 2012, 2016, 2020, and 2024 precinct result exports",
+        "official Clark County 2024 presidential Statement of Vote",
         "official 2024 LCB precinct GeoJSON",
         "VEST 2016 and 2020 election-specific shapefiles",
         "normalized precinct GeoJSON, result, crosswalk, and validation artifacts"
@@ -1851,7 +1852,8 @@
         "https://www.nvsos.gov/silverstate2012gen/",
         "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/",
         "https://dataverse.harvard.edu/file.xhtml?fileId=4863168&version=21.0",
-        "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0"
+        "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0",
+        "https://elections.clarkcountynv.gov/electionresultsTV/SOV/24G/PRESIDENT.txt"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -1866,7 +1868,7 @@
         "2012 reviewed hybrid candidate geometry: 2,002 normalized features, 1,760 colorable presidential units, and five reviewed multipart precincts retained as single MultiPolygon features",
         "2016 official statewide results joined to attributed VEST geometry: 2,067 features and 1,843 safely colorable units",
         "2020 official statewide results joined to attributed VEST geometry: 2,094 features and 1,869 safely colorable units",
-        "2024 official statewide LCB geometry: 1,726 features and 1,518 safely colorable presidential units"
+        "2024 official LCB election-relevant geometry: 1,635 features and 1,576 displayable presidential units, including 58 Clark precincts with exact Statement-of-Vote totals and legally suppressed candidate detail"
       ],
       "missingFields": [
         "same-grain U.S. Senate/local review rows for 14 non-Clark/non-Washoe/non-Humboldt jurisdictions",
@@ -1878,7 +1880,7 @@
       "parserStatus": "scripts/collect-nv-precinct-geometry.mjs deterministically normalizes and hash-pins all four diagnostic years. The guarded release package selects only 2016, 2020, and 2024, builds 51 immutable county GeoJSON files plus three indexes, validates a blocked hidden load, and requires an atomic database publication before either public API opens. localComparisonCsv remains the separate President-versus-Senate advisory path; active turnout remains EAC fallback.",
       "manualReviewBurden": "high",
       "confidence": "loaded_with_caveats",
-      "caveats": "All four presidential precinct GIS years have reproducible normalized artifacts and reviewed relationship evidence. Only 2012 retains an external map-source gate because Washoe uses a labeled 2016 proxy; GitHub issue #220 tracks that archive. Its multipart relationships are normalized to one-to-one MultiPolygon features. For 2016 and 2020, all displayed votes come from official NVSOS statewide precinct exports while VEST supplies clearly attributed election-specific CC BY 4.0 geometry only. The exact 2020 version-21 terms are retained. The official 2024 LCB layer retains 208 reviewed no-data polygons and is covered by retained ArcGIS Online public-sharing permission. The three source-ready years have immutable delivery and fail-closed release tooling, but production loading, Blob upload, deployment verification, and database publication remain explicit operations. These gaps are source limitations, not evidence of misconduct.",
+      "caveats": "All four presidential precinct GIS years have reproducible normalized artifacts and reviewed relationship evidence. Only 2012 retains an external map-source gate because Washoe uses a labeled 2016 proxy; GitHub issue #220 tracks that archive. Its multipart relationships are normalized to one-to-one MultiPolygon features. For 2016 and 2020, all displayed votes come from official NVSOS statewide precinct exports while VEST supplies clearly attributed election-specific CC BY 4.0 geometry only. The exact 2020 version-21 terms are retained. For 2024, every retained Clark election-reporting polygon has official result evidence: 852 complete candidate rows and 58 exact county Statement-of-Vote totals (164 combined) whose candidate allocation remains legally suppressed. Ninety-one raw LCB Clark shapes absent from both official result universes are audited and excluded rather than shown as missing-result precincts; 59 reviewed no-data polygons remain outside Clark. The source-ready years have immutable delivery and fail-closed release tooling, but production loading, Blob upload, deployment verification, and database publication remain explicit operations. These gaps are source limitations, not evidence of misconduct.",
       "nextAction": "Review and merge the guarded 2016/2020/2024 release implementation, then execute its separately authorized production sequence. Continue public/archive discovery for issue #220 without substituting the later Washoe proxy, and continue collecting same-grain U.S. Senate review rows and state-native turnout separately."
     },
     {

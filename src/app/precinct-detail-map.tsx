@@ -251,6 +251,9 @@ function precinctFill(result: ResultRow | null) {
   if (outcome === "no_votes") {
     return "#747b77";
   }
+  if (outcome === "privacy_suppressed") {
+    return "#88745a";
+  }
   if (outcome === "missing") {
     return "#4a504d";
   }
@@ -496,7 +499,9 @@ export function PrecinctDetailMap({
     ({ feature }) =>
       feature.properties.resultUnitCode === effectiveResultUnitCode,
   ) ?? null;
+  const selectedOutcome = resultOutcomeKind(selectedRow?.result ?? null);
   const topCandidateRows = selectedRow?.result
+    && selectedOutcome !== "privacy_suppressed"
     ? Object.entries(selectedRow.result.votes)
         .sort((left, right) => right[1] - left[1])
         .slice(0, 2)
@@ -617,6 +622,7 @@ export function PrecinctDetailMap({
               <span><i className="dem" aria-hidden /> Democratic winner</span>
               <span><i className="rep" aria-hidden /> Republican winner</span>
               <span><i className="other" aria-hidden /> Other winner</span>
+              <span><i className="privacy-suppressed" aria-hidden /> Candidate detail suppressed</span>
               <span><i className="missing" aria-hidden /> No joined result</span>
               <span><i className="no-votes" aria-hidden /> No votes reported</span>
             </div>
@@ -637,7 +643,9 @@ export function PrecinctDetailMap({
                   >
                     {feature.properties.displayName}
                     {result
-                      ? result.totalVotes > 0
+                      ? resultOutcomeKind(result) === "privacy_suppressed"
+                        ? " - candidate detail suppressed"
+                        : result.totalVotes > 0
                         ? ""
                         : " - no votes reported"
                       : " - result unavailable"}
@@ -649,30 +657,54 @@ export function PrecinctDetailMap({
               <>
                 <strong>{selectedRow.feature.properties.displayName}</strong>
                 {selectedRow.result ? (
-                  <dl className="precinct-detail-stats">
-                    <div>
-                      <dt>Winner</dt>
-                      <dd>{resultWinnerLabel(selectedRow.result)}</dd>
-                    </div>
-                    <div>
-                      <dt>Margin</dt>
-                      <dd>
-                        {selectedRow.result.totalVotes > 0
-                          ? selectedRow.result.marginPct.toFixed(2) + "%"
-                          : "Not applicable"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Total votes</dt>
-                      <dd>{selectedRow.result.totalVotes.toLocaleString()}</dd>
-                    </div>
-                    {topCandidateRows.map(([candidate, votes]) => (
-                      <div key={candidate}>
-                        <dt>{candidate}</dt>
-                        <dd>{votes.toLocaleString()}</dd>
+                  <>
+                    {selectedOutcome === "privacy_suppressed" ? (
+                      <p>
+                        Clark County reports this precinct&apos;s exact total,
+                        but suppresses the candidate allocation for ballot
+                        privacy. CivicResultMaps does not estimate the hidden
+                        candidate values.
+                      </p>
+                    ) : null}
+                    <dl className="precinct-detail-stats">
+                      <div>
+                        <dt>Winner</dt>
+                        <dd>{resultWinnerLabel(selectedRow.result)}</dd>
                       </div>
-                    ))}
-                  </dl>
+                      <div>
+                        <dt>Margin</dt>
+                        <dd>
+                          {selectedOutcome === "privacy_suppressed"
+                            ? "Not available"
+                            : selectedRow.result.totalVotes > 0
+                              ? selectedRow.result.marginPct.toFixed(2) + "%"
+                              : "Not applicable"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Total votes</dt>
+                        <dd>{selectedRow.result.totalVotes.toLocaleString()}</dd>
+                      </div>
+                      {selectedRow.result.reportedTurnout !== undefined ? (
+                        <div>
+                          <dt>Reported turnout</dt>
+                          <dd>{selectedRow.result.reportedTurnout.toLocaleString()}</dd>
+                        </div>
+                      ) : null}
+                      {selectedRow.result.reportedRegistration !== undefined ? (
+                        <div>
+                          <dt>Registration</dt>
+                          <dd>{selectedRow.result.reportedRegistration.toLocaleString()}</dd>
+                        </div>
+                      ) : null}
+                      {topCandidateRows.map(([candidate, votes]) => (
+                        <div key={candidate}>
+                          <dt>{candidate}</dt>
+                          <dd>{votes.toLocaleString()}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </>
                 ) : (
                   <p>
                     This reviewed boundary has no result row joined by its

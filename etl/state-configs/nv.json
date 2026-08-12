@@ -154,9 +154,9 @@
       "url": "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0",
       "localFile": "data/precinct-geometry/NV/2024-11-05-general/manifest.json",
       "parser": "coverageInventoryJson",
-      "authority": "Nevada Legislative Counsel Bureau and Nevada Secretary of State",
-      "timestampBasis": "Official public-authoritative static LCB 2024 election-cycle precinct layer and retained ArcGIS metadata paired to the November 5, 2024 NVSOS presidential precinct export and normalized August 11, 2026.",
-      "confidence": "Reviewed precinct GIS manifest covering all 17 county-equivalents. All 1,726 polygons are retained, including 208 explicitly reviewed no-data features. Retained ArcGIS Online public-sharing terms authorize use, derivatives, and distribution subject to owner constraints, and the public-authoritative item states none. Immutable county delivery and guarded release tooling are implemented; database publication remains a separate production action.",
+      "authority": "Nevada Legislative Counsel Bureau, Nevada Secretary of State, and Clark County Election Department",
+      "timestampBasis": "Official public-authoritative static LCB 2024 election-cycle precinct layer and retained ArcGIS metadata paired to the November 5, 2024 NVSOS presidential precinct export and Clark County presidential Statement of Vote; normalized August 12, 2026.",
+      "confidence": "Reviewed precinct GIS manifest covering all 17 county-equivalents. It retains 1,635 election-relevant polygons and 1,576 result relationships. All 910 retained Clark reporting polygons have official result evidence: 852 have complete candidate detail, while the county Statement of Vote supplies exact registration, turnout, and total votes for 58 legally suppressed candidate allocations totaling 164 votes. Those 58 use a distinct privacy-suppressed map state rather than an estimated winner. Ninety-one extra Clark LCB shapes absent from both official result universes are excluded with a retained audit. Retained ArcGIS Online public-sharing terms authorize use, derivatives, and distribution subject to owner constraints, and the public-authoritative item states none. Immutable county delivery and guarded release tooling are implemented; database publication remains a separate production action.",
       "status": "loaded"
     },
     {

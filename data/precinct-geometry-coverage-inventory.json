@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-12T03:37:10.550Z",
+  "updatedAt": "2026-08-12T14:47:11.155Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -157,7 +157,7 @@
       "programStatus": "reviewed",
       "wave": 7,
       "disposition": "mapped",
-      "checkedAt": "2026-08-12T03:37:10.550Z",
+      "checkedAt": "2026-08-12T14:47:11.155Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -186,13 +186,13 @@
         "vintageStatuses": [
           "election_date_confirmed"
         ],
-        "featureCount": 1726,
+        "featureCount": 1635,
         "publicEligibleManifestCount": 1
       },
       "crosswalk": {
-        "resultUnits": 1518,
-        "colorableResultUnits": 1518,
-        "matchedResultUnits": 1518,
+        "resultUnits": 1576,
+        "colorableResultUnits": 1576,
+        "matchedResultUnits": 1576,
         "unmatchedResultUnits": 0,
         "nonGeographicResultUnits": 0,
         "sourceAliasResultUnits": 0
@@ -201,7 +201,7 @@
       "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "The official Nevada Legislative Counsel Bureau election-cycle precinct layer supplies the reviewed presentation geometry.",
-        "Privacy-suppressed result cells remain unknown; no vote value is inferred. Reviewed no-data polygons remain visible without invented result rows.",
+        "Clark County's official Statement of Vote supplies exact totals for 58 mapped precincts whose candidate allocation remains suppressed; the map displays a distinct privacy-suppressed state and never infers a winner. Reviewed no-data polygons remain visible without invented result rows.",
         "The 2012 election remains separately blocked pending the election-date Washoe County precinct archive tracked in GitHub issue #220."
       ]
     }

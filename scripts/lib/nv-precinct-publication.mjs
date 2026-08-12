@@ -16,10 +16,10 @@ export const NEVADA_PUBLICATION_SCOPES = Object.freeze([
 ]);
 
 const EXPECTED_TOTALS = Object.freeze({
-  reportingUnits: 5_230,
-  candidateResultRows: 15_690,
-  geometryFeatures: 5_887,
-  reviewedExactCrosswalks: 5_230,
+  reportingUnits: 5_288,
+  candidateResultRows: 15_748,
+  geometryFeatures: 5_796,
+  reviewedExactCrosswalks: 5_288,
   zeroVoteUnits: 647,
   sourceDocuments: 6,
   importRuns: 3,
@@ -112,7 +112,7 @@ function loadPackage(root, packagePath, packageSha256) {
   const document = JSON.parse(artifact.bytes.toString("utf8"));
   if (
     document?.schemaVersion !== 1
-    || document?.id !== "nv-precinct-gis-three-election-v1"
+    || document?.id !== "nv-precinct-gis-three-election-v2"
     || document?.state !== "NV"
     || document?.decision !== "NO_GO_PRODUCTION"
     || document?.totals?.reportingUnits !== EXPECTED_TOTALS.reportingUnits

@@ -6,6 +6,7 @@ import { inspectPrecinctGeometryManifest, reportingUnitCode } from "../../src/li
 import { validateManifestArtifacts } from "./precinct-geometry-validation.mjs";
 
 const STATE = "NV";
+export const PRIVACY_SUPPRESSED_TOTAL_LABEL = "Candidate detail suppressed by official source";
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
 export const NEVADA_PRECINCT_GIS_YEAR_SPECS = Object.freeze([
@@ -94,16 +95,17 @@ export const NEVADA_PRECINCT_GIS_YEAR_SPECS = Object.freeze([
     year: 2024,
     electionId: "2024-11-05-general",
     electionDate: "2024-11-05",
-    manifestSha256: "e543af3d6e31d2175c07d24f9de664692af22bb813bb9ddbd2c705c0186dff1b",
-    manifestByteCount: 4_595,
-    geometryByteCount: 3_066_961,
-    resultsSha256: "1a685414d699f40eb2ad8da8b4a9c83e1614107072ab567004942eaf634912fa",
-    resultsByteCount: 30_391,
-    crosswalkByteCount: 1_056_649,
-    expectedUnits: 1_518,
-    expectedFeatures: 1_726,
-    expectedCrosswalkRecords: 1_518,
-    expectedNoDataFeatures: 208,
+    manifestSha256: "50ab3de628b8a9237d89835e07b56fade81c5ca82db0703a846b14f2ec3de140",
+    manifestByteCount: 6_137,
+    geometryByteCount: 3_008_438,
+    resultsSha256: "fa38681e967ffa5dab73265f534fe13db29ff7101ea40bf7bfac30c1829bbb41",
+    resultsByteCount: 31_112,
+    crosswalkByteCount: 1_100_149,
+    expectedUnits: 1_576,
+    expectedFeatures: 1_635,
+    expectedCrosswalkRecords: 1_576,
+    expectedNoDataFeatures: 59,
+    expectedCandidateDetailSuppressedUnits: 58,
     democratic: { name: "Kamala Harris", party: "DEM" },
     republican: { name: "Donald Trump", party: "REP" },
     resultSource: {
@@ -113,8 +115,18 @@ export const NEVADA_PRECINCT_GIS_YEAR_SPECS = Object.freeze([
       artifact: "data/precinct-geometry/NV/2024-11-05-general/raw/nevada-secretary-of-state/2024-general-president.csv",
       sha256: "5a7c94660e3e0f32229cfb4e816b2819360277973b80ac3308c531fd7a08dda7",
       byteCount: 898_445,
-      timestampBasis: "Nevada Secretary of State 2024 General presidential precinct export; low-count cells are suppressed.",
-      authority: "Nevada Secretary of State",
+      timestampBasis: "Nevada Secretary of State 2024 General presidential precinct export supplemented by the official Clark County Statement of Vote for exact low-count precinct totals; candidate allocation remains suppressed.",
+      authority: "Nevada Secretary of State and Clark County Election Department",
+      supplementalArtifacts: [
+        {
+          sourceUrl: "https://elections.clarkcountynv.gov/electionresultsTV/SOV/24G/PRESIDENT.txt",
+          authority: "Clark County Election Department",
+          artifact: "data/precinct-geometry/NV/2024-11-05-general/raw/clark-county-election-department/2024-general-president-statement-of-vote.txt",
+          sha256: "2fedeb8f8457b9a66d05ee9f6141a2bbf6b1074281198858dec1c0cbd0041380",
+          byteCount: 197_621,
+          purpose: "Exact registration, turnout, and total-vote values for Clark reporting precincts whose candidate allocation is suppressed.",
+        },
+      ],
     },
   },
 ].map((spec) => Object.freeze({
@@ -162,32 +174,92 @@ function buildResultPlan(spec, document) {
   const reportingUnits = [];
   const resultRows = [];
   const codes = new Set();
-  const totals = { Democratic: 0, Republican: 0, Other: 0, Total: 0 };
+  const totals = { Democratic: 0, Republican: 0, Other: 0, Suppressed: 0, Total: 0 };
   let zeroVoteUnits = 0;
+  let candidateDetailSuppressedUnits = 0;
   for (const row of document.rows) {
     const code = reportingUnitCode({ state: STATE, electionId: spec.electionId, reportingGrain: "precinct", parentGeoid: row.parentGeoid, sourceUnitId: row.sourceUnitId });
     if (code !== row.resultUnitCode || codes.has(code) || !/^32\d{3}$/.test(row.parentGeoid)) throw new Error(`Nevada ${spec.year} normalized result identity drifted`);
     codes.add(code);
-    const democratic = Number(row.democratic);
-    const republican = Number(row.republican);
-    const other = Number(row.other);
+    const resultStatus = row.resultStatus ?? "candidate_detail_complete";
+    if (!["candidate_detail_complete", "candidate_detail_suppressed"].includes(resultStatus)) {
+      throw new Error(`Nevada ${spec.year} normalized result status drifted for ${code}`);
+    }
     const total = Number(row.total);
-    if (![democratic, republican, other, total].every(Number.isInteger) || [democratic, republican, other].some((value) => value < 0) || total !== democratic + republican + other) {
-      throw new Error(`Nevada ${spec.year} normalized result total drifted for ${code}`);
+    let democratic = 0;
+    let republican = 0;
+    let other = 0;
+    if (resultStatus === "candidate_detail_suppressed") {
+      const registration = Number(row.reportedRegistration);
+      const turnout = Number(row.reportedTurnout);
+      const reportedTotal = Number(row.reportedTotalVotes);
+      if (
+        spec.year !== 2024
+        || row.parentGeoid !== "32003"
+        || ![registration, turnout, reportedTotal, total].every(Number.isSafeInteger)
+        || [registration, turnout, reportedTotal, total].some((value) => value < 0)
+        || reportedTotal !== total
+        || row.democratic !== undefined
+        || row.republican !== undefined
+        || row.other !== undefined
+      ) {
+        throw new Error(`Nevada ${spec.year} suppressed result contract drifted for ${code}`);
+      }
+      candidateDetailSuppressedUnits += 1;
+      totals.Suppressed += total;
+    } else {
+      democratic = Number(row.democratic);
+      republican = Number(row.republican);
+      other = Number(row.other);
+      if (
+        ![democratic, republican, other, total].every(Number.isSafeInteger)
+        || [democratic, republican, other].some((value) => value < 0)
+        || total !== democratic + republican + other
+      ) {
+        throw new Error(`Nevada ${spec.year} normalized result total drifted for ${code}`);
+      }
     }
     if (total === 0) zeroVoteUnits += 1;
-    reportingUnits.push({ code, sourceUnitId: row.sourceUnitId, sourceDisplayName: row.sourceDisplayName, parentGeoid: row.parentGeoid, reportingGrain: "precinct", isGeographic: true });
-    resultRows.push(
-      { jurisdictionCode: code, jurisdictionName: row.sourceDisplayName, candidateName: spec.democratic.name, party: spec.democratic.party, votes: democratic },
-      { jurisdictionCode: code, jurisdictionName: row.sourceDisplayName, candidateName: spec.republican.name, party: spec.republican.party, votes: republican },
-      { jurisdictionCode: code, jurisdictionName: row.sourceDisplayName, candidateName: "Other", party: "OTHER", votes: other },
-    );
+    reportingUnits.push({
+      code,
+      sourceUnitId: row.sourceUnitId,
+      sourceDisplayName: row.sourceDisplayName,
+      parentGeoid: row.parentGeoid,
+      reportingGrain: "precinct",
+      isGeographic: true,
+      resultStatus,
+      ...(resultStatus === "candidate_detail_suppressed"
+        ? {
+          reportedRegistration: Number(row.reportedRegistration),
+          reportedTurnout: Number(row.reportedTurnout),
+          reportedTotalVotes: total,
+        }
+        : {}),
+    });
+    if (resultStatus === "candidate_detail_suppressed") {
+      resultRows.push({
+        jurisdictionCode: code,
+        jurisdictionName: row.sourceDisplayName,
+        candidateName: PRIVACY_SUPPRESSED_TOTAL_LABEL,
+        party: "SUPPRESSED",
+        votes: total,
+      });
+    } else {
+      resultRows.push(
+        { jurisdictionCode: code, jurisdictionName: row.sourceDisplayName, candidateName: spec.democratic.name, party: spec.democratic.party, votes: democratic },
+        { jurisdictionCode: code, jurisdictionName: row.sourceDisplayName, candidateName: spec.republican.name, party: spec.republican.party, votes: republican },
+        { jurisdictionCode: code, jurisdictionName: row.sourceDisplayName, candidateName: "Other", party: "OTHER", votes: other },
+      );
+    }
     totals.Democratic += democratic;
     totals.Republican += republican;
     totals.Other += other;
     totals.Total += total;
   }
-  return { reportingUnits, resultRows, totals, zeroVoteUnits, source: spec.resultSource };
+  if (candidateDetailSuppressedUnits !== (spec.expectedCandidateDetailSuppressedUnits ?? 0)) {
+    throw new Error(`Nevada ${spec.year} candidate-detail suppression count drifted`);
+  }
+  return { reportingUnits, resultRows, totals, zeroVoteUnits, candidateDetailSuppressedUnits, source: spec.resultSource };
 }
 
 function buildGeometryPlan(root, spec, manifest, results) {
@@ -278,6 +350,7 @@ async function loadYear(root, spec) {
     resultRows: results.resultRows,
     totals: results.totals,
     zeroVoteUnits: results.zeroVoteUnits,
+    candidateDetailSuppressedUnits: results.candidateDetailSuppressedUnits,
     sourceRows: results.reportingUnits.length,
     geometry: buildGeometryPlan(root, spec, manifest, results),
     geometrySourceSlug: spec.geometrySourceSlug,
@@ -307,6 +380,7 @@ export function summarizeNevadaPrecinctGisPlan(plan) {
       reportingUnits: year.reportingUnits.length,
       resultRows: year.resultRows.length,
       zeroVoteUnits: year.zeroVoteUnits,
+      candidateDetailSuppressedUnits: year.candidateDetailSuppressedUnits,
       totals: year.totals,
       geometryDisposition: year.geometry.disposition,
       geometryFeatures: year.geometry.features.length,

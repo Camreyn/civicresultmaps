@@ -9,7 +9,7 @@
     "type": "general",
     "office": "president"
   },
-  "authority": "Nevada Legislative Counsel Bureau and Nevada Secretary of State",
+  "authority": "Nevada Legislative Counsel Bureau, Nevada Secretary of State, and Clark County Election Department",
   "retrievedAt": "2026-08-11T12:00:00.000Z",
   "sourceCrs": "source-defined; parsed by shpjs or official EPSG:4326 GeoJSON",
   "servedCrs": "EPSG:4326",
@@ -23,6 +23,16 @@
       "sha256": "5a7c94660e3e0f32229cfb4e816b2819360277973b80ac3308c531fd7a08dda7",
       "format": "CSV",
       "note": "Official statewide presidential precinct export; low-count cells are suppressed with an asterisk."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2024-11-05-general/raw/clark-county-election-department/2024-general-president-statement-of-vote.txt",
+      "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/SOV/24G/PRESIDENT.txt",
+      "authority": "Clark County Election Department",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 197621,
+      "sha256": "2fedeb8f8457b9a66d05ee9f6141a2bbf6b1074281198858dec1c0cbd0041380",
+      "format": "CSV-compatible text",
+      "note": "Official 2024 General Election presidential Statement of Vote. Exact precinct registration, turnout, and total-vote values preserve mapped low-count precinct results without estimating the legally suppressed candidate allocation."
     },
     {
       "localArtifactPath": "data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts.geojson",
@@ -68,24 +78,29 @@
   "resultIdentity": {
     "sourceId": "nv-2024-president-precinct-results",
     "sourceResultUnits": 1671,
-    "colorableResultUnits": 1518,
-    "excludedResultUnits": 153,
-    "knownColorablePresidentVotes": 1484382,
+    "colorableResultUnits": 1576,
+    "excludedResultUnits": 95,
+    "knownColorablePresidentVotes": 1484546,
+    "candidateDetailCompleteResultUnits": 1518,
+    "candidateDetailSuppressedResultUnits": 58,
+    "candidateDetailSuppressedReportedVotes": 164,
     "normalizedResultArtifact": {
       "path": "data/precinct-geometry/NV/2024-11-05-general/normalized/nv-2024-president-results.json.gz",
-      "sha256": "1a685414d699f40eb2ad8da8b4a9c83e1614107072ab567004942eaf634912fa",
-      "byteCount": 30391
+      "sha256": "fa38681e967ffa5dab73265f534fe13db29ff7101ea40bf7bfac30c1829bbb41",
+      "byteCount": 31112
     }
   },
   "boundaryContext": {
-    "vintage": "Nevada LCB 2024 Precincts snapshot published April 5, 2024",
+    "vintage": "Nevada LCB April 2024 precinct layer filtered to official 2024 election reporting identities",
     "vintageStatus": "election_date_confirmed",
     "licenseOrTerms": "The retained ArcGIS item is public_authoritative and permits Query and Extract. ArcGIS Online Terms of Use expressly grant end users permission to use, reproduce, prepare derivative works of, and distribute publicly shared content, subject to owner-stated constraints; this item states no additional constraint."
   },
   "caveats": [
     "No election-result value is embedded in the normalized geometry or crosswalk.",
     "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
-    "The reviewed delivery contract retains all 1,726 official LCB polygons: 1,518 have result relationships and 208 remain visible as no-data. Of the no-data polygons, 115 correspond to result identities excluded because a major-party cell is suppressed and 93 lack a retained joinable result identity; 29 source result identities have no matching feature.",
+    "The official Clark County presidential Statement of Vote supplies exact reported totals for 58 mapped low-count precincts (164 votes total). Two additional Statement-of-Vote rows totaling 20 votes are suppressed in the county file but already carry complete candidate detail in the Nevada Secretary of State export. Candidate allocation for the 58 unresolved rows remains legally suppressed and is displayed as suppressed rather than estimated or assigned to a candidate.",
+    "The April 2024 LCB layer contains 91 Clark feature identities absent from both official 2024 result universes. They are excluded from the election-specific normalized layer rather than displayed as precincts with missing results. Clark retains 910 mapped reporting precincts; six Statement-of-Vote identities lack geometry, of which five report zero votes and special unit 9996 reports 40 votes without a geographic feature.",
+    "The reviewed statewide delivery contract retains 1,635 election-relevant polygons: 1,576 have result relationships and 59 remain explicit no-data features outside Clark County.",
     "The official LCB layer is public_authoritative, has no item-level use constraint, and is covered by retained ArcGIS Online public-sharing permission for end-user use, reproduction, derivative works, and distribution."
   ]
 }

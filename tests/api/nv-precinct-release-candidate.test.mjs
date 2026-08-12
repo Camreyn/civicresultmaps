@@ -11,17 +11,17 @@ const { built } = await buildNevadaTestReleaseFixture();
 
 test("Nevada release candidate freezes three complete county-scoped deliveries", () => {
   const document = built.packageDocument;
-  assert.equal(document.id, "nv-precinct-gis-three-election-v1");
+  assert.equal(document.id, "nv-precinct-gis-three-election-v2");
   assert.equal(document.state, "NV");
   assert.equal(document.decision, "NO_GO_PRODUCTION");
   assert.deepEqual(document.totals, {
     elections: 3,
     countyEquivalentsPerElection: 17,
-    reportingUnits: 5230,
-    candidateResultRows: 15690,
+    reportingUnits: 5288,
+    candidateResultRows: 15748,
     zeroVoteUnits: 647,
-    geometryFeatures: 5887,
-    reviewedExactCrosswalks: 5230,
+    geometryFeatures: 5796,
+    reviewedExactCrosswalks: 5288,
     deliveryIndexes: 3,
     parentDeliveryArtifacts: 51,
   });

@@ -25,7 +25,7 @@ test("Nevada plan preserves exact four-election result, geometry, and suppressio
     { year: 2012, units: 1760, rows: 5280, zero: 177, features: 2002, relationships: 1760, noData: 242, total: 1005652, sourceGatePassed: false, eligible: false },
     { year: 2016, units: 1843, rows: 5529, zero: 206, features: 2067, relationships: 1843, noData: 224, total: 1122216, sourceGatePassed: true, eligible: false },
     { year: 2020, units: 1869, rows: 5607, zero: 207, features: 2094, relationships: 1869, noData: 225, total: 1404657, sourceGatePassed: true, eligible: false },
-    { year: 2024, units: 1518, rows: 4554, zero: 234, features: 1726, relationships: 1518, noData: 208, total: 1484382, sourceGatePassed: true, eligible: false },
+    { year: 2024, units: 1576, rows: 4612, zero: 234, features: 1635, relationships: 1576, noData: 59, total: 1484546, sourceGatePassed: true, eligible: false },
   ]);
 });
 
@@ -42,10 +42,13 @@ test("Nevada plan uses canonical county-scoped identities and reviewed relations
       relationship.reviewStatus === "reviewed"
       && ["high", "medium"].includes(relationship.confidence)
       && relationship.relationshipType === "one_to_one"));
-    assert.equal(year.resultRows.length, year.reportingUnits.length * 3);
+    assert.equal(
+      year.resultRows.length,
+      year.reportingUnits.length * 3 - year.candidateDetailSuppressedUnits * 2,
+    );
   }
   assert.equal(plan.years.find((year) => year.year === 2012).geometry.crosswalks.length, 1760);
-  assert.equal(plan.years.find((year) => year.year === 2024).geometry.features.length, 1726);
+  assert.equal(plan.years.find((year) => year.year === 2024).geometry.features.length, 1635);
 });
 
 test("Nevada all-four release readiness isolates the only remaining external requirement", async () => {
@@ -63,5 +66,5 @@ test("Nevada all-four release readiness isolates the only remaining external req
     assert.equal(readiness.years.find((entry) => entry.year === year).externalRequest, null);
     assert.equal(readiness.years.find((entry) => entry.year === year).status, "source_and_crosswalk_gates_passed_delivery_pending");
   }
-  assert.equal(readiness.years.find((year) => year.year === 2024).reviewedNoDataFeatures, 208);
+  assert.equal(readiness.years.find((year) => year.year === 2024).reviewedNoDataFeatures, 59);
 });

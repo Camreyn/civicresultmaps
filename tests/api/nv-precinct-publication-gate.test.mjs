@@ -54,7 +54,7 @@ function metadata(value) {
     normalization: { featureCount: value.delivery.featureCount },
     crosswalk: { reviewedRelationships: value.delivery.featureCount },
     releaseCandidate: {
-      id: "nv-precinct-gis-three-election-v1",
+      id: "nv-precinct-gis-three-election-v2",
       sha256: releaseSha256,
       publicDeliveryAuthorized: true,
     },

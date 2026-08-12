@@ -78,7 +78,7 @@ function fixture() {
   });
   const document = {
     schemaVersion: 1,
-    id: "nv-precinct-gis-three-election-v1",
+    id: "nv-precinct-gis-three-election-v2",
     state: "NV",
     decision: "NO_GO_PRODUCTION",
     safety: {

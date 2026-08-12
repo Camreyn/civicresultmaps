@@ -12,7 +12,7 @@ import { applyNevadaGeographyPublicationTransaction } from "../../scripts/publis
 const DATABASE_URL =
   "postgresql://crm_clone_admin:crm_clone_local_only@127.0.0.1:54329/crm_clone_dev";
 const releaseCandidate = {
-  id: "nv-precinct-gis-three-election-v1",
+  id: "nv-precinct-gis-three-election-v2",
   sha256: "8634e8c3b514520572898714514e154901dc2c85d83ac1d54a2d2d043d495cb0",
 };
 const changedAtUtc = "2026-08-11T04:30:00.000Z";
@@ -129,8 +129,8 @@ test("Nevada hidden load and public cutover commit together in rehearsal, then r
           executionContext,
         });
         assert.equal(publication.revision, beforeRevision + 2);
-        assert.equal(publication.postconditions.reportingUnits, 5_230);
-        assert.equal(publication.postconditions.resultRows, 15_690);
+        assert.equal(publication.postconditions.reportingUnits, 5_288);
+        assert.equal(publication.postconditions.resultRows, 15_748);
         await assert.rejects(
           applyNevadaPrecinctGisTransaction(nv, gisPlan, {
             executionContext: {

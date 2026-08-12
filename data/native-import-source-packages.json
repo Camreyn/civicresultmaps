@@ -3871,7 +3871,8 @@
         "https://www.nvsos.gov/silverstate2012gen/",
         "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/",
         "https://dataverse.harvard.edu/file.xhtml?fileId=4863168&version=21.0",
-        "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0"
+        "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0",
+        "https://elections.clarkcountynv.gov/electionresultsTV/SOV/24G/PRESIDENT.txt"
       ],
       "requiredArtifacts": [
         "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt, tracked with official contact/custodian paths and expected-field detail in data/nv-2024-county-source-request-matrix.tsv plus operational packets in data/nv-2024-non-clark-county-request-packets.json",
@@ -3882,8 +3883,8 @@
         "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, incident/correction, recount, and litigation artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "scripts/collect-nv-precinct-geometry.mjs reproduces all four diagnostic presidential precinct years. The release candidate, Blob publisher, production preflight/backup/hidden-load runner, static activation writer, atomic publication runner, and both read-only receipt-recovery paths are implemented for 2016, 2020, and 2024. No parser may include 2012 until issue #220 supplies election-date Washoe geometry. localComparisonCsv remains the separate President-versus-Senate advisory path, and normalizedTurnoutCsv-style work is still needed before replacing EAC fallback turnout.",
-      "blocker": "The guarded 2016/2020/2024 presidential precinct-map release is implemented and locally rehearsed, but production loading, Blob upload, exact deployment verification, and atomic database publication are separate authorized operations. The only external map-source gate is the election-date Washoe 2012 archive tracked in issue #220; reviewed multipart 2012 units are deterministic one-to-one MultiPolygon features, but the later proxy is never public-eligible. Same-grain Senate advisory coverage remains partial outside Clark, Washoe, and Humboldt.",
+      "parserNeeded": "scripts/collect-nv-precinct-geometry.mjs reproduces all four diagnostic presidential precinct years and combines the 2024 statewide export with the official Clark County Statement of Vote without estimating suppressed candidate allocation. The release candidate, Blob publisher, production preflight/backup/hidden-load runner, static activation writer, atomic publication runner, and both read-only receipt-recovery paths are implemented for 2016, 2020, and 2024. No parser may include 2012 until issue #220 supplies election-date Washoe geometry. localComparisonCsv remains the separate President-versus-Senate advisory path, and normalizedTurnoutCsv-style work is still needed before replacing EAC fallback turnout.",
+      "blocker": "The corrected guarded 2016/2020/2024 presidential precinct-map v2 release is implemented and locally rehearsed, but production loading, Blob upload, exact deployment verification, and atomic database publication are separate authorized operations. All 910 retained Clark 2024 reporting polygons now have official result evidence; 58 display exact reported totals in a distinct privacy-suppressed state because candidate allocation is not public. The only external map-source gate is the election-date Washoe 2012 archive tracked in issue #220; reviewed multipart 2012 units are deterministic one-to-one MultiPolygon features, but the later proxy is never public-eligible. Same-grain Senate advisory coverage remains partial outside Clark, Washoe, and Humboldt.",
       "requestMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
       "requestPacketArtifact": "data/nv-2024-non-clark-county-request-packets.json"
     },
