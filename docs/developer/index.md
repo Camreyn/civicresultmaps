@@ -16,7 +16,7 @@ For the guarded layout MCP endpoint, constrained LLM operation vocabulary, authe
 
 For the guarded Texas 2012/2016/2020/2024 VTD / precinct-approximation release, including the hidden load, immutable Blob publication, database-gated deployment, and atomic public cutover, read [`docs/developer/tx-precinct-release-runbook.md`](tx-precinct-release-runbook.md).
 
-For the Nevada 2012/2016/2020/2024 precinct-GIS replay, loopback database validation, source requests, and current all-four NO-GO release criteria, read [`docs/developer/nv-precinct-gis-runbook.md`](nv-precinct-gis-runbook.md).
+For the guarded Nevada 2016/2020/2024 precinct-map release, including immutable county delivery, hidden load, database-gated deployment, atomic public cutover, and the separately blocked 2012 Washoe follow-up, read [`docs/developer/nv-precinct-gis-runbook.md`](nv-precinct-gis-runbook.md).
 
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 

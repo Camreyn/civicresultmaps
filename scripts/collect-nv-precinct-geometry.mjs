@@ -23,7 +23,27 @@ const root = path.resolve(rootArgument || process.cwd());
 const absolute = (file) => path.resolve(root, ...file.split("/"));
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const jsonBytes = (value) => Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
-const read = (file) => readFileSync(absolute(file));
+const CANONICAL_LF_INPUTS = new Set([
+  "data/precinct-geometry/NV/2012-11-06-general/raw/nevada-secretary-of-state/2012-general-precinct.csv",
+  "data/precinct-geometry/NV/2012-11-06-general/raw/clark-county/prec2012_p.geojson",
+  "data/precinct-geometry/NV/2024-11-05-general/raw/nevada-secretary-of-state/2024-general-president.csv",
+]);
+function canonicalLf(bytes) {
+  const output = Buffer.allocUnsafe(bytes.length);
+  let writeIndex = 0;
+  for (let index = 0; index < bytes.length; index += 1) {
+    if (bytes[index] === 13 && bytes[index + 1] === 10) continue;
+    output[writeIndex] = bytes[index];
+    writeIndex += 1;
+  }
+  return output.subarray(0, writeIndex);
+}
+const read = (file) => {
+  const bytes = readFileSync(absolute(file));
+  return CANONICAL_LF_INPUTS.has(file)
+    ? canonicalLf(bytes)
+    : bytes;
+};
 const readText = (file) => read(file).toString("utf8").replace(/^\uFEFF/, "");
 
 function write(file, value) {
@@ -65,7 +85,7 @@ const normalizeNumeric = (value) => String(value ?? "").trim().replace(/^0+(?=\d
 
 const INPUTS = Object.freeze({
   2012: [
-    ["data/precinct-geometry/NV/2012-11-06-general/raw/nevada-secretary-of-state/2012-general-precinct.csv", 7_177_507, "1611ea13fd2f67b4d23fcc26b01ab84d3a23d7b18beaae1cd994e9d1b87a6948"],
+    ["data/precinct-geometry/NV/2012-11-06-general/raw/nevada-secretary-of-state/2012-general-precinct.csv", 7_085_925, "1743593fd0462cf273ffdd96b89a923c2e562395f52428e2b5ddc6ceebcae724"],
     ["data/precinct-geometry/NV/2012-11-06-general/raw/us-census/tl_2012_32_vtd10.zip", 5_144_311, "eb52fc52993abc152911b509d5d567675113bf5782b187e2033cc1772579a855"],
     ["data/precinct-geometry/NV/2012-11-06-general/raw/clark-county/Election_Archive.zip", 8_604_501, "97cd8af08bd142263a5c956c1b818be42f5703d51e71fa87ed32fe24ae06bd2e"],
     ["data/precinct-geometry/NV/2012-11-06-general/raw/clark-county/prec2012_p.geojson", 3_016_512, "15d595cc43fcc7ea0af77a190382bfbdcd4466a5c9417e017e45e228e0141f68"],
@@ -73,17 +93,22 @@ const INPUTS = Object.freeze({
     ["data/precinct-geometry/NV/2016-11-08-general/raw/vest/nv_2016.zip", 6_798_273, "4e3ddd59f31d61f55ff2d94bd03eb9d3ba0771c910b9509889b76eea209e476d"],
   ],
   2016: [
+    ["data/precinct-geometry/NV/2016-11-08-general/raw/nevada-secretary-of-state/2016-general-precinct.csv", 7_512_605, "17cf2360147e58211b29556303a2a29d5e2ba0f98d13df78e28a983c0b9dc184"],
     ["data/precinct-geometry/NV/2016-11-08-general/raw/vest/nv_2016.zip", 6_798_273, "4e3ddd59f31d61f55ff2d94bd03eb9d3ba0771c910b9509889b76eea209e476d"],
+    ["data/precinct-geometry/NV/2016-11-08-general/raw/vest/dataverse-v89-license-evidence.json", 1_789, "55f331209a2bd2913185b33e8da94ceb26b141bc597a40c424d98cdde134f7b4"],
     ["data/precinct-geometry/NV/2016-11-08-general/raw/nevada-legislative-counsel-bureau/ElectionResults2016USPres.pdf", 8_605_504, "e61953a77b75326fbfb577eae4e3261e07dd97a253aa32ee0a4cfd19f8cec53a"],
   ],
   2020: [
+    ["data/precinct-geometry/NV/2020-11-03-general/raw/nevada-secretary-of-state/2020-general-precinct.csv", 15_255_758, "1b87ec33209a6352270e6a5a3d0438eaae0b7ed9a921f035ef14fb56a166467a"],
     ["data/precinct-geometry/NV/2020-11-03-general/raw/vest/nv_2020.zip", 6_840_584, "bc6befa8917bb309540ff3414c036a577730bd301ecef119797b919c0abb2d90"],
+    ["data/precinct-geometry/NV/2020-11-03-general/raw/vest/dataverse-v21-license-evidence.json", 1_374, "394a78723abad39926d99eb2c7b91a5d7260b6931a403e2217ca063a49497099"],
   ],
   2024: [
-    ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-secretary-of-state/2024-general-president.csv", 906_801, "487bc06f2b5d0d6d12b6236a285d95f42b584149d631a8ad06e22d9428581fbc"],
+    ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-secretary-of-state/2024-general-president.csv", 898_445, "5a7c94660e3e0f32229cfb4e816b2819360277973b80ac3308c531fd7a08dda7"],
     ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts.geojson", 20_148_616, "04accb644e45d137ccf0b0e7ca414c9b0af49a3efb74a70687d29ffcdf7c84cc"],
     ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-item-metadata.json", 1_775, "72b5f30fc8eafb7e790c559858afe94c9f9419a9078ee09a9ee39ea849edef70"],
-    ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-layer-metadata.json", 15_055, "23f1c9cd1d2ec61d07f84b6b7befef723fa5e31720f16d66da9e02348cdb4643"],
+    ["data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-layer-metadata.json", 14_575, "098702342f6784da672afae2039712a4086366adfa7532f9c7667ef50fc38bb2"],
+    ["data/precinct-geometry/NV/2024-11-05-general/raw/esri/arcgis-online-terms-of-use.html", 13_379, "3360bbd0c1569c599451f2cccee5b3dc2d4c2fe8ff1c79056196fc663cc8d65b"],
   ],
 });
 
@@ -132,6 +157,16 @@ function parseCsv(text, headerPredicate = (row) => row[0] === "Jurisdiction" && 
     .map((values) => Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])));
 }
 
+function readOfficialPrecinctCsv(targetYear) {
+  const election = ELECTIONS[targetYear];
+  const file = `data/precinct-geometry/NV/${election.id}/raw/nevada-secretary-of-state/${targetYear}-general-precinct.csv`;
+  const bytes = read(file);
+  const text = targetYear === 2020
+    ? new TextDecoder("windows-1252").decode(bytes)
+    : bytes.toString("utf8");
+  return text.replace(/^\uFEFF/, "");
+}
+
 function roundCoordinates(value, digits = 6) {
   if (Array.isArray(value)) return value.map((item) => roundCoordinates(item, digits));
   if (typeof value === "number") {
@@ -161,8 +196,7 @@ function normalizeNevadaResultCode(county, precinct) {
   const value = String(precinct ?? "").trim();
   if (county === "Lyon") return normalizeLyonLabel(value);
   if (county === "Carson City") return normalizeNumeric(value.replace(/^Precinct\s+/i, ""));
-  if (county === "Douglas") return normalizeNumeric(value.match(/^\d+/)?.[0] ?? value);
-  if (county === "Lander") return normalizeNumeric(value.match(/\d+$/)?.[0] ?? value);
+  if (["Douglas", "Lander"].includes(county)) return normalizeNumeric(value.match(/\d+/)?.[0] ?? value);
   if (["Clark", "Washoe"].includes(county) && /^\d{6}$/.test(value)) return normalizeNumeric(value.slice(0, 4));
   const numeric = value.match(/(?:Precinct(?:\s+No\.)?\s*)?(\d+(?:-\d+)?)/i)?.[1];
   return numeric ? normalizeNumeric(numeric) : value.trim();
@@ -300,93 +334,165 @@ async function validate2016OfficialMapReconciliation(units) {
     { democratic: 0, republican: 0, other: 0, total: 0 },
   );
   const expectedTotals = {
-    democratic: 539_260,
-    republican: 512_058,
-    other: 74_067,
-    total: 1_125_385,
+    democratic: 537_405,
+    republican: 510_920,
+    other: 73_891,
+    total: 1_122_216,
   };
   if (JSON.stringify(totals) !== JSON.stringify(expectedTotals)) {
-    throw new Error("Nevada 2016 VEST presidential totals drifted");
-  }
-  const calculatedPercentages = {
-    democratic: Number((totals.democratic * 100 / totals.total).toFixed(2)),
-    republican: Number((totals.republican * 100 / totals.total).toFixed(2)),
-    other: Number((totals.other * 100 / totals.total).toFixed(2)),
-  };
-  if (
-    calculatedPercentages.democratic !== 47.92
-    || calculatedPercentages.republican !== 45.5
-    || calculatedPercentages.other !== 6.58
-  ) {
-    throw new Error("Nevada 2016 official LCB percentage reconciliation failed");
+    throw new Error("Nevada 2016 official known-colorable presidential totals drifted");
   }
   return {
-    status: "statewide_percentages_reconciled",
+    status: "official_precinct_rows_reconciled_to_lcb_context",
     authority: "Nevada Legislative Counsel Bureau using Nevada Secretary of State election data",
     artifact: pdfPath,
-    normalizedTotals: totals,
+    normalizedKnownColorableTotals: totals,
     publishedPercentages: {
       democratic: 47.92,
       republican: 45.5,
       other: 6.58,
     },
-    calculatedPercentages,
     limitation:
-      "The official map reconciles statewide percentages and source authority but does not provide a machine-readable official precinct-row export or a row-level crosswalk to the VEST reconstruction.",
+      "The official map confirms the statewide source authority and published percentages. The normalized known-colorable totals are intentionally lower because official privacy-suppressed major-party cells and non-geographic categories are excluded rather than estimated.",
   };
 }
 
-async function buildVest(targetYear) {
+function isReviewedSpecialResultUnit(targetYear, unit) {
+  const display = String(unit.sourceDisplayName ?? "").trim().toUpperCase();
+  if (targetYear === 2016) {
+    return /^PRECINCT (?:88|99)$/.test(display)
+      || (unit.county === "Carson City" && ["997", "998", "999"].includes(unit.sourceUnitId))
+      || (unit.county === "Clark" && ["9991", "9993", "9994", "9995", "9996"].includes(unit.sourceUnitId))
+      || (unit.county === "Washoe" && ["9600", "9700", "9800", "9900"].includes(unit.sourceUnitId));
+  }
+  return display === "PRECINCT 88"
+    || (unit.county === "Carson City" && unit.sourceUnitId === "998")
+    || (unit.county === "Clark" && ["9995", "9996"].includes(unit.sourceUnitId))
+    || (unit.county === "Washoe" && ["FOC", "NEW RESIDENT", "NO FIXED RES", "PROVISIONAL"].includes(unit.sourceUnitId));
+}
+
+async function buildOfficialResultsWithVestGeometry(targetYear) {
   const election = ELECTIONS[targetYear];
   const zipPath = `data/precinct-geometry/NV/${election.id}/raw/vest/nv_${targetYear}.zip`;
   const parsed = await shp(read(zipPath));
   const source = Array.isArray(parsed) ? parsed[0] : parsed;
+  const settings = targetYear === 2016
+    ? {
+        dem: "CLINTON, HILLARY",
+        rep: "TRUMP, DONALD J.",
+        resultRows: 12_012,
+        sourceUnits: 2_002,
+        geometryFeatures: 2_067,
+        geometryOnlyFeatures: 105,
+        colorableUnits: 1_843,
+        excludedUnits: 159,
+        vestVoteFields: ["G16PREDCLI", "G16PRERTRU", "G16PRELJOH", "G16PREICAS", "G16PRENROC", "G16PREONON"],
+      }
+    : {
+        dem: "BIDEN, JOSEPH R.",
+        rep: "TRUMP, DONALD J.",
+        resultRows: 10_060,
+        sourceUnits: 2_012,
+        geometryFeatures: 2_094,
+        geometryOnlyFeatures: 103,
+        colorableUnits: 1_869,
+        excludedUnits: 143,
+        vestVoteFields: ["G20PREDBID", "G20PRERTRU", "G20PRELJOR", "G20PREIBLA", "G20PREONON"],
+      };
+  const sourceFeatureByKey = new Map();
   const featureRows = source.features.map((feature) => {
     const fips = String(feature.properties.COUNTYFP).padStart(3, "0");
-    const code = String(feature.properties.NAME).trim();
+    const county = COUNTY_BY_FIPS.get(fips);
+    if (!county) throw new Error(`Nevada ${targetYear} VEST feature has unknown county FIPS ${fips}`);
+    const sourcePrecinct = String(feature.properties.NAME).trim();
+    const code = normalizeNevadaResultCode(county, sourcePrecinct);
+    const key = `${parentGeoid(fips)}|${code}`;
+    if (sourceFeatureByKey.has(key)) throw new Error(`Nevada ${targetYear} normalized VEST identities are not unique: ${key}`);
+    sourceFeatureByKey.set(key, feature);
     return normalizedFeature(feature, code, fips, {
-      SOURCE_PRECINCT: code,
+      SOURCE_PRECINCT: sourcePrecinct,
       SOURCE_COUNTY_FIPS: fips,
-      SOURCE_KIND: "VEST election-specific reconstruction",
+      SOURCE_KIND: "VEST election-specific geometry reconstruction",
     });
   }).sort((left, right) => `${left.properties.CRM_PARENT_GEOID}|${left.properties.CRM_FEATURE_ID}`.localeCompare(`${right.properties.CRM_PARENT_GEOID}|${right.properties.CRM_FEATURE_ID}`, "en", { numeric: true }));
   const featureKeys = new Set(featureRows.map((feature) => `${feature.properties.CRM_PARENT_GEOID}|${feature.properties.CRM_FEATURE_ID}`));
-  if (featureKeys.size !== featureRows.length) throw new Error(`Nevada ${targetYear} VEST identities are not unique`);
+  if (featureKeys.size !== featureRows.length || featureRows.length !== settings.geometryFeatures) {
+    throw new Error(`Nevada ${targetYear} VEST geometry identities drifted`);
+  }
 
-  const fields = targetYear === 2016
-    ? { dem: "G16PREDCLI", rep: "G16PRERTRU", all: ["G16PREDCLI", "G16PRERTRU", "G16PRELJOH", "G16PREICAS", "G16PRENROC", "G16PREONON"] }
-    : { dem: "G20PREDBID", rep: "G20PRERTRU", all: ["G20PREDBID", "G20PRERTRU", "G20PRELJOR", "G20PREIBLA", "G20PREONON"] };
-  const units = source.features.map((feature) => {
-    const fips = String(feature.properties.COUNTYFP).padStart(3, "0");
-    const county = COUNTY_BY_FIPS.get(fips);
-    const code = String(feature.properties.NAME).trim();
-    const candidateVotes = Object.fromEntries(fields.all.map((field) => [field, Number(feature.properties[field] ?? 0)]));
-    return createUnit({
-      county,
-      sourceUnitId: code,
-      sourceDisplayName: code,
-      candidateVotes,
-      mapping: {
-        featureIds: [code],
+  const sourceRows = parseCsv(readOfficialPrecinctCsv(targetYear))
+    .filter((row) => row.Contest === "President and Vice President of the United States");
+  const unitMap = new Map();
+  for (const row of sourceRows) {
+    const county = String(row.Jurisdiction).trim();
+    const code = normalizeNevadaResultCode(county, row.Precinct);
+    const key = `${county}|${code}`;
+    const unit = unitMap.get(key) ?? createUnit({ county, sourceUnitId: code, sourceDisplayName: row.Precinct, candidateVotes: {}, suppressedCandidates: [] });
+    if (Object.hasOwn(unit.candidateVotes, row.Selection) || unit.suppressedCandidates.includes(row.Selection)) {
+      throw new Error(`Nevada ${targetYear} duplicate official candidate cell: ${key}|${row.Selection}`);
+    }
+    if (row.Votes === "*") unit.suppressedCandidates.push(row.Selection);
+    else {
+      const votes = Number(row.Votes);
+      if (!Number.isInteger(votes) || votes < 0) throw new Error(`Nevada ${targetYear} invalid official vote cell: ${key}|${row.Selection}`);
+      unit.candidateVotes[row.Selection] = votes;
+    }
+    unitMap.set(key, unit);
+  }
+  if (sourceRows.length !== settings.resultRows || unitMap.size !== settings.sourceUnits) {
+    throw new Error(`Nevada ${targetYear} official result-source cardinality drifted`);
+  }
+
+  const officialFeatureKeys = new Set([...unitMap.values()].map((unit) => `${unit.parentGeoid}|${unit.sourceUnitId}`));
+  const geometryOnlyFeatures = [...sourceFeatureByKey.entries()].filter(([key]) => !officialFeatureKeys.has(key));
+  const geometryOnlyVoteTotal = geometryOnlyFeatures.reduce(
+    (total, [, feature]) => total + settings.vestVoteFields.reduce((sum, field) => sum + Number(feature.properties[field] ?? 0), 0),
+    0,
+  );
+  if (geometryOnlyFeatures.length !== settings.geometryOnlyFeatures || geometryOnlyVoteTotal !== 0) {
+    throw new Error(`Nevada ${targetYear} zero-vote geometry-only diagnostic drifted`);
+  }
+
+  const included = [];
+  const excluded = [];
+  for (const unit of unitMap.values()) {
+    const key = `${unit.parentGeoid}|${unit.sourceUnitId}`;
+    const majorSuppressed = unit.suppressedCandidates.some((candidate) => [settings.dem, settings.rep].includes(candidate));
+    if (!featureKeys.has(key)) {
+      if (!isReviewedSpecialResultUnit(targetYear, unit)) {
+        throw new Error(`Nevada ${targetYear} potentially geographic official unit lacks reviewed geometry: ${key}|${unit.sourceDisplayName}`);
+      }
+      unit.exclusionReason = "official special or non-geographic reporting category without a corresponding election-specific polygon";
+    } else if (majorSuppressed) {
+      unit.exclusionReason = "major-party vote cell suppressed by the Nevada Secretary of State";
+    }
+    if (unit.exclusionReason) excluded.push(unit);
+    else {
+      unit.mapping = {
+        featureIds: [unit.sourceUnitId],
         matchMethod: "exact_official_id",
         confidence: "high",
-        note: `The VEST ${targetYear} election-specific result and polygon are the same source record. The geometry and small-cell allocation remain labeled as a secondary reconstruction, not an official Nevada GIS export.`,
-      },
-    });
-  });
-  for (const unit of units) unit.groupedVotes = groupVotes(unit.candidateVotes, fields.dem, fields.rep);
-  const expected = targetYear === 2016 ? 2_067 : 2_094;
-  if (units.length !== expected || featureRows.length !== expected || new Set(units.map((unit) => unit.parentGeoid)).size !== 17) {
-    throw new Error(`Nevada ${targetYear} VEST feature/unit counts drifted`);
+        note: `Exact county/precinct identity between the official Nevada Secretary of State ${targetYear} result export and the election-specific VEST geometry reconstruction. Only geometry is taken from VEST; all displayed vote values come from the official export.`,
+      };
+      unit.groupedVotes = groupVotes(unit.candidateVotes, settings.dem, settings.rep);
+      included.push(unit);
+    }
+  }
+  if (
+    included.length !== settings.colorableUnits
+    || excluded.length !== settings.excludedUnits
+    || new Set(included.map((unit) => unit.parentGeoid)).size !== 17
+  ) {
+    throw new Error(`Nevada ${targetYear} reviewed official-result/geometry counts drifted`);
   }
   const officialReconciliation = targetYear === 2016
-    ? await validate2016OfficialMapReconciliation(units)
+    ? await validate2016OfficialMapReconciliation(included)
     : null;
   return {
     features: featureRows,
-    units,
-    excluded: [],
-    sourceUnitCount: units.length,
+    units: included,
+    excluded,
+    sourceUnitCount: unitMap.size,
     officialReconciliation,
   };
 }
@@ -398,6 +504,7 @@ async function build2024() {
   const metadataBase = `data/precinct-geometry/NV/${election.id}/raw/nevada-legislative-counsel-bureau`;
   const itemMetadata = JSON.parse(readText(`${metadataBase}/2024-precincts-item-metadata.json`));
   const layerMetadata = JSON.parse(readText(`${metadataBase}/2024-precincts-layer-metadata.json`));
+  const publicTerms = readText(`data/precinct-geometry/NV/${election.id}/raw/esri/arcgis-online-terms-of-use.html`);
   if (
     itemMetadata.id !== "6303f14785fb401c8e4c53e333f44472"
     || itemMetadata.owner !== "haley.proehl_NVLCB"
@@ -421,6 +528,17 @@ async function build2024() {
     || layerMetadata.editingInfo?.dataLastEditDate !== 1_712_268_383_185
   ) {
     throw new Error("Nevada 2024 official LCB layer metadata drifted");
+  }
+  for (const requiredText of [
+    "Permission to reproduce",
+    "you expressly grant",
+    "permission to use, reproduce,",
+    "prepare derivative works of, and distribute content",
+    "subject to any use",
+  ]) {
+    if (!publicTerms.includes(requiredText)) {
+      throw new Error(`ArcGIS Online public-sharing terms drifted: ${requiredText}`);
+    }
   }
   const rows = parseCsv(readText(resultPath));
   const unitMap = new Map();
@@ -473,6 +591,56 @@ async function build2024() {
     throw new Error(`Nevada 2024 reviewed privacy/geography counts drifted: included=${included.length}, excluded=${excluded.length}`);
   }
   return { features, units: included, excluded, sourceUnitCount: unitMap.size };
+}
+
+function geometryParts(geometry) {
+  if (geometry.type === "Polygon") return [geometry.coordinates];
+  if (geometry.type === "MultiPolygon") return geometry.coordinates;
+  throw new Error(`Cannot retain non-polygon multipart geometry: ${geometry.type}`);
+}
+
+function dissolveReviewedMultipartMappings(features, units) {
+  const featureByKey = new Map(features.map((feature) => [
+    `${feature.properties.CRM_PARENT_GEOID}|${feature.properties.CRM_FEATURE_ID}`,
+    feature,
+  ]));
+  const consumed = new Set();
+  const replacements = [];
+  for (const unit of units.filter((entry) => entry.mapping.featureIds.length > 1)) {
+    const sourcePartIds = [...unit.mapping.featureIds];
+    const parts = [];
+    for (const featureId of sourcePartIds) {
+      const key = `${unit.parentGeoid}|${featureId}`;
+      const feature = featureByKey.get(key);
+      if (!feature || consumed.has(key)) {
+        throw new Error(`Nevada 2012 multipart source feature is missing or reused: ${key}`);
+      }
+      consumed.add(key);
+      parts.push(...geometryParts(feature.geometry));
+    }
+    replacements.push(normalizedFeature(
+      { geometry: { type: "MultiPolygon", coordinates: parts } },
+      unit.sourceUnitId,
+      unit.parentGeoid.slice(2),
+      {
+        SOURCE_PRECINCT: unit.sourceUnitId,
+        SOURCE_PART_IDS: sourcePartIds,
+        SOURCE_KIND: "Deterministic reviewed multipart precinct assembled without coordinate union",
+      },
+    ));
+    unit.mapping = {
+      ...unit.mapping,
+      featureIds: [unit.sourceUnitId],
+      note: `${unit.mapping.note} The reviewed source pieces are retained as one MultiPolygon feature so the result relationship is one-to-one without altering any boundary coordinates.`,
+    };
+  }
+  const output = features
+    .filter((feature) => !consumed.has(`${feature.properties.CRM_PARENT_GEOID}|${feature.properties.CRM_FEATURE_ID}`))
+    .concat(replacements)
+    .sort((left, right) => `${left.properties.CRM_PARENT_GEOID}|${left.properties.CRM_FEATURE_ID}`.localeCompare(`${right.properties.CRM_PARENT_GEOID}|${right.properties.CRM_FEATURE_ID}`, "en", { numeric: true }));
+  const outputKeys = new Set(output.map((feature) => `${feature.properties.CRM_PARENT_GEOID}|${feature.properties.CRM_FEATURE_ID}`));
+  if (outputKeys.size !== output.length) throw new Error("Nevada 2012 multipart normalization created duplicate identities");
+  return output;
 }
 
 async function build2012() {
@@ -585,7 +753,11 @@ async function build2012() {
       included.push(unit);
     }
   }
-  return { features, units: included, excluded, sourceUnitCount: unitMap.size };
+  const normalizedFeatures = dissolveReviewedMultipartMappings(features, included);
+  if (normalizedFeatures.length !== 2_002 || included.some((unit) => unit.mapping.featureIds.length !== 1)) {
+    throw new Error("Nevada 2012 multipart normalization counts drifted");
+  }
+  return { features: normalizedFeatures, units: included, excluded, sourceUnitCount: unitMap.size };
 }
 
 function rawArtifact(file, sourceUrl, authority, format, note, sourceUrls = null) {
@@ -624,19 +796,36 @@ function evidenceFor(targetYear, result) {
     };
   }
   if ([2016, 2020].includes(targetYear)) {
-    const file = `data/precinct-geometry/NV/${election.id}/raw/vest/nv_${targetYear}.zip`;
+    const officialFile = `data/precinct-geometry/NV/${election.id}/raw/nevada-secretary-of-state/${targetYear}-general-precinct.csv`;
+    const geometryFile = `data/precinct-geometry/NV/${election.id}/raw/vest/nv_${targetYear}.zip`;
     const artifacts = [
       rawArtifact(
-        file,
+        officialFile,
+        targetYear === 2016
+          ? "https://www.nvsos.gov/home/showpublisheddocument/4615/636160169602900000"
+          : "https://www.nvsos.gov/home/showpublisheddocument/9195/637441629458970000",
+        "Nevada Secretary of State",
+        "CSV",
+        "Official statewide precinct result export. All normalized vote values come from this artifact; low-count cells remain suppressed with an asterisk.",
+      ),
+      rawArtifact(
+        geometryFile,
         targetYear === 2016
           ? "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/"
           : "https://dataverse.harvard.edu/api/access/datafile/4863168",
         "Voting and Election Science Team",
         "ESRI Shapefile ZIP",
-        "Election-specific secondary precinct reconstruction with presidential result attributes; vote fields are removed from normalized geometry.",
+        "Election-specific secondary geometry reconstruction. Its vote fields are used only to prove unmatched extra polygons have zero votes; they are removed from normalized geometry and never used as displayed results.",
       ),
     ];
     if (targetYear === 2016) {
+      artifacts.push(rawArtifact(
+        "data/precinct-geometry/NV/2016-11-08-general/raw/vest/dataverse-v89-license-evidence.json",
+        "https://dataverse.harvard.edu/api/datasets/:persistentId/versions/89.0/customlicense?persistentId=doi:10.7910/DVN/NH5S2I",
+        "Harvard Dataverse / Voting and Election Science Team",
+        "JSON",
+        "Retained human review of the version-pinned file and Terms pages. The exact Nevada file MD5 binds the retained ZIP to dataset version 89.0 and its Creative Commons Attribution 4.0 terms.",
+      ));
       artifacts.push(rawArtifact(
         "data/precinct-geometry/NV/2016-11-08-general/raw/nevada-legislative-counsel-bureau/ElectionResults2016USPres.pdf",
         "https://www.leg.state.nv.us/Division/Research/Documents/ElectionResults2016USPres.pdf",
@@ -644,15 +833,21 @@ function evidenceFor(targetYear, result) {
         "PDF",
         "Official statewide precinct-result map. Its text attributes election data to the Nevada Secretary of State and publishes statewide presidential percentages used for deterministic reconciliation.",
       ));
+    } else {
+      artifacts.push(rawArtifact(
+        "data/precinct-geometry/NV/2020-11-03-general/raw/vest/dataverse-v21-license-evidence.json",
+        "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/K7760H&version=21.0&selectTab=termsTab",
+        "Harvard Dataverse / Voting and Election Science Team",
+        "JSON",
+        "Retained human review of the version-pinned Terms tab identifying dataset version 21.0 and Creative Commons Attribution 4.0 terms for file 4863168.",
+      ));
     }
     return {
-      authority: targetYear === 2016
-        ? "Voting and Election Science Team, reconciled to a Nevada Legislative Counsel Bureau map using Nevada Secretary of State election data"
-        : "Voting and Election Science Team",
-      sourceUrl: targetYear === 2016 ? "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/" : "https://dataverse.harvard.edu/file.xhtml?fileId=4863168&version=21.0",
+      authority: "Nevada Secretary of State results with explicitly attributed VEST election-specific geometry",
+      sourceUrl: "https://www.nvsos.gov/sos/elections/election-information/precinct-level-results",
       license: targetYear === 2016
-        ? "VEST database content is CC BY 4.0 with attribution; the official Nevada LCB PDF is retained as public-source reconciliation evidence, not as a replacement row-level export."
-        : "Harvard Dataverse custom terms for version 21.0 require confirmation before public redistribution; release remains blocked until confirmed.",
+        ? "Official Nevada result export with VEST database geometry under CC BY 4.0 attribution; the official LCB PDF is retained as additional statewide source-context evidence."
+        : "Official Nevada result export with exact Harvard Dataverse version-21 VEST geometry terms retained as Creative Commons Attribution 4.0.",
       boundaryVintage: `${targetYear} election-specific VEST precinct reconstruction`,
       vintageStatus: "election_date_confirmed",
       derivationMethod: "secondary_reconstruction",
@@ -663,7 +858,7 @@ function evidenceFor(targetYear, result) {
   return {
     authority: "Nevada Legislative Counsel Bureau and Nevada Secretary of State",
     sourceUrl: "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0",
-    license: "The retained ArcGIS item is public_authoritative and the layer permits Query and Extract, but licenseInfo and copyrightText are empty; affirmative public derivative-redistribution permission is not retained.",
+    license: "The retained ArcGIS item is public_authoritative and permits Query and Extract. ArcGIS Online Terms of Use expressly grant end users permission to use, reproduce, prepare derivative works of, and distribute publicly shared content, subject to owner-stated constraints; this item states no additional constraint.",
     boundaryVintage: "Nevada LCB 2024 Precincts snapshot published April 5, 2024",
     vintageStatus: "election_date_confirmed",
     derivationMethod: "official_service",
@@ -672,6 +867,7 @@ function evidenceFor(targetYear, result) {
       rawArtifact(`${base}/nevada-legislative-counsel-bureau/2024-precincts.geojson`, "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson", "Nevada Legislative Counsel Bureau", "GeoJSON", "Official statewide 2024 Precincts FeatureServer snapshot."),
       rawArtifact(`${base}/nevada-legislative-counsel-bureau/2024-precincts-item-metadata.json`, "https://www.arcgis.com/sharing/rest/content/items/6303f14785fb401c8e4c53e333f44472?f=json", "Nevada Legislative Counsel Bureau / ArcGIS Online", "JSON", "Retained item metadata identifies this public_authoritative layer as Nevada voting precincts for the 2024 election cycle; licenseInfo is empty."),
       rawArtifact(`${base}/nevada-legislative-counsel-bureau/2024-precincts-layer-metadata.json`, "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0?f=pjson", "Nevada Legislative Counsel Bureau / ArcGIS Online", "JSON", "Retained layer metadata records static data, Query and Extract capabilities, and April 2024 edit timestamps; copyrightText is empty."),
+      rawArtifact(`${base}/esri/arcgis-online-terms-of-use.html`, "https://doc.arcgis.com/en/arcgis-online/reference/terms-of-use.htm", "Esri ArcGIS Online", "HTML", "Retained public-sharing terms expressly grant ArcGIS Online end users permission to use, reproduce, prepare derivative works of, and distribute publicly shared content, subject to owner-stated constraints."),
     ],
   };
 }
@@ -680,7 +876,7 @@ verifyInputs();
 const election = ELECTIONS[year];
 const base = `data/precinct-geometry/NV/${election.id}`;
 const manifestId = `nv-${election.id}-precinct-geometry-candidate-v1`;
-const built = year === 2012 ? await build2012() : year === 2024 ? await build2024() : await buildVest(year);
+const built = year === 2012 ? await build2012() : year === 2024 ? await build2024() : await buildOfficialResultsWithVestGeometry(year);
 const rows = built.units
   .sort((left, right) => `${left.parentGeoid}|${left.sourceUnitId}`.localeCompare(`${right.parentGeoid}|${right.sourceUnitId}`, "en", { numeric: true }))
   .map((unit) => crosswalkRow(unit, election.id));
@@ -778,9 +974,9 @@ const evidence = {
     "No election-result value is embedded in the normalized geometry or crosswalk.",
     "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
     ...(year === 2012 ? ["Washoe uses a clearly labeled 2016 proxy partition; the 2012 manifest remains blocked pending the election-date archive held by Nevada custodians."] : []),
-    ...(year === 2016 ? ["VEST is a secondary election-specific reconstruction. The retained official LCB map reconciles its statewide presidential percentages and attributes election data to the Nevada Secretary of State, but it does not establish official row-level identity or geometry provenance."] : []),
-    ...(year === 2020 ? ["VEST is a secondary election-specific reconstruction and must not be presented as an official Nevada GIS export."] : []),
-    ...(year === 2024 ? ["The reviewed delivery contract retains all 1,726 official LCB polygons: 1,518 have result relationships and 208 remain visible as no-data. Of the no-data polygons, 115 correspond to result identities excluded because a major-party cell is suppressed and 93 lack a retained joinable result identity; 29 source result identities have no matching feature."] : []),
+    ...(year === 2016 ? ["All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under CC BY 4.0 attribution; it must not be presented as an official Nevada GIS export. The official LCB map independently confirms the statewide source context."] : []),
+    ...(year === 2020 ? ["All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under the retained Harvard Dataverse version-21 CC BY 4.0 terms; it must not be presented as an official Nevada GIS export."] : []),
+    ...(year === 2024 ? ["The reviewed delivery contract retains all 1,726 official LCB polygons: 1,518 have result relationships and 208 remain visible as no-data. Of the no-data polygons, 115 correspond to result identities excluded because a major-party cell is suppressed and 93 lack a retained joinable result identity; 29 source result identities have no matching feature.", "The official LCB layer is public_authoritative, has no item-level use constraint, and is covered by retained ArcGIS Online public-sharing permission for end-user use, reproduction, derivative works, and distribution."] : []),
   ],
 };
 const evidenceArtifact = write(evidencePath, evidence);
@@ -791,11 +987,7 @@ const report = {
   generatedAt: retrievedAt,
   disposition: year === 2012
     ? "blocked_pending_election_date_washoe_archive"
-    : year === 2016
-    ? "blocked_pending_official_row_level_provenance_review"
-    : year === 2020
-    ? "blocked_pending_vest_v21_redistribution_terms_and_release"
-    : "blocked_pending_affirmative_lcb_redistribution_review",
+    : "source_and_crosswalk_gates_passed_delivery_pending",
   source: {
     featureCount: built.features.length,
     parentCount: new Set(built.features.map((feature) => feature.properties.CRM_PARENT_GEOID)).size,
@@ -822,9 +1014,6 @@ const report = {
 const reportArtifact = write(reportPath, report);
 const releaseBlockers = ["An immutable parent-scoped public delivery package and production release review have not been completed."];
 if (year === 2012) releaseBlockers.push("The election-date Washoe precinct archive is not retained; proxy geometry cannot pass the canonical election-vintage gate.");
-if (year === 2016) releaseBlockers.push("The precinct rows and polygons are a VEST secondary reconstruction; the official LCB map reconciles statewide percentages but no official machine-readable precinct-row export or explicit supplemental-release decision is retained.");
-if (year === 2020) releaseBlockers.push("The exact Harvard Dataverse version-21 custom redistribution terms have not been retained and reviewed.");
-if (year === 2024) releaseBlockers.push("The official LCB layer metadata has empty licenseInfo and copyrightText; affirmative authorization for public redistribution of derived geometry has not been retained and reviewed.");
 const manifest = {
   schemaVersion: 1,
   id: manifestId,

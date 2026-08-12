@@ -11,36 +11,6 @@ const EXTERNAL_REQUIREMENTS = Object.freeze({
       ask: "The original electronic/GIS files, metadata, correction submissions, and precinct-change index for Washoe County precinct maps applicable to the November 6, 2012 general election.",
     },
   }),
-  2016: Object.freeze({
-    status: "blocked_external_official_row_level_provenance",
-    request: {
-      custodian: "Nevada Legislative Counsel Bureau Research Library",
-      contact: "library@lcb.state.nv.us",
-      sourceUrl: "https://www.leg.state.nv.us/Division/Research/Library/About/",
-      authority: "Publisher of the official 2016 presidential precinct map using Nevada Secretary of State election data",
-      ask: "The machine-readable precinct result table, boundary files, metadata, and any result-to-boundary crosswalk used to create ElectionResults2016USPres.pdf, or written confirmation that the cited VEST V1.2 reconstruction may serve as the supplemental row-level source when its statewide totals reconcile to the official map.",
-    },
-  }),
-  2020: Object.freeze({
-    status: "blocked_external_version_specific_terms",
-    request: {
-      custodian: "University of Florida Election Lab / VEST",
-      contact: "election-lab@ufl.edu",
-      sourceUrl: "https://election.lab.ufl.edu/what-we-do/",
-      authority: "Publisher of Harvard Dataverse file 4863168, dataset version 21.0",
-      ask: "The exact custom license or redistribution terms that applied to Nevada file nv_2020.zip, Harvard Dataverse file 4863168, dataset version 21.0, and confirmation that public web redistribution of derived parent-scoped GeoJSON is permitted with attribution.",
-    },
-  }),
-  2024: Object.freeze({
-    status: "blocked_external_affirmative_redistribution_review",
-    request: {
-      custodian: "Nevada Legislative Counsel Bureau Research Library",
-      contact: "library@lcb.state.nv.us",
-      sourceUrl: "https://www.leg.state.nv.us/Division/Research/Library/About/",
-      authority: "Owner and publisher of ArcGIS item 6303f14785fb401c8e4c53e333f44472",
-      ask: "Written confirmation of the reuse and public redistribution terms for derived, attributed GeoJSON produced from the public_authoritative 2024 Precincts FeatureServer. The retained item licenseInfo and layer copyrightText fields are empty.",
-    },
-  }),
 });
 
 export async function buildNevadaPrecinctReleaseReadiness(options = {}) {
@@ -57,7 +27,7 @@ export async function buildNevadaPrecinctReleaseReadiness(options = {}) {
       geometryFeatures: year.geometryFeatures,
       reviewedCrosswalks: year.reviewedCrosswalks,
       reviewedNoDataFeatures: year.reviewedNoDataFeatures,
-      sourceGatePassed: year.publicReleaseEligible,
+      sourceGatePassed: year.sourceGatePassed,
       status: external?.status ?? "source_and_crosswalk_gates_passed_delivery_pending",
       blockers: year.blockers,
       externalRequest: external?.request ?? null,
@@ -76,10 +46,9 @@ export async function buildNevadaPrecinctReleaseReadiness(options = {}) {
     publicDeliveryAuthorized: false,
     years,
     requiredNextActions: [
-      "Resolve every external source requirement recorded above without weakening the manifest gates.",
-      "Design and review an aggregate-rendering contract before any 2012 one-to-many relationship can become public eligible.",
-      "Regenerate and review the exact hash-pinned artifacts after any source replacement or terms decision.",
-      "Build immutable parent-scoped delivery packages only for reviewed, redistribution-authorized years.",
+      "Obtain or locate the election-date Washoe County 2012 precinct archive recorded above without weakening the vintage gate.",
+      "Review the regenerated exact hash-pinned artifacts and official-result/privacy exclusions.",
+      "Build immutable parent-scoped delivery packages for 2016, 2020, and 2024 while the unresolved 2012 vintage remains blocked.",
       "Use a separately reviewed guarded production release; this readiness report performs no publication or database write.",
     ],
   };

@@ -1834,7 +1834,7 @@
         "records-request path",
         "county source request matrix TSV",
         "non-Clark jurisdiction request packet JSON",
-        "official NVSOS 2012 and 2024 precinct result exports",
+        "official NVSOS 2012, 2016, 2020, and 2024 precinct result exports",
         "official 2024 LCB precinct GeoJSON",
         "VEST 2016 and 2020 election-specific shapefiles",
         "normalized precinct GeoJSON, result, crosswalk, and validation artifacts"
@@ -1863,26 +1863,23 @@
         "county equipment context",
         "14-jurisdiction result/turnout/geometry/admin request matrix",
         "14-jurisdiction operational request packets",
-        "2012 reviewed hybrid candidate geometry: 2,020 features and 1,760 colorable presidential units",
-        "2016 reviewed statewide secondary reconstruction: 2,067 features and units",
-        "2020 reviewed statewide secondary reconstruction: 2,094 features and units",
+        "2012 reviewed hybrid candidate geometry: 2,002 normalized features, 1,760 colorable presidential units, and five reviewed multipart precincts retained as single MultiPolygon features",
+        "2016 official statewide results joined to attributed VEST geometry: 2,067 features and 1,843 safely colorable units",
+        "2020 official statewide results joined to attributed VEST geometry: 2,094 features and 1,869 safely colorable units",
         "2024 official statewide LCB geometry: 1,726 features and 1,518 safely colorable presidential units"
       ],
       "missingFields": [
         "same-grain U.S. Senate/local review rows for 14 non-Clark/non-Washoe/non-Humboldt jurisdictions",
         "state-native turnout denominator",
         "election-date Washoe 2012 precinct archive needed to replace the labeled proxy partition",
-        "official machine-readable 2016 precinct rows/boundaries/crosswalk or an explicit reviewed supplemental-source decision for the reconciled VEST reconstruction",
-        "exact Harvard Dataverse version-21 custom terms needed before redistributing the 2020 VEST geometry",
-        "affirmative public derivative-redistribution terms for the public-authoritative Nevada LCB 2024 Precincts layer because retained licenseInfo and copyrightText are empty",
         "official 2012/2016/2020 historical baseline replacement for secondary context rows",
         "post-election audit, L&A, tabulator-log, custody, incident/correction, recount, litigation, and remaining CVR availability artifacts"
       ],
-      "parserStatus": "scripts/collect-nv-precinct-geometry.mjs deterministically normalizes and hash-pins all four presidential precinct GIS years; scripts/setup-nv-precinct-gis-local.mjs loads the reviewed rows into the loopback clone with public status blocked. localComparisonCsv remains the separate President-versus-Senate advisory path for Clark, Washoe, and Humboldt; active turnout remains EAC fallback.",
+      "parserStatus": "scripts/collect-nv-precinct-geometry.mjs deterministically normalizes and hash-pins all four diagnostic years. The guarded release package selects only 2016, 2020, and 2024, builds 51 immutable county GeoJSON files plus three indexes, validates a blocked hidden load, and requires an atomic database publication before either public API opens. localComparisonCsv remains the separate President-versus-Senate advisory path; active turnout remains EAC fallback.",
       "manualReviewBurden": "high",
       "confidence": "loaded_with_caveats",
-      "caveats": "All four presidential precinct GIS years now have reproducible normalized artifacts and reviewed relationship evidence. Every year remains nonpublic: 2012 uses a labeled 2016 Washoe proxy and has five one-to-many result units; 2016 is a VEST secondary reconstruction whose statewide percentages reconcile to an official LCB map but whose official row-level source is not retained; 2020 lacks exact Dataverse version-21 terms; and 2024 retains 208 reviewed no-data polygons but lacks affirmative derivative-redistribution terms because the official ArcGIS licenseInfo and copyrightText fields are empty. These gaps are source limitations, not evidence of misconduct.",
-      "nextAction": "Request the 2012 Washoe election-date GIS/map submission, the official 2016 machine-readable source/crosswalk or an explicit supplemental-source decision, exact 2020 Dataverse version-21 terms, and affirmative 2024 LCB derivative-redistribution terms. Design the 2012 aggregate-rendering contract before immutable parent-scoped packaging and guarded release review. Continue collecting same-grain U.S. Senate review rows and state-native turnout separately."
+      "caveats": "All four presidential precinct GIS years have reproducible normalized artifacts and reviewed relationship evidence. Only 2012 retains an external map-source gate because Washoe uses a labeled 2016 proxy; GitHub issue #220 tracks that archive. Its multipart relationships are normalized to one-to-one MultiPolygon features. For 2016 and 2020, all displayed votes come from official NVSOS statewide precinct exports while VEST supplies clearly attributed election-specific CC BY 4.0 geometry only. The exact 2020 version-21 terms are retained. The official 2024 LCB layer retains 208 reviewed no-data polygons and is covered by retained ArcGIS Online public-sharing permission. The three source-ready years have immutable delivery and fail-closed release tooling, but production loading, Blob upload, deployment verification, and database publication remain explicit operations. These gaps are source limitations, not evidence of misconduct.",
+      "nextAction": "Review and merge the guarded 2016/2020/2024 release implementation, then execute its separately authorized production sequence. Continue public/archive discovery for issue #220 without substituting the later Washoe proxy, and continue collecting same-grain U.S. Senate review rows and state-native turnout separately."
     },
     {
       "state": "NY",

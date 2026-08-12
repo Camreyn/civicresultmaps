@@ -21,7 +21,7 @@
     "url": "https://www.nvsos.gov/silverstate2012gen/",
     "retrievedAt": "2026-08-11T12:00:00.000Z",
     "artifact": "data/precinct-geometry/NV/2012-11-06-general/source-evidence.json",
-    "sha256": "b0bc1cbeb0bbd6a2033693f54a2ef79ee0fcd7e54df87b5a7a9b590fe69cb11a",
+    "sha256": "2cd2409c2dc0ea5026dd0125a229248660a7c4e665e4b7d96748743c12adf04c",
     "byteCount": 5782,
     "format": "precinct-source-evidence+json",
     "licenseOrTerms": "U.S. government Census data are public domain; Clark and Nevada public-record reuse terms are not separately stated; VEST database content is CC BY 4.0."
@@ -31,9 +31,9 @@
     "sourceCrs": "mixed retained source CRS normalized by shpjs and reviewed Clark converter",
     "servedCrs": "EPSG:4326",
     "artifact": "data/precinct-geometry/NV/2012-11-06-general/normalized/nv-2012-precincts.geojson.gz",
-    "sha256": "e9555edf56241aa6c562422e5553f022afc07d21d6ae72d5fc001c6f7d4d642b",
-    "byteCount": 3735292,
-    "featureCount": 2020,
+    "sha256": "6450b21e2d1adf7309d0fc3ff031b7ac0b78396840483e29ed0d32796aa5f470",
+    "byteCount": 3735460,
+    "featureCount": 2002,
     "sourceFeatureIdFields": [
       "CRM_FEATURE_ID"
     ],
@@ -45,8 +45,8 @@
     "status": "reviewed",
     "resultSourceId": "nv-2012-president-precinct-results",
     "artifact": "data/precinct-geometry/NV/2012-11-06-general/crosswalk/nv-2012-precinct-result-crosswalk.json",
-    "sha256": "0682209a2145e80f5a7f868c916bbc508337243d7c5e895f4873bca9db13ada7",
-    "byteCount": 1180593,
+    "sha256": "8fe1a377088c0937f84c7752597711611856a30337cf5f79df8a675139e3d867",
+    "byteCount": 1175064,
     "resultUnits": 1760,
     "colorableResultUnits": 1760,
     "matchedResultUnits": 1760,
@@ -54,15 +54,15 @@
     "nonGeographicResultUnits": 0,
     "sourceAliasResultUnits": 0,
     "relationships": {
-      "oneToOne": 1755,
-      "oneToMany": 5,
+      "oneToOne": 1760,
+      "oneToMany": 0,
       "manyToOne": 0,
       "unmatched": 0,
       "nonGeographic": 0,
       "sourceAlias": 0,
       "pendingReview": 0
     },
-    "reviewedRelationshipRecords": 1778,
+    "reviewedRelationshipRecords": 1760,
     "reviewedNoDataFeatures": 242,
     "methods": [
       "exact_official_id",

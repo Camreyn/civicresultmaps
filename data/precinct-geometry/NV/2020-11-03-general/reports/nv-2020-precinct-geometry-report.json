@@ -3,21 +3,21 @@
   "state": "NV",
   "electionId": "2020-11-03-general",
   "generatedAt": "2026-08-11T12:00:00.000Z",
-  "disposition": "blocked_pending_vest_v21_redistribution_terms_and_release",
+  "disposition": "source_and_crosswalk_gates_passed_delivery_pending",
   "source": {
     "featureCount": 2094,
     "parentCount": 17,
-    "sourceResultUnits": 2094
+    "sourceResultUnits": 2012
   },
   "crosswalk": {
-    "resultUnits": 2094,
-    "colorableResultUnits": 2094,
-    "matchedResultUnits": 2094,
+    "resultUnits": 1869,
+    "colorableResultUnits": 1869,
+    "matchedResultUnits": 1869,
     "unmatchedResultUnits": 0,
     "nonGeographicResultUnits": 0,
     "sourceAliasResultUnits": 0,
     "relationships": {
-      "oneToOne": 2094,
+      "oneToOne": 1869,
       "oneToMany": 0,
       "manyToOne": 0,
       "unmatched": 0,
@@ -25,41 +25,44 @@
       "sourceAlias": 0,
       "pendingReview": 0
     },
-    "reviewedRelationshipRecords": 2094,
-    "reviewedNoDataFeatures": 0
+    "reviewedRelationshipRecords": 1869,
+    "reviewedNoDataFeatures": 225
   },
   "exclusions": {
-    "count": 0,
-    "byReason": {}
+    "count": 143,
+    "byReason": {
+      "major-party vote cell suppressed by the Nevada Secretary of State": 122,
+      "official special or non-geographic reporting category without a corresponding election-specific polygon": 21
+    }
   },
   "artifacts": {
     "normalizedGeometry": {
       "localArtifactPath": "data/precinct-geometry/NV/2020-11-03-general/normalized/nv-2020-precincts.geojson.gz",
-      "byteCount": 3571130,
-      "sha256": "69c85a7cf82c56e58e03647278fa6d30be5c942bc63790057d2418c553c44cee"
+      "byteCount": 3572831,
+      "sha256": "10132d1271c98179b342c79586c1a1068347efd772fa9c9e0736f44541396769"
     },
     "normalizedGeometryUncompressed": {
-      "byteCount": 16434409,
-      "sha256": "37002ffea5cd456d3dde02c922b5185ddc7357a80ac2561c644048400ec75f79"
+      "byteCount": 16449008,
+      "sha256": "3ec854869e9c59300d2e99ee0b7a4c2dda89a1cc9e5faabc34489f82b3406602"
     },
     "normalizedResults": {
       "localArtifactPath": "data/precinct-geometry/NV/2020-11-03-general/normalized/nv-2020-president-results.json.gz",
-      "byteCount": 41576,
-      "sha256": "efc5b08c5e5e4d865810b5335d60da39356b378dad4c32b371726a9567b7f48d"
+      "byteCount": 38582,
+      "sha256": "bd8dfe5b3e84bd3fe610242cdbac898fdccfa5b7f42644f4e7130b0fc1f8224d"
     },
     "normalizedResultsUncompressed": {
-      "byteCount": 586514,
-      "sha256": "117bd55a25070f0084d2e8667ebee253682dab955366250408e3ee30e519d04d"
+      "byteCount": 553984,
+      "sha256": "4e603b60ca3457c21de59b91c0cbff9a58d795382388e7b57ac67c015c90755c"
     },
     "crosswalk": {
       "localArtifactPath": "data/precinct-geometry/NV/2020-11-03-general/crosswalk/nv-2020-precinct-result-crosswalk.json",
-      "byteCount": 1543728,
-      "sha256": "51b6670cdacb853485283570c2b75cb085d9dc2183e8213879ddd83f92419494"
+      "byteCount": 1453779,
+      "sha256": "08449a5422a20b4421b5d676b411d21c5f426a2a9c7aa7f15f72b8da04ee05cd"
     }
   },
   "caveats": [
     "No election-result value is embedded in the normalized geometry or crosswalk.",
     "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
-    "VEST is a secondary election-specific reconstruction and must not be presented as an official Nevada GIS export."
+    "All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under the retained Harvard Dataverse version-21 CC BY 4.0 terms; it must not be presented as an official Nevada GIS export."
   ]
 }

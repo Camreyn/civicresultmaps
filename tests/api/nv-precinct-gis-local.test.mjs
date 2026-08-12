@@ -24,6 +24,9 @@ test("Nevada local GIS commands remain loopback-only and public-fail-closed", ()
   assert.match(database, /geography_type='precinct'/);
   assert.match(database, /status='blocked'| 'blocked'/);
   assert.match(database, /publicDeliveryAuthorized: false/);
+  assert.match(database, /async function clearLocalReplayRows/);
+  assert.match(database, /context\.mode !== "local"/);
+  assert.match(database, /metadata->>'setupTool'=\$3/);
   assert.doesNotMatch(database, /runNeonTransaction|@neondatabase/);
   assert.match(migration, /secondary_reconstruction/);
   assert.match(migration, /hybrid_reconstruction/);

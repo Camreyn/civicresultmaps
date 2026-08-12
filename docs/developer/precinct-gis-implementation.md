@@ -7075,3 +7075,88 @@ evidence against its verified top-level package.
   2012 aggregate-rendering decision also remains unresolved. No production
   database row, canonical manifest, Blob object, Vercel setting, or deployment
   was changed.
+
+### 2026-08-11 - Nevada public-source alternatives exhausted before records requests
+
+- Public alternatives closed the 2016 result-provenance gate. The exact
+  official NVSOS statewide precinct export is retained and supplies every
+  normalized vote value. It contains 2,002 presidential source units across
+  all 17 county-equivalents. After excluding 40 special/non-geographic units
+  and 119 units with an unknown major-party privacy-suppressed cell, 1,843
+  units are safely colorable. They join by reviewed county/precinct identity
+  to 2,067 VEST election-specific geometry features; 224 polygons remain
+  explicit no-data. The known-colorable total is 1,122,216. VEST is now used
+  only for attributed CC BY 4.0 geometry, never for displayed vote values.
+
+- Public alternatives also closed the 2020 result and terms gates. The exact
+  official NVSOS statewide precinct export supplies every normalized vote
+  value. It contains 2,012 source units; 21 special/non-geographic units and
+  122 major-party-suppressed units are excluded, leaving 1,869 colorable units
+  joined to 2,094 VEST geometry features and 225 explicit no-data polygons.
+  The known-colorable total is 1,404,657. A retained evidence record pins
+  Harvard Dataverse file 4863168 to dataset version 21.0 and the version-pinned
+  Terms tab's Creative Commons Attribution 4.0 grant.
+
+- The 2024 redistribution gate is closed without an email. The retained LCB
+  ArcGIS item is public and `public_authoritative`, says it covers Nevada's
+  2024 election cycle, permits Query and Extract, and states no additional use
+  constraint. Retained ArcGIS Online Terms of Use expressly grant end users
+  permission to use, reproduce, prepare derivative works of, and distribute
+  publicly shared content subject to owner-stated constraints. All 1,726
+  official polygons remain retained, including 208 explicit no-data polygons.
+
+- The 2012 rendering blocker is also closed locally. Five reviewed multipart
+  precincts, formerly represented by 23 relationship records, are
+  deterministically retained as five MultiPolygon features without coordinate
+  union or boundary edits. The normalized set is 2,002
+  features with 1,760 one-to-one result relationships and 242 no-data
+  features. The only remaining external four-year map-source gate is the
+  election-date Washoe 2012 archive; broad public web, archive, statutory
+  catalog, LCB library-index, current county-service, and likely historical URL
+  checks did not expose the underlying map/GIS files.
+
+- This work still authorizes no public delivery or production write. The
+  2016, 2020, and 2024 source/crosswalk gates are ready for immutable delivery
+  package implementation and review. An all-four release remains blocked only
+  by the Washoe 2012 vintage evidence. A loopback-only database replay and
+  independent read-only validation pass with 6,990 reporting units, 20,970
+  result rows, 7,889 features, 6,990 reviewed one-to-one relationships, four
+  safely blocked geography versions, and zero invalid constraints.
+
+### 2026-08-11 - Nevada three-election guarded release implementation
+
+- Nevada 2016, 2020, and 2024 now have a deterministic content-addressed
+  release package. It contains 5,230 safely colorable reporting units, 15,690
+  candidate result rows, 647 zero-vote units, 5,887 polygons, 5,230 reviewed
+  exact one-to-one relationships, and 657 reviewed no-data polygons. Each year
+  covers all 17 county-equivalents. Nevada 2012 is excluded from the package
+  and canonical registry; the election-date Washoe archive is tracked in
+  GitHub issue #220.
+
+- The package produces three immutable indexes and 51 county GeoJSON files.
+  Presentation geometry is rounded to seven decimals and simplified at a
+  0.000005-degree tolerance, keeping every precinct feature and join identity
+  while reducing the largest county response below the existing 4,350,000-byte
+  safety limit. Source and normalized geometry artifacts remain unchanged and
+  hash-pinned. One zero-area polygon part in a retained MultiPolygon is omitted
+  from presentation bytes while the feature's valid polygon part remains.
+
+- Guarded operational tooling now covers plan-first Blob publication, read-only
+  production preflight, a full public-schema backup with exact restore proof,
+  hash-bound sole-owner authorization, coupled migration 0009 and hidden load,
+  durable production audit metadata, guarded static activation, atomic database
+  publication, and read-only receipt recovery for ambiguous hidden-load or
+  publication commits. The static manifests do not open either API while the
+  database status remains blocked.
+
+- A loopback transaction rehearsed the exact three-year hidden load and final
+  public publication, validated 5,230 authorized units and crosswalks, 15,690
+  result rows, and 5,887 features, rejected a replay, and then deliberately
+  rolled back. The local public revision and published-version count returned
+  to their pre-test values. No production database, Blob object, Vercel setting,
+  deployment, or GitHub merge was changed by the rehearsal.
+
+- The shared publication matcher now permits Nevada's explicit
+  `nv-precinct-gis-three-election-v*` identity while preserving Minnesota and
+  Texas four-election identities. The end-to-end sequence and stop conditions
+  are documented in `docs/developer/nv-precinct-gis-runbook.md`.

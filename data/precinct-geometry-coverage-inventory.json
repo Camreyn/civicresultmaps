@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-11T03:34:09.050Z",
+  "updatedAt": "2026-08-12T03:37:10.550Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -26,20 +26,20 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 2,
+    "totalJurisdictions": 3,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 2
+      "reviewed": 3
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 2,
+      "mapped": 3,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
     },
-    "publicEligibleJurisdictions": 2
+    "publicEligibleJurisdictions": 3
   },
   "states": [
     {
@@ -148,6 +148,61 @@
       "notes": [
         "Texas Legislative Council VTDs are presented as VTD / precinct approximations; exact official IDs, not display names, govern joins.",
         "TLC VTD totals remain a distinct official local product and do not replace certified Texas Secretary of State county or statewide totals."
+      ]
+    },
+    {
+      "state": "NV",
+      "stateName": "Nevada",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 7,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-12T03:37:10.550Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0",
+        "https://www.nvsos.gov/sos/elections/election-information/precinct-level-results"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "nv-2024-11-05-general-precinct-geometry-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/NV/2024-11-05-general/source-evidence.json",
+          "data/precinct-geometry/NV/2024-11-05-general/normalized/nv-2024-precincts.geojson.gz",
+          "data/precinct-geometry/NV/2024-11-05-general/crosswalk/nv-2024-precinct-result-crosswalk.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 1726,
+        "publicEligibleManifestCount": 1
+      },
+      "crosswalk": {
+        "resultUnits": 1518,
+        "colorableResultUnits": 1518,
+        "matchedResultUnits": 1518,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
+      "notes": [
+        "The official Nevada Legislative Counsel Bureau election-cycle precinct layer supplies the reviewed presentation geometry.",
+        "Privacy-suppressed result cells remain unknown; no vote value is inferred. Reviewed no-data polygons remain visible without invented result rows.",
+        "The 2012 election remains separately blocked pending the election-date Washoe County precinct archive tracked in GitHub issue #220."
       ]
     }
   ]
