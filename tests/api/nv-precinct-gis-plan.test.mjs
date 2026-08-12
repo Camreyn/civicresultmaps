@@ -19,12 +19,13 @@ test("Nevada plan preserves exact four-election result, geometry, and suppressio
     relationships: year.reviewedCrosswalks,
     noData: year.reviewedNoDataFeatures,
     total: year.totals.Total,
+    sourceGatePassed: year.sourceGatePassed,
     eligible: year.publicReleaseEligible,
   })), [
-    { year: 2012, units: 1760, rows: 5280, zero: 177, features: 2020, relationships: 1778, noData: 242, total: 1005652, eligible: false },
-    { year: 2016, units: 2067, rows: 6201, zero: 311, features: 2067, relationships: 2067, noData: 0, total: 1125385, eligible: false },
-    { year: 2020, units: 2094, rows: 6282, zero: 310, features: 2094, relationships: 2094, noData: 0, total: 1405376, eligible: false },
-    { year: 2024, units: 1518, rows: 4554, zero: 234, features: 1726, relationships: 1518, noData: 208, total: 1484382, eligible: false },
+    { year: 2012, units: 1760, rows: 5280, zero: 177, features: 2002, relationships: 1760, noData: 242, total: 1005652, sourceGatePassed: false, eligible: false },
+    { year: 2016, units: 1843, rows: 5529, zero: 206, features: 2067, relationships: 1843, noData: 224, total: 1122216, sourceGatePassed: true, eligible: false },
+    { year: 2020, units: 1869, rows: 5607, zero: 207, features: 2094, relationships: 1869, noData: 225, total: 1404657, sourceGatePassed: true, eligible: false },
+    { year: 2024, units: 1518, rows: 4554, zero: 234, features: 1726, relationships: 1518, noData: 208, total: 1484382, sourceGatePassed: true, eligible: false },
   ]);
 });
 
@@ -40,14 +41,14 @@ test("Nevada plan uses canonical county-scoped identities and reviewed relations
     assert.ok(year.geometry.crosswalks.every((relationship) =>
       relationship.reviewStatus === "reviewed"
       && ["high", "medium"].includes(relationship.confidence)
-      && ["one_to_one", "one_to_many"].includes(relationship.relationshipType)));
+      && relationship.relationshipType === "one_to_one"));
     assert.equal(year.resultRows.length, year.reportingUnits.length * 3);
   }
-  assert.equal(plan.years.find((year) => year.year === 2012).geometry.crosswalks.length, 1778);
+  assert.equal(plan.years.find((year) => year.year === 2012).geometry.crosswalks.length, 1760);
   assert.equal(plan.years.find((year) => year.year === 2024).geometry.features.length, 1726);
 });
 
-test("Nevada all-four release readiness remains NO-GO for four explicit external requirements", async () => {
+test("Nevada all-four release readiness isolates the only remaining external requirement", async () => {
   const readiness = await buildNevadaPrecinctReleaseReadiness({ plan });
   assert.equal(readiness.decision, "NO_GO_ALL_FOUR_PUBLIC_RELEASE");
   assert.equal(readiness.allFourSourceGatesPassed, false);
@@ -55,11 +56,12 @@ test("Nevada all-four release readiness remains NO-GO for four explicit external
   assert.equal(readiness.publicDeliveryAuthorized, false);
   assert.deepEqual(
     readiness.years.filter((year) => !year.sourceGatePassed).map((year) => year.year),
-    [2012, 2016, 2020, 2024],
+    [2012],
   );
   assert.equal(readiness.years.find((year) => year.year === 2012).externalRequest.contact, "library@lcb.state.nv.us");
-  assert.equal(readiness.years.find((year) => year.year === 2016).externalRequest.contact, "library@lcb.state.nv.us");
-  assert.equal(readiness.years.find((year) => year.year === 2020).externalRequest.contact, "election-lab@ufl.edu");
-  assert.equal(readiness.years.find((year) => year.year === 2024).externalRequest.contact, "library@lcb.state.nv.us");
+  for (const year of [2016, 2020, 2024]) {
+    assert.equal(readiness.years.find((entry) => entry.year === year).externalRequest, null);
+    assert.equal(readiness.years.find((entry) => entry.year === year).status, "source_and_crosswalk_gates_passed_delivery_pending");
+  }
   assert.equal(readiness.years.find((year) => year.year === 2024).reviewedNoDataFeatures, 208);
 });

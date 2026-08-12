@@ -432,6 +432,27 @@ async function results(tx, yearPlan, contestId, importRunId, sourceDocumentId, u
   }
 }
 
+async function clearLocalReplayRows(tx, yearPlan, electionId, contestId, context) {
+  if (context.mode !== "local") return;
+  await query(tx, [
+    "delete from reporting_unit_geometry_crosswalks crosswalk",
+    "using geography_versions version",
+    "where crosswalk.geometry_version_id=version.id",
+    " and version.state_code=$1 and version.election_id=$2::uuid",
+    " and version.geography_type='precinct'",
+  ], [STATE, electionId]);
+  await query(tx, [
+    "delete from result_rows",
+    "where contest_id=$1::uuid and state_code=$2 and level='precinct'",
+    " and jurisdiction_code like $3",
+  ], [contestId, STATE, `reporting:${STATE}:${yearPlan.electionId}:%`]);
+  await query(tx, [
+    "delete from reporting_units",
+    "where state_code=$1 and election_id=$2::uuid and reporting_grain='precinct'",
+    " and metadata->>'setupTool'=$3",
+  ], [STATE, electionId, context.resultParser]);
+}
+
 async function geometry(
   tx,
   yearPlan,
@@ -608,6 +629,13 @@ async function geometry(
 
 async function applyYear(tx, yearPlan, context) {
   const ids = await electionAndContest(tx, yearPlan);
+  await clearLocalReplayRows(
+    tx,
+    yearPlan,
+    ids.electionId,
+    ids.contestId,
+    context,
+  );
   await candidates(tx, ids.contestId, yearPlan);
 
   const resultSourceId = await sourceDocument(tx, {

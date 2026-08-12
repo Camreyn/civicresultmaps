@@ -19,8 +19,8 @@
       "sourceUrl": "https://www.nvsos.gov/electionresults/RaceResults.aspx",
       "authority": "Nevada Secretary of State",
       "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
-      "byteCount": 906801,
-      "sha256": "487bc06f2b5d0d6d12b6236a285d95f42b584149d631a8ad06e22d9428581fbc",
+      "byteCount": 898445,
+      "sha256": "5a7c94660e3e0f32229cfb4e816b2819360277973b80ac3308c531fd7a08dda7",
       "format": "CSV",
       "note": "Official statewide presidential precinct export; low-count cells are suppressed with an asterisk."
     },
@@ -49,10 +49,20 @@
       "sourceUrl": "https://services9.arcgis.com/UU5yXg9PV67U0ebq/arcgis/rest/services/2024_Precincts/FeatureServer/0?f=pjson",
       "authority": "Nevada Legislative Counsel Bureau / ArcGIS Online",
       "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
-      "byteCount": 15055,
-      "sha256": "23f1c9cd1d2ec61d07f84b6b7befef723fa5e31720f16d66da9e02348cdb4643",
+      "byteCount": 14575,
+      "sha256": "098702342f6784da672afae2039712a4086366adfa7532f9c7667ef50fc38bb2",
       "format": "JSON",
       "note": "Retained layer metadata records static data, Query and Extract capabilities, and April 2024 edit timestamps; copyrightText is empty."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2024-11-05-general/raw/esri/arcgis-online-terms-of-use.html",
+      "sourceUrl": "https://doc.arcgis.com/en/arcgis-online/reference/terms-of-use.htm",
+      "authority": "Esri ArcGIS Online",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 13379,
+      "sha256": "3360bbd0c1569c599451f2cccee5b3dc2d4c2fe8ff1c79056196fc663cc8d65b",
+      "format": "HTML",
+      "note": "Retained public-sharing terms expressly grant ArcGIS Online end users permission to use, reproduce, prepare derivative works of, and distribute publicly shared content, subject to owner-stated constraints."
     }
   ],
   "resultIdentity": {
@@ -70,11 +80,12 @@
   "boundaryContext": {
     "vintage": "Nevada LCB 2024 Precincts snapshot published April 5, 2024",
     "vintageStatus": "election_date_confirmed",
-    "licenseOrTerms": "The retained ArcGIS item is public_authoritative and the layer permits Query and Extract, but licenseInfo and copyrightText are empty; affirmative public derivative-redistribution permission is not retained."
+    "licenseOrTerms": "The retained ArcGIS item is public_authoritative and permits Query and Extract. ArcGIS Online Terms of Use expressly grant end users permission to use, reproduce, prepare derivative works of, and distribute publicly shared content, subject to owner-stated constraints; this item states no additional constraint."
   },
   "caveats": [
     "No election-result value is embedded in the normalized geometry or crosswalk.",
     "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
-    "The reviewed delivery contract retains all 1,726 official LCB polygons: 1,518 have result relationships and 208 remain visible as no-data. Of the no-data polygons, 115 correspond to result identities excluded because a major-party cell is suppressed and 93 lack a retained joinable result identity; 29 source result identities have no matching feature."
+    "The reviewed delivery contract retains all 1,726 official LCB polygons: 1,518 have result relationships and 208 remain visible as no-data. Of the no-data polygons, 115 correspond to result identities excluded because a major-party cell is suppressed and 93 lack a retained joinable result identity; 29 source result identities have no matching feature.",
+    "The official LCB layer is public_authoritative, has no item-level use constraint, and is covered by retained ArcGIS Online public-sharing permission for end-user use, reproduction, derivative works, and distribution."
   ]
 }

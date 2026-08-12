@@ -53,6 +53,13 @@
 # Preserve retained Nevada ArcGIS metadata responses byte-for-byte for source hash verification.
 /data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-item-metadata.json -text whitespace=-trailing-space
 /data/precinct-geometry/NV/2024-11-05-general/raw/nevada-legislative-counsel-bureau/2024-precincts-layer-metadata.json -text whitespace=-trailing-space
+/data/precinct-geometry/NV/2012-11-06-general/raw/nevada-secretary-of-state/2012-general-precinct.csv text eol=lf
+/data/precinct-geometry/NV/2012-11-06-general/raw/clark-county/prec2012_p.geojson text eol=lf
+/data/precinct-geometry/NV/2016-11-08-general/raw/nevada-secretary-of-state/2016-general-precinct.csv -text whitespace=-trailing-space
+/data/precinct-geometry/NV/2020-11-03-general/raw/nevada-secretary-of-state/2020-general-precinct.csv -text whitespace=-trailing-space
+/data/precinct-geometry/NV/2020-11-03-general/raw/vest/dataverse-v21-license-evidence.json text eol=lf
+/data/precinct-geometry/NV/2024-11-05-general/raw/nevada-secretary-of-state/2024-general-president.csv text eol=lf
+/data/precinct-geometry/NV/2024-11-05-general/raw/esri/arcgis-online-terms-of-use.html -text whitespace=-trailing-space,-space-before-tab
 
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab

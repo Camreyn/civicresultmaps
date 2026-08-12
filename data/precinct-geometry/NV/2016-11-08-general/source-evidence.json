@@ -9,11 +9,21 @@
     "type": "general",
     "office": "president"
   },
-  "authority": "Voting and Election Science Team, reconciled to a Nevada Legislative Counsel Bureau map using Nevada Secretary of State election data",
+  "authority": "Nevada Secretary of State results with explicitly attributed VEST election-specific geometry",
   "retrievedAt": "2026-08-11T12:00:00.000Z",
   "sourceCrs": "source-defined; parsed by shpjs or official EPSG:4326 GeoJSON",
   "servedCrs": "EPSG:4326",
   "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/NV/2016-11-08-general/raw/nevada-secretary-of-state/2016-general-precinct.csv",
+      "sourceUrl": "https://www.nvsos.gov/home/showpublisheddocument/4615/636160169602900000",
+      "authority": "Nevada Secretary of State",
+      "derivation": "Retained or deterministically converted from the cited source; the collector verifies the reviewed local byte hash before writing derived artifacts.",
+      "byteCount": 7512605,
+      "sha256": "17cf2360147e58211b29556303a2a29d5e2ba0f98d13df78e28a983c0b9dc184",
+      "format": "CSV",
+      "note": "Official statewide precinct result export. All normalized vote values come from this artifact; low-count cells remain suppressed with an asterisk."
+    },
     {
       "localArtifactPath": "data/precinct-geometry/NV/2016-11-08-general/raw/vest/nv_2016.zip",
       "sourceUrl": "https://election.lab.ufl.edu/dataset/nv-2016-precinct-level-election-results/",
@@ -22,7 +32,7 @@
       "byteCount": 6798273,
       "sha256": "4e3ddd59f31d61f55ff2d94bd03eb9d3ba0771c910b9509889b76eea209e476d",
       "format": "ESRI Shapefile ZIP",
-      "note": "Election-specific secondary precinct reconstruction with presidential result attributes; vote fields are removed from normalized geometry."
+      "note": "Election-specific secondary geometry reconstruction. Its vote fields are used only to prove unmatched extra polygons have zero votes; they are removed from normalized geometry and never used as displayed results."
     },
     {
       "localArtifactPath": "data/precinct-geometry/NV/2016-11-08-general/raw/nevada-legislative-counsel-bureau/ElectionResults2016USPres.pdf",
@@ -37,46 +47,41 @@
   ],
   "resultIdentity": {
     "sourceId": "nv-2016-president-precinct-results",
-    "sourceResultUnits": 2067,
-    "colorableResultUnits": 2067,
-    "excludedResultUnits": 0,
-    "knownColorablePresidentVotes": 1125385,
+    "sourceResultUnits": 2002,
+    "colorableResultUnits": 1843,
+    "excludedResultUnits": 159,
+    "knownColorablePresidentVotes": 1122216,
     "normalizedResultArtifact": {
       "path": "data/precinct-geometry/NV/2016-11-08-general/normalized/nv-2016-president-results.json.gz",
-      "sha256": "d3aeb7ccc54f2e6d0546c250f9ea8f581cb82cde6a51556829e7a45e99c45da8",
-      "byteCount": 41489
+      "sha256": "49df99e5e70b3e800d80366562874dadc2ecac9d6696c3db00b93efd95368952",
+      "byteCount": 38251
     },
     "officialStatewideReconciliation": {
-      "status": "statewide_percentages_reconciled",
+      "status": "official_precinct_rows_reconciled_to_lcb_context",
       "authority": "Nevada Legislative Counsel Bureau using Nevada Secretary of State election data",
       "artifact": "data/precinct-geometry/NV/2016-11-08-general/raw/nevada-legislative-counsel-bureau/ElectionResults2016USPres.pdf",
-      "normalizedTotals": {
-        "democratic": 539260,
-        "republican": 512058,
-        "other": 74067,
-        "total": 1125385
+      "normalizedKnownColorableTotals": {
+        "democratic": 537405,
+        "republican": 510920,
+        "other": 73891,
+        "total": 1122216
       },
       "publishedPercentages": {
         "democratic": 47.92,
         "republican": 45.5,
         "other": 6.58
       },
-      "calculatedPercentages": {
-        "democratic": 47.92,
-        "republican": 45.5,
-        "other": 6.58
-      },
-      "limitation": "The official map reconciles statewide percentages and source authority but does not provide a machine-readable official precinct-row export or a row-level crosswalk to the VEST reconstruction."
+      "limitation": "The official map confirms the statewide source authority and published percentages. The normalized known-colorable totals are intentionally lower because official privacy-suppressed major-party cells and non-geographic categories are excluded rather than estimated."
     }
   },
   "boundaryContext": {
     "vintage": "2016 election-specific VEST precinct reconstruction",
     "vintageStatus": "election_date_confirmed",
-    "licenseOrTerms": "VEST database content is CC BY 4.0 with attribution; the official Nevada LCB PDF is retained as public-source reconciliation evidence, not as a replacement row-level export."
+    "licenseOrTerms": "Official Nevada result export with VEST database geometry under CC BY 4.0 attribution; the official LCB PDF is retained as additional statewide source-context evidence."
   },
   "caveats": [
     "No election-result value is embedded in the normalized geometry or crosswalk.",
     "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
-    "VEST is a secondary election-specific reconstruction. The retained official LCB map reconciles its statewide presidential percentages and attributes election data to the Nevada Secretary of State, but it does not establish official row-level identity or geometry provenance."
+    "All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under CC BY 4.0 attribution; it must not be presented as an official Nevada GIS export. The official LCB map independently confirms the statewide source context."
   ]
 }

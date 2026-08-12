@@ -17,22 +17,22 @@
     "derivationMethod": "secondary_reconstruction"
   },
   "source": {
-    "authority": "Voting and Election Science Team",
-    "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4863168&version=21.0",
+    "authority": "Nevada Secretary of State results with explicitly attributed VEST election-specific geometry",
+    "url": "https://www.nvsos.gov/sos/elections/election-information/precinct-level-results",
     "retrievedAt": "2026-08-11T12:00:00.000Z",
     "artifact": "data/precinct-geometry/NV/2020-11-03-general/source-evidence.json",
-    "sha256": "b156b7baabd5b952104ab594ee9c69d43f9e5485ed67611600ae17280bbf0178",
-    "byteCount": 2329,
+    "sha256": "235e3dc0cf54335fb15c9032c49890b786667964bb232776ece6b8b4c2a6f4f2",
+    "byteCount": 4180,
     "format": "precinct-source-evidence+json",
-    "licenseOrTerms": "Harvard Dataverse custom terms for version 21.0 require confirmation before public redistribution; release remains blocked until confirmed."
+    "licenseOrTerms": "Official Nevada result export with exact Harvard Dataverse version-21 VEST geometry terms retained as Creative Commons Attribution 4.0."
   },
   "normalization": {
     "script": "scripts/collect-nv-precinct-geometry.mjs",
     "sourceCrs": "source-defined; parsed by shpjs or official EPSG:4326 GeoJSON",
     "servedCrs": "EPSG:4326",
     "artifact": "data/precinct-geometry/NV/2020-11-03-general/normalized/nv-2020-precincts.geojson.gz",
-    "sha256": "69c85a7cf82c56e58e03647278fa6d30be5c942bc63790057d2418c553c44cee",
-    "byteCount": 3571130,
+    "sha256": "10132d1271c98179b342c79586c1a1068347efd772fa9c9e0736f44541396769",
+    "byteCount": 3572831,
     "featureCount": 2094,
     "sourceFeatureIdFields": [
       "CRM_FEATURE_ID"
@@ -45,16 +45,16 @@
     "status": "reviewed",
     "resultSourceId": "nv-2020-president-precinct-results",
     "artifact": "data/precinct-geometry/NV/2020-11-03-general/crosswalk/nv-2020-precinct-result-crosswalk.json",
-    "sha256": "51b6670cdacb853485283570c2b75cb085d9dc2183e8213879ddd83f92419494",
-    "byteCount": 1543728,
-    "resultUnits": 2094,
-    "colorableResultUnits": 2094,
-    "matchedResultUnits": 2094,
+    "sha256": "08449a5422a20b4421b5d676b411d21c5f426a2a9c7aa7f15f72b8da04ee05cd",
+    "byteCount": 1453779,
+    "resultUnits": 1869,
+    "colorableResultUnits": 1869,
+    "matchedResultUnits": 1869,
     "unmatchedResultUnits": 0,
     "nonGeographicResultUnits": 0,
     "sourceAliasResultUnits": 0,
     "relationships": {
-      "oneToOne": 2094,
+      "oneToOne": 1869,
       "oneToMany": 0,
       "manyToOne": 0,
       "unmatched": 0,
@@ -62,8 +62,8 @@
       "sourceAlias": 0,
       "pendingReview": 0
     },
-    "reviewedRelationshipRecords": 2094,
-    "reviewedNoDataFeatures": 0,
+    "reviewedRelationshipRecords": 1869,
+    "reviewedNoDataFeatures": 225,
     "methods": [
       "exact_official_id"
     ]
@@ -74,18 +74,17 @@
     "rowLevelRenderingSafe": false,
     "parentTotalsReconciled": true,
     "errors": [
-      "An immutable parent-scoped public delivery package and production release review have not been completed.",
-      "The exact Harvard Dataverse version-21 custom redistribution terms have not been retained and reviewed."
+      "An immutable parent-scoped public delivery package and production release review have not been completed."
     ],
     "warnings": [
       "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
-      "VEST is a secondary election-specific reconstruction and must not be presented as an official Nevada GIS export."
+      "All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under the retained Harvard Dataverse version-21 CC BY 4.0 terms; it must not be presented as an official Nevada GIS export."
     ]
   },
   "delivery": null,
   "caveats": [
     "No election-result value is embedded in the normalized geometry or crosswalk.",
     "Nevada Secretary of State values suppressed for ballot secrecy remain unknown and are never converted to zero or estimated.",
-    "VEST is a secondary election-specific reconstruction and must not be presented as an official Nevada GIS export."
+    "All displayed vote values come from the retained official Nevada Secretary of State export. VEST supplies election-specific geometry only, under the retained Harvard Dataverse version-21 CC BY 4.0 terms; it must not be presented as an official Nevada GIS export."
   ]
 }

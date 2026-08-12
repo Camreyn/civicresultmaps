@@ -125,19 +125,11 @@
       "relationships": [
         {
           "sourceFeatureId": "32001|7",
-          "relationshipType": "one_to_many",
+          "relationshipType": "one_to_one",
           "matchMethod": "reviewed_name",
           "reviewStatus": "reviewed",
           "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|7-01",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
+          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result. The reviewed source pieces are retained as one MultiPolygon feature so the result relationship is one-to-one without altering any boundary coordinates."
         }
       ]
     },
@@ -151,35 +143,11 @@
       "relationships": [
         {
           "sourceFeatureId": "32001|8",
-          "relationshipType": "one_to_many",
+          "relationshipType": "one_to_one",
           "matchMethod": "reviewed_name",
           "reviewStatus": "reviewed",
           "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|8-01",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|8-02",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|8-03",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
+          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result. The reviewed source pieces are retained as one MultiPolygon feature so the result relationship is one-to-one without altering any boundary coordinates."
         }
       ]
     },
@@ -247,35 +215,11 @@
       "relationships": [
         {
           "sourceFeatureId": "32001|12",
-          "relationshipType": "one_to_many",
+          "relationshipType": "one_to_one",
           "matchMethod": "reviewed_name",
           "reviewStatus": "reviewed",
           "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|12-01",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|12-02",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|12-03",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
+          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result. The reviewed source pieces are retained as one MultiPolygon feature so the result relationship is one-to-one without altering any boundary coordinates."
         }
       ]
     },
@@ -325,91 +269,11 @@
       "relationships": [
         {
           "sourceFeatureId": "32001|15",
-          "relationshipType": "one_to_many",
+          "relationshipType": "one_to_one",
           "matchMethod": "reviewed_name",
           "reviewStatus": "reviewed",
           "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-01",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-02",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-03",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-04",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-05",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-06",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-07",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-08",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-09",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
-        },
-        {
-          "sourceFeatureId": "32001|15-10",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result."
+          "note": "Reviewed Census VTD base code plus suffixed polygon pieces allocated to the official county precinct result. The reviewed source pieces are retained as one MultiPolygon feature so the result relationship is one-to-one without altering any boundary coordinates."
         }
       ]
     },
@@ -20276,20 +20140,12 @@
       "isGeographic": true,
       "relationships": [
         {
-          "sourceFeatureId": "32013|7-1",
-          "relationshipType": "one_to_many",
+          "sourceFeatureId": "32013|7",
+          "relationshipType": "one_to_one",
           "matchMethod": "reviewed_name",
           "reviewStatus": "reviewed",
           "confidence": "high",
-          "note": "Reviewed two-piece Census VTD representation for official Humboldt precinct 7."
-        },
-        {
-          "sourceFeatureId": "32013|7-2",
-          "relationshipType": "one_to_many",
-          "matchMethod": "reviewed_name",
-          "reviewStatus": "reviewed",
-          "confidence": "high",
-          "note": "Reviewed two-piece Census VTD representation for official Humboldt precinct 7."
+          "note": "Reviewed two-piece Census VTD representation for official Humboldt precinct 7. The reviewed source pieces are retained as one MultiPolygon feature so the result relationship is one-to-one without altering any boundary coordinates."
         }
       ]
     },
