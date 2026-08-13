@@ -7296,3 +7296,57 @@ evidence against its verified top-level package.
   district-based U.S. House and the signal is broad, these remain advisory
   review inputs rather than evidence of fraud or misconduct. No production
   promotion or production indicator-count check was performed in this task.
+
+### 2026-08-13 - Maine four-election local-reporting-unit collection
+
+- Maine's official statewide presidential workbooks do not expose one uniform
+  precinct grain. They mix towns, plantations, townships, voting districts,
+  and combined local units. The new contract therefore uses
+  `local_reporting_unit`; it never relabels every unit as a precinct, copies a
+  town total onto multiple ward polygons, or allocates votes by area or
+  population.
+
+- `scripts/collect-me-local-reporting-geometry.mjs` now parses the retained
+  Maine Secretary of State workbooks for all four target elections. Those
+  workbooks are the sole source of displayed votes. Secondary geometry vote
+  fields are stripped before normalization. Deterministic replay retains
+  manifests, source evidence, normalized geometry and result universes,
+  reviewed crosswalks, and reconciliation reports under
+  `data/precinct-geometry/ME/`.
+
+- The reviewed 2016 package maps all 532 official rows and all 743,941 votes.
+  The 2020 package maps all 516 rows and all 813,742 votes. The 2024 package
+  maps all 512 source rows and 824,806 votes into 494 shapes: 34 small source
+  rows are summed exactly into 16 published official-boundary units, with
+  every constituent identity retained. The T22 MD gap is accepted only after
+  proving the official boundary's area and bounds are unchanged between the
+  retained July 2015 and current GeoLibrary snapshots.
+
+- The 2012 package remains partial and fail-closed. It maps 540 of 545 source
+  rows into 507 reviewed local shapes and represents 710,118 of 710,126 votes.
+  Five rows totaling eight votes have no unique polygon. The candidate uses a
+  retained MGGG secondary election reconstruction whose exact official
+  November 2012 boundary edition and derivative redistribution permission are
+  unresolved. The retained July 2015 official GeoLibrary archive documents
+  source lineage only and is not backcast to election day. The omitted rows
+  and totals are explicit; no shape is guessed.
+
+- The exact MGGG ZIP and README are retained for 2012, and its unresolved
+  derivative terms remain a public-release blocker. Version-specific VEST CC
+  BY evidence is retained for 2016 and 2020. The 2024 NYT C-UDA Non-Commercial
+  terms and attribution are retained. Maine's official GeoLibrary reuse statute
+  is retained for the original boundary source. All four manifests remain
+  blocked with `delivery: null`; this change performs no
+  database load, Blob publication, canonical activation, deployment, or public
+  eligibility transition. The next release phase is documented in
+  `docs/developer/me-local-reporting-gis-runbook.md`.
+
+- The required native 2024 advisory report still evaluates all 512 Maine
+  review rows and calculates 42 advisory indicator rows across 16 county
+  jurisdictions: 10 `vote_share_pattern`, 16
+  `average_down_ballot_difference`, and 16 `down_ballot_outliers`. All 16
+  evaluated county jurisdictions receive at least one broad-signal advisory.
+  Because the comparison contest includes a major independent U.S. Senate
+  candidate, these are directional review inputs rather than evidence of fraud
+  or misconduct. Production was neither promoted nor queried for indicator
+  counts in this collection task.

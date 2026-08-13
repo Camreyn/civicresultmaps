@@ -304,7 +304,16 @@
     "precinct-gis:production-release:ia": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-ia-precinct-release.mjs",
     "precinct-gis:public-activation:ia": "node --experimental-strip-types scripts/prepare-ia-precinct-public-activation.mjs",
     "precinct-gis:publication-status:ia": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-ia-precinct-geography-status.mjs",
-    "test:precinct-geometry:ia": "node scripts/run-ia-precinct-geometry-tests.mjs"
+    "test:precinct-geometry:ia": "node scripts/run-ia-precinct-geometry-tests.mjs",
+    "precinct-gis:collect:me:2012": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2012 --retrieved-at=2026-08-13T14:00:00Z",
+    "precinct-gis:replay:me:2012": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2012 --retrieved-at=2026-08-13T14:00:00Z",
+    "precinct-gis:collect:me:2016": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2016 --retrieved-at=2026-08-13T14:00:00Z",
+    "precinct-gis:replay:me:2016": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2016 --retrieved-at=2026-08-13T14:00:00Z",
+    "precinct-gis:collect:me:2020": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2020 --retrieved-at=2026-08-13T14:00:00Z",
+    "precinct-gis:replay:me:2020": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2020 --retrieved-at=2026-08-13T14:00:00Z",
+    "precinct-gis:collect:me:2024": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2024 --retrieved-at=2026-08-13T14:00:00Z",
+    "precinct-gis:replay:me:2024": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2024 --retrieved-at=2026-08-13T14:00:00Z",
+    "test:precinct-geometry:me": "node --experimental-strip-types --test tests/api/me-local-reporting-geometry.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",
@@ -348,6 +357,7 @@
     "drizzle-kit": "^0.30.1",
     "eslint": "^9.17.0",
     "eslint-config-next": "^16.1.5",
+    "polygon-clipping": "^0.15.7",
     "sharp": "^0.34.5",
     "tesseract.js": "^7.0.0",
     "typescript": "^5.7.2",

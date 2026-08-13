@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "id": "me-2020-11-03-general-local-reporting-geometry-candidate-v1",
+  "state": "ME",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "local_reporting_unit",
+    "parentLevel": "county",
+    "boundaryVintage": "2020 election-specific VEST local boundary reconstruction",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "hybrid_reconstruction"
+  },
+  "source": {
+    "authority": "Maine Secretary of State results with reviewed official-source-derived local geometry",
+    "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/presandvisecnty1120.xlsx",
+    "retrievedAt": "2026-08-13T14:00:00Z",
+    "artifact": "data/precinct-geometry/ME/2020-11-03-general/source-evidence.json",
+    "sha256": "0bae94e707d3f6bc33572f9e613921dee58c1b6c6cc69ade91a25024507b5a16",
+    "byteCount": 4156,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Maine results; VEST geometry under retained CC BY 4.0 terms and attribution."
+  },
+  "normalization": {
+    "script": "scripts/collect-me-local-reporting-geometry.mjs",
+    "sourceCrs": "source-defined and normalized by shpjs or retained EPSG:4326 GeoJSON",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/ME/2020-11-03-general/normalized/me-2020-local-reporting-units.geojson.gz",
+    "sha256": "eeb5216da916d5a427fccddb02c191e70a549a0e40774ebfa7eb1f612d6443cf",
+    "byteCount": 2426827,
+    "featureCount": 516,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "me-2020-president-local-results",
+    "artifact": "data/precinct-geometry/ME/2020-11-03-general/crosswalk/me-2020-local-result-crosswalk.json",
+    "sha256": "0e40290cd17e7ea6aa94198f2228b148f6ea75e57db3b66a054552dc85385747",
+    "byteCount": 433882,
+    "resultUnits": 516,
+    "colorableResultUnits": 516,
+    "matchedResultUnits": 516,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 516,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 516,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "errors": [
+      "An immutable parent-scoped public delivery package and production release review have not been completed."
+    ],
+    "warnings": [
+      "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+      "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+      "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+    "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+    "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported."
+  ]
+}

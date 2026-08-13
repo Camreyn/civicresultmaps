@@ -2,14 +2,14 @@
   "state": "ME",
   "stateName": "Maine",
   "electionYear": 2024,
-  "checkedAt": "2026-07-06",
-  "checkedBy": "Wave 17 Maine state-data worker",
+  "checkedAt": "2026-08-13",
+  "checkedBy": "Maine local-reporting geometry review",
   "productionChecked": false,
   "repoDrift": [
     {
       "path": "docs/developer/index.md",
-      "status": "missing_on_current_main",
-      "note": "AGENTS.md lists this as a first read, but the file is absent in this worktree; treated as repo drift rather than a blocker."
+      "status": "resolved",
+      "note": "The required developer index is present on the reviewed main branch."
     }
   ],
   "currentEtLStatus": {
@@ -49,10 +49,10 @@
       "availableEvidence": [
         "The official 2024 results page lists U.S. President by County/Town (Excel).",
         "The same page lists U.S. President by Congressional District (Excel), useful for Maine's split electoral-vote context.",
-        "No Maine native result or review parser is loaded in etl/state-configs/me.json."
+        "The native Maine parser loads the official 2024 county/town workbook, and the separate local-geometry collector reads the same retained official rows for reviewed map joins."
       ],
       "parserNeeded": "Loaded by nativeMaineSosCountyTownXlsx from the official President by County/Town workbook. County totals plus State UOCAVA reconcile to 831,375 candidate votes; blank ballots remain source caveat context and are not candidate votes.",
-      "caveat": "State UOCAVA is loaded as a non-geographic certified result row and excluded from town review joins; county geometry can map county rows only.",
+      "caveat": "State UOCAVA is loaded as a non-geographic certified result row and excluded from town/local map joins. Reviewed local-reporting geometry candidates remain fail-closed until immutable delivery and production review are completed.",
       "localArtifacts": [
         "data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx",
         "data/me-official-sources/me-2024-president-by-congressional-district.xlsx"
@@ -66,7 +66,7 @@
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx"
       ],
       "missing": [
-        "municipality/town geometry or official reporting-unit crosswalk for subcounty overlays",
+        "immutable delivery and production activation for reviewed local-reporting-unit overlays",
         "state-native turnout replacement semantics",
         "manual review of the three vote-share-only grain mismatches: Medway/Twps, Day Block Twp, and Wesley"
       ],
@@ -112,23 +112,32 @@
       ]
     },
     "geometryAndCrosswalk": {
-      "status": "county_geometry_present_municipality_crosswalk_needed",
-      "sourceAuthority": "U.S. Census Bureau; Maine Secretary of State",
+      "status": "four_year_local_reporting_candidates_retained_delivery_pending",
+      "sourceAuthority": "Maine Secretary of State; Maine GeoLibrary; reviewed MGGG, VEST, and New York Times geometry",
       "sourceUrls": [
-        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2723%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-        "https://www.maine.gov/sos/elections-voting/electoral-districts"
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/2012presmuni.xls",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/president.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/presandvisecnty1120.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+        "https://www.maine.gov/geolib/",
+        "https://github.com/mggg-states/ME-shapefiles",
+        "https://github.com/nytimes/presidential-precinct-map-2024"
       ],
       "localArtifacts": [
-        "data/me-counties.geojson"
+        "data/me-counties.geojson",
+        "data/precinct-geometry/ME/2012-11-06-general/manifest.json",
+        "data/precinct-geometry/ME/2016-11-08-general/manifest.json",
+        "data/precinct-geometry/ME/2020-11-03-general/manifest.json",
+        "data/precinct-geometry/ME/2024-11-05-general/manifest.json"
       ],
       "needed": [
-        "municipality/town or voting-district geometry if subcounty map overlays are required",
-        "crosswalk from SOS workbook municipality labels to map geometry labels",
-        "explicit treatment for UOCAVA and other non-geographic rows"
+        "immutable parent-scoped delivery and reviewed production activation for 2016, 2020, and 2024",
+        "five missing local boundaries plus an official election-date replacement or explicit MGGG derivative permission for the partial 2012 package",
+        "continued explicit exclusion of UOCAVA and other non-geographic rows"
       ]
     },
     "historicalBaselines": {
-      "status": "official_2016_2020_loaded_2012_xls_blocked",
+      "status": "official_2016_2020_loaded_2012_xls_parsed_for_gis_only",
       "targetYears": [
         2020,
         2016,
@@ -139,11 +148,11 @@
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/presandvisecnty1120.xlsx",
         "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2016-2017",
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/president.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012presmuni%282%29.xls",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/2012presmuni.xls",
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012prescounty%281%29.xls"
       ],
-      "parserNeeded": "2016 and 2020 county plus State UOCAVA rows load through maineSosHistoricalPresidentXlsx. The official 2012 XLS artifacts are collected but need legacy .xls support or conversion before loading.",
-      "caveat": "Historical rows are contextual baselines only. 2012 remains blocked by legacy .xls parsing support.",
+      "parserNeeded": "2016 and 2020 county plus State UOCAVA rows load through maineSosHistoricalPresidentXlsx. The local-geometry collector parses all 545 official 2012 municipal rows; adding those rows to the native historical-baseline contract remains separate work.",
+      "caveat": "Historical rows are contextual baselines only. The 2012 local map remains blocked because five rows totaling eight votes lack unique geometry and the MGGG secondary reconstruction lacks confirmed exact official election-date applicability and explicit derivative redistribution permission.",
       "localArtifacts": [
         "data/me-official-sources/me-2020-president-county-town.xlsx",
         "data/me-official-sources/me-2016-president.xlsx",
@@ -179,11 +188,11 @@
   },
   "sourceAcquisitionDecision": {
     "tier": "tier_1_official_export_database",
-    "reason": "Maine SOS publishes official 2024 certified result workbooks as Excel files, including President by County/Town and United States Senator, plus CD2 ranked-choice/CVR Excel exports. Parser work and reconciliation remain before native result/review rows are loaded.",
+    "reason": "Maine SOS publishes official certified result workbooks. Native result/review rows are loaded, and a separate deterministic collector now reconciles official local presidential rows to reviewed local-reporting geometry for all four target years while keeping delivery fail-closed.",
     "manualReviewBurden": "low"
   },
   "websiteAndApiDisplayPath": {
-    "currentPath": "Maine staging/API path now includes native certified result rows, town review rows, EAC fallback turnout rows, and 2016/2020 historical rows from etl/state-configs/me.json.",
+    "currentPath": "Maine staging/API includes native certified rows, town review rows, EAC fallback turnout, and 2016/2020 historical rows. Four local-reporting geometry candidates are retained but are not yet in the public manifest registry.",
     "sourceRegistryPath": "/api/native-source-packages and /api/source-acquisition-tiers expose the updated planning registries after deployment.",
     "productionChecked": false,
     "notCheckedReason": "Production promotion and production API verification were not authorized for this worker branch."
@@ -194,8 +203,9 @@
     "Three President town rows remain vote-share-only because the Senate workbook grain differs: Medway/Twps, Day Block Twp, and Wesley.",
     "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff fields are directional source-review inputs only.",
     "Turnout remains EAC fallback; collected Maine SOS active/inactive registered-enrolled files are denominator leads only until compatible ballots-cast or voter-participation rows are collected.",
-    "Municipality/town geometry or a reporting-unit crosswalk is not loaded.",
-    "2012 official historical artifacts are collected but not parsed because they are legacy .xls files.",
+    "Reviewed local-reporting geometry/crosswalk candidates are not public until immutable delivery, database loading, and production activation are reviewed.",
+    "The 2012 municipal XLS is parsed for GIS, but five rows totaling eight votes lack unique geometry and the MGGG secondary reconstruction lacks confirmed exact official election-date applicability and explicit derivative redistribution permission.",
+    "Maine's source units are a mix of towns, plantations, townships, voting districts, and combined units; they must not be described as uniform precincts.",
     "No normalized 2024 audit, recount, CVR availability, incident, correction, or litigation rows are loaded.",
     "All advisory language must remain source-review context, not evidence of fraud or misconduct."
   ]

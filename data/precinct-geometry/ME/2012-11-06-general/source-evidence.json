@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "me-2012-local-reporting-geometry-source-evidence",
+  "state": "ME",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Maine Secretary of State results with reviewed MGGG secondary local geometry",
+  "retrievedAt": "2026-08-13T14:00:00Z",
+  "sourceCrs": "source-defined and normalized by shpjs or retained EPSG:4326 GeoJSON",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/me-official-sources/me-2012-president-municipal.xls",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/2012presmuni.xls",
+      "authority": "Maine Secretary of State",
+      "format": "XLS",
+      "sha256": "991dbda07568d45ddb3841550c5bc0ce9217c398651384b36fdc7c9a0e5e6d3c",
+      "byteCount": 119808,
+      "note": "Certified presidential results by published local reporting unit. This is the sole source of displayed vote values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/ME/2012-11-06-general/raw/mggg/Maine.zip",
+      "url": "https://raw.githubusercontent.com/mggg-states/ME-shapefiles/master/Maine.zip",
+      "authority": "Metric Geometry and Gerrymandering Group",
+      "format": "ESRI Shapefile ZIP",
+      "sha256": "01d4e02c931f34598507348f3299730a955903b054dfd5cf62097ad47fb078eb",
+      "byteCount": 3279325,
+      "note": "Secondary 2012 election reconstruction derived from Maine GeoLibrary and other public boundary sources. Embedded election values are removed; exact official boundary vintage and derivative redistribution permission remain unresolved."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/ME/2012-11-06-general/raw/mggg/README.md",
+      "url": "https://raw.githubusercontent.com/mggg-states/ME-shapefiles/master/README.md",
+      "authority": "Metric Geometry and Gerrymandering Group",
+      "format": "MD",
+      "sha256": "82cb8ecea985045d9be5d61f242802b39f6090d63da84da4b3d0b46ac6ee7594",
+      "byteCount": 6440,
+      "note": "Retained source lineage, validation, or license evidence."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/ME/2012-11-06-general/raw/maine-geolibrary/metwp24s-2015-archive.zip",
+      "url": "https://web.archive.org/web/20160709000000id_/http://www.maine.gov/megis/catalog/shps/state/metwp24s.zip",
+      "authority": "Maine GeoLibrary / Maine Legislature",
+      "format": "ZIP",
+      "sha256": "ebc6af5f5b02cbc082860254034764e8fd68a63a3903ccb176e31bd9add84395",
+      "byteCount": 14184685,
+      "note": "Retained source lineage, validation, or license evidence."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/ME/2012-11-06-general/raw/maine-geolibrary/reuse-statute.html",
+      "url": "https://legislature.maine.gov/statutes/5/title5sec2005.html",
+      "authority": "Maine GeoLibrary / Maine Legislature",
+      "format": "HTML",
+      "sha256": "be2febcc2677ca8c29116afda5f82606877940749c8c7f1c5bc05cae9f11b2ab",
+      "byteCount": 9837,
+      "note": "Retained source lineage, validation, or license evidence."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "me-2012-president-local-results",
+    "sourceResultUnits": 545,
+    "colorableResultUnits": 507,
+    "excludedResultUnits": 5,
+    "normalizedResultArtifact": {
+      "localArtifactPath": "data/precinct-geometry/ME/2012-11-06-general/normalized/me-2012-president-local-results.json.gz",
+      "sha256": "1e9759327474bd2fcf24d87b3fc9c2e01118d121b851d49b91c1f287793dd74e",
+      "byteCount": 20780
+    },
+    "sourceTotals": {
+      "demVotes": 399235,
+      "repVotes": 291418,
+      "otherVotes": 19473,
+      "totalVotes": 710126,
+      "ballotsCast": 721691
+    },
+    "mappedTotals": {
+      "democratic": 399235,
+      "republican": 291412,
+      "other": 19471,
+      "total": 710118
+    }
+  },
+  "geometryContext": {
+    "sourceFeatureCount": 897,
+    "assignedSourceFeatures": 507,
+    "unassignedSourceFeatures": 390,
+    "outputFeatureCount": 507
+  },
+  "caveats": [
+    "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+    "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+    "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported.",
+    "The 2012 layer maps 507 reviewed secondary local shapes covering 540 of 545 official local source rows. Five tiny reporting rows totaling eight presidential votes have no uniquely attributable source polygon and remain excluded rather than guessed.",
+    "The retained MGGG reconstruction is supplemental geometry only. Its exact official election-date boundary edition and derivative redistribution permission have not been established, so 2012 cannot enter public delivery even if the five exclusions are later resolved."
+  ]
+}

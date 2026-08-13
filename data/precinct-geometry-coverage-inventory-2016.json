@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-13T03:25:00.748Z",
+  "updatedAt": "2026-08-13T14:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2016-11-08-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 4,
+    "totalJurisdictions": 5,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 4
+      "reviewed": 5
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 4,
+      "mapped": 5,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
@@ -260,6 +260,64 @@
         "The election-effective Iowa LSA/SOS geometry is joined to the official Iowa Secretary of State results through the retained reviewed identity bridge.",
         "Geometry redistribution terms and exact source provenance are retained with the release artifacts.",
         "The 2012 election remains separately blocked because a complete election-effective statewide precinct boundary archive has not been located."
+      ]
+    },
+    {
+      "state": "ME",
+      "stateName": "Maine",
+      "electionId": "2016-11-08-general",
+      "programStatus": "reviewed",
+      "wave": 8,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-13T14:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_3_secondary_geometry"
+      ],
+      "resultReportingGrains": [
+        "local_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/president.xlsx",
+        "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/NH5S2I&version=62.0"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "me-2016-11-08-general-local-reporting-geometry-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/NH5S2I&version=62.0"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/ME/2016-11-08-general/source-evidence.json",
+          "data/precinct-geometry/ME/2016-11-08-general/normalized/me-2016-local-reporting-units.geojson.gz",
+          "data/precinct-geometry/ME/2016-11-08-general/crosswalk/me-2016-local-result-crosswalk.json"
+        ],
+        "levels": [
+          "local_reporting_unit"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 532,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 532,
+        "colorableResultUnits": 532,
+        "matchedResultUnits": 532,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "sourceResultUnits": 532
+      },
+      "blockers": [
+        "The reviewed source/crosswalk package has no immutable parent-scoped delivery or reviewed production release yet."
+      ],
+      "nextAction": "Build the guarded local database, immutable delivery, production-review, and public-activation path without relabeling Maine local units as uniform precincts.",
+      "notes": [
+        "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source election values are stripped.",
+        "Maine publishes a mixed local grain of towns, plantations, townships, voting districts, and combined units. Town totals are never duplicated across ward polygons or proportionally allocated."
       ]
     }
   ]

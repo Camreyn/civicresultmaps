@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "id": "me-2016-local-reporting-geometry-source-evidence",
+  "state": "ME",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Maine Secretary of State results with reviewed official-source-derived local geometry",
+  "retrievedAt": "2026-08-13T14:00:00Z",
+  "sourceCrs": "source-defined and normalized by shpjs or retained EPSG:4326 GeoJSON",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/me-official-sources/me-2016-president.xlsx",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/president.xlsx",
+      "authority": "Maine Secretary of State",
+      "format": "XLSX",
+      "sha256": "b9344c92b55c7e2f3183a1bf3bb14a2635aaaa1e5344a92b105358856d900c48",
+      "byteCount": 54853,
+      "note": "Certified presidential results by published local reporting unit. This is the sole source of displayed vote values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/ME/2016-11-08-general/raw/vest/me_2016.zip",
+      "url": "https://dataverse.harvard.edu/file.xhtml?persistentId=doi%3A10.7910%2FDVN%2FNH5S2I%2FCHOCIN&version=62.0",
+      "authority": "Voting and Election Science Team",
+      "format": "ESRI Shapefile ZIP",
+      "sha256": "6eba40fe63937686cff7a48bb90e5ebdf55bae6a54c04de4cd138af1e1218b72",
+      "byteCount": 4301817,
+      "note": "Secondary geometry only. Embedded election-result fields are removed and never used for displayed values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/ME/2016-11-08-general/raw/vest/me_vest_2016.ipynb",
+      "url": "https://raw.githubusercontent.com/nonpartisan-redistricting-datahub/pdv-me/main/vest-me-2016/me_vest_2016.ipynb",
+      "authority": "Redistricting Data Hub / Harvard Dataverse",
+      "format": "IPYNB",
+      "sha256": "dca42375c9f8bf8046d709d308d0501307b54948638461cf5aa4d2e8a083d5e5",
+      "byteCount": 3472259,
+      "note": "Retained source lineage, validation, or license evidence."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/ME/2016-11-08-general/raw/vest/dataverse-license-evidence.json",
+      "url": "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/NH5S2I&version=62.0&selectTab=termsTab",
+      "authority": "Redistricting Data Hub / Harvard Dataverse",
+      "format": "JSON",
+      "sha256": "3617e12f778acc4f20e801e4746e4491768e39b24319d112618f222464c557b6",
+      "byteCount": 921,
+      "note": "Retained source lineage, validation, or license evidence."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "me-2016-president-local-results",
+    "sourceResultUnits": 532,
+    "colorableResultUnits": 532,
+    "excludedResultUnits": 0,
+    "normalizedResultArtifact": {
+      "localArtifactPath": "data/precinct-geometry/ME/2016-11-08-general/normalized/me-2016-president-local-results.json.gz",
+      "sha256": "eee124e13eaa5ddc337a71d8f8ac764107d046bb2b56c0902525ea3ce8d82a50",
+      "byteCount": 21370
+    },
+    "sourceTotals": {
+      "demVotes": 354718,
+      "repVotes": 334945,
+      "otherVotes": 54278,
+      "totalVotes": 743941,
+      "ballotsCast": 767843
+    },
+    "mappedTotals": {
+      "democratic": 354718,
+      "republican": 334945,
+      "other": 54278,
+      "total": 743941
+    }
+  },
+  "geometryContext": {
+    "sourceFeatureCount": 609,
+    "assignedSourceFeatures": 582,
+    "unassignedSourceFeatures": 27,
+    "outputFeatureCount": 532
+  },
+  "caveats": [
+    "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+    "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+    "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported."
+  ]
+}
