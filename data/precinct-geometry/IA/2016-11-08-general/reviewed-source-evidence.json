@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2016-precinct-geometry-reviewed-source-evidence-v1",
+  "state": "IA",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+  "retrievedAt": "2026-08-12T23:58:58.000Z",
+  "sourceCrs": "Official LSA service source; requested and normalized as EPSG:4326",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2016-11-08-general/normalized/ia-2016-president-results.json.gz",
+      "byteCount": 60225,
+      "sha256": "4477992188679ba33091afe522f5c7fcf143514a08a8d341974e5389aaff59b3",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2016general/01-adair.xlsx",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Deterministically parsed and normalized by scripts/collect-ia-precinct-results.mjs from the exact official artifacts recorded in collection.sources.",
+      "note": "Normalized official presidential rows; collection metadata retains 99 exact upstream source artifacts with URLs and hashes.",
+      "uncompressedByteCount": 501061,
+      "uncompressedSha256": "ffa54b3bb88da710588af150a39f77c57015ceaa48c00a32e03687c2c7dbbef2"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2016-11-08-general/source-evidence.json",
+      "byteCount": 112392,
+      "sha256": "740ddeb30ea5d3fc807565ac649ccc29c5dd774784b144d61312674b2176b146",
+      "sourceUrl": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+      "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Hash-pinned official SOS/LSA source-retention ledger and boundary metadata."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/raw-shared/dspg-isu/DESCRIPTION",
+      "byteCount": 4389,
+      "sha256": "16cd0311a00b76909091f107151997bdd70751b133209994eee4732e70a49105",
+      "sourceUrl": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+      "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "DSPG/ISU package description identifying the data package and MIT license."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/raw-shared/dspg-isu/LICENSE.md",
+      "byteCount": 1093,
+      "sha256": "14586cb3022d917a97347740bd6dec9c77173daeb212dfcd1f6b1749219f6cfc",
+      "sourceUrl": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+      "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "MIT terms for the reviewed identity bridge."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/raw-shared/dspg-isu/ia-2014-to-2016-reviewed-crosswalk.json",
+      "byteCount": 719873,
+      "sha256": "0a584ed3d9b99b28df1e12a38f4840498fab60a21128edb7c4f05b052e018129",
+      "sourceUrl": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+      "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Reviewed identity bridge between the official statewide geometry vintages."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2016-11-08-general/normalized/ia-2016-precincts-reviewed.geojson.gz",
+      "byteCount": 3707853,
+      "sha256": "154f248f2bebe7ea7a77a1c1a3bac30343581a2f60d089e99313d4f1c448fd66",
+      "sourceUrl": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+      "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+      "derivation": "Deterministically normalized from the retained source geometry by the manifest normalization script; election-result fields are removed.",
+      "note": "Reviewed normalized geometry; contains no election-result value fields.",
+      "uncompressedByteCount": 19997830,
+      "uncompressedSha256": "889cbeb4cf663ab9b5a02f2e904d78cbcc2145fe9d3bf480be14dfeab5977f14"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2016-11-08-general/crosswalk/ia-2016-results-to-reviewed-geometry.json",
+      "byteCount": 1471807,
+      "sha256": "a68c487cf0a8ee91b2245d67c21c241f3cf56ec118cc8e43405c467606674952",
+      "sourceUrl": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+      "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+      "derivation": "Deterministically generated from the hash-pinned reviewed relationship procedure; contains no election-result values.",
+      "note": "Reviewed result-to-geometry relationship records; contains no election-result values."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "ia-sos-2016-general-county-precinct-workbooks",
+    "sourceResultUnits": 1680,
+    "colorableResultUnits": 1680,
+    "excludedResultUnits": 0,
+    "officialStatewideTotals": {
+      "democratic": 653669,
+      "republican": 800983,
+      "other": 111379,
+      "total": 1566031
+    },
+    "normalizedResultArtifact": {
+      "path": "data/precinct-geometry/IA/2016-11-08-general/normalized/ia-2016-president-results.json.gz",
+      "sha256": "4477992188679ba33091afe522f5c7fcf143514a08a8d341974e5389aaff59b3",
+      "byteCount": 60225
+    },
+    "authority": "Iowa Secretary of State"
+  },
+  "boundaryContext": {
+    "vintage": "Iowa Precincts 2016 official LSA/SOS service, updated March 29, 2016",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "official_export",
+    "sourceGatePassed": true,
+    "blockCode": null,
+    "licenseOrTerms": "Official LSA/SOS service attribution retained; the reviewed DSPG/ISU identity bridge is MIT licensed and its copyright notice accompanies the source package."
+  },
+  "reconciliation": {
+    "resultUnits": 1680,
+    "geometryFeatures": 1680,
+    "reviewedRelationshipRecords": 1680,
+    "unmatchedResultUnits": 0,
+    "status": "passed"
+  },
+  "caveats": [
+    "The service calls this Iowa Precincts 2016 and records a March 29, 2016 update under Iowa Secretary of State purview.",
+    "The DSPG/ISU package is an identity bridge, not the authority for vote values or certified totals.",
+    "The official service and bridge attribution and terms must accompany public delivery."
+  ]
+}

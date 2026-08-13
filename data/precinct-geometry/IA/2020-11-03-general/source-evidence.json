@@ -1,0 +1,562 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2020-precinct-geometry-source-lead-diagnostic",
+  "state": "IA",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Iowa Secretary of State",
+  "retrievedAt": "2026-08-02T12:00:00.000Z",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2020-11-03-general/raw/ia-sos-2020-general-precinct-workbook-link-ledger.json",
+      "byteCount": 14779,
+      "sha256": "1b31cb634e33d60df9ea793897548fc4313f6df66c082d2e6e94b2cef95d9c41",
+      "sourceUrl": "https://sos.iowa.gov/precinct-results-county-2020-general",
+      "derivation": "Deterministic JSON transcription of the 99 named .xlsx links visible on the Iowa SOS 2020 General county-precinct results index; the individual workbook bytes are not retained."
+    }
+  ],
+  "officialSourceLeads": [
+    "https://sos.iowa.gov/precinct-results-county-2020-general",
+    "https://sos.iowa.gov/elections/pdf/2020/general/canvsummary.pdf",
+    "https://sos.iowa.gov/elections/pdf/shapefiles/Statewide%20Precinct%20Layer/pcts_04172014_0908am.zip"
+  ],
+  "resultWorkbookIndex": {
+    "sourceUrl": "https://sos.iowa.gov/precinct-results-county-2020-general",
+    "countyCount": 99,
+    "counties": [
+      "Adair",
+      "Adams",
+      "Allamakee",
+      "Appanoose",
+      "Audubon",
+      "Benton",
+      "Black Hawk",
+      "Boone",
+      "Bremer",
+      "Buchanan",
+      "Buena Vista",
+      "Butler",
+      "Calhoun",
+      "Carroll",
+      "Cass",
+      "Cedar",
+      "Cerro Gordo",
+      "Cherokee",
+      "Chickasaw",
+      "Clarke",
+      "Clay",
+      "Clayton",
+      "Clinton",
+      "Crawford",
+      "Dallas",
+      "Davis",
+      "Decatur",
+      "Delaware",
+      "Des Moines",
+      "Dickinson",
+      "Dubuque",
+      "Emmet",
+      "Fayette",
+      "Floyd",
+      "Franklin",
+      "Fremont",
+      "Greene",
+      "Grundy",
+      "Guthrie",
+      "Hamilton",
+      "Hancock",
+      "Hardin",
+      "Harrison",
+      "Henry",
+      "Howard",
+      "Humboldt",
+      "Ida",
+      "Iowa",
+      "Jackson",
+      "Jasper",
+      "Jefferson",
+      "Johnson",
+      "Jones",
+      "Keokuk",
+      "Kossuth",
+      "Lee",
+      "Linn",
+      "Louisa",
+      "Lucas",
+      "Lyon",
+      "Madison",
+      "Mahaska",
+      "Marion",
+      "Marshall",
+      "Mills",
+      "Mitchell",
+      "Monona",
+      "Monroe",
+      "Montgomery",
+      "Muscatine",
+      "O'Brien",
+      "Osceola",
+      "Page",
+      "Palo Alto",
+      "Plymouth",
+      "Pocahontas",
+      "Polk",
+      "Pottawattamie",
+      "Poweshiek",
+      "Ringgold",
+      "Sac",
+      "Scott",
+      "Shelby",
+      "Sioux",
+      "Story",
+      "Tama",
+      "Taylor",
+      "Union",
+      "Van Buren",
+      "Wapello",
+      "Warren",
+      "Washington",
+      "Wayne",
+      "Webster",
+      "Winnebago",
+      "Winneshiek",
+      "Woodbury",
+      "Worth",
+      "Wright"
+    ],
+    "workbookLinks": [
+      {
+        "county": "Adair",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/adair.xlsx"
+      },
+      {
+        "county": "Adams",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/adams.xlsx"
+      },
+      {
+        "county": "Allamakee",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/allamakee.xlsx"
+      },
+      {
+        "county": "Appanoose",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/appanoose.xlsx"
+      },
+      {
+        "county": "Audubon",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/audubon.xlsx"
+      },
+      {
+        "county": "Benton",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/benton.xlsx"
+      },
+      {
+        "county": "Black Hawk",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/black%20hawk.xlsx"
+      },
+      {
+        "county": "Boone",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/boone.xlsx"
+      },
+      {
+        "county": "Bremer",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/bremer.xlsx"
+      },
+      {
+        "county": "Buchanan",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/buchanan.xlsx"
+      },
+      {
+        "county": "Buena Vista",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/buena%20vista.xlsx"
+      },
+      {
+        "county": "Butler",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/butler.xlsx"
+      },
+      {
+        "county": "Calhoun",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/calhoun.xlsx"
+      },
+      {
+        "county": "Carroll",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/carroll.xlsx"
+      },
+      {
+        "county": "Cass",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/cass.xlsx"
+      },
+      {
+        "county": "Cedar",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/cedar.xlsx"
+      },
+      {
+        "county": "Cerro Gordo",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/cerro%20gordo.xlsx"
+      },
+      {
+        "county": "Cherokee",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/cherokee.xlsx"
+      },
+      {
+        "county": "Chickasaw",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/chickasaw.xlsx"
+      },
+      {
+        "county": "Clarke",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/clarke.xlsx"
+      },
+      {
+        "county": "Clay",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/clay.xlsx"
+      },
+      {
+        "county": "Clayton",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/clayton.xlsx"
+      },
+      {
+        "county": "Clinton",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/clinton.xlsx"
+      },
+      {
+        "county": "Crawford",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/crawford.xlsx"
+      },
+      {
+        "county": "Dallas",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/dallas.xlsx"
+      },
+      {
+        "county": "Davis",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/davis.xlsx"
+      },
+      {
+        "county": "Decatur",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/decatur.xlsx"
+      },
+      {
+        "county": "Delaware",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/delaware.xlsx"
+      },
+      {
+        "county": "Des Moines",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/des%20moines.xlsx"
+      },
+      {
+        "county": "Dickinson",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/dickinson.xlsx"
+      },
+      {
+        "county": "Dubuque",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/dubuque.xlsx"
+      },
+      {
+        "county": "Emmet",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/emmet.xlsx"
+      },
+      {
+        "county": "Fayette",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/fayette.xlsx"
+      },
+      {
+        "county": "Floyd",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/floyd.xlsx"
+      },
+      {
+        "county": "Franklin",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/franklin.xlsx"
+      },
+      {
+        "county": "Fremont",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/fremont.xlsx"
+      },
+      {
+        "county": "Greene",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/greene.xlsx"
+      },
+      {
+        "county": "Grundy",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/grundy.xlsx"
+      },
+      {
+        "county": "Guthrie",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/guthrie.xlsx"
+      },
+      {
+        "county": "Hamilton",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/hamilton.xlsx"
+      },
+      {
+        "county": "Hancock",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/hancock.xlsx"
+      },
+      {
+        "county": "Hardin",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/hardin.xlsx"
+      },
+      {
+        "county": "Harrison",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/harrison.xlsx"
+      },
+      {
+        "county": "Henry",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/henry.xlsx"
+      },
+      {
+        "county": "Howard",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/howard.xlsx"
+      },
+      {
+        "county": "Humboldt",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/humboldt.xlsx"
+      },
+      {
+        "county": "Ida",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/ida.xlsx"
+      },
+      {
+        "county": "Iowa",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/iowa.xlsx"
+      },
+      {
+        "county": "Jackson",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/jackson.xlsx"
+      },
+      {
+        "county": "Jasper",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/jasper.xlsx"
+      },
+      {
+        "county": "Jefferson",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/jefferson.xlsx"
+      },
+      {
+        "county": "Johnson",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/johnson.xlsx"
+      },
+      {
+        "county": "Jones",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/jones.xlsx"
+      },
+      {
+        "county": "Keokuk",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/keokuk.xlsx"
+      },
+      {
+        "county": "Kossuth",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/kossuth.xlsx"
+      },
+      {
+        "county": "Lee",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/lee.xlsx"
+      },
+      {
+        "county": "Linn",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/linn.xlsx"
+      },
+      {
+        "county": "Louisa",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/louisa.xlsx"
+      },
+      {
+        "county": "Lucas",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/lucas.xlsx"
+      },
+      {
+        "county": "Lyon",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/lyon.xlsx"
+      },
+      {
+        "county": "Madison",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/madison.xlsx"
+      },
+      {
+        "county": "Mahaska",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/mahaska.xlsx"
+      },
+      {
+        "county": "Marion",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/marion.xlsx"
+      },
+      {
+        "county": "Marshall",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/marshall.xlsx"
+      },
+      {
+        "county": "Mills",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/mills.xlsx"
+      },
+      {
+        "county": "Mitchell",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/mitchell.xlsx"
+      },
+      {
+        "county": "Monona",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/monona.xlsx"
+      },
+      {
+        "county": "Monroe",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/monroe.xlsx"
+      },
+      {
+        "county": "Montgomery",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/montgomery.xlsx"
+      },
+      {
+        "county": "Muscatine",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/muscatine.xlsx"
+      },
+      {
+        "county": "O'Brien",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/o%27brien.xlsx"
+      },
+      {
+        "county": "Osceola",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/osceola.xlsx"
+      },
+      {
+        "county": "Page",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/page.xlsx"
+      },
+      {
+        "county": "Palo Alto",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/palo%20alto.xlsx"
+      },
+      {
+        "county": "Plymouth",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/plymouth.xlsx"
+      },
+      {
+        "county": "Pocahontas",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/pocahontas.xlsx"
+      },
+      {
+        "county": "Polk",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/polk.xlsx"
+      },
+      {
+        "county": "Pottawattamie",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/pottawattamie.xlsx"
+      },
+      {
+        "county": "Poweshiek",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/poweshiek.xlsx"
+      },
+      {
+        "county": "Ringgold",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/ringgold.xlsx"
+      },
+      {
+        "county": "Sac",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/sac.xlsx"
+      },
+      {
+        "county": "Scott",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/scott.xlsx"
+      },
+      {
+        "county": "Shelby",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/shelby.xlsx"
+      },
+      {
+        "county": "Sioux",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/sioux.xlsx"
+      },
+      {
+        "county": "Story",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/story.xlsx"
+      },
+      {
+        "county": "Tama",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/tama.xlsx"
+      },
+      {
+        "county": "Taylor",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/taylor.xlsx"
+      },
+      {
+        "county": "Union",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/union.xlsx"
+      },
+      {
+        "county": "Van Buren",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/van%20buren.xlsx"
+      },
+      {
+        "county": "Wapello",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/wapello.xlsx"
+      },
+      {
+        "county": "Warren",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/warren.xlsx"
+      },
+      {
+        "county": "Washington",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/washington.xlsx"
+      },
+      {
+        "county": "Wayne",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/wayne.xlsx"
+      },
+      {
+        "county": "Webster",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/webster.xlsx"
+      },
+      {
+        "county": "Winnebago",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/winnebago.xlsx"
+      },
+      {
+        "county": "Winneshiek",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/winneshiek.xlsx"
+      },
+      {
+        "county": "Woodbury",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/woodbury.xlsx"
+      },
+      {
+        "county": "Worth",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/worth.xlsx"
+      },
+      {
+        "county": "Wright",
+        "url": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/wright.xlsx"
+      }
+    ],
+    "status": "official_complete_link_index_not_retained_as_workbook_bodies",
+    "caveat": "All 99 county URLs are retained as exact source leads. No workbook bytes are included, so all President identity, candidate-row, zero-vote, and non-geographic counts remain unasserted."
+  },
+  "certifiedCanvass": {
+    "sourceUrl": "https://sos.iowa.gov/elections/pdf/2020/general/canvsummary.pdf",
+    "status": "official_certified_context_lead_not_retained_as_parsed_artifact",
+    "canvassDate": "2020-11-30"
+  },
+  "boundaryVintageEvidence": {
+    "sourceUrl": "https://sos.iowa.gov/elections/pdf/shapefiles/Statewide%20Precinct%20Layer/pcts_04172014_0908am.zip",
+    "directoryTimestamp": "2014-04-17T09:16:00",
+    "status": "pre-2020-non-election-applicable",
+    "post2020ReprecinctingSourceUrl": "https://sos.iowa.gov/news-resources/secretary-pate-providing-free-resources-assist-iowa-counties-and-cities",
+    "post2020EffectiveDate": "2022-01-15",
+    "caveat": "The expressly dated 2014 statewide ZIP is not used as 2020 geometry. The post-2020 reprecincting notice is later than this election and only demonstrates why current SOS county/city layers cannot be presumed stable backward."
+  },
+  "resultIdentity": {
+    "sourceId": "ia-2020-sos-county-precinct-workbooks",
+    "reportingGrain": "county-linked precinct workbooks (unretained bodies)",
+    "presidentCandidateRows": null,
+    "contextualPresidentResultUnits": null,
+    "zeroVoteContextIdentities": null,
+    "nonGeographicContextUnits": null,
+    "targetCandidateResultUnits": 0,
+    "stableGeometryJoinIdAvailable": false,
+    "status": "not_counted_without_retained_official_workbook_bodies"
+  },
+  "caveats": [
+    "Iowa SOS publishes 99 county-linked 2020 General precinct-result workbooks and a certified canvass, but this retained diagnostic has no immutable November 3, 2020 statewide or complete county GIS boundary artifact and no retained workbook bodies from which President identities, zero-vote rows, and non-geographic units can be independently counted. The SOS statewide precinct archive is expressly dated April 17, 2014, while SOS states that post-2020-census city and county precinct boundaries became effective January 15, 2022; neither is used for 2020 geometry. No result identity, geometry, crosswalk, or vote assignment is approved.",
+    "The 2024 Iowa packages and their geometry, identifiers, names, counts, and crosswalk decisions are not reused.",
+    "Target geometry, result-unit, and crosswalk metrics remain zero; delivery is null."
+  ]
+}

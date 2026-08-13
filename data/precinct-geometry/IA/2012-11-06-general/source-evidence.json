@@ -1,0 +1,1873 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2012-precinct-geometry-source-diagnostic-v5",
+  "state": "IA",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Iowa Secretary of State, with a Dubuque County official archive diagnostic",
+  "retrievedAt": "2026-08-04T09:33:08.968Z",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-2012-official-source-access-review.json",
+      "sourceUrl": "https://sos.iowa.gov/precinct-results-county-2012-general",
+      "format": "historical official-source access diagnostic JSON",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 1082,
+      "sha256": "d978a8fbf2770f94aa83c2b51cdb511d963a41c443bf1deef9c7a544bbcb53c4",
+      "note": "Earlier environment-specific HTTP 403 observation, retained but superseded by the successful 99-workbook acquisition."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results-access-ledger.json",
+      "sourceUrl": "https://sos.iowa.gov/precinct-results-county-2012-general",
+      "format": "official county-workbook access ledger JSON",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 67423,
+      "sha256": "864a3b141c7b080b387c58097236c56659a57a735137b7405165c5963f9006e8",
+      "note": "Accounts independently for the official index and every one of 99 retained direct county workbook bodies."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-map-access-ledger.json",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+      "format": "official county-map URL access ledger JSON",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 60870,
+      "sha256": "7ae26b47c3b3b626d7e96f93315b4ca4aa862db442770decbdf9d5776fd6fe14",
+      "note": "Accounts independently for a systematic complete 99-county URL enumeration: 52 retained PDFs and 47 unavailable redirects; access disposition is neutral on election vintage."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results-index.html",
+      "sourceUrl": "https://sos.iowa.gov/precinct-results-county-2012-general",
+      "format": "official HTML index",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 62617,
+      "sha256": "bb3312b71debac69ff5c2f2a42f694d633d818e0ea695af048be434d15b737ac",
+      "note": "Official page exposing exactly 99 direct county XLS links."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps-directory-access.html",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+      "format": "official directory-access response body",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 58,
+      "sha256": "c54008cfaffe2e6442ed8bfedc1c3511572980a7af2796ff3a76fedd5d4d1fba",
+      "note": "Exact HTTP 403 directory-browsing response; no browsable historic map index was located."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-map-structural-profile.json",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+      "format": "deterministic pypdf structural-profile JSON",
+      "derivation": "Derived from every retained official county precinct-map PDF using the complete PYTHON_MAP_PROFILE algorithm embedded in the collector; hash-gated with its source ledger before all downstream writes.",
+      "byteCount": 211769,
+      "sha256": "9bb6ae873acf5d9ab51a15500cb0a2fff3048900a1ba4472701e91a534dd1820",
+      "note": "Profiles pages, raster images, vector operators, optional-content layers, and /VP /Measure /GEO metadata; contains no polygon or result assignment and does not infer vintage from URL paths."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/dubuque-county/2012-general-election-results.pdf",
+      "sourceUrl": "https://dubuquecountyiowa.gov/Archive.aspx?ADID=81",
+      "format": "official scan-only county certified-result PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 769186,
+      "sha256": "2c227f597d44cb03bfcaeb4038743d093b3430fdf18b6d22e103a2e33f8afe94",
+      "note": "Official Dubuque County archive retained as reviewed result-code/polling-place diagnostic evidence. Its documented differences from the SOS workbook are preserved; it is not a polygon key."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/census/ia-county-parent-geoids.json",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2719%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "format": "derived Census county parent-GEOID context JSON",
+      "derivation": "Deterministic identity-only extraction of BASENAME, NAME, GEOID, STATE, and COUNTY from the repository's retained Census TIGERweb Iowa county GeoJSON. No county or precinct geometry is copied into this context artifact.",
+      "byteCount": 15487,
+      "sha256": "b8560eb5231831e960dadeb73d623a1ce92b6c062a6450d20de0f9da0876627b",
+      "note": "Identity-only Census parent context for canonical county-qualified reporting-unit codes; contains no county or precinct geometry and proves no precinct polygon relationship."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2014-statewide-precinct-zip-probe.json",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/shapefiles/Statewide%20Precinct%20Layer/pcts_04172014_0908am.zip",
+      "format": "HTTP access-probe JSON",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 773,
+      "sha256": "60492f3dfcfe749b669fafd7e6fd01dacb75a83c6c1fae38fe7dc4d2cd1dd9ae",
+      "note": "Exact dated 2014 ZIP lead currently redirects to the official SOS unavailable page; it is not retained as geometry."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2014-statewide-precinct-zip-redirect-404.html",
+      "sourceUrl": "https://apps.sos.iowa.gov/sharedfiles/404.html",
+      "format": "official SOS unavailable-page HTML",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 87872,
+      "sha256": "ea51e971ad0a5f1ee83069dcc4155b4e16c18d1cc47a26e5af238493a2491b90",
+      "note": "Exact redirect-target body retained for the dated 2014 ZIP lead."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-general-canvass-summary.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/2012/general/canvsummary.pdf",
+      "format": "official canvass-summary PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 655937,
+      "sha256": "d2f8715af34669137414b31a990cabb5405e9fba00f8ab1886e9cd7d22634d5c",
+      "note": "Official 99-county and statewide President canvass; exact Election Day, Absentee, Total, county, and statewide values are reconciliation gates."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-general-participation-demographics-all-precincts.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/2012/general/statsbypct.pdf",
+      "format": "official all-precinct participation-demographics PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 10547456,
+      "sha256": "1a94959c46a0acb80a5e33e7d7926085744c96a72fa2fc5bc28fbb45bd3ab06b",
+      "note": "Official 3,476-page E-018 report parsed for 1,688 identity and participation context rows."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/adair.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/adair.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 113152,
+      "sha256": "f274426425decf1451152c2958a9e89d2c8974876111f420654672c574eab415",
+      "note": "Official Adair workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/adams.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/adams.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 99328,
+      "sha256": "da1d9f61d80556acf6200aaad378bf8a12b1f85155f908a2bfa116ae6508e1d8",
+      "note": "Official Adams workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/allamakee.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/allamakee.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 169984,
+      "sha256": "a0096357226965b40212cae6f483afd220f617dc6f2c91114212db3c7a4179fa",
+      "note": "Official Allamakee workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/appanoose.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/appanoose.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 233472,
+      "sha256": "13679a4ef605bc0c4c6fea40fa0935b4308d8288dcf1d02d6dfb5193cb651029",
+      "note": "Official Appanoose workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/audubon.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/audubon.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 113664,
+      "sha256": "b02c770b1b89b0fe7e008d62310e5aacad9ea2a96967f4c936e84940b7ac4113",
+      "note": "Official Audubon workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/benton.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/benton.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 384512,
+      "sha256": "40c78e0424a86dcf6857ef899da118c71b04d180902748f39d7b26853ff7cd65",
+      "note": "Official Benton workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/blackhawk.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/black%20hawk.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 614912,
+      "sha256": "1f47921214db9770c2b2e7cbcb6c0ecdea68df14dac2c0ef989b91ca9de01317",
+      "note": "Official Black Hawk workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/boone.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/boone.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 320512,
+      "sha256": "33f4aec2272649adc4b0a24c230270c437fcad945b238c5a0db495bd5470d35d",
+      "note": "Official Boone workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/bremer.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/bremer.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 164864,
+      "sha256": "9edd017ee923eea0e683d2c75ef757673cd0c2f2c463169ac32a0be08060bb0e",
+      "note": "Official Bremer workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/buchanan.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/buchanan.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 283648,
+      "sha256": "95dd9db4195bc1eaf8a96b64f66c09da2d3441ee7a804d11265f7aa02e0cd555",
+      "note": "Official Buchanan workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/buenavista.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/buena%20vista.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 216576,
+      "sha256": "3efe8a18773961b2cb270df6ff503144e64d8e404d1fdba509a7ddf034ac676d",
+      "note": "Official Buena Vista workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/butler.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/butler.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 171520,
+      "sha256": "34f33d2d3a5de3d045ae1995e8d3db2994551c155cf972e0075b665b5c771ac7",
+      "note": "Official Butler workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/calhoun.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/calhoun.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 229376,
+      "sha256": "522c027dd7f0ef9ee9279dcc31c1c283ef36ee0a2a7b890e7421295291348870",
+      "note": "Official Calhoun workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/carroll.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/carroll.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 297984,
+      "sha256": "707c0e04bf817fd298553548bcc8f4e2c994fe10f03878c3ebbb94f640576c26",
+      "note": "Official Carroll workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/cass.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/cass.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 244224,
+      "sha256": "d612623c72fe84c19742962eafe858d1a2129ea4da7919d782ab2704795b4247",
+      "note": "Official Cass workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/cedar.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/cedar.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 240640,
+      "sha256": "a6eabefeccc1b1afd34a57caff115166045011d1656219b8ce04dd07ad28f036",
+      "note": "Official Cedar workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/cerrogordo.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/cerro%20gordo.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 354816,
+      "sha256": "9a7cf75fbe288335d265663205c3d27c04377db9304bbafde8e2211ee6df0199",
+      "note": "Official Cerro Gordo workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/cherokee.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/cherokee.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 159232,
+      "sha256": "31f3d48915196e9d494f4d06fc49a4de5f23dfe5c150559091931b85e960cb26",
+      "note": "Official Cherokee workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/chickasaw.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/chickasaw.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 273408,
+      "sha256": "b78580f1a62ab813e0ee6af42f4102646499932b8f46ea06a36363b52d62661e",
+      "note": "Official Chickasaw workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/clarke.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/clarke.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 156160,
+      "sha256": "70ffed79990d46eff26a21c63a8e0b3d2cd065d52fb339850543875f61e1ce28",
+      "note": "Official Clarke workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/clay.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/clay.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 227328,
+      "sha256": "0e0a7110c4fc98ff9e7283043ff9c2470b047398a770e3e2c9c73b9183dd8d50",
+      "note": "Official Clay workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/clayton.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/clayton.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 222208,
+      "sha256": "602cb7c7c65e3b06e6c4bb7f82ab0b14c1e96697ba4b8dfb0e014ae2f0cebe58",
+      "note": "Official Clayton workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/clinton.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/clinton.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 439296,
+      "sha256": "9f9f9c0b591b8ac19804a94794cdad589b21f47760c86e6f1012bcc48592d86e",
+      "note": "Official Clinton workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/crawford.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/crawford.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 184832,
+      "sha256": "c26a5c391ac63e27c7ff0bc284e4f9ba68d516d101c4af0b81058b9976e03aed",
+      "note": "Official Crawford workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/dallas.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/dallas.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 363008,
+      "sha256": "aecbb46cd27f90c3af722ff9fac69bc0930252c5879e6a91f64e76ae06b6083b",
+      "note": "Official Dallas workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/davis.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/davis.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 174592,
+      "sha256": "2a6530c841c59da6b6f3f1efca3da6149738518f246e4481aa3675441484b3cf",
+      "note": "Official Davis workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/decatur.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/decatur.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 157696,
+      "sha256": "e05fe548268b82ad5d240e69a0b1f24afe8b493566f66d702785a43d031cbf7e",
+      "note": "Official Decatur workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/delaware.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/delaware.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 243712,
+      "sha256": "e2b4a481f99f12328e223f38885b96f125cb3078e902e517fad4af02136a703c",
+      "note": "Official Delaware workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/desmoines.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/des%20moines.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 262656,
+      "sha256": "00603147464a4a46c2107f675b579e8488807dc0a86b57e3ffb1e6bd6f6c2b06",
+      "note": "Official Des Moines workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/dickinson.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/dickinson.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 286720,
+      "sha256": "007ba3f2b8bc4d34b34e0470aa044ca6b260a063d7dfb73ee7ec4e39bed000ab",
+      "note": "Official Dickinson workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/dubuque.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/dubuque.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 539648,
+      "sha256": "290d4865856ca93c20ddca47d9ac484d53ef18fac09fb570909748c7f3117afc",
+      "note": "Official Dubuque workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/emmet.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/emmet.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 203776,
+      "sha256": "03aa9c41bfed3140e91072f8f66877a0e5b2ff056dad69b3162024b1b04ad6f0",
+      "note": "Official Emmet workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/fayette.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/fayette.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 329216,
+      "sha256": "d792e91823fa9e8e2f740c88429b2cdb0fab36da8fd8f2336a964021cdf10974",
+      "note": "Official Fayette workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/floyd.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/floyd.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 176128,
+      "sha256": "4d1a456ad96553c5cac261b54d2ab544e7501b79cf10101ea2d02af1b4d08f2d",
+      "note": "Official Floyd workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/franklin.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/franklin.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 221184,
+      "sha256": "7502d1558a0bbf3c4bdfb5e080ab31656b257239b4758e8811d002b48705990f",
+      "note": "Official Franklin workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/fremont.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/fremont.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 167424,
+      "sha256": "a1dc6b9ad28293f2c097cef1da86d3bdc18ddd7de50d902951cac68d518f563f",
+      "note": "Official Fremont workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/greene.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/greene.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 197120,
+      "sha256": "f839a600be15b3a750b9c925e0435fab4abc16f255f4e13a941a1e90645d0733",
+      "note": "Official Greene workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/grundy.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/grundy.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 148480,
+      "sha256": "779a734aca362dc0ffe1869b0a4ce50efba4dae02fab4188ecd87d1faad28a82",
+      "note": "Official Grundy workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/guthrie.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/guthrie.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 185856,
+      "sha256": "9a9beb62657b6d67fefa6906f40f2be0f3ca5dbf30ded79f6e06ff4882a3f492",
+      "note": "Official Guthrie workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/hamilton.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/hamilton.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 212992,
+      "sha256": "688a9f516438a907a194e6cca5c653148bd6baa56288dda51b1dca8dc2113b3b",
+      "note": "Official Hamilton workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/hancock.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/hancock.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 208896,
+      "sha256": "1c517ef9f0b57542a622c19f67e6b7b9acd0c68b8938b971c116de54002b8e63",
+      "note": "Official Hancock workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/hardin.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/hardin.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 190976,
+      "sha256": "77c44a7a4781104966eef8a66d89f73d5069fbd79d38a2e63787ac2e664e0582",
+      "note": "Official Hardin workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/harrison.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/harrison.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 238592,
+      "sha256": "70daabbb9f4d205c79caa626f20f811d8d2fd1a6d37ff2cf1c651f3984ea8f98",
+      "note": "Official Harrison workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/henry.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/henry.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 198656,
+      "sha256": "a1943c8cb2610558f256fdc084bf30685236ad25573a1d8ed3b2036e26a37f4c",
+      "note": "Official Henry workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/howard.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/howard.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 229888,
+      "sha256": "b032fd8d6cf788e8c4c3dc38d7752e65c592483f90d6e286a950be1b672f29e1",
+      "note": "Official Howard workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/humboldt.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/humboldt.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 233984,
+      "sha256": "5ba9c3d6266c0190461e4c70e636680047f259ae474f48032a778353b30c9afd",
+      "note": "Official Humboldt workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/ida.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/ida.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 163328,
+      "sha256": "66f1082e2eb6ae72c1d7ea18d0241df6e20c83fb92e3119da74d46db207cbb3e",
+      "note": "Official Ida workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/iowa.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/iowa.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 217088,
+      "sha256": "00ed61200fac19244361cab3eb3eac31557eee518a2c8496f3da60cdef1c6891",
+      "note": "Official Iowa workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/jackson.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/jackson.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 300032,
+      "sha256": "4148390c275635c75120048756c1986cdb87569d9010b5dfedff4c9996e3d175",
+      "note": "Official Jackson workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/jasper.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/jasper.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 336896,
+      "sha256": "8c96cd330894f7e707ca8c7c46cc3f22cf19b31f86db40a3e114c3b21fa43279",
+      "note": "Official Jasper workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/jefferson.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/jefferson.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 229888,
+      "sha256": "6219869b2c00632898d93dfe19337d92cc1684b0e3aa263c918f90075332bc66",
+      "note": "Official Jefferson workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/johnson.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/johnson.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 865792,
+      "sha256": "3166549358998159c329fb12cecac988b70a09278f8b0b6e3a21bd40d43aa470",
+      "note": "Official Johnson workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/jones.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/jones.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 300544,
+      "sha256": "83c503f552e1da58e3c417398cc793b4381a2bf85a03293d2ed29a721f9fecdc",
+      "note": "Official Jones workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/keokuk.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/keokuk.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 265728,
+      "sha256": "dbc0ac4f80eca41e5595dfe0d8e04bd4fa60e498dce06083fb305c8c657bcad9",
+      "note": "Official Keokuk workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/kossuth.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/kossuth.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 341504,
+      "sha256": "8fd093f0594a211794b777851de7372162c56444fe970a953f645a6fdf63179f",
+      "note": "Official Kossuth workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/lee.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/lee.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 335872,
+      "sha256": "9b4d27deee4cb38c270cc44eafb2b366f8f5f84f80382a6c1801de39875626c9",
+      "note": "Official Lee workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/linn.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/linn.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 1229312,
+      "sha256": "c187990c883351e1e14dfe79ff4ae9a06253d851b7f1d38b726022aa8b852244",
+      "note": "Official Linn workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/louisa.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/louisa.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 121856,
+      "sha256": "972134c62244302c7a672c82cc6c7e0629722eb8fc21fc7d6551cd472678669f",
+      "note": "Official Louisa workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/lucas.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/lucas.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 143872,
+      "sha256": "96c3ed555db162afd42f406eec8c14bb81702bb0cf4309e78c37353bab3773a8",
+      "note": "Official Lucas workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/lyon.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/lyon.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 142848,
+      "sha256": "5fefdfef95cf621a825650a0e04460eeb63b3fa58540fe1cd781030272afc46e",
+      "note": "Official Lyon workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/madison.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/madison.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 219648,
+      "sha256": "23daa4f848a02e1f8d6d965b8790a299a78e996df3346a813ef580a452d502a6",
+      "note": "Official Madison workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/mahaska.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/mahaska.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 224256,
+      "sha256": "22612715cd974a9ea0174f465ce59f81e37e0fe7932081a2525025d37a6196d4",
+      "note": "Official Mahaska workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/marion.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/marion.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 289792,
+      "sha256": "1ae23f5efcaee1a39dedfbdc2e98f6308281d01e86d3f1dbd8a64ba85793616f",
+      "note": "Official Marion workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/marshall.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/marshall.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 363520,
+      "sha256": "b70d5b9954526e0182cc16b0c876d955c969fb63008aaf9671ff668ebb57bb85",
+      "note": "Official Marshall workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/mills.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/mills.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 218624,
+      "sha256": "422be5536934b3e4c2667fc8addc958e13098884b60ec0a6e9288e2aa4aa4f62",
+      "note": "Official Mills workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/mitchell.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/mitchell.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 218624,
+      "sha256": "92df03f017bd486dabb747f3ec0782773099c1a85f5afb84f961b0653802ae81",
+      "note": "Official Mitchell workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/monona.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/monona.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 194048,
+      "sha256": "1c1fb6407df0c78bc5165cf9addae445fdae4fb838bc82583050482c70e76c4e",
+      "note": "Official Monona workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/monroe.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/monroe.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 149504,
+      "sha256": "3f15893fce9296bc8e0c1c03f5b7bea5582c435e8e57fc8cd97efe292f53e0f1",
+      "note": "Official Monroe workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/montgomery.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/montgomery.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 185856,
+      "sha256": "c32474095861dcfd8fde45840d2ebef407cacb6fa71bbee8600f189db32932bd",
+      "note": "Official Montgomery workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/muscatine.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/muscatine.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 411136,
+      "sha256": "0e79aa489280bc7deb27c2bd4c7db5e3535a550214c03555defa836552414ec1",
+      "note": "Official Muscatine workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/obrien.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/o'brien.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 187904,
+      "sha256": "8f6048102ced16f10529bcc879406d9d0ed5d7df8e5cca0069898b179efd7040",
+      "note": "Official O'Brien workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/osceola.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/osceola.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 148480,
+      "sha256": "ec496dad37059ce491f60bc78ca923fe7bba0edd226f381f2ca74d7295643c6a",
+      "note": "Official Osceola workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/page.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/page.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 257024,
+      "sha256": "7323391eab48cbde974da5d5e46add6ef605da2a1a21c1e80c73c40dfdc380d1",
+      "note": "Official Page workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/paloalto.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/palo%20alto.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 143872,
+      "sha256": "5d83d6694a41774e858a70cea832aa412d5edb6cf4068c219cd1db936f619226",
+      "note": "Official Palo Alto workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/plymouth.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/plymouth.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 225280,
+      "sha256": "ff2b249345637f256a84b26e03cd47a6128d2614b22abc979d59e81ddc4edfc5",
+      "note": "Official Plymouth workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/pocahontas.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/pocahontas.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 196096,
+      "sha256": "611209ff9a762376fe15f022b3d0088c0c9fff831771355760efeb2f8480e27f",
+      "note": "Official Pocahontas workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/polk.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/polk.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 1921024,
+      "sha256": "35c885282c19e062b1e71a233c1f46f65e1ebc8568c2597e023afc2c874964b9",
+      "note": "Official Polk workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/pottawattamie.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/pottawattamie.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 617472,
+      "sha256": "6931d401c6e51fb4f7904fa765fc24bb099f3535004eafe14bc679aed3ce7ac1",
+      "note": "Official Pottawattamie workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/poweshiek.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/poweshiek.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 201728,
+      "sha256": "ec48a36c9ca22660e3d89e687256a69eda381699390d63af3ddff0590a3bdf68",
+      "note": "Official Poweshiek workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/ringgold.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/ringgold.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 140288,
+      "sha256": "f30d25f4630c9693f27a0d29f88dcb6461cb7fc6c532bfee8ad8b30a05d0762a",
+      "note": "Official Ringgold workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/sac.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/sac.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 237568,
+      "sha256": "97721c5ba67112df0881fcbda698dbe6498561a8d9174961e6e3c10b85bce471",
+      "note": "Official Sac workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/scott.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/scott.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 897024,
+      "sha256": "5dbd1ac91a2e1e6aea4c50a51ff07f89698c5d93489069c85703728afe23820b",
+      "note": "Official Scott workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/shelby.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/shelby.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 197120,
+      "sha256": "d1f9e436356ea2ca9cdb5d3aec1ecba29e1e96131839d511aad552fc5fcd7c17",
+      "note": "Official Shelby workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/sioux.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/sioux.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 250880,
+      "sha256": "42da4059d5712e7c7c359bb6d4a1b537221d6ccaf0a37e31403bff4513bfb597",
+      "note": "Official Sioux workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/story.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/story.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 696832,
+      "sha256": "2dddc38299e55e93ab69cedc91b57996b586dedd6401f44f0a356f67dcdb64ef",
+      "note": "Official Story workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/tama.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/tama.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 321536,
+      "sha256": "dd86297f1186816649efe5ab394ee705d48e3131bf2c4b16063e41335597a961",
+      "note": "Official Tama workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/taylor.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/taylor.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 156672,
+      "sha256": "a9253d7c76b44e41d87443bf3c0fa1720b612d6aa734803c7df855d8fdeecafe",
+      "note": "Official Taylor workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/union.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/union.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 144896,
+      "sha256": "7de0588ee62c5bb4525c4d7c41c7c533d1fd1113c2138537528bc8228ff778ed",
+      "note": "Official Union workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/vanburen.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/van%20buren.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 189952,
+      "sha256": "093dc96c7e56a02140242087a42f062bb8226f826190f14d66c05a5412f73c3e",
+      "note": "Official Van Buren workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/wapello.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/wapello.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 370688,
+      "sha256": "edc34db75fc82ae908f375a3426ae91a3c6313c6cd727df6bf7794eb9c808826",
+      "note": "Official Wapello workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/warren.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/warren.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 463872,
+      "sha256": "a99d0bef698267c124f60b45f25130881fec4ea9e090b842a0026f650e4144cd",
+      "note": "Official Warren workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/washington.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/washington.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 184832,
+      "sha256": "6dea3ed6810b0cbc8b0a6897ee5009798e8ce36dd91776d5343460e0f5c74dc4",
+      "note": "Official Washington workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/wayne.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/wayne.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 123904,
+      "sha256": "96fd38a8fbe942716f3f4f6be9303c88c674812bdc5d7dc0024cf5f3a844cf3b",
+      "note": "Official Wayne workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/webster.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/webster.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 506880,
+      "sha256": "24cbb70b2a367a3d66d976b5c177d486d8d70749bb0722371d37dbe7e70c11e8",
+      "note": "Official Webster workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/winnebago.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/winnebago.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 164864,
+      "sha256": "c224b9b428c12685bd6e405fd08a57bf6deb1f4e9c5cae7b9cd974436f7ea626",
+      "note": "Official Winnebago workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/winneshiek.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/winneshiek.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 184832,
+      "sha256": "ecb84da606679a3b65b6d0939c1f53315ccfe7fee93c52f8a8b5834a71672564",
+      "note": "Official Winneshiek workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/woodbury.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/woodbury.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 466944,
+      "sha256": "867b9ac8611b53e924ad9d6a62e05cc01265132ac4b60a07aa2d537a9224ef4e",
+      "note": "Official Woodbury workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/worth.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/worth.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 161792,
+      "sha256": "a5cb76fa9d67b89377f29d20840eeaa2d9c42042d29db1592dc990dbbef19ccc",
+      "note": "Official Worth workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-county-precinct-results/wright.xls",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/wright.xls",
+      "format": "official county precinct-results XLS",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 230912,
+      "sha256": "433db3e9d90666892e9494fa85e57b2d53f40a2d278a861c1ddd33ecfb6ad6fa",
+      "note": "Official Wright workbook parsed at the President contest and reconciled by Election Day, Absentee, and Total slices to county and statewide canvass values."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/adams.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/adams.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 209146,
+      "sha256": "0cfce822395d2b034182909122f646bd2627b83e5b706408f6084293a6cb6789",
+      "note": "Official Adams county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/allamakee.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/allamakee.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 233937,
+      "sha256": "78d5f2d17cb050ea7d646b2fe8536def93e7318ad8658516c47241b855aca881",
+      "note": "Official Allamakee county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/appanoose.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/appanoose.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 237869,
+      "sha256": "0ed626ec4f8113d503f142f94b6827b0f4652b60e37ff73e05e4664b1ca94257",
+      "note": "Official Appanoose county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/benton.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/benton.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 90873,
+      "sha256": "15e6c733a9a5fc6223c314cef89a2bcaa1a712e27e2cde1246e8b6a43957fe75",
+      "note": "Official Benton county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/bremer.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/bremer.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 229987,
+      "sha256": "10607c60a6c2e5aab269a82e12e9fe46229f2042b8bb237879808a75c1424f0d",
+      "note": "Official Bremer county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/buchanan.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/buchanan.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 285689,
+      "sha256": "45333df3daadb2905d59bc4f1309dcf7c1b2a2aeaf0d6db0389214cee7143d44",
+      "note": "Official Buchanan county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/calhoun.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/calhoun.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 184157,
+      "sha256": "28758ba29146d3593a44a76f4cb29c67e19c8253131ed4a0eea20f60ee60ccf9",
+      "note": "Official Calhoun county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/cherokee.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/cherokee.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 224310,
+      "sha256": "53f2d1d9d86859f0e353c6f7a815815bc5ac73c89f15c0d7439fd28b4cc054f7",
+      "note": "Official Cherokee county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/chickasaw.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/chickasaw.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 214100,
+      "sha256": "de693cf0dfb7ed0b0a3e81b041095a264ee353795d400597fa3a4197754ff180",
+      "note": "Official Chickasaw county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/clarke.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/clarke.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 165220,
+      "sha256": "9ae074e7057b12f9aeb39b2ebdc37539f212cb3933c65e18386bfdfaad29d768",
+      "note": "Official Clarke county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/davis.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/davis.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 193723,
+      "sha256": "2805c274efbd085a01eb5e4d5a6ce36a45b78062b9ecd53ad4e3b6df8bb9291a",
+      "note": "Official Davis county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/decatur.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/decatur.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 169663,
+      "sha256": "3d8ddc37f1552812f95b9717e1c2c0d64d4b6d923082c55c707e35a86c1f8516",
+      "note": "Official Decatur county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/dubuque.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/dubuque.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 1429692,
+      "sha256": "e609af1b63e7f79406b84f3cfbd9118ca08705596284b5fb478f5724fcd0158d",
+      "note": "Official Dubuque county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/fayette.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/fayette.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 276887,
+      "sha256": "257438ed7ac48c182323b995f8bcf1939533d762cc26b22089fa43ef21f40515",
+      "note": "Official Fayette county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/franklin.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/franklin.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 213690,
+      "sha256": "fe3fa09b2394d53522bcd66987300e087de6653b0feff598dfbf22770e95bd5f",
+      "note": "Official Franklin county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/fremont.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/fremont.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 178411,
+      "sha256": "56dbd26543c535979bb868e53917a1be91b308ef6f7ca631a36bfe51210d44fc",
+      "note": "Official Fremont county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/guthrie.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/guthrie.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 238516,
+      "sha256": "bda1edb07cc5e2d718a3c4d836e0ec578987e1636e7fff4ee7c071cd3031e3dc",
+      "note": "Official Guthrie county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/hancock.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/hancock.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 183593,
+      "sha256": "ee110331b865ed229054273c7666c8bc2c1be16289d3c1193414f7f32cc2a1d3",
+      "note": "Official Hancock county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/hardin.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/hardin.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 223642,
+      "sha256": "8f8cbfe5a79302e5ca60c7325654fcfafa3dcbdc44818f2631fe19c55e764c7e",
+      "note": "Official Hardin county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/harrison.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/harrison.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 223039,
+      "sha256": "98f82712a57106ef8f23526b170418849fa842691217a2f13d0b931e8208fd00",
+      "note": "Official Harrison county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/howard.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/howard.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 250095,
+      "sha256": "6e7998ed7f1ac824297729de5b37999acadac26cdbd27c0ffe5cafd9e87f065e",
+      "note": "Official Howard county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/humboldt.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/humboldt.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 380609,
+      "sha256": "dcb71267a0bb240a5ba725c935b814ac6fbba76515bbd792a77c272edbf693e5",
+      "note": "Official Humboldt county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/ida.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/ida.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 201180,
+      "sha256": "998e551f7cbef25d9ff5a10a236c0e51eb6afe4ed62fc8c9c6e5cdea5de635f8",
+      "note": "Official Ida county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/iowa.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/iowa.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 375808,
+      "sha256": "669e2ffabecf424d2d182b4cc6c911b0df880608ea0e46c2c154fd7ff346e2be",
+      "note": "Official Iowa county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/jasper.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/jasper.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 229934,
+      "sha256": "e7aab4fc3769ed862995def8dfc1f3acbffe1c3e1cfb5f763107080bef617002",
+      "note": "Official Jasper county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/jefferson.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/jefferson.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 322713,
+      "sha256": "2adc59aad87c2ee02e86bbd29d8ee3485580cc0ca73bba037e5d7d2d972ea21f",
+      "note": "Official Jefferson county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/jones.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/jones.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 259891,
+      "sha256": "418fccab231114f0f6d17b0e80fa31ace71595b1c67fcf3c092305bbc4566c7e",
+      "note": "Official Jones county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/keokuk.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/keokuk.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 300454,
+      "sha256": "68e4b5786ab361ff9e15ca1136b94f99c3e3e85c24cabb069a33ff2a705d4d45",
+      "note": "Official Keokuk county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/lee.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/lee.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 475344,
+      "sha256": "fa46625f85560ffa706ebbe2e7e0576f361da86433192c7e83238b2c176d0490",
+      "note": "Official Lee county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/lucas.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/lucas.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 216202,
+      "sha256": "82bef4b7d411a332f0f36c476e4adb7787c425506902886c3e4588d8e8cb57c7",
+      "note": "Official Lucas county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/lyon.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/lyon.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 248077,
+      "sha256": "2ce52dfb815b5634f845e03818f1423c9a89711f045dc904cefd85e9a4adb32a",
+      "note": "Official Lyon county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/madison.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/madison.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 241153,
+      "sha256": "2d85f6e722509b28ac64699451019b35147cfc8d29b26f6f99568faa99100cc7",
+      "note": "Official Madison county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/mahaska.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/mahaska.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 273280,
+      "sha256": "74243b16477190fb0040f2a4856565cf228d45aea6eddb11f80a2c582e853574",
+      "note": "Official Mahaska county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/mills.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/mills.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 228916,
+      "sha256": "8233724ae85fcba3966ac7f1fc08b99f24145a3bba41a5608dedb342171fa6da",
+      "note": "Official Mills county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/mitchell.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/mitchell.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 107130,
+      "sha256": "8287bb5dd129319ecd7fc84996a9266083229ebdf191c49e325a818577e49de8",
+      "note": "Official Mitchell county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/monona.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/monona.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 257355,
+      "sha256": "718883aea74377eda1a346003a0bc6d938d0b97850de457aa5b61dc30ec20296",
+      "note": "Official Monona county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/muscatine.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/muscatine.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 540122,
+      "sha256": "943195e873a427637143455f7453768ad9288e21b49c3b46d0b23101f5c00f0a",
+      "note": "Official Muscatine county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/obrien.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/obrien.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 208476,
+      "sha256": "270cbef7766fbae27e28664b954d48fab00d13c597813712c5414510dbd9c5f3",
+      "note": "Official O'Brien county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/page.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/page.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 263739,
+      "sha256": "ccc741ebf20a6b2f79d84c2ec689414814c08a92ded0cfbff71194d68aa699dc",
+      "note": "Official Page county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/paloalto.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/paloalto.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 202471,
+      "sha256": "65946dc4806f34b437f0c73a3df35df349610d5565ec0f3398eca948ae000e78",
+      "note": "Official Palo Alto county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/pocahontas.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/pocahontas.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 191196,
+      "sha256": "4e38f9b31af2765bcba099f26fba690bbeffb59a1af47e73cd9e0cc70d60c9cb",
+      "note": "Official Pocahontas county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/pottawattamie.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/pottawattamie.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 1510687,
+      "sha256": "dc89bd4e5196aa75654fdd45139c8e41183811df1d9d97fdf2dc55d6f00c6c2b",
+      "note": "Official Pottawattamie county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/poweshiek.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/poweshiek.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 286085,
+      "sha256": "211b7fbb86ee330f2c763a53c18430704c82fe7a72bd823afebc505e89afa57b",
+      "note": "Official Poweshiek county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/ringgold.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/ringgold.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 209360,
+      "sha256": "ad756f121edf49a68534320fb73b323a63bc4568ca2e513e7ab7a879caf4e19c",
+      "note": "Official Ringgold county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/sac.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/sac.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 165972,
+      "sha256": "c48b58aa9730600fd1459771157278d833736c325095e66c852852ccc2916ea9",
+      "note": "Official Sac county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/shelby.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/shelby.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 235041,
+      "sha256": "93a38da1f5164d5f906d66ab5dd7f374cca4dd4308ac76ec7a3f17c07c37ce49",
+      "note": "Official Shelby county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/tama.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/tama.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 263631,
+      "sha256": "8ee3b0c7ea8e09b23cbbcf19892605ed6c6384e9abd3fdb52ed8d83a202a0998",
+      "note": "Official Tama county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/taylor.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/taylor.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 183697,
+      "sha256": "d5906d08158a5591ce2df580294ac9fa1ac2cae94930530aa3ee64e677fcc66c",
+      "note": "Official Taylor county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/vanburen.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/vanburen.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 185187,
+      "sha256": "bd124328ad5c899ec471f8b32430199a3e1764d5211a112d668b7c1a5f29403d",
+      "note": "Official Van Buren county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/wapello.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/wapello.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 403222,
+      "sha256": "c4537f48fc883ddb6b26acf61b2194c3fb5005bf2944a423570455f8d50def2f",
+      "note": "Official Wapello county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/wayne.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/wayne.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 168104,
+      "sha256": "84c663248212c8bea55ccdff542d8f85f5dfae32392e8bc7ffa1d3ca2a4ff12f",
+      "note": "Official Wayne county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/ia-sos/2012-effective-precinct-maps/winnebago.pdf",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/winnebago.pdf",
+      "format": "official county precinct-map PDF",
+      "derivation": "Exact official response bytes or deterministic HTTP access observation retained and hash-gated before offline derived writes.",
+      "byteCount": 245534,
+      "sha256": "73626863c097023821ab1869f8e5c0e949f9d2427cc35d118b2b2bbdfeaa514c",
+      "note": "Official Winnebago county precinct-map PDF retained for structural conversion review; election-effective status is determined only from the retained body profile, not the URL path or access status."
+    }
+  ],
+  "officialSourceLeads": [
+    "https://sos.iowa.gov/elections/pdf/2012/general/canvsummary.pdf",
+    "https://sos.iowa.gov/elections/pdf/2012/general/statsbypct.pdf",
+    "https://sos.iowa.gov/precinct-results-county-2012-general",
+    "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+    "https://dubuquecountyiowa.gov/Archive.aspx?ADID=81",
+    "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2719%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+    "https://sos.iowa.gov/elections/pdf/shapefiles/Statewide%20Precinct%20Layer/pcts_04172014_0908am.zip"
+  ],
+  "canvass": {
+    "countyRows": 99,
+    "statewideSlices": {
+      "electionDay": {
+        "Romney": 462059,
+        "Obama": 416631,
+        "Goode": 2008,
+        "Stein": 2281,
+        "Johnson": 9550,
+        "LaRiva": 217,
+        "Harris": 261,
+        "Litzel": 630,
+        "writeIn": 5019,
+        "underVotes": 2705,
+        "overVotes": 533,
+        "totalBallots": 901894
+      },
+      "absentee": {
+        "Romney": 268558,
+        "Obama": 405913,
+        "Goode": 1030,
+        "Stein": 1488,
+        "Johnson": 3376,
+        "LaRiva": 155,
+        "Harris": 184,
+        "Litzel": 397,
+        "writeIn": 2423,
+        "underVotes": 2529,
+        "overVotes": 1952,
+        "totalBallots": 688005
+      },
+      "total": {
+        "Romney": 730617,
+        "Obama": 822544,
+        "Goode": 3038,
+        "Stein": 3769,
+        "Johnson": 12926,
+        "LaRiva": 372,
+        "Harris": 445,
+        "Litzel": 1027,
+        "writeIn": 7442,
+        "underVotes": 5234,
+        "overVotes": 2485,
+        "totalBallots": 1589899
+      }
+    }
+  },
+  "resultIdentity": {
+    "sourceId": "ia-2012-sos-county-precinct-workbooks",
+    "reportingGrain": "county-qualified-precinct-result-source-row",
+    "indexCountyLinks": 99,
+    "retainedCountyWorkbookBodies": 99,
+    "resultArtifact": "data/precinct-geometry/IA/2012-11-06-general/reports/ia-2012-11-06-presidential-precinct-results.json",
+    "sha256": "25907a399f663b6fbea9cced9d16d34f43dfe11189f755efc5753d6e26ff74df",
+    "byteCount": 3647428,
+    "uniqueCountyQualifiedResultUnits": 1687,
+    "colorableResultUnits": 1686,
+    "nonGeographicResultUnits": 1,
+    "censusCountyParentContext": {
+      "artifact": "data/precinct-geometry/IA/2012-11-06-general/raw/census/ia-county-parent-geoids.json",
+      "sha256": "b8560eb5231831e960dadeb73d623a1ce92b6c062a6450d20de0f9da0876627b",
+      "countyCount": 99
+    },
+    "presidentCandidateRowsWide": 1687,
+    "namedCandidateValueCount": 13496,
+    "statewideTotals": {
+      "Romney": 730617,
+      "Obama": 822544,
+      "Goode": 3038,
+      "Stein": 3769,
+      "Johnson": 12926,
+      "LaRiva": 372,
+      "Harris": 445,
+      "Litzel": 1027,
+      "writeIn": 7442,
+      "underVotes": 5234,
+      "overVotes": 2485,
+      "totalBallots": 1589899
+    },
+    "status": "retained_and_reconciled_not_geometry_assigned"
+  },
+  "participationIdentity": {
+    "sourceId": "ia-2012-sos-e018-all-precinct-participation",
+    "reportingGrain": "county-qualified precinct participation identity context",
+    "artifact": "data/precinct-geometry/IA/2012-11-06-general/reports/ia-2012-11-06-participation-precinct-identities.json",
+    "sha256": "7051ddc6eef80b4df901bbb8a0a8f492021acda3f12d5871aebf73f748e6cfc4",
+    "byteCount": 841964,
+    "countyCount": 99,
+    "uniqueCountyQualifiedIdentities": 1688,
+    "fields": [
+      "TURNOUT",
+      "ABSENTEE",
+      "TOTAL VOTED",
+      "REGISTERED"
+    ],
+    "totals": {
+      "absentee": 679125,
+      "totalVoted": 1574031,
+      "registered": 2145898
+    },
+    "status": "retained_identity_and_participation_context_only_not_presidential_results"
+  },
+  "sourceUniverseComparison": {
+    "workbookResultRows": 1687,
+    "participationIdentityRows": 1688,
+    "statewideParticipationMinusWorkbook": 1,
+    "countDifferenceFullyLocalized": true,
+    "countyCountDifferences": [
+      {
+        "county": "Dallas",
+        "workbookResultRows": 35,
+        "participationIdentityRows": 34,
+        "participationMinusWorkbook": -1,
+        "workbookLabels": [
+          "ABSENTEE",
+          "Adams",
+          "Adel 1",
+          "Adel 2",
+          "Beaver/Des Moines",
+          "Clive 5",
+          "Clive 6",
+          "Colfax/Adel",
+          "DeSoto",
+          "Lincoln/Washington/Linn",
+          "Perry 1",
+          "Perry 2",
+          "Perry 3",
+          "Spring Valley/Dallas",
+          "Sugar Grove/Dallas Center",
+          "Union",
+          "Urbandale 13",
+          "Urbandale 14",
+          "Urbandale 15",
+          "Van Meter",
+          "Walnut/Grimes/Grant",
+          "Waukee 1",
+          "Waukee 2",
+          "Waukee 3",
+          "Waukee 4",
+          "Waukee 5",
+          "Waukee 6",
+          "West Des Moines 221",
+          "West Des Moines 222",
+          "West Des Moines 223",
+          "West Des Moines 224",
+          "West Des Moines 225",
+          "West Des Moines 226",
+          "West Des Moines 321",
+          "West Des Moines 322"
+        ],
+        "participationLabels": [
+          "Adams",
+          "Adel 1",
+          "Adel 2",
+          "Beaver Des Moines",
+          "Clive 5",
+          "Clive 6",
+          "Colfax Adel",
+          "DeSoto",
+          "Lincoln Washington Linn",
+          "Perry 1",
+          "Perry 2",
+          "Perry 3",
+          "Spring Valley Dallas",
+          "Sugar Grove Dallas Center",
+          "Union",
+          "Urbandale 13",
+          "Urbandale 14",
+          "Urbandale 15",
+          "Van Meter",
+          "Walnut Grimes Grant",
+          "Waukee 1",
+          "Waukee 2",
+          "Waukee 3",
+          "Waukee 4",
+          "Waukee 5",
+          "Waukee 6",
+          "West Des Moines 221",
+          "West Des Moines 222",
+          "West Des Moines 223",
+          "West Des Moines 224",
+          "West Des Moines 225",
+          "West Des Moines 226",
+          "West Des Moines 321",
+          "West Des Moines 322"
+        ],
+        "explanation": "The workbook has one extra source row named ABSENTEE. It is an all-zero administrative placeholder with no separate participation identity and is classified non-geographic."
+      },
+      {
+        "county": "Lee",
+        "workbookResultRows": 20,
+        "participationIdentityRows": 22,
+        "participationMinusWorkbook": 2,
+        "workbookLabels": [
+          "CENTRAL LEE HIGH SCHOOL-C",
+          "CITY CAR BARN",
+          "EVANGELICAL FREE CHURCH",
+          "FT MADISON CITY HALL",
+          "FT MADISON PUBLIC LIBRARY",
+          "GRACE BIBLE CHURCH-GB",
+          "HAWTHORNE SCHOOL",
+          "HERITAGE CENTER A",
+          "HERITAGE CENTER B",
+          "HILLVIEW VILLAGE",
+          "HOLY TRINITY HIGH SCHOOL",
+          "IVOR FOWLER COMM CENTER-M",
+          "JACKSON TWP FIRE STATION",
+          "JIM BAIER FORD",
+          "KEOKUK PUBLIC LIBRARY",
+          "LEARNING CENTER",
+          "MCALEER HALL",
+          "PILOT GROVE BANK COMM ROO",
+          "SOUTH LEE COUNTY COURTHOU",
+          "WEST POINT LIBRARY-PR"
+        ],
+        "participationLabels": [
+          "Charleston Van Buren Des Moines",
+          "FM 1",
+          "FM 2",
+          "FM 3",
+          "FM 4A",
+          "FM4B",
+          "FM5/Madison Twp",
+          "Franklin Cedar Marion",
+          "Harrison",
+          "Jackson",
+          "Jefferson",
+          "KE1",
+          "KE2A",
+          "KE2B",
+          "KE3",
+          "KE4",
+          "KE5",
+          "KE6",
+          "KE7",
+          "Montrose",
+          "Washington Green Bay",
+          "West Point Pleasant Ridge Denmark"
+        ],
+        "explanation": "The workbook exposes 20 polling-place-labeled source rows while the participation report exposes 22 named precinct/local-unit identities. Count proximity is not used to infer a 22-to-20 crosswalk."
+      }
+    ],
+    "nonGeographicWorkbookRows": [
+      {
+        "sourceIdentity": "Dallas|ABSENTEE",
+        "sourceDisplayName": "ABSENTEE",
+        "county": "Dallas",
+        "totalBallots": 0,
+        "classification": "non_geographic_zero_vote_absentee_administrative_placeholder"
+      }
+    ],
+    "disposition": "different_source_universes_explicitly_accounted_not_crosswalked_by_row_order_or_count"
+  },
+  "dubuqueResultCodeBridge": {
+    "status": "reviewed_diagnostic_not_polygon_assignment",
+    "artifact": "data/precinct-geometry/IA/2012-11-06-general/reports/ia-2012-11-06-dubuque-result-code-bridge.json",
+    "sha256": "091ee2db2b6a7c7c03c2781346d5d268ed1973237b502b030f2348a1017b562f",
+    "byteCount": 65173,
+    "geographicCodeMappings": 35,
+    "nonGeographicArchiveRows": 1,
+    "exactComparedVoteCells": 206,
+    "conflictingVoteCells": 4,
+    "conflicts": [
+      {
+        "code": 10,
+        "field": "Obama",
+        "scanValue": 426,
+        "workbookValue": 659,
+        "workbookMinusScan": 233
+      },
+      {
+        "code": 10,
+        "field": "Romney",
+        "scanValue": 659,
+        "workbookValue": 426,
+        "workbookMinusScan": -233
+      },
+      {
+        "code": 41,
+        "field": "Goode",
+        "scanValue": 0,
+        "workbookValue": 2,
+        "workbookMinusScan": 2
+      },
+      {
+        "code": 41,
+        "field": "Stein",
+        "scanValue": 0,
+        "workbookValue": 2,
+        "workbookMinusScan": 2
+      }
+    ],
+    "polygonMappings": 0
+  },
+  "boundaryCandidate": {
+    "status": "official_county_pdf_partial_coverage_mixed_vintage_conversion_pending",
+    "explicitEffectiveDate": "2012-01-15",
+    "bodyVintageClassifier": "Exact extracted in-body statement: This map became effective January 15, 2012.",
+    "countyUniverse": 99,
+    "retainedCountyMapPdfs": 52,
+    "explicitlyElectionEffectiveMapPdfs": 38,
+    "explicitlyElectionEffectiveCounties": [
+      "Adams",
+      "Allamakee",
+      "Appanoose",
+      "Bremer",
+      "Buchanan",
+      "Calhoun",
+      "Cherokee",
+      "Chickasaw",
+      "Davis",
+      "Decatur",
+      "Dubuque",
+      "Fayette",
+      "Fremont",
+      "Hancock",
+      "Howard",
+      "Ida",
+      "Jefferson",
+      "Keokuk",
+      "Lee",
+      "Lucas",
+      "Mahaska",
+      "Mills",
+      "Monona",
+      "Muscatine",
+      "O'Brien",
+      "Page",
+      "Palo Alto",
+      "Pocahontas",
+      "Pottawattamie",
+      "Ringgold",
+      "Sac",
+      "Shelby",
+      "Tama",
+      "Taylor",
+      "Van Buren",
+      "Wapello",
+      "Wayne",
+      "Winnebago"
+    ],
+    "vintageUnprovenMapPdfs": 14,
+    "vintageUnprovenCounties": [
+      "Benton",
+      "Clarke",
+      "Franklin",
+      "Guthrie",
+      "Hardin",
+      "Harrison",
+      "Humboldt",
+      "Iowa",
+      "Jasper",
+      "Jones",
+      "Lyon",
+      "Madison",
+      "Mitchell",
+      "Poweshiek"
+    ],
+    "unavailableCountyMapUrls": 47,
+    "structureArtifact": "data/precinct-geometry/IA/2012-11-06-general/reports/ia-2012-11-06-official-precinct-map-profile.json",
+    "sha256": "bebce03e1ee63fabf9c7d9a52f522ac77f8bfe2e862250fbf51168e025fb0c7a",
+    "byteCount": 270071,
+    "sourceStructure": {
+      "vectorPathDocuments": 48,
+      "arcMapCreatorDocuments": 48,
+      "allPagesGeoViewportDocuments": 18,
+      "genericPrecinctOptionalContentDocuments": 39,
+      "stableMachineReadablePrecinctFeatureIds": false
+    },
+    "caveat": "Only the 38 explicitly dated bodies are classified as election-effective boundary evidence. The other 14 retained PDFs remain vintage-unproven. No retained PDF is normalized GIS delivery, and no feature-named OCG label itself proves a polygon or result key."
+  },
+  "caveats": [
+    "The official 99-county XLS index and all 99 retained workbooks yield 1,687 unique county-qualified President source rows that reconcile exactly by Election Day, Absentee, and Total slices to every workbook county total, the certified 99-county canvass, and statewide totals. One all-zero Dallas ABSENTEE administrative row is non-geographic, leaving 1,686 colorable source rows. The separate participation report retains 1,688 identities; the statewide one-row difference is fully accounted for by Dallas (35 workbook vs 34 participation) and Lee (20 vs 22), without treating count similarity as a crosswalk. Systematic map URL enumeration retained 52 official county PDFs; 38 bodies explicitly state a January 15, 2012 effective date, 14 are vintage-unproven, and 47 URLs redirect to the official unavailable page. The Dubuque archive supplies 35 reviewed geographic code-to-polling-place mappings plus one non-geographic absentee aggregate, but four of 210 compared Election Day candidate cells differ from the SOS workbook and no code is assigned to a polygon.",
+    "The workbook field headed Precinct is preserved verbatim. Dallas includes one all-zero non-geographic ABSENTEE placeholder; Lee reports 20 polling-place labels while participation reports 22 precinct/local-unit identities.",
+    "Dubuque's reviewed official county archive supplies explicit numeric codes and polling-place labels, but its code 10 Obama/Romney cells and code 41 Goode/Stein cells differ from the reconciled SOS workbook. The cause is unresolved and no misconduct inference is made.",
+    "Exact normalized label overlap across source families is reported only as a diagnostic and never adopted as a geometry relationship.",
+    "The earlier results-index HTTP 403 artifact is an environment-specific historical observation superseded by successful HTTP 200 acquisition of the index and all 99 workbooks.",
+    "Participation total-voted/absentee values are turnout context only and are not presidential contest votes.",
+    "The dated 2014 statewide ZIP remains unavailable and is not backcast. No 2015, post-2020, or 2024 geometry or identifier decision is reused.",
+    "Delivery remains null; no polygon or candidate vote is assigned to geometry."
+  ]
+}

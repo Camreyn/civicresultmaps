@@ -1,0 +1,1731 @@
+{
+  "schemaVersion": 1,
+  "state": "IA",
+  "electionId": "2024-11-05-general",
+  "generatedAt": "2026-08-01T23:30:00.000Z",
+  "source": {
+    "packageCount": 252,
+    "parentCount": 97,
+    "missingParents": [
+      {
+        "name": "Kossuth County",
+        "geoid": "19109",
+        "reason": "No county precinct package is listed on the official Iowa SOS county precinct shapefile index."
+      },
+      {
+        "name": "Lyon County",
+        "geoid": "19119",
+        "reason": "No county precinct package is listed on the official Iowa SOS county precinct shapefile index."
+      }
+    ],
+    "sourceFeatureCount": 2415,
+    "normalizedCandidateFeatureCount": 1370,
+    "polygonCount": 1358,
+    "multiPolygonCount": 12,
+    "unassignedFeatureCount": 4,
+    "wrongGeographyFeatureCount": 8
+  },
+  "crosswalk": {
+    "resultUnits": 1653,
+    "matchedCandidateUnits": 570,
+    "unmatchedResultUnits": 1083,
+    "pendingReviewUnits": 1653,
+    "parentTotalsReconciled": false,
+    "unmatchedSample": [
+      {
+        "county": "Appanoose County",
+        "localUnit": "Caldwell"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Centerville Ward 1"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Centerville Ward 2"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Centerville Ward 3"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Johns/Independence/Lincoln"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Pleasant/Franklin"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Taylor/Chariton"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Union/Udell"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Vermillion/Douglas/Sharon/Bellair"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Walnut"
+      },
+      {
+        "county": "Appanoose County",
+        "localUnit": "Washington/Wells"
+      },
+      {
+        "county": "Benton County",
+        "localUnit": "Bruce-Cedar-Monroe-Mt Auburn"
+      },
+      {
+        "county": "Benton County",
+        "localUnit": "Vinton 1"
+      },
+      {
+        "county": "Benton County",
+        "localUnit": "Vinton 2"
+      },
+      {
+        "county": "Benton County",
+        "localUnit": "Vinton 3"
+      },
+      {
+        "county": "Benton County",
+        "localUnit": "Vinton 4"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Barclay/Benn/Lester/Dunkerton"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Big Creek/Spring Creek/LPC"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Cedar/Poyner2/Gilbertville"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 1-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 1-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 1-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 2-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 2-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 2-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 3-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 3-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 3-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 4-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 4-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 4-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 5-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 5-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "CF 5-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Elk Run Heights"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Evansdale Ward 1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Evansdale Ward 2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Evansdale Ward 3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Evansdale Ward 4"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Hudson"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Mt. Vernon"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Poyner1/EWL/Raymond/Fox/Jesup"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "Union/Washington/Janesville"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 1-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 1-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 1-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 1-4"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 1-5"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 1-6"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 2-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 2-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 2-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 2-4"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 2-5"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 2-6"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 3-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 3-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 3-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 3-4"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 3-5"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 3-6"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 4-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 4-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 4-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 4-4"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 4-5"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 4-6"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 5-1"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 5-2"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 5-3"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 5-4"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 5-5"
+      },
+      {
+        "county": "Black Hawk County",
+        "localUnit": "WL 5-6"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Boone 1st Ward"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Boone 2nd Ward"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Boone 3rd Ward"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Madrid 1st Ward"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Madrid 2nd Ward"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Madrid 3rd Ward"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Ogden"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Rural Precinct 1"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Rural Precinct 2"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Rural Precinct 3"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Rural Precinct 4"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Rural Precinct 5"
+      },
+      {
+        "county": "Boone County",
+        "localUnit": "Rural Precinct 6"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Aurora"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Brandon"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Fairbank"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Hazleton"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Jesup"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Perry-Washington"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Quasqueton"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Rowley"
+      },
+      {
+        "county": "Buchanan County",
+        "localUnit": "Winthrop"
+      },
+      {
+        "county": "Buena Vista County",
+        "localUnit": "BBLL"
+      },
+      {
+        "county": "Buena Vista County",
+        "localUnit": "CFNP"
+      },
+      {
+        "county": "Buena Vista County",
+        "localUnit": "EMNS"
+      },
+      {
+        "county": "Buena Vista County",
+        "localUnit": "GHPW"
+      },
+      {
+        "county": "Carroll County",
+        "localUnit": "Arcadia Precinct"
+      }
+    ]
+  },
+  "dispositions": [
+    {
+      "parentName": "Adair County",
+      "parentGeoid": "19001",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "adair-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 5,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 5,
+      "candidateMatchCount": 5,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Adams County",
+      "parentGeoid": "19003",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "adams-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 5,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 5,
+      "candidateMatchCount": 5,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Allamakee County",
+      "parentGeoid": "19005",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "allamakee-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 10,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Appanoose County",
+      "parentGeoid": "19007",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "appanoose-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 11
+    },
+    {
+      "parentName": "Audubon County",
+      "parentGeoid": "19009",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "audubon-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 2,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 2,
+      "candidateMatchCount": 2,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Benton County",
+      "parentGeoid": "19011",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "benton-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 18,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 18,
+      "candidateMatchCount": 13,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Black Hawk County",
+      "parentGeoid": "19013",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "black-hawk-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 59,
+      "candidateMatchCount": 2,
+      "unmatchedResultUnitCount": 57
+    },
+    {
+      "parentName": "Boone County",
+      "parentGeoid": "19015",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "boone-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 15,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 15,
+      "candidateMatchCount": 2,
+      "unmatchedResultUnitCount": 13
+    },
+    {
+      "parentName": "Bremer County",
+      "parentGeoid": "19017",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "bremer-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 14,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 14,
+      "candidateMatchCount": 14,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Buchanan County",
+      "parentGeoid": "19019",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "buchananan-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 14,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 14,
+      "candidateMatchCount": 5,
+      "unmatchedResultUnitCount": 9
+    },
+    {
+      "parentName": "Buena Vista County",
+      "parentGeoid": "19021",
+      "status": "manual_reconciliation_required",
+      "packageIds": [
+        "buena-vista-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 1,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Butler County",
+      "parentGeoid": "19023",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "butler-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 8,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Calhoun County",
+      "parentGeoid": "19025",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "calhoun-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 6,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 6,
+      "candidateMatchCount": 6,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Carroll County",
+      "parentGeoid": "19027",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "carroll-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 13,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 13,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 13
+    },
+    {
+      "parentName": "Cass County",
+      "parentGeoid": "19029",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "cass-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 12
+    },
+    {
+      "parentName": "Cedar County",
+      "parentGeoid": "19031",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "cedar-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 9,
+      "unmatchedResultUnitCount": 3
+    },
+    {
+      "parentName": "Cerro Gordo County",
+      "parentGeoid": "19033",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "cerro-gordo-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 23,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 23
+    },
+    {
+      "parentName": "Cherokee County",
+      "parentGeoid": "19035",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "cherokee-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 7,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Chickasaw County",
+      "parentGeoid": "19037",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "chickasaw-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 9
+    },
+    {
+      "parentName": "Clarke County",
+      "parentGeoid": "19039",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "clarke-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 3,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Clay County",
+      "parentGeoid": "19041",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "clay-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 7,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Clayton County",
+      "parentGeoid": "19043",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "clayton-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 12
+    },
+    {
+      "parentName": "Clinton County",
+      "parentGeoid": "19045",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "clinton-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 24,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 24,
+      "candidateMatchCount": 5,
+      "unmatchedResultUnitCount": 19
+    },
+    {
+      "parentName": "Crawford County",
+      "parentGeoid": "19047",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "crawford-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Dallas County",
+      "parentGeoid": "19049",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "dallas-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 46,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 46,
+      "candidateMatchCount": 7,
+      "unmatchedResultUnitCount": 39
+    },
+    {
+      "parentName": "Davis County",
+      "parentGeoid": "19051",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "davis-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 3,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Decatur County",
+      "parentGeoid": "19053",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "decatur-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 4,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 4,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Delaware County",
+      "parentGeoid": "19055",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "delaware-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 12
+    },
+    {
+      "parentName": "Des Moines County",
+      "parentGeoid": "19057",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "des-moines-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 17,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 17,
+      "candidateMatchCount": 8,
+      "unmatchedResultUnitCount": 9
+    },
+    {
+      "parentName": "Dickinson County",
+      "parentGeoid": "19059",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "dickinson-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 12
+    },
+    {
+      "parentName": "Dubuque County",
+      "parentGeoid": "19061",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "dubuque-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 34,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 34,
+      "candidateMatchCount": 34,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Emmet County",
+      "parentGeoid": "19063",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "emmet-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 11
+    },
+    {
+      "parentName": "Fayette County",
+      "parentGeoid": "19065",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "fayette-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 20,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 20,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 20
+    },
+    {
+      "parentName": "Floyd County",
+      "parentGeoid": "19067",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "floyd-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 3,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Franklin County",
+      "parentGeoid": "19069",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "franklin-county-hampton-precincts",
+        "franklin-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 13,
+      "unassignedFeatureCount": 1,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 8,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Fremont County",
+      "parentGeoid": "19071",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "fremont-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 5,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 5,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 1
+    },
+    {
+      "parentName": "Greene County",
+      "parentGeoid": "19073",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "greene-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 6,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 6,
+      "candidateMatchCount": 2,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Grundy County",
+      "parentGeoid": "19075",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "grundy-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 7,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Guthrie County",
+      "parentGeoid": "19077",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "guthrie-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 6,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 6,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 6
+    },
+    {
+      "parentName": "Hamilton County",
+      "parentGeoid": "19079",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "hamilton-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 7,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Hancock County",
+      "parentGeoid": "19081",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "hancock-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 10,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Hardin County",
+      "parentGeoid": "19083",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "hardin-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 8
+    },
+    {
+      "parentName": "Harrison County",
+      "parentGeoid": "19085",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "harrison-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 11,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Henry County",
+      "parentGeoid": "19087",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "henry-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 9,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Howard County",
+      "parentGeoid": "19089",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "howard-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Humboldt County",
+      "parentGeoid": "19091",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "humboldt-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 6,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 6,
+      "candidateMatchCount": 6,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Ida County",
+      "parentGeoid": "19093",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "ida-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Iowa County",
+      "parentGeoid": "19095",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "iowa-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 1,
+      "unmatchedResultUnitCount": 10
+    },
+    {
+      "parentName": "Jackson County",
+      "parentGeoid": "19097",
+      "status": "blocked_wrong_geography",
+      "packageIds": [
+        "city-of-maquoketa-wards-precincts-9-13-1",
+        "jackson-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 13,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 13
+    },
+    {
+      "parentName": "Jasper County",
+      "parentGeoid": "19099",
+      "status": "manual_reconciliation_required",
+      "packageIds": [
+        "jasper-county-precinct-boundaries-2"
+      ],
+      "sourceFeatureCount": 20,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 18,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 14
+    },
+    {
+      "parentName": "Jefferson County",
+      "parentGeoid": "19101",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "jefferson-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 1,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 3,
+      "unmatchedResultUnitCount": 9
+    },
+    {
+      "parentName": "Johnson County",
+      "parentGeoid": "19103",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "johnson-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 65,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 65,
+      "candidateMatchCount": 18,
+      "unmatchedResultUnitCount": 47
+    },
+    {
+      "parentName": "Jones County",
+      "parentGeoid": "19105",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "jones-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 14,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 14,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 10
+    },
+    {
+      "parentName": "Keokuk County",
+      "parentGeoid": "19107",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "keokuk-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Kossuth County",
+      "parentGeoid": "19109",
+      "status": "blocked_missing_official_county_package",
+      "packageIds": [],
+      "sourceFeatureCount": 0,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 20,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 20
+    },
+    {
+      "parentName": "Lee County",
+      "parentGeoid": "19111",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "lee-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 22,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 22,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 18
+    },
+    {
+      "parentName": "Linn County",
+      "parentGeoid": "19113",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "linn-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 94,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 94,
+      "candidateMatchCount": 73,
+      "unmatchedResultUnitCount": 21
+    },
+    {
+      "parentName": "Louisa County",
+      "parentGeoid": "19115",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "louisa-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 5,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 5,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Lucas County",
+      "parentGeoid": "19117",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "lucas-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Lyon County",
+      "parentGeoid": "19119",
+      "status": "blocked_missing_official_county_package",
+      "packageIds": [],
+      "sourceFeatureCount": 0,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 10
+    },
+    {
+      "parentName": "Madison County",
+      "parentGeoid": "19121",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "madison-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 10
+    },
+    {
+      "parentName": "Mahaska County",
+      "parentGeoid": "19123",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "mahaska-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Marion County",
+      "parentGeoid": "19125",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "marion-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 19,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 19,
+      "candidateMatchCount": 5,
+      "unmatchedResultUnitCount": 14
+    },
+    {
+      "parentName": "Marshall County",
+      "parentGeoid": "19127",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "marshall-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 7,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Mills County",
+      "parentGeoid": "19129",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "mills-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 11
+    },
+    {
+      "parentName": "Mitchell County",
+      "parentGeoid": "19131",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "mitchell-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 12,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Monona County",
+      "parentGeoid": "19133",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "monona-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 10
+    },
+    {
+      "parentName": "Monroe County",
+      "parentGeoid": "19135",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "monroe-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 7,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Montgomery County",
+      "parentGeoid": "19137",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "montgomery-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Muscatine County",
+      "parentGeoid": "19139",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "muscatine-county-precinct-boundaries-1"
+      ],
+      "sourceFeatureCount": 25,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 25,
+      "candidateMatchCount": 1,
+      "unmatchedResultUnitCount": 24
+    },
+    {
+      "parentName": "O'Brien County",
+      "parentGeoid": "19141",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "o-brien-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 3,
+      "unmatchedResultUnitCount": 6
+    },
+    {
+      "parentName": "Osceola County",
+      "parentGeoid": "19143",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "osceola-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 3,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Page County",
+      "parentGeoid": "19145",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "page-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 1,
+      "unmatchedResultUnitCount": 8
+    },
+    {
+      "parentName": "Palo Alto County",
+      "parentGeoid": "19147",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "palo-alto-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 8,
+      "candidateMatchCount": 1,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Plymouth County",
+      "parentGeoid": "19149",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "plymouth-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 11,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Pocahontas County",
+      "parentGeoid": "19151",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "pocahontas-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Polk County",
+      "parentGeoid": "19153",
+      "status": "blocked_wrong_geography",
+      "packageIds": [
+        "polk-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 5,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 176,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 176
+    },
+    {
+      "parentName": "Pottawattamie County",
+      "parentGeoid": "19155",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "pottawattamie-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 40,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 40,
+      "candidateMatchCount": 38,
+      "unmatchedResultUnitCount": 2
+    },
+    {
+      "parentName": "Poweshiek County",
+      "parentGeoid": "19157",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "poweshiek-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 6,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Ringgold County",
+      "parentGeoid": "19159",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "ringgold-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 3
+    },
+    {
+      "parentName": "Sac County",
+      "parentGeoid": "19161",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "sac-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 9,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 9
+    },
+    {
+      "parentName": "Scott County",
+      "parentGeoid": "19163",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "scott-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 66,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 66,
+      "candidateMatchCount": 9,
+      "unmatchedResultUnitCount": 57
+    },
+    {
+      "parentName": "Shelby County",
+      "parentGeoid": "19165",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "shelby-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 11,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 11,
+      "candidateMatchCount": 9,
+      "unmatchedResultUnitCount": 2
+    },
+    {
+      "parentName": "Sioux County",
+      "parentGeoid": "19167",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "sioux-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 17,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 17,
+      "candidateMatchCount": 9,
+      "unmatchedResultUnitCount": 8
+    },
+    {
+      "parentName": "Story County",
+      "parentGeoid": "19169",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "story-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 45,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 45,
+      "candidateMatchCount": 14,
+      "unmatchedResultUnitCount": 31
+    },
+    {
+      "parentName": "Tama County",
+      "parentGeoid": "19171",
+      "status": "manual_reconciliation_required",
+      "packageIds": [
+        "tama-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 13,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 12
+    },
+    {
+      "parentName": "Taylor County",
+      "parentGeoid": "19173",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "taylor-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 5,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 5,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 5
+    },
+    {
+      "parentName": "Union County",
+      "parentGeoid": "19175",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "union-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 8,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 9,
+      "candidateMatchCount": 5,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Van Buren County",
+      "parentGeoid": "19177",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "van-buren-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 4,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 4,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 4
+    },
+    {
+      "parentName": "Wapello County",
+      "parentGeoid": "19179",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "wapello-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 13,
+      "unassignedFeatureCount": 1,
+      "resultUnitCount": 22,
+      "candidateMatchCount": 10,
+      "unmatchedResultUnitCount": 12
+    },
+    {
+      "parentName": "Warren County",
+      "parentGeoid": "19181",
+      "status": "candidate_with_city_supplement_needed",
+      "packageIds": [
+        "warren-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 37,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 40,
+      "candidateMatchCount": 1,
+      "unmatchedResultUnitCount": 39
+    },
+    {
+      "parentName": "Washington County",
+      "parentGeoid": "19183",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "washington-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 3,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Wayne County",
+      "parentGeoid": "19185",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "wayne-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 4,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 4,
+      "candidateMatchCount": 1,
+      "unmatchedResultUnitCount": 3
+    },
+    {
+      "parentName": "Webster County",
+      "parentGeoid": "19187",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "webster-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 19,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 19,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 19
+    },
+    {
+      "parentName": "Winnebago County",
+      "parentGeoid": "19189",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "winnebago-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 1,
+      "unmatchedResultUnitCount": 9
+    },
+    {
+      "parentName": "Winneshiek County",
+      "parentGeoid": "19191",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "winneshiek-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 12,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 12,
+      "candidateMatchCount": 12,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Woodbury County",
+      "parentGeoid": "19193",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "woodbury-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 44,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 44,
+      "candidateMatchCount": 44,
+      "unmatchedResultUnitCount": 0
+    },
+    {
+      "parentName": "Worth County",
+      "parentGeoid": "19195",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "worth-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 7,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 7,
+      "candidateMatchCount": 0,
+      "unmatchedResultUnitCount": 7
+    },
+    {
+      "parentName": "Wright County",
+      "parentGeoid": "19197",
+      "status": "candidate_needs_crosswalk",
+      "packageIds": [
+        "wright-county-precinct-boundaries"
+      ],
+      "sourceFeatureCount": 10,
+      "unassignedFeatureCount": 0,
+      "resultUnitCount": 10,
+      "candidateMatchCount": 4,
+      "unmatchedResultUnitCount": 6
+    }
+  ],
+  "blockingFindings": [
+    "All 153 official city-index packages are retained, but their county parents and precinct-versus-ward geography require review before their features can enter the normalized candidate layer.",
+    "Kossuth and Lyon lack packages on the official county precinct index.",
+    "Jackson and Polk county-index packages contain district rather than precinct geography.",
+    "Every automated relationship remains pending review.",
+    "Election-date applicability is not confirmed uniformly for every package."
+  ]
+}

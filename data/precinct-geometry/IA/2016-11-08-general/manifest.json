@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2016-2016-11-08-precinct-geometry-candidate-v1",
+  "state": "IA",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "Iowa Precincts 2016 official LSA/SOS service, updated March 29, 2016",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "official_export"
+  },
+  "source": {
+    "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+    "url": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+    "retrievedAt": "2026-08-12T23:58:58.000Z",
+    "artifact": "data/precinct-geometry/IA/2016-11-08-general/reviewed-source-evidence.json",
+    "sha256": "20ecc3af814f5644a32e54c7b3a877f9ff7c840a9d751945d302fe38174bc6fc",
+    "byteCount": 7094,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official LSA/SOS service attribution retained; the reviewed DSPG/ISU identity bridge is MIT licensed and its copyright notice accompanies the source package."
+  },
+  "normalization": {
+    "script": "scripts/build-ia-reviewed-precinct-crosswalks.py",
+    "sourceCrs": "Official LSA source normalized to EPSG:4326",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/IA/2016-11-08-general/normalized/ia-2016-precincts-reviewed.geojson.gz",
+    "sha256": "154f248f2bebe7ea7a77a1c1a3bac30343581a2f60d089e99313d4f1c448fd66",
+    "byteCount": 3707853,
+    "featureCount": 1680,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "ia-sos-2016-general-county-precinct-workbooks",
+    "artifact": "data/precinct-geometry/IA/2016-11-08-general/crosswalk/ia-2016-results-to-reviewed-geometry.json",
+    "sha256": "a68c487cf0a8ee91b2245d67c21c241f3cf56ec118cc8e43405c467606674952",
+    "byteCount": 1471807,
+    "resultUnits": 1680,
+    "colorableResultUnits": 1680,
+    "matchedResultUnits": 1680,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 1680,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 1680,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "An immutable parent-scoped public delivery package and guarded release review have not been completed."
+    ],
+    "warnings": [
+      "All displayed vote values come only from 99 retained Iowa Secretary of State county workbooks.",
+      "The official LSA/SOS polygon layer is linked through a hash-pinned reviewed DSPG/ISU identity bridge; no vote value is copied into geometry.",
+      "One Dickinson result identity combines two official source components; the normalized public feature is their reviewed union and remains a single result relationship."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "The service calls this Iowa Precincts 2016 and records a March 29, 2016 update under Iowa Secretary of State purview.",
+    "The DSPG/ISU package is an identity bridge, not the authority for vote values or certified totals.",
+    "The official service and bridge attribution and terms must accompany public delivery."
+  ]
+}

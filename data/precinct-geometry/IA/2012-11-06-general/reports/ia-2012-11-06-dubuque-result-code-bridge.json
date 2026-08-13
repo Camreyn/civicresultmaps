@@ -1,0 +1,2470 @@
+{
+  "schemaVersion": 1,
+  "state": "IA",
+  "electionId": "2012-11-06-general",
+  "generatedAt": "2026-08-04T09:33:08.968Z",
+  "authority": "Dubuque County, Iowa official election archive",
+  "sourceUrl": "https://dubuquecountyiowa.gov/Archive.aspx?ADID=81",
+  "sourceArtifact": {
+    "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/raw/dubuque-county/2012-general-election-results.pdf",
+    "sha256": "2c227f597d44cb03bfcaeb4038743d093b3430fdf18b6d22e103a2e33f8afe94",
+    "byteCount": 769186,
+    "format": "scan-only certified result PDF"
+  },
+  "sourceDocument": {
+    "pageCount": 20,
+    "extractableBodyCharacterCount": 0,
+    "reviewedPages": [
+      1,
+      2
+    ],
+    "certificationDateVisibleInScan": "2012-11-13",
+    "reviewMethod": "Human-reviewed visual transcription of the retained scan; page 1 supplies city codes 1-20 and page 2 supplies rural codes 31-45 plus countywide code 46 Absentee."
+  },
+  "geographicCodeMappings": 35,
+  "nonGeographicArchiveRows": [
+    {
+      "code": 46,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Absentee",
+      "isGeographic": false,
+      "candidateVotes": {
+        "Obama": 15268,
+        "Romney": 8033,
+        "Goode": 28,
+        "Stein": 44,
+        "Johnson": 124,
+        "LaRiva": 4
+      },
+      "disposition": "countywide_absentee_aggregate_not_a_precinct_polygon"
+    }
+  ],
+  "reconciliation": {
+    "comparedElectionDayCandidateCells": 210,
+    "exactElectionDayCandidateCells": 206,
+    "conflictingElectionDayCandidateCells": 4,
+    "conflicts": [
+      {
+        "code": 10,
+        "field": "Obama",
+        "scanValue": 426,
+        "workbookValue": 659,
+        "workbookMinusScan": 233
+      },
+      {
+        "code": 10,
+        "field": "Romney",
+        "scanValue": 659,
+        "workbookValue": 426,
+        "workbookMinusScan": -233
+      },
+      {
+        "code": 41,
+        "field": "Goode",
+        "scanValue": 0,
+        "workbookValue": 2,
+        "workbookMinusScan": 2
+      },
+      {
+        "code": 41,
+        "field": "Stein",
+        "scanValue": 0,
+        "workbookValue": 2,
+        "workbookMinusScan": 2
+      }
+    ],
+    "archiveCityElectionDay": {
+      "Obama": 7951,
+      "Romney": 6941,
+      "Goode": 23,
+      "Stein": 45,
+      "Johnson": 211,
+      "LaRiva": 2
+    },
+    "archiveRuralElectionDay": {
+      "Obama": 5316,
+      "Romney": 6539,
+      "Goode": 12,
+      "Stein": 20,
+      "Johnson": 103,
+      "LaRiva": 3
+    },
+    "archiveElectionDay": {
+      "Obama": 13267,
+      "Romney": 13480,
+      "Goode": 35,
+      "Stein": 65,
+      "Johnson": 314,
+      "LaRiva": 5
+    },
+    "archiveAbsentee": {
+      "Obama": 15268,
+      "Romney": 8033,
+      "Goode": 28,
+      "Stein": 44,
+      "Johnson": 124,
+      "LaRiva": 4
+    },
+    "archiveTotal": {
+      "Obama": 28535,
+      "Romney": 21513,
+      "Goode": 63,
+      "Stein": 109,
+      "Johnson": 438,
+      "LaRiva": 9
+    },
+    "sosWorkbookElectionDay": {
+      "Obama": 13500,
+      "Romney": 13247,
+      "Goode": 37,
+      "Stein": 67,
+      "Johnson": 314,
+      "LaRiva": 5
+    },
+    "sosWorkbookAbsentee": {
+      "Obama": 15268,
+      "Romney": 8033,
+      "Goode": 28,
+      "Stein": 44,
+      "Johnson": 124,
+      "LaRiva": 4
+    },
+    "sosWorkbookTotal": {
+      "Obama": 28768,
+      "Romney": 21280,
+      "Goode": 65,
+      "Stein": 111,
+      "Johnson": 438,
+      "LaRiva": 9
+    },
+    "archiveInternallyReconciles": true,
+    "archiveAbsenteeMatchesSosWorkbook": true,
+    "archiveTotalMatchesSosWorkbook": false,
+    "conflictDisposition": "official_source_reconciliation_issue_or_later_correction_not_resolved; no misconduct inference"
+  },
+  "geometryDisposition": {
+    "featureMappings": 0,
+    "votesAssigned": 0,
+    "delivery": null,
+    "status": "reviewed_result_code_bridge_only",
+    "caveat": "The archive establishes code-to-polling-place result context. It does not identify a stable GeoPDF path or polygon, and no row-order, equal-count, text-proximity, or color-path inference is adopted."
+  },
+  "rows": [
+    {
+      "code": 1,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Rockdale Methodist",
+      "workbookSourceDisplayName": "Rockdale Methodist Church",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Rockdale%20Methodist%20Church",
+      "archiveElectionDayVotes": {
+        "Obama": 401,
+        "Romney": 520,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 10,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 401,
+        "Romney": 520,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 10,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 401,
+          "workbookValue": 401,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 520,
+          "workbookValue": 520,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 10,
+          "workbookValue": 10,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 2,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Theisens",
+      "workbookSourceDisplayName": "Theisens",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Theisens",
+      "archiveElectionDayVotes": {
+        "Obama": 404,
+        "Romney": 481,
+        "Goode": 1,
+        "Stein": 4,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 404,
+        "Romney": 481,
+        "Goode": 1,
+        "Stein": 4,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 404,
+          "workbookValue": 404,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 481,
+          "workbookValue": 481,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 4,
+          "workbookValue": 4,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 11,
+          "workbookValue": 11,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 3,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "ARC Building",
+      "workbookSourceDisplayName": "ARC Building",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:ARC%20Building",
+      "archiveElectionDayVotes": {
+        "Obama": 264,
+        "Romney": 253,
+        "Goode": 1,
+        "Stein": 2,
+        "Johnson": 6,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 264,
+        "Romney": 253,
+        "Goode": 1,
+        "Stein": 2,
+        "Johnson": 6,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 264,
+          "workbookValue": 264,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 253,
+          "workbookValue": 253,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 6,
+          "workbookValue": 6,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 4,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Journey Church",
+      "workbookSourceDisplayName": "The Journey Church",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:The%20Journey%20Church",
+      "archiveElectionDayVotes": {
+        "Obama": 424,
+        "Romney": 513,
+        "Goode": 4,
+        "Stein": 3,
+        "Johnson": 11,
+        "LaRiva": 1
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 424,
+        "Romney": 513,
+        "Goode": 4,
+        "Stein": 3,
+        "Johnson": 11,
+        "LaRiva": 1
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 424,
+          "workbookValue": 424,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 513,
+          "workbookValue": 513,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 4,
+          "workbookValue": 4,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 11,
+          "workbookValue": 11,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 5,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Tri-State Blind",
+      "workbookSourceDisplayName": "Tri-State Blind - 5",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Tri-State%20Blind%20-%205",
+      "archiveElectionDayVotes": {
+        "Obama": 498,
+        "Romney": 493,
+        "Goode": 3,
+        "Stein": 2,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 498,
+        "Romney": 493,
+        "Goode": 3,
+        "Stein": 2,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 498,
+          "workbookValue": 498,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 493,
+          "workbookValue": 493,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 9,
+          "workbookValue": 9,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 6,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Sumitt Cong. Church",
+      "workbookSourceDisplayName": "Summit Church",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Summit%20Church",
+      "archiveElectionDayVotes": {
+        "Obama": 410,
+        "Romney": 468,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 13,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 410,
+        "Romney": 468,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 13,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 410,
+          "workbookValue": 410,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 468,
+          "workbookValue": 468,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 13,
+          "workbookValue": 13,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 7,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Tri-State Blind",
+      "workbookSourceDisplayName": "Tri-State Blind 7",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Tri-State%20Blind%207",
+      "archiveElectionDayVotes": {
+        "Obama": 466,
+        "Romney": 432,
+        "Goode": 1,
+        "Stein": 3,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 466,
+        "Romney": 432,
+        "Goode": 1,
+        "Stein": 3,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 466,
+          "workbookValue": 466,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 432,
+          "workbookValue": 432,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 9,
+          "workbookValue": 9,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 8,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Emmaus Bible College",
+      "workbookSourceDisplayName": "Emmaus Bible School",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Emmaus%20Bible%20School",
+      "archiveElectionDayVotes": {
+        "Obama": 285,
+        "Romney": 279,
+        "Goode": 2,
+        "Stein": 2,
+        "Johnson": 6,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 285,
+        "Romney": 279,
+        "Goode": 2,
+        "Stein": 2,
+        "Johnson": 6,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 285,
+          "workbookValue": 285,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 279,
+          "workbookValue": 279,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 6,
+          "workbookValue": 6,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 9,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Westminister",
+      "workbookSourceDisplayName": "Westminster Church - 9",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Westminster%20Church%20-%209",
+      "archiveElectionDayVotes": {
+        "Obama": 346,
+        "Romney": 298,
+        "Goode": 2,
+        "Stein": 3,
+        "Johnson": 12,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 346,
+        "Romney": 298,
+        "Goode": 2,
+        "Stein": 3,
+        "Johnson": 12,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 346,
+          "workbookValue": 346,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 298,
+          "workbookValue": 298,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 12,
+          "workbookValue": 12,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 10,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Westminister",
+      "workbookSourceDisplayName": "Westminister Church - 10",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Westminister%20Church%20-%2010",
+      "archiveElectionDayVotes": {
+        "Obama": 426,
+        "Romney": 659,
+        "Goode": 1,
+        "Stein": 5,
+        "Johnson": 16,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 659,
+        "Romney": 426,
+        "Goode": 1,
+        "Stein": 5,
+        "Johnson": 16,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 426,
+          "workbookValue": 659,
+          "workbookMinusScan": 233
+        },
+        {
+          "field": "Romney",
+          "scanValue": 659,
+          "workbookValue": 426,
+          "workbookMinusScan": -233
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 5,
+          "workbookValue": 5,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 16,
+          "workbookValue": 16,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [
+        "Obama",
+        "Romney"
+      ],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 11,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "UAW Local 94 Hall",
+      "workbookSourceDisplayName": "U.A.W. Local 94 Hall",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:U.A.W.%20Local%2094%20Hall",
+      "archiveElectionDayVotes": {
+        "Obama": 445,
+        "Romney": 306,
+        "Goode": 1,
+        "Stein": 3,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 445,
+        "Romney": 306,
+        "Goode": 1,
+        "Stein": 3,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 445,
+          "workbookValue": 445,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 306,
+          "workbookValue": 306,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 9,
+          "workbookValue": 9,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 12,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Windsor Park",
+      "workbookSourceDisplayName": "Windsor Park",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Windsor%20Park",
+      "archiveElectionDayVotes": {
+        "Obama": 452,
+        "Romney": 318,
+        "Goode": 1,
+        "Stein": 2,
+        "Johnson": 7,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 452,
+        "Romney": 318,
+        "Goode": 1,
+        "Stein": 2,
+        "Johnson": 7,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 452,
+          "workbookValue": 452,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 318,
+          "workbookValue": 318,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 7,
+          "workbookValue": 7,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 13,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Comiskey Park",
+      "workbookSourceDisplayName": "Comiskey Park",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Comiskey%20Park",
+      "archiveElectionDayVotes": {
+        "Obama": 488,
+        "Romney": 275,
+        "Goode": 1,
+        "Stein": 0,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 488,
+        "Romney": 275,
+        "Goode": 1,
+        "Stein": 0,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 488,
+          "workbookValue": 488,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 275,
+          "workbookValue": 275,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 11,
+          "workbookValue": 11,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 14,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Sacred Heart",
+      "workbookSourceDisplayName": "Sacred Heart Church",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Sacred%20Heart%20Church",
+      "archiveElectionDayVotes": {
+        "Obama": 368,
+        "Romney": 166,
+        "Goode": 0,
+        "Stein": 4,
+        "Johnson": 8,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 368,
+        "Romney": 166,
+        "Goode": 0,
+        "Stein": 4,
+        "Johnson": 8,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 368,
+          "workbookValue": 368,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 166,
+          "workbookValue": 166,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 4,
+          "workbookValue": 4,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 8,
+          "workbookValue": 8,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 15,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Holy Trinity",
+      "workbookSourceDisplayName": "Holy Trinity Church",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Holy%20Trinity%20Church",
+      "archiveElectionDayVotes": {
+        "Obama": 477,
+        "Romney": 280,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 7,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 477,
+        "Romney": 280,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 7,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 477,
+          "workbookValue": 477,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 280,
+          "workbookValue": 280,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 7,
+          "workbookValue": 7,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 16,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Election Annex",
+      "workbookSourceDisplayName": "Election Annex",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Election%20Annex",
+      "archiveElectionDayVotes": {
+        "Obama": 255,
+        "Romney": 96,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 11,
+        "LaRiva": 1
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 255,
+        "Romney": 96,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 11,
+        "LaRiva": 1
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 255,
+          "workbookValue": 255,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 96,
+          "workbookValue": 96,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 11,
+          "workbookValue": 11,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 17,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "St John's",
+      "workbookSourceDisplayName": "St John's Church",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:St%20John's%20Church",
+      "archiveElectionDayVotes": {
+        "Obama": 305,
+        "Romney": 154,
+        "Goode": 2,
+        "Stein": 2,
+        "Johnson": 14,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 305,
+        "Romney": 154,
+        "Goode": 2,
+        "Stein": 2,
+        "Johnson": 14,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 305,
+          "workbookValue": 305,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 154,
+          "workbookValue": 154,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 14,
+          "workbookValue": 14,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 18,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Federal Building",
+      "workbookSourceDisplayName": "Federal Building",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Federal%20Building",
+      "archiveElectionDayVotes": {
+        "Obama": 399,
+        "Romney": 237,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 16,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 399,
+        "Romney": 237,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 16,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 399,
+          "workbookValue": 399,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 237,
+          "workbookValue": 237,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 16,
+          "workbookValue": 16,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 19,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "YMCA Bldg",
+      "workbookSourceDisplayName": "Y Building",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Y%20Building",
+      "archiveElectionDayVotes": {
+        "Obama": 414,
+        "Romney": 342,
+        "Goode": 3,
+        "Stein": 5,
+        "Johnson": 13,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 414,
+        "Romney": 342,
+        "Goode": 3,
+        "Stein": 5,
+        "Johnson": 13,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 414,
+          "workbookValue": 414,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 342,
+          "workbookValue": 342,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 5,
+          "workbookValue": 5,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 13,
+          "workbookValue": 13,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 20,
+      "isGeographic": true,
+      "archiveScanPage": 1,
+      "archivePollingPlaceLabel": "Fogarty Hall Center",
+      "workbookSourceDisplayName": "Fogarty Hall",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Fogarty%20Hall",
+      "archiveElectionDayVotes": {
+        "Obama": 424,
+        "Romney": 371,
+        "Goode": 0,
+        "Stein": 2,
+        "Johnson": 12,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 424,
+        "Romney": 371,
+        "Goode": 0,
+        "Stein": 2,
+        "Johnson": 12,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 424,
+          "workbookValue": 424,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 371,
+          "workbookValue": 371,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 12,
+          "workbookValue": 12,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 31,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Asbury Fire",
+      "workbookSourceDisplayName": "Asbury Fire Station",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Asbury%20Fire%20Station",
+      "archiveElectionDayVotes": {
+        "Obama": 424,
+        "Romney": 508,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 424,
+        "Romney": 508,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 424,
+          "workbookValue": 424,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 508,
+          "workbookValue": 508,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 11,
+          "workbookValue": 11,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 32,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "The Meadows Golf",
+      "workbookSourceDisplayName": "Meadow Golf Course",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Meadow%20Golf%20Course",
+      "archiveElectionDayVotes": {
+        "Obama": 420,
+        "Romney": 720,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 420,
+        "Romney": 720,
+        "Goode": 0,
+        "Stein": 1,
+        "Johnson": 11,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 420,
+          "workbookValue": 420,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 720,
+          "workbookValue": 720,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 11,
+          "workbookValue": 11,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 33,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Cascade City Hall",
+      "workbookSourceDisplayName": "Cascade City Hall",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Cascade%20City%20Hall",
+      "archiveElectionDayVotes": {
+        "Obama": 421,
+        "Romney": 382,
+        "Goode": 0,
+        "Stein": 2,
+        "Johnson": 13,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 421,
+        "Romney": 382,
+        "Goode": 0,
+        "Stein": 2,
+        "Johnson": 13,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 421,
+          "workbookValue": 421,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 382,
+          "workbookValue": 382,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 13,
+          "workbookValue": 13,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 34,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Peosta Community",
+      "workbookSourceDisplayName": "Peosta Community Center",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Peosta%20Community%20Center",
+      "archiveElectionDayVotes": {
+        "Obama": 532,
+        "Romney": 708,
+        "Goode": 0,
+        "Stein": 4,
+        "Johnson": 11,
+        "LaRiva": 1
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 532,
+        "Romney": 708,
+        "Goode": 0,
+        "Stein": 4,
+        "Johnson": 11,
+        "LaRiva": 1
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 532,
+          "workbookValue": 532,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 708,
+          "workbookValue": 708,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 4,
+          "workbookValue": 4,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 11,
+          "workbookValue": 11,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 35,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Luxemburg C.H.",
+      "workbookSourceDisplayName": "Luxemburg City Hall",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Luxemburg%20City%20Hall",
+      "archiveElectionDayVotes": {
+        "Obama": 319,
+        "Romney": 446,
+        "Goode": 2,
+        "Stein": 1,
+        "Johnson": 4,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 319,
+        "Romney": 446,
+        "Goode": 2,
+        "Stein": 1,
+        "Johnson": 4,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 319,
+          "workbookValue": 319,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 446,
+          "workbookValue": 446,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 4,
+          "workbookValue": 4,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 36,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Hope Church",
+      "workbookSourceDisplayName": "Hope Church",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Hope%20Church",
+      "archiveElectionDayVotes": {
+        "Obama": 386,
+        "Romney": 566,
+        "Goode": 0,
+        "Stein": 2,
+        "Johnson": 5,
+        "LaRiva": 1
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 386,
+        "Romney": 566,
+        "Goode": 0,
+        "Stein": 2,
+        "Johnson": 5,
+        "LaRiva": 1
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 386,
+          "workbookValue": 386,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 566,
+          "workbookValue": 566,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 5,
+          "workbookValue": 5,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 37,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Xavier Church",
+      "workbookSourceDisplayName": "St Francis Xavier Bsm't",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:St%20Francis%20Xavier%20Bsm't",
+      "archiveElectionDayVotes": {
+        "Obama": 142,
+        "Romney": 225,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 4,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 142,
+        "Romney": 225,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 4,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 142,
+          "workbookValue": 142,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 225,
+          "workbookValue": 225,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 4,
+          "workbookValue": 4,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 38,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Dyersville City Hall",
+      "workbookSourceDisplayName": "Dyersville Memorial Hall",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Dyersville%20Memorial%20Hall",
+      "archiveElectionDayVotes": {
+        "Obama": 222,
+        "Romney": 239,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 3,
+        "LaRiva": 1
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 222,
+        "Romney": 239,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 3,
+        "LaRiva": 1
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 222,
+          "workbookValue": 222,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 239,
+          "workbookValue": 239,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 39,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Beckman School",
+      "workbookSourceDisplayName": "Beckman High School",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Beckman%20High%20School",
+      "archiveElectionDayVotes": {
+        "Obama": 311,
+        "Romney": 485,
+        "Goode": 1,
+        "Stein": 1,
+        "Johnson": 3,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 311,
+        "Romney": 485,
+        "Goode": 1,
+        "Stein": 1,
+        "Johnson": 3,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 311,
+          "workbookValue": 311,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 485,
+          "workbookValue": 485,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 40,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Farley City Hall",
+      "workbookSourceDisplayName": "Farley Community Center",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Farley%20Community%20Center",
+      "archiveElectionDayVotes": {
+        "Obama": 313,
+        "Romney": 213,
+        "Goode": 2,
+        "Stein": 2,
+        "Johnson": 5,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 313,
+        "Romney": 213,
+        "Goode": 2,
+        "Stein": 2,
+        "Johnson": 5,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 313,
+          "workbookValue": 313,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 213,
+          "workbookValue": 213,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 5,
+          "workbookValue": 5,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 41,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Epworth Council",
+      "workbookSourceDisplayName": "Epworth Council Chambers",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Epworth%20Council%20Chambers",
+      "archiveElectionDayVotes": {
+        "Obama": 493,
+        "Romney": 447,
+        "Goode": 0,
+        "Stein": 0,
+        "Johnson": 6,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 493,
+        "Romney": 447,
+        "Goode": 2,
+        "Stein": 2,
+        "Johnson": 6,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 493,
+          "workbookValue": 493,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 447,
+          "workbookValue": 447,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 0,
+          "workbookValue": 2,
+          "workbookMinusScan": 2
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 2,
+          "workbookMinusScan": 2
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 6,
+          "workbookValue": 6,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [
+        "Goode",
+        "Stein"
+      ],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 42,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "SS Peter & Paul Sch",
+      "workbookSourceDisplayName": "SS Peter & Paul School",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:SS%20Peter%20%26%20Paul%20School",
+      "archiveElectionDayVotes": {
+        "Obama": 402,
+        "Romney": 433,
+        "Goode": 3,
+        "Stein": 0,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 402,
+        "Romney": 433,
+        "Goode": 3,
+        "Stein": 0,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 402,
+          "workbookValue": 402,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 433,
+          "workbookValue": 433,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 9,
+          "workbookValue": 9,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 43,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Key West Fire",
+      "workbookSourceDisplayName": "Key West Fire Station",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Key%20West%20Fire%20Station",
+      "archiveElectionDayVotes": {
+        "Obama": 486,
+        "Romney": 580,
+        "Goode": 2,
+        "Stein": 3,
+        "Johnson": 8,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 486,
+        "Romney": 580,
+        "Goode": 2,
+        "Stein": 3,
+        "Johnson": 8,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 486,
+          "workbookValue": 486,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 580,
+          "workbookValue": 580,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 2,
+          "workbookValue": 2,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 8,
+          "workbookValue": 8,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 44,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Bernard Fire",
+      "workbookSourceDisplayName": "Bernard Fire Station",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Bernard%20Fire%20Station",
+      "archiveElectionDayVotes": {
+        "Obama": 133,
+        "Romney": 109,
+        "Goode": 1,
+        "Stein": 1,
+        "Johnson": 1,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 133,
+        "Romney": 109,
+        "Goode": 1,
+        "Stein": 1,
+        "Johnson": 1,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 133,
+          "workbookValue": 133,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 109,
+          "workbookValue": 109,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    },
+    {
+      "code": 45,
+      "isGeographic": true,
+      "archiveScanPage": 2,
+      "archivePollingPlaceLabel": "Swiss Valley Center",
+      "workbookSourceDisplayName": "Swiss Valley Nature Center",
+      "workbookResultUnitCode": "reporting:IA:2012-11-06-general:county-qualified-precinct-result-source-row:19061:Swiss%20Valley%20Nature%20Center",
+      "archiveElectionDayVotes": {
+        "Obama": 312,
+        "Romney": 478,
+        "Goode": 1,
+        "Stein": 3,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "workbookElectionDayVotes": {
+        "Obama": 312,
+        "Romney": 478,
+        "Goode": 1,
+        "Stein": 3,
+        "Johnson": 9,
+        "LaRiva": 0
+      },
+      "voteCellComparisons": [
+        {
+          "field": "Obama",
+          "scanValue": 312,
+          "workbookValue": 312,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Romney",
+          "scanValue": 478,
+          "workbookValue": 478,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Goode",
+          "scanValue": 1,
+          "workbookValue": 1,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Stein",
+          "scanValue": 3,
+          "workbookValue": 3,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "Johnson",
+          "scanValue": 9,
+          "workbookValue": 9,
+          "workbookMinusScan": 0
+        },
+        {
+          "field": "LaRiva",
+          "scanValue": 0,
+          "workbookValue": 0,
+          "workbookMinusScan": 0
+        }
+      ],
+      "conflictFields": [],
+      "geometryFeatureId": null,
+      "relationships": [],
+      "disposition": "reviewed_result_code_and_polling_place_bridge_only_not_polygon_identity"
+    }
+  ]
+}

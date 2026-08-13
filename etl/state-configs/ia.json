@@ -105,6 +105,17 @@
       "status": "candidate"
     },
     {
+      "id": "ia-four-election-precinct-gis-reviewed-evidence",
+      "category": "Reviewed 2012, 2016, 2020, and 2024 precinct result and geometry evidence",
+      "url": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "localFile": "data/precinct-geometry/IA",
+      "parser": "precinctGeometryManifestSet",
+      "authority": "Iowa Secretary of State; Iowa Legislative Services Agency; attributed supplemental geometry sources",
+      "timestampBasis": "Exact source artifacts, licenses, normalized outputs, crosswalks, and blocked canonical manifests reviewed August 12, 2026.",
+      "confidence": "Official Iowa precinct presidential results are complete for 2012, 2016, 2020, and 2024. The 2016 official LSA/SOS geometry and reviewed bridge, attributed 2020 VEST CC BY 4.0 geometry, and attributed 2024 New York Times non-commercial official-boundary compilation each reconcile one-to-one to all official result rows. Iowa 2012 remains blocked because the retained election-effective county map archive is incomplete and later geometry is not backcast.",
+      "status": "candidate"
+    },
+    {
       "id": "ia-2024-general-precinct-audit-lead",
       "category": "Official 2024 general precinct audit candidate source",
       "url": "https://sos.iowa.gov/sites/default/files/2025-02/2024PrecinctAudits.png",
@@ -142,7 +153,7 @@
   "expected": {
     "jurisdictions": 99,
     "resultRows": 99,
-    "sources": 11,
+    "sources": 12,
     "geometryFeatures": 99,
     "stateTotal": 1663506,
     "trump": 927019,

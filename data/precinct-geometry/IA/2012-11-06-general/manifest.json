@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2012-11-06-official-county-pdf-conversion-pending-v5",
+  "state": "IA",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "Incomplete Iowa Secretary of State county map archive for boundaries effective January 15, 2012; later 2014 statewide geometry retained only for change diagnostics",
+    "vintageStatus": "unknown",
+    "derivationMethod": "availability_diagnostic"
+  },
+  "source": {
+    "authority": "Iowa Secretary of State",
+    "url": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+    "retrievedAt": "2026-08-12T23:58:58.000Z",
+    "artifact": "data/precinct-geometry/IA/2012-11-06-general/reviewed-source-evidence.json",
+    "sha256": "265ac6807142e4bdc264cda99b070d5d9c135a57a5d9de10a61409bf315736bb",
+    "byteCount": 5358,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official public election records; no normalized 2012 geometry is delivered and no explicit reuse terms were located."
+  },
+  "normalization": {
+    "script": "scripts/build-ia-reviewed-precinct-crosswalks.py",
+    "sourceCrs": "source-defined",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/IA/2012-11-06-general/normalized/ia-2012-11-06-no-approved-precinct-geometry.json",
+    "sha256": "dd7cca4201f694d0b56830c07188ebabc8108994b96e538acb04648d52a8eabc",
+    "byteCount": 1445,
+    "featureCount": 0,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "resultSourceId": "ia-2012-sos-county-precinct-workbooks",
+    "artifact": "data/precinct-geometry/IA/2012-11-06-general/crosswalk/ia-2012-11-06-results-to-geometry-unavailable.json",
+    "sha256": "73deac1d981ee044176b84e0e07fc0ab451a85d9f734940ec26ae795baa6450d",
+    "byteCount": 1741775,
+    "resultUnits": 1687,
+    "colorableResultUnits": 1686,
+    "matchedResultUnits": 0,
+    "unmatchedResultUnits": 1686,
+    "nonGeographicResultUnits": 1,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 0,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 1,
+      "sourceAlias": 0,
+      "pendingReview": 1686
+    },
+    "reviewedRelationshipRecords": 1,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "official_crosswalk_required"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": false,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Complete election-effective 2012 precinct geometry is not retained; later polygons are not backcast."
+    ],
+    "warnings": [
+      "All 1,686 geographic presidential result rows are retained and reconcile to the official Iowa Secretary of State source.",
+      "The later 2014 statewide layer leaves four 2012 result identities without geometry and introduces seven later polygons across seven counties; it is not backcast.",
+      "One all-zero Dallas ABSENTEE administrative row is retained as non-geographic context and never assigned to a polygon."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No Iowa 2012 precinct polygon is approved for public delivery.",
+    "The retained 2012 county map archive is incomplete and some surviving PDFs do not establish election-date applicability.",
+    "The 2014 comparison is a boundary-change diagnostic only; ambiguous similarities are not promoted to reviewed relationships."
+  ]
+}

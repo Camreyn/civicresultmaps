@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-04T07:57:00.000Z",
+  "authority": "Iowa Secretary of State",
+  "resultsIndex": {
+    "url": "https://sos.iowa.gov/precinct-results-county-2012-general",
+    "status": "official archived index access blocked (HTTP 403 observed outside the sandbox)",
+    "requiredFor": "complete 99-county workbook universe, local identities, absentee/polling/total classifications, and source-native totals"
+  },
+  "geometrySearchLeads": [
+    {
+      "url": "https://gis.legis.iowa.gov/arcgis/rest/services?f=pjson",
+      "authority": "Iowa Legislative Services Agency",
+      "status": "catalog lead retained; no election-date 2012 layer or continuity proof established"
+    },
+    {
+      "url": "https://sos.iowa.gov/precinct-and-district-shapefiles",
+      "authority": "Iowa Secretary of State",
+      "status": "current geometry index lead; no 2012 election-date continuity established"
+    }
+  ],
+  "excluded": [
+    "The 2015 LSA precinct layer used for 2016 diagnostics.",
+    "Post-2020 or 2024 SOS county/city precinct packages."
+  ]
+}

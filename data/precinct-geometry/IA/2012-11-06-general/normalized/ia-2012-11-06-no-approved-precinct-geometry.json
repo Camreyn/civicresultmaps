@@ -1,0 +1,15 @@
+{
+  "type": "FeatureCollection",
+  "features": [],
+  "metadata": {
+    "state": "IA",
+    "electionId": "2012-11-06-general",
+    "votesAssigned": 0,
+    "status": "blocked_official_county_pdf_conversion_not_validated",
+    "retainedCountyMapPdfs": 52,
+    "explicitlyElectionEffectiveMapPdfs": 38,
+    "vintageUnprovenMapPdfs": 14,
+    "countyUniverse": 99,
+    "reason": "The official 99-county XLS index and all 99 retained workbooks yield 1,687 unique county-qualified President source rows that reconcile exactly by Election Day, Absentee, and Total slices to every workbook county total, the certified 99-county canvass, and statewide totals. One all-zero Dallas ABSENTEE administrative row is non-geographic, leaving 1,686 colorable source rows. The separate participation report retains 1,688 identities; the statewide one-row difference is fully accounted for by Dallas (35 workbook vs 34 participation) and Lee (20 vs 22), without treating count similarity as a crosswalk. Systematic map URL enumeration retained 52 official county PDFs; 38 bodies explicitly state a January 15, 2012 effective date, 14 are vintage-unproven, and 47 URLs redirect to the official unavailable page. The Dubuque archive supplies 35 reviewed geographic code-to-polling-place mappings plus one non-geographic absentee aggregate, but four of 210 compared Election Day candidate cells differ from the SOS workbook and no code is assigned to a polygon."
+  }
+}
