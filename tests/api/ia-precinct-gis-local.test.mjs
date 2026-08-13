@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   assertIowaGeometryVersionPrecondition,
+  canonicalJson,
 } from "../../scripts/lib/ia-precinct-gis-db.mjs";
 import {
   requiresPrecinctGeometryPublicationGate,
@@ -53,4 +54,16 @@ test("Iowa release precondition rejects duplicate or boundary-drifted versions",
     manifest_id: yearPlan.manifest.id,
     boundary_vintage: "drifted",
   }], yearPlan), /boundary-drifted geography versions/);
+});
+
+test("Iowa database validation compares nested JSON independent of key order", () => {
+  const left = {
+    z: [{ beta: 2, alpha: 1 }],
+    a: { delta: 4, gamma: 3 },
+  };
+  const right = {
+    a: { gamma: 3, delta: 4 },
+    z: [{ alpha: 1, beta: 2 }],
+  };
+  assert.deepEqual(canonicalJson(left), canonicalJson(right));
 });
