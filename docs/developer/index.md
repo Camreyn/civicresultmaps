@@ -18,6 +18,8 @@ For the guarded Texas 2012/2016/2020/2024 VTD / precinct-approximation release, 
 
 For the guarded Nevada 2016/2020/2024 precinct-map release, including immutable county delivery, hidden load, database-gated deployment, atomic public cutover, and the separately blocked 2012 Washoe follow-up, read [`docs/developer/nv-precinct-gis-runbook.md`](nv-precinct-gis-runbook.md).
 
+For the guarded Iowa 2016/2020/2024 precinct-map release, official four-year result replay, immutable county delivery, database-gated cutover, and the separately blocked 2012 boundary follow-up, read [`docs/developer/ia-precinct-gis-runbook.md`](ia-precinct-gis-runbook.md).
+
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
 ## Coordinator Protocol

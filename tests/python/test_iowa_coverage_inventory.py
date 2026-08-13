@@ -18,8 +18,17 @@ class IowaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(source_review["status"], "documented_exclusion")
         self.assertIn("candidate contest-vote method splits", source_review["confidence"])
         self.assertIn("ia-2024-official-precinct-shapefile-lead", source_ids)
+        self.assertIn("ia-four-election-precinct-gis-reviewed-evidence", source_ids)
         self.assertIn("ia-2024-general-precinct-audit-lead", source_ids)
         self.assertIn("ia-official-historical-canvass-leads", source_ids)
+
+        precinct_gis = next(
+            source
+            for source in config["sources"]
+            if source["id"] == "ia-four-election-precinct-gis-reviewed-evidence"
+        )
+        self.assertEqual(precinct_gis["localFile"], "data/precinct-geometry/IA")
+        self.assertIn("2012 remains blocked", precinct_gis["confidence"])
 
     def test_iowa_coverage_inventory_documents_remaining_official_leads(self):
         inventory = self.load_json("data/ia-2024-data-coverage-inventory.json")
@@ -52,6 +61,18 @@ class IowaCoverageInventoryTests(unittest.TestCase):
         self.assertFalse(report["publicVoteMethodContract"]["iowaEacVoteMethodFileExists"])
         self.assertIn("candidate-by-method", report["publicVoteMethodContract"]["contractCaveat"])
 
+    def test_iowa_2012_precinct_geometry_remains_explicitly_blocked(self):
+        inventory = self.load_json("data/precinct-geometry-coverage-inventory-2012.json")
+        iowa = next(row for row in inventory["states"] if row["state"] == "IA")
+
+        self.assertEqual(iowa["disposition"], "blocked")
+        self.assertEqual(iowa["geometry"]["featureCount"], 0)
+        self.assertEqual(iowa["geometry"]["publicEligibleManifestCount"], 0)
+        self.assertEqual(iowa["crosswalk"]["colorableResultUnits"], 1686)
+        self.assertEqual(iowa["crosswalk"]["matchedResultUnits"], 0)
+        self.assertEqual(iowa["crosswalk"]["nonGeographicResultUnits"], 1)
+        self.assertIn("GitHub issue #223", iowa["nextAction"])
+
     def test_iowa_admin_and_queue_registries_match_inventory_leads(self):
         admin_registry = self.load_json("data/admin-source-packages.json")
         ia_admin = next(
@@ -73,6 +94,9 @@ class IowaCoverageInventoryTests(unittest.TestCase):
         self.assertIn("availableArtifacts", ia_queue)
         self.assertEqual(ia_queue["availableArtifacts"]["auditLead"]["sourceUrl"], "https://sos.iowa.gov/sites/default/files/2025-02/2024PrecinctAudits.png")
         self.assertEqual(ia_queue["availableArtifacts"]["precinctGeometryLead"]["sourceUrl"], "https://sos.iowa.gov/shapefiles-county-precincts")
+        self.assertEqual(ia_queue["availableArtifacts"]["precinctGeometryLead"]["localFile"], "data/precinct-geometry/IA")
+        self.assertIn("4,994 reviewed one-to-one", ia_queue["parserNeeded"])
+        self.assertIn("Iowa 2012", ia_queue["blocker"])
 
 
 if __name__ == "__main__":

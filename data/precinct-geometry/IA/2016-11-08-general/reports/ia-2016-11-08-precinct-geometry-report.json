@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "state": "IA",
+  "electionId": "2016-11-08-general",
+  "generatedAt": "2026-08-03T07:00:00.000Z",
+  "disposition": "blocked_no_official_result_to_sosid_join_unknown_vintage_and_public_activation",
+  "sources": {
+    "officialCountyWorkbooks": 99,
+    "officialCanvassPdfPages": 288,
+    "officialGeometryQueryPages": 2
+  },
+  "geometry": {
+    "sourceFeatureCount": 1681,
+    "uniqueSosidNewCount": 1681,
+    "duplicateSosidNewCount": 0,
+    "parentCount": 99,
+    "geometryTypeCounts": {
+      "Polygon": 1652,
+      "MultiPolygon": 29
+    },
+    "sourceCrs": {
+      "wkid": 102100,
+      "latestWkid": 3857,
+      "label": "EPSG:3857 / ArcGIS WKID 102100"
+    },
+    "servedCrs": "EPSG:4326",
+    "coordinateBounds": {
+      "minX": -96.63948499999992,
+      "minY": 40.37544000000008,
+      "maxX": -90.14006099999995,
+      "maxY": 43.50119600000005
+    }
+  },
+  "results": {
+    "resultUnitCount": 1680,
+    "uniqueParentQualifiedResultUnits": 1680,
+    "parentQualifiedIdentitySha256": "42f400bfbcb706481883abd34304a4b8c2267922168e69b47d516493f6541507",
+    "countyResultCountsSha256": "9771f84f90eabb94131fd90620220143d693e1bb7576cc43030380c833c0b70a",
+    "workbookMetadataHeaderShapes": {
+      "RaceTitle|CandidateName": 1,
+      "RaceTitle|CandidateName|PoliticalPartyName": 98
+    },
+    "parentCount": 99,
+    "presidentCandidateRows": 1089,
+    "zeroVoteResultUnitCount": 0,
+    "zeroVoteParentQualifiedIdentities": [],
+    "statewideCandidateTotals": {
+      "Donald J. Trump and Michael R. Pence": 800983,
+      "Hillary Clinton and Tim Kaine": 653669,
+      "Darrell L. Castle and Scott N. Bradley": 5335,
+      "Jill Stein and Ajamu Baraka": 11479,
+      "Dan R. Vacek and Mark G. Elworth": 2246,
+      "Gary Johnson and Bill Weld": 59186,
+      "Lynn Kahn and Jay Stolba": 2247,
+      "Gloria La Riva and Dennis J. Banks": 323,
+      "Rocky Roque De La Fuente and Michael Steinberg": 451,
+      "Evan McMullin and Nathan Johnson": 12366,
+      "Write-in": 17746
+    }
+  },
+  "canvass": {
+    "statewideTotals": {
+      "Donald J. Trump and Michael R. Pence": 800983,
+      "Hillary Clinton and Tim Kaine": 653669,
+      "Darrell L. Castle and Scott N. Bradley": 5335,
+      "Jill Stein and Ajamu Baraka": 11479,
+      "Dan R. Vacek and Mark G. Elworth": 2246,
+      "Gary Johnson and Bill Weld": 59186,
+      "Lynn Kahn and Jay Stolba": 2247,
+      "Gloria La Riva and Dennis J. Banks": 323,
+      "Rocky Roque De La Fuente and Michael Steinberg": 451,
+      "Evan McMullin and Nathan Johnson": 12366,
+      "Write-in": 17746,
+      "Under Votes": 12914,
+      "Over Votes": 2426,
+      "Total": 1581371
+    },
+    "allCountyCandidateAndModeTotalsEqual": true
+  },
+  "identityReview": {
+    "approvedMatches": 0,
+    "unmatchedResultUnits": 1680,
+    "literalCandidateCardinality": {
+      "exactSosId": {
+        "zero": 1615,
+        "one": 65,
+        "many": 0
+      },
+      "exactDistrict": {
+        "zero": 1615,
+        "one": 65,
+        "many": 0
+      },
+      "exactName": {
+        "zero": 1527,
+        "one": 152,
+        "many": 1
+      }
+    },
+    "precinctNameMatchingUsedForRelationships": false,
+    "forcedAllocations": 0
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "rowCount": 1680,
+    "matchedResultUnits": 0,
+    "unmatchedResultUnits": 1680,
+    "reconciliationStatus": "not_run",
+    "reconciliationScopeCount": 0,
+    "voteFieldsInRows": false
+  },
+  "sourceResultReconciliation": {
+    "status": "passed",
+    "parentCount": 99,
+    "statewideResultTotals": {
+      "totalVotes": 1566031,
+      "trump": 800983,
+      "clinton": 653669,
+      "other": 111379
+    },
+    "officialCanvassTotalIncludingUnderAndOver": 1581371
+  },
+  "publicEligibility": {
+    "officialResultToFeatureJoinProven": false,
+    "electionDateContinuityProven": false,
+    "explicitReuseLicenseRetained": false,
+    "publicActivationApproved": false,
+    "rowLevelRenderingSafe": false,
+    "delivery": null
+  },
+  "caveats": [
+    "The official county workbooks expose county-qualified precinct display labels, but no result column or field is identified as SOS_ID or SOSID_NEW. Literal equality with a geometry SOS_ID, DISTRICT, or NAME is retained only as a diagnostic candidate and is never promoted to a relationship. All result units remain unmatched and no votes are assigned.",
+    "The official service description calls this Iowa Precincts 2016 and records a March 29, 2016 update under Iowa Secretary of State purview, but no retained source explicitly proves that every polygon remained the effective boundary on November 8, 2016. The boundary vintage therefore remains unknown.",
+    "The service copyright statements are retained, but an explicit reuse license or reviewed public-activation path is not. Candidate geometry remains diagnostic only; delivery is null.",
+    "The county workbooks contain candidate votes by precinct and voting mode. Normalized geometry and crosswalk rows intentionally contain no vote values. Under-vote and over-vote canvass counts are retained only at county/state aggregate scope and are never allocated to precinct geometry."
+  ]
+}

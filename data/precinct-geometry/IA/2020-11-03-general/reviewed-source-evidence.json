@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2020-precinct-geometry-reviewed-source-evidence-v1",
+  "state": "IA",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Iowa Secretary of State results with attributed VEST election-specific geometry",
+  "retrievedAt": "2026-08-12T23:58:58.000Z",
+  "sourceCrs": "source-defined and normalized to EPSG:4326",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2020-11-03-general/normalized/ia-2020-president-results.json.gz",
+      "byteCount": 57646,
+      "sha256": "f97cbccced3a5d30686bdbc6fe76b40c22d55e1958e276e896c7cb4d9d6f6ceb",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2020general/01-adair.xlsx",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Deterministically parsed and normalized by scripts/collect-ia-precinct-results.mjs from the exact official artifacts recorded in collection.sources.",
+      "note": "Normalized official presidential rows; collection metadata retains 99 exact upstream source artifacts with URLs and hashes.",
+      "uncompressedByteCount": 486453,
+      "uncompressedSha256": "99fe7cb4696ca9bfca08fdb78db36471024e24fceba91aa7be585d07f36e1143"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2020-11-03-general/raw/vest/ia_2020.zip",
+      "byteCount": 5191970,
+      "sha256": "b480ee62f073126c866821fc76f44b27d72d37eaa34d693cd0256b447e981a9f",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4789403&version=24.0",
+      "authority": "Iowa Secretary of State results with attributed VEST election-specific geometry",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Exact VEST Iowa 2020 shapefile archive used only for geometry and relationship review."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2020-11-03-general/raw/vest/dataverse-v24-license-evidence.json",
+      "byteCount": 1703,
+      "sha256": "fe1258558b9f58daeee381f4f7153db46efec8dcb028179f8215f75d6288000c",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4789403&version=24.0",
+      "authority": "Iowa Secretary of State results with attributed VEST election-specific geometry",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Version, file identity, download, and CC BY 4.0 terms evidence."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2020-11-03-general/normalized/ia-2020-precincts-reviewed.geojson.gz",
+      "byteCount": 6359367,
+      "sha256": "b4a3a8cc7cc59bf492d08525067a1088c58e1f6ae2a0c91b4b1f807fa6e8e5bb",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4789403&version=24.0",
+      "authority": "Iowa Secretary of State results with attributed VEST election-specific geometry",
+      "derivation": "Deterministically normalized from the retained source geometry by the manifest normalization script; election-result fields are removed.",
+      "note": "Reviewed normalized geometry; contains no election-result value fields.",
+      "uncompressedByteCount": 21838717,
+      "uncompressedSha256": "33c692326ff1736773289991aed3c7ff410bc202eacf3617db1f6c512791314c"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2020-11-03-general/crosswalk/ia-2020-results-to-reviewed-geometry.json",
+      "byteCount": 1721164,
+      "sha256": "4e88aaef1af517c3d1218bf5e1dac6698e91d47c872c31a3c24a628da55c4a43",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4789403&version=24.0",
+      "authority": "Iowa Secretary of State results with attributed VEST election-specific geometry",
+      "derivation": "Deterministically generated from the hash-pinned reviewed relationship procedure; contains no election-result values.",
+      "note": "Reviewed result-to-geometry relationship records; contains no election-result values."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "ia-sos-2020-general-precinct-results",
+    "sourceResultUnits": 1661,
+    "colorableResultUnits": 1661,
+    "excludedResultUnits": 0,
+    "officialStatewideTotals": {
+      "democratic": 759061,
+      "republican": 897672,
+      "other": 34138,
+      "total": 1690871
+    },
+    "normalizedResultArtifact": {
+      "path": "data/precinct-geometry/IA/2020-11-03-general/normalized/ia-2020-president-results.json.gz",
+      "sha256": "f97cbccced3a5d30686bdbc6fe76b40c22d55e1958e276e896c7cb4d9d6f6ceb",
+      "byteCount": 57646
+    },
+    "authority": "Iowa Secretary of State"
+  },
+  "boundaryContext": {
+    "vintage": "VEST Iowa 2020 election-specific precinct reconstruction, Harvard Dataverse version 24.0",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction",
+    "sourceGatePassed": true,
+    "blockCode": null,
+    "licenseOrTerms": "VEST geometry is Creative Commons Attribution 4.0 per the retained Harvard Dataverse version-24 terms; Iowa Secretary of State vote values remain the official result authority."
+  },
+  "reconciliation": {
+    "resultUnits": 1661,
+    "geometryFeatures": 1661,
+    "reviewedRelationshipRecords": 1661,
+    "unmatchedResultUnits": 0,
+    "status": "passed"
+  },
+  "caveats": [
+    "Iowa did not expose a retained statewide election-date GIS archive through the reviewed official pages; VEST supplies geometry only.",
+    "The exact Dataverse version-24 file and terms evidence are hash-pinned.",
+    "No VEST vote value replaces or supplements an Iowa Secretary of State value."
+  ]
+}

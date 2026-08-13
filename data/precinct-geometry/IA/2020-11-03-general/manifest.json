@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2020-2020-11-03-precinct-geometry-candidate-v1",
+  "state": "IA",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "VEST Iowa 2020 election-specific precinct reconstruction, Harvard Dataverse version 24.0",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Iowa Secretary of State results with attributed VEST election-specific geometry",
+    "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4789403&version=24.0",
+    "retrievedAt": "2026-08-12T23:58:58.000Z",
+    "artifact": "data/precinct-geometry/IA/2020-11-03-general/reviewed-source-evidence.json",
+    "sha256": "dc39b62d9d7fe2029760764838af03cca1d60c3bee048a77f5b6f3795ad6cb61",
+    "byteCount": 5875,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "VEST geometry is Creative Commons Attribution 4.0 per the retained Harvard Dataverse version-24 terms; Iowa Secretary of State vote values remain the official result authority."
+  },
+  "normalization": {
+    "script": "scripts/build-ia-2020-reviewed-precincts.mjs",
+    "sourceCrs": "source-defined",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/IA/2020-11-03-general/normalized/ia-2020-precincts-reviewed.geojson.gz",
+    "sha256": "b4a3a8cc7cc59bf492d08525067a1088c58e1f6ae2a0c91b4b1f807fa6e8e5bb",
+    "byteCount": 6359367,
+    "featureCount": 1661,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "ia-sos-2020-general-precinct-results",
+    "artifact": "data/precinct-geometry/IA/2020-11-03-general/crosswalk/ia-2020-results-to-reviewed-geometry.json",
+    "sha256": "4e88aaef1af517c3d1218bf5e1dac6698e91d47c872c31a3c24a628da55c4a43",
+    "byteCount": 1721164,
+    "resultUnits": 1661,
+    "colorableResultUnits": 1661,
+    "matchedResultUnits": 1661,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 1661,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 1661,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "An immutable parent-scoped public delivery package and guarded release review have not been completed."
+    ],
+    "warnings": [
+      "Every one of the 1,661 VEST polygons matches exactly one official Iowa result row by county and the complete presidential vote signature.",
+      "All source vote fields are removed before normalized geometry is written; displayed values come only from the official Iowa artifact.",
+      "VEST must be identified as the secondary election-specific geometry reconstruction and credited under CC BY 4.0."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Iowa did not expose a retained statewide election-date GIS archive through the reviewed official pages; VEST supplies geometry only.",
+    "The exact Dataverse version-24 file and terms evidence are hash-pinned.",
+    "No VEST vote value replaces or supplements an Iowa Secretary of State value."
+  ]
+}

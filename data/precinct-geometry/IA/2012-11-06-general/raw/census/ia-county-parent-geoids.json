@@ -1,0 +1,607 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-04T09:33:08.968Z",
+  "authority": "U.S. Census Bureau",
+  "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2719%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+  "upstreamLocalArtifactPath": "data/ia-counties.geojson",
+  "upstreamByteCount": 4751537,
+  "upstreamSha256": "5e338561df5a69d417c163047811196cc916cccb0964ce7ec5199c69539e3815",
+  "derivation": "Deterministic identity-only extraction of BASENAME, NAME, GEOID, STATE, and COUNTY from the repository's retained Census TIGERweb Iowa county GeoJSON. No county or precinct geometry is copied into this context artifact.",
+  "countyCount": 99,
+  "counties": [
+    {
+      "county": "Adair",
+      "censusDisplayName": "Adair County",
+      "geoid": "19001",
+      "jurisdictionTag": "county:19001"
+    },
+    {
+      "county": "Adams",
+      "censusDisplayName": "Adams County",
+      "geoid": "19003",
+      "jurisdictionTag": "county:19003"
+    },
+    {
+      "county": "Allamakee",
+      "censusDisplayName": "Allamakee County",
+      "geoid": "19005",
+      "jurisdictionTag": "county:19005"
+    },
+    {
+      "county": "Appanoose",
+      "censusDisplayName": "Appanoose County",
+      "geoid": "19007",
+      "jurisdictionTag": "county:19007"
+    },
+    {
+      "county": "Audubon",
+      "censusDisplayName": "Audubon County",
+      "geoid": "19009",
+      "jurisdictionTag": "county:19009"
+    },
+    {
+      "county": "Benton",
+      "censusDisplayName": "Benton County",
+      "geoid": "19011",
+      "jurisdictionTag": "county:19011"
+    },
+    {
+      "county": "Black Hawk",
+      "censusDisplayName": "Black Hawk County",
+      "geoid": "19013",
+      "jurisdictionTag": "county:19013"
+    },
+    {
+      "county": "Boone",
+      "censusDisplayName": "Boone County",
+      "geoid": "19015",
+      "jurisdictionTag": "county:19015"
+    },
+    {
+      "county": "Bremer",
+      "censusDisplayName": "Bremer County",
+      "geoid": "19017",
+      "jurisdictionTag": "county:19017"
+    },
+    {
+      "county": "Buchanan",
+      "censusDisplayName": "Buchanan County",
+      "geoid": "19019",
+      "jurisdictionTag": "county:19019"
+    },
+    {
+      "county": "Buena Vista",
+      "censusDisplayName": "Buena Vista County",
+      "geoid": "19021",
+      "jurisdictionTag": "county:19021"
+    },
+    {
+      "county": "Butler",
+      "censusDisplayName": "Butler County",
+      "geoid": "19023",
+      "jurisdictionTag": "county:19023"
+    },
+    {
+      "county": "Calhoun",
+      "censusDisplayName": "Calhoun County",
+      "geoid": "19025",
+      "jurisdictionTag": "county:19025"
+    },
+    {
+      "county": "Carroll",
+      "censusDisplayName": "Carroll County",
+      "geoid": "19027",
+      "jurisdictionTag": "county:19027"
+    },
+    {
+      "county": "Cass",
+      "censusDisplayName": "Cass County",
+      "geoid": "19029",
+      "jurisdictionTag": "county:19029"
+    },
+    {
+      "county": "Cedar",
+      "censusDisplayName": "Cedar County",
+      "geoid": "19031",
+      "jurisdictionTag": "county:19031"
+    },
+    {
+      "county": "Cerro Gordo",
+      "censusDisplayName": "Cerro Gordo County",
+      "geoid": "19033",
+      "jurisdictionTag": "county:19033"
+    },
+    {
+      "county": "Cherokee",
+      "censusDisplayName": "Cherokee County",
+      "geoid": "19035",
+      "jurisdictionTag": "county:19035"
+    },
+    {
+      "county": "Chickasaw",
+      "censusDisplayName": "Chickasaw County",
+      "geoid": "19037",
+      "jurisdictionTag": "county:19037"
+    },
+    {
+      "county": "Clarke",
+      "censusDisplayName": "Clarke County",
+      "geoid": "19039",
+      "jurisdictionTag": "county:19039"
+    },
+    {
+      "county": "Clay",
+      "censusDisplayName": "Clay County",
+      "geoid": "19041",
+      "jurisdictionTag": "county:19041"
+    },
+    {
+      "county": "Clayton",
+      "censusDisplayName": "Clayton County",
+      "geoid": "19043",
+      "jurisdictionTag": "county:19043"
+    },
+    {
+      "county": "Clinton",
+      "censusDisplayName": "Clinton County",
+      "geoid": "19045",
+      "jurisdictionTag": "county:19045"
+    },
+    {
+      "county": "Crawford",
+      "censusDisplayName": "Crawford County",
+      "geoid": "19047",
+      "jurisdictionTag": "county:19047"
+    },
+    {
+      "county": "Dallas",
+      "censusDisplayName": "Dallas County",
+      "geoid": "19049",
+      "jurisdictionTag": "county:19049"
+    },
+    {
+      "county": "Davis",
+      "censusDisplayName": "Davis County",
+      "geoid": "19051",
+      "jurisdictionTag": "county:19051"
+    },
+    {
+      "county": "Decatur",
+      "censusDisplayName": "Decatur County",
+      "geoid": "19053",
+      "jurisdictionTag": "county:19053"
+    },
+    {
+      "county": "Delaware",
+      "censusDisplayName": "Delaware County",
+      "geoid": "19055",
+      "jurisdictionTag": "county:19055"
+    },
+    {
+      "county": "Des Moines",
+      "censusDisplayName": "Des Moines County",
+      "geoid": "19057",
+      "jurisdictionTag": "county:19057"
+    },
+    {
+      "county": "Dickinson",
+      "censusDisplayName": "Dickinson County",
+      "geoid": "19059",
+      "jurisdictionTag": "county:19059"
+    },
+    {
+      "county": "Dubuque",
+      "censusDisplayName": "Dubuque County",
+      "geoid": "19061",
+      "jurisdictionTag": "county:19061"
+    },
+    {
+      "county": "Emmet",
+      "censusDisplayName": "Emmet County",
+      "geoid": "19063",
+      "jurisdictionTag": "county:19063"
+    },
+    {
+      "county": "Fayette",
+      "censusDisplayName": "Fayette County",
+      "geoid": "19065",
+      "jurisdictionTag": "county:19065"
+    },
+    {
+      "county": "Floyd",
+      "censusDisplayName": "Floyd County",
+      "geoid": "19067",
+      "jurisdictionTag": "county:19067"
+    },
+    {
+      "county": "Franklin",
+      "censusDisplayName": "Franklin County",
+      "geoid": "19069",
+      "jurisdictionTag": "county:19069"
+    },
+    {
+      "county": "Fremont",
+      "censusDisplayName": "Fremont County",
+      "geoid": "19071",
+      "jurisdictionTag": "county:19071"
+    },
+    {
+      "county": "Greene",
+      "censusDisplayName": "Greene County",
+      "geoid": "19073",
+      "jurisdictionTag": "county:19073"
+    },
+    {
+      "county": "Grundy",
+      "censusDisplayName": "Grundy County",
+      "geoid": "19075",
+      "jurisdictionTag": "county:19075"
+    },
+    {
+      "county": "Guthrie",
+      "censusDisplayName": "Guthrie County",
+      "geoid": "19077",
+      "jurisdictionTag": "county:19077"
+    },
+    {
+      "county": "Hamilton",
+      "censusDisplayName": "Hamilton County",
+      "geoid": "19079",
+      "jurisdictionTag": "county:19079"
+    },
+    {
+      "county": "Hancock",
+      "censusDisplayName": "Hancock County",
+      "geoid": "19081",
+      "jurisdictionTag": "county:19081"
+    },
+    {
+      "county": "Hardin",
+      "censusDisplayName": "Hardin County",
+      "geoid": "19083",
+      "jurisdictionTag": "county:19083"
+    },
+    {
+      "county": "Harrison",
+      "censusDisplayName": "Harrison County",
+      "geoid": "19085",
+      "jurisdictionTag": "county:19085"
+    },
+    {
+      "county": "Henry",
+      "censusDisplayName": "Henry County",
+      "geoid": "19087",
+      "jurisdictionTag": "county:19087"
+    },
+    {
+      "county": "Howard",
+      "censusDisplayName": "Howard County",
+      "geoid": "19089",
+      "jurisdictionTag": "county:19089"
+    },
+    {
+      "county": "Humboldt",
+      "censusDisplayName": "Humboldt County",
+      "geoid": "19091",
+      "jurisdictionTag": "county:19091"
+    },
+    {
+      "county": "Ida",
+      "censusDisplayName": "Ida County",
+      "geoid": "19093",
+      "jurisdictionTag": "county:19093"
+    },
+    {
+      "county": "Iowa",
+      "censusDisplayName": "Iowa County",
+      "geoid": "19095",
+      "jurisdictionTag": "county:19095"
+    },
+    {
+      "county": "Jackson",
+      "censusDisplayName": "Jackson County",
+      "geoid": "19097",
+      "jurisdictionTag": "county:19097"
+    },
+    {
+      "county": "Jasper",
+      "censusDisplayName": "Jasper County",
+      "geoid": "19099",
+      "jurisdictionTag": "county:19099"
+    },
+    {
+      "county": "Jefferson",
+      "censusDisplayName": "Jefferson County",
+      "geoid": "19101",
+      "jurisdictionTag": "county:19101"
+    },
+    {
+      "county": "Johnson",
+      "censusDisplayName": "Johnson County",
+      "geoid": "19103",
+      "jurisdictionTag": "county:19103"
+    },
+    {
+      "county": "Jones",
+      "censusDisplayName": "Jones County",
+      "geoid": "19105",
+      "jurisdictionTag": "county:19105"
+    },
+    {
+      "county": "Keokuk",
+      "censusDisplayName": "Keokuk County",
+      "geoid": "19107",
+      "jurisdictionTag": "county:19107"
+    },
+    {
+      "county": "Kossuth",
+      "censusDisplayName": "Kossuth County",
+      "geoid": "19109",
+      "jurisdictionTag": "county:19109"
+    },
+    {
+      "county": "Lee",
+      "censusDisplayName": "Lee County",
+      "geoid": "19111",
+      "jurisdictionTag": "county:19111"
+    },
+    {
+      "county": "Linn",
+      "censusDisplayName": "Linn County",
+      "geoid": "19113",
+      "jurisdictionTag": "county:19113"
+    },
+    {
+      "county": "Louisa",
+      "censusDisplayName": "Louisa County",
+      "geoid": "19115",
+      "jurisdictionTag": "county:19115"
+    },
+    {
+      "county": "Lucas",
+      "censusDisplayName": "Lucas County",
+      "geoid": "19117",
+      "jurisdictionTag": "county:19117"
+    },
+    {
+      "county": "Lyon",
+      "censusDisplayName": "Lyon County",
+      "geoid": "19119",
+      "jurisdictionTag": "county:19119"
+    },
+    {
+      "county": "Madison",
+      "censusDisplayName": "Madison County",
+      "geoid": "19121",
+      "jurisdictionTag": "county:19121"
+    },
+    {
+      "county": "Mahaska",
+      "censusDisplayName": "Mahaska County",
+      "geoid": "19123",
+      "jurisdictionTag": "county:19123"
+    },
+    {
+      "county": "Marion",
+      "censusDisplayName": "Marion County",
+      "geoid": "19125",
+      "jurisdictionTag": "county:19125"
+    },
+    {
+      "county": "Marshall",
+      "censusDisplayName": "Marshall County",
+      "geoid": "19127",
+      "jurisdictionTag": "county:19127"
+    },
+    {
+      "county": "Mills",
+      "censusDisplayName": "Mills County",
+      "geoid": "19129",
+      "jurisdictionTag": "county:19129"
+    },
+    {
+      "county": "Mitchell",
+      "censusDisplayName": "Mitchell County",
+      "geoid": "19131",
+      "jurisdictionTag": "county:19131"
+    },
+    {
+      "county": "Monona",
+      "censusDisplayName": "Monona County",
+      "geoid": "19133",
+      "jurisdictionTag": "county:19133"
+    },
+    {
+      "county": "Monroe",
+      "censusDisplayName": "Monroe County",
+      "geoid": "19135",
+      "jurisdictionTag": "county:19135"
+    },
+    {
+      "county": "Montgomery",
+      "censusDisplayName": "Montgomery County",
+      "geoid": "19137",
+      "jurisdictionTag": "county:19137"
+    },
+    {
+      "county": "Muscatine",
+      "censusDisplayName": "Muscatine County",
+      "geoid": "19139",
+      "jurisdictionTag": "county:19139"
+    },
+    {
+      "county": "O'Brien",
+      "censusDisplayName": "O'Brien County",
+      "geoid": "19141",
+      "jurisdictionTag": "county:19141"
+    },
+    {
+      "county": "Osceola",
+      "censusDisplayName": "Osceola County",
+      "geoid": "19143",
+      "jurisdictionTag": "county:19143"
+    },
+    {
+      "county": "Page",
+      "censusDisplayName": "Page County",
+      "geoid": "19145",
+      "jurisdictionTag": "county:19145"
+    },
+    {
+      "county": "Palo Alto",
+      "censusDisplayName": "Palo Alto County",
+      "geoid": "19147",
+      "jurisdictionTag": "county:19147"
+    },
+    {
+      "county": "Plymouth",
+      "censusDisplayName": "Plymouth County",
+      "geoid": "19149",
+      "jurisdictionTag": "county:19149"
+    },
+    {
+      "county": "Pocahontas",
+      "censusDisplayName": "Pocahontas County",
+      "geoid": "19151",
+      "jurisdictionTag": "county:19151"
+    },
+    {
+      "county": "Polk",
+      "censusDisplayName": "Polk County",
+      "geoid": "19153",
+      "jurisdictionTag": "county:19153"
+    },
+    {
+      "county": "Pottawattamie",
+      "censusDisplayName": "Pottawattamie County",
+      "geoid": "19155",
+      "jurisdictionTag": "county:19155"
+    },
+    {
+      "county": "Poweshiek",
+      "censusDisplayName": "Poweshiek County",
+      "geoid": "19157",
+      "jurisdictionTag": "county:19157"
+    },
+    {
+      "county": "Ringgold",
+      "censusDisplayName": "Ringgold County",
+      "geoid": "19159",
+      "jurisdictionTag": "county:19159"
+    },
+    {
+      "county": "Sac",
+      "censusDisplayName": "Sac County",
+      "geoid": "19161",
+      "jurisdictionTag": "county:19161"
+    },
+    {
+      "county": "Scott",
+      "censusDisplayName": "Scott County",
+      "geoid": "19163",
+      "jurisdictionTag": "county:19163"
+    },
+    {
+      "county": "Shelby",
+      "censusDisplayName": "Shelby County",
+      "geoid": "19165",
+      "jurisdictionTag": "county:19165"
+    },
+    {
+      "county": "Sioux",
+      "censusDisplayName": "Sioux County",
+      "geoid": "19167",
+      "jurisdictionTag": "county:19167"
+    },
+    {
+      "county": "Story",
+      "censusDisplayName": "Story County",
+      "geoid": "19169",
+      "jurisdictionTag": "county:19169"
+    },
+    {
+      "county": "Tama",
+      "censusDisplayName": "Tama County",
+      "geoid": "19171",
+      "jurisdictionTag": "county:19171"
+    },
+    {
+      "county": "Taylor",
+      "censusDisplayName": "Taylor County",
+      "geoid": "19173",
+      "jurisdictionTag": "county:19173"
+    },
+    {
+      "county": "Union",
+      "censusDisplayName": "Union County",
+      "geoid": "19175",
+      "jurisdictionTag": "county:19175"
+    },
+    {
+      "county": "Van Buren",
+      "censusDisplayName": "Van Buren County",
+      "geoid": "19177",
+      "jurisdictionTag": "county:19177"
+    },
+    {
+      "county": "Wapello",
+      "censusDisplayName": "Wapello County",
+      "geoid": "19179",
+      "jurisdictionTag": "county:19179"
+    },
+    {
+      "county": "Warren",
+      "censusDisplayName": "Warren County",
+      "geoid": "19181",
+      "jurisdictionTag": "county:19181"
+    },
+    {
+      "county": "Washington",
+      "censusDisplayName": "Washington County",
+      "geoid": "19183",
+      "jurisdictionTag": "county:19183"
+    },
+    {
+      "county": "Wayne",
+      "censusDisplayName": "Wayne County",
+      "geoid": "19185",
+      "jurisdictionTag": "county:19185"
+    },
+    {
+      "county": "Webster",
+      "censusDisplayName": "Webster County",
+      "geoid": "19187",
+      "jurisdictionTag": "county:19187"
+    },
+    {
+      "county": "Winnebago",
+      "censusDisplayName": "Winnebago County",
+      "geoid": "19189",
+      "jurisdictionTag": "county:19189"
+    },
+    {
+      "county": "Winneshiek",
+      "censusDisplayName": "Winneshiek County",
+      "geoid": "19191",
+      "jurisdictionTag": "county:19191"
+    },
+    {
+      "county": "Woodbury",
+      "censusDisplayName": "Woodbury County",
+      "geoid": "19193",
+      "jurisdictionTag": "county:19193"
+    },
+    {
+      "county": "Worth",
+      "censusDisplayName": "Worth County",
+      "geoid": "19195",
+      "jurisdictionTag": "county:19195"
+    },
+    {
+      "county": "Wright",
+      "censusDisplayName": "Wright County",
+      "geoid": "19197",
+      "jurisdictionTag": "county:19197"
+    }
+  ]
+}

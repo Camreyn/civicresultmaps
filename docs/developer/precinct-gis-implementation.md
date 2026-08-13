@@ -7235,3 +7235,55 @@ evidence against its verified top-level package.
   blocked v2, rejected a second replacement attempt, validated all corrected
   counts, and deliberately rolled back. The clone returned to the original
   published v1 revision and three-version state.
+
+### 2026-08-12 - Iowa four-election collection and guarded three-election release
+
+- Complete official Iowa Secretary of State presidential precinct result
+  universes are retained and deterministically replayed for all four target
+  years. Iowa has 1,686 geographic result units and 5,058 candidate rows in
+  2012, 1,680 and 5,040 in 2016, 1,661 and 4,983 in 2020, and 1,653 and 4,959 in
+  2024. County and statewide candidate totals reconcile exactly, and no
+  geographic unit has a zero presidential total. One all-zero Dallas 2012
+  `ABSENTEE` row remains explicitly non-geographic.
+
+- The 2016 reviewed layer contains 1,680 exact one-to-one joins to the official
+  Iowa LSA/SOS election-cycle precinct geometry through a retained identity
+  bridge. The 2020 layer contains 1,661 exact joins to the version-pinned VEST
+  election-specific geometry under retained CC BY 4.0 terms. The 2024 layer
+  contains 1,653 exact joins to the New York Times official-boundary
+  compilation; every source feature declares `official_boundary=true`, and the
+  retained C-UDA v1.0 Non-Commercial terms govern downstream delivery. Every
+  displayed vote remains sourced only from the Iowa Secretary of State.
+
+- Iowa 2012 remains fail-closed. Fifty-two official county map PDFs are
+  retained, but the archive is not statewide. A later 2014 layer is kept only
+  as a change diagnostic: four 2012 result identities lack later geometry and
+  seven later polygons have no 2012 result identity. No later boundary is
+  backcast. The remaining archive acquisition and acceptance criteria are
+  tracked in [GitHub issue #223](https://github.com/Camreyn/civicresultmaps/issues/223).
+
+- The content-addressed three-election package contains 4,994 reporting units,
+  14,982 candidate rows, 4,994 polygons, 4,994 reviewed exact crosswalks, 297
+  county objects, and three indexes. The loopback-only `crm_clone_dev` load and
+  independent read-only validation pass with zero invalid constraints. The
+  immutable package, canonical activation, production preflight, full backup
+  and restore proof, sole-owner hidden load, Blob publication, database-gated
+  deployment, atomic public cutover, and read-only receipt-recovery paths are
+  documented in `docs/developer/ia-precinct-gis-runbook.md`. That runbook also
+  records the remaining production stop condition accurately: this change does
+  not include an executable receipt-bound public rollback, so `GO_PUBLIC`
+  remains unauthorized until that path is implemented and reviewed.
+
+- This work performs no production database mutation, Blob upload, Vercel
+  setting or deployment change, canonical activation, or public eligibility
+  transition. The three public years remain blocked until the complete guarded
+  sequence is separately reviewed and authorized; 2012 remains outside that
+  release.
+
+- The separate native 2024 ETL remains valid with 1,653 precinct review rows.
+  Its required advisory report calculates 134 indicator rows across 73 county
+  jurisdictions: 70 `vote_share_pattern` and 64
+  `average_down_ballot_difference` rows. Because the comparison contest is
+  district-based U.S. House and the signal is broad, these remain advisory
+  review inputs rather than evidence of fraud or misconduct. No production
+  promotion or production indicator-count check was performed in this task.

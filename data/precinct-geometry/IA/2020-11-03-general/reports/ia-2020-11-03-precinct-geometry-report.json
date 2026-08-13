@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "state": "IA",
+  "electionId": "2020-11-03-general",
+  "generatedAt": "2026-08-02T12:00:00.000Z",
+  "disposition": "source-and-boundary-evidence-insufficient",
+  "sourceFeatureCount": 0,
+  "resultUnitCount": 0,
+  "colorableResultUnits": 0,
+  "matchedResultUnits": 0,
+  "unmatchedResultUnits": 0,
+  "nonGeographicResultUnits": 0,
+  "zeroVoteResultUnits": 0,
+  "sourceContext": {
+    "officialCountyWorkbookLinks": 99,
+    "retainedPresidentCandidateRows": null,
+    "retainedPresidentResultIdentities": null,
+    "retainedZeroVoteIdentities": null,
+    "retainedNonGeographicIdentities": null,
+    "candidateGeometryFeatures": 0
+  },
+  "reconciliation": {
+    "status": "not_run",
+    "scopes": [],
+    "reason": "No retained result identity universe, immutable election-applicable geometry, or official result-to-feature crosswalk."
+  },
+  "caveats": [
+    "Iowa SOS publishes 99 county-linked 2020 General precinct-result workbooks and a certified canvass, but this retained diagnostic has no immutable November 3, 2020 statewide or complete county GIS boundary artifact and no retained workbook bodies from which President identities, zero-vote rows, and non-geographic units can be independently counted. The SOS statewide precinct archive is expressly dated April 17, 2014, while SOS states that post-2020-census city and county precinct boundaries became effective January 15, 2022; neither is used for 2020 geometry. No result identity, geometry, crosswalk, or vote assignment is approved.",
+    "The 2024 Iowa packages and their geometry, identifiers, names, counts, and crosswalk decisions are not reused.",
+    "Target geometry, result-unit, and crosswalk metrics remain zero; delivery is null."
+  ]
+}

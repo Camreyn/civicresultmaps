@@ -62,6 +62,16 @@
 /data/precinct-geometry/NV/2024-11-05-general/raw/clark-county-election-department/2024-general-president-statement-of-vote.txt -text whitespace=-trailing-space
 /data/precinct-geometry/NV/2024-11-05-general/raw/esri/arcgis-online-terms-of-use.html -text whitespace=-trailing-space,-space-before-tab
 
+# Preserve every hash-pinned Iowa precinct source and reviewed artifact byte-for-byte.
+/data/precinct-geometry/IA/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/IA/**/*.pdf -diff
+/data/precinct-geometry/IA/**/*.zip -diff
+/data/precinct-geometry/IA/**/*.gz -diff
+/data/precinct-geometry/IA/**/*.xls -diff
+/data/precinct-geometry/IA/**/*.xlsx -diff
+/data/precinct-geometry/IA/**/*.rda -diff
+/data/precinct-geometry/IA/**/*.geojson -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

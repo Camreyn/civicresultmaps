@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2012-precinct-geometry-reviewed-source-evidence-v1",
+  "state": "IA",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Iowa Secretary of State",
+  "retrievedAt": "2026-08-12T23:58:58.000Z",
+  "sourceCrs": "source-defined and normalized to EPSG:4326",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/normalized/ia-2012-president-results.json.gz",
+      "byteCount": 54517,
+      "sha256": "7559291f093ec820cc116dc92b744657fba56ecfab10f1f9b3eaab3f5bc1b00b",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Deterministically parsed and normalized by scripts/collect-ia-precinct-results.mjs from the exact official artifacts recorded in collection.sources.",
+      "note": "Normalized official presidential rows; collection metadata retains 1 exact upstream source artifacts with URLs and hashes.",
+      "uncompressedByteCount": 466325,
+      "uncompressedSha256": "2afa24ee4231b41718a535a9eb78b57af63edd667038481e3d268a7161748e5b"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/source-evidence.json",
+      "byteCount": 133330,
+      "sha256": "fbb643207b0ee670d8a21bbe1e69a415db9313d3d96b4ce3489c88ff8a6841e0",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Historic official-source retention and availability evidence."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/reports/ia-2012-2014-review-diagnostic.json",
+      "byteCount": 949309,
+      "sha256": "669a67a131a880b7d36c99b43169e89dfbcfc12186c86c5efbf733ebb7d43604",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Deterministic result-to-later-geometry change diagnostic; never a public crosswalk."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/normalized/ia-2012-11-06-no-approved-precinct-geometry.json",
+      "byteCount": 1445,
+      "sha256": "dd7cca4201f694d0b56830c07188ebabc8108994b96e538acb04648d52a8eabc",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Deterministic blocked placeholder written after official-source availability review.",
+      "note": "Blocked placeholder with no geometry."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2012-11-06-general/crosswalk/ia-2012-11-06-results-to-geometry-unavailable.json",
+      "byteCount": 1741775,
+      "sha256": "73deac1d981ee044176b84e0e07fc0ab451a85d9f734940ec26ae795baa6450d",
+      "sourceUrl": "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Deterministic unavailable-geometry relationship ledger derived from official result identities.",
+      "note": "Blocked availability diagnostic; contains no approved relationship."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "ia-2012-sos-county-precinct-workbooks",
+    "sourceResultUnits": 1687,
+    "colorableResultUnits": 1686,
+    "excludedResultUnits": 1,
+    "officialStatewideTotals": {
+      "democratic": 822544,
+      "republican": 730617,
+      "other": 29019,
+      "total": 1582180
+    },
+    "normalizedResultArtifact": {
+      "path": "data/precinct-geometry/IA/2012-11-06-general/normalized/ia-2012-president-results.json.gz",
+      "sha256": "7559291f093ec820cc116dc92b744657fba56ecfab10f1f9b3eaab3f5bc1b00b",
+      "byteCount": 54517
+    },
+    "authority": "Iowa Secretary of State"
+  },
+  "boundaryContext": {
+    "vintage": "Incomplete Iowa Secretary of State county map archive for boundaries effective January 15, 2012; later 2014 statewide geometry retained only for change diagnostics",
+    "vintageStatus": "unknown",
+    "derivationMethod": "availability_diagnostic",
+    "sourceGatePassed": false,
+    "blockCode": "missing-complete-election-effective-2012-geometry",
+    "licenseOrTerms": "Official public election records; no normalized 2012 geometry is delivered and no explicit reuse terms were located."
+  },
+  "reconciliation": {
+    "resultUnits": 1686,
+    "geometryFeatures": 0,
+    "reviewedRelationshipRecords": 0,
+    "unmatchedResultUnits": 1686,
+    "status": "blocked_missing_election_effective_geometry"
+  },
+  "caveats": [
+    "No Iowa 2012 precinct polygon is approved for public delivery.",
+    "The retained 2012 county map archive is incomplete and some surviving PDFs do not establish election-date applicability.",
+    "The 2014 comparison is a boundary-change diagnostic only; ambiguous similarities are not promoted to reviewed relationships."
+  ]
+}

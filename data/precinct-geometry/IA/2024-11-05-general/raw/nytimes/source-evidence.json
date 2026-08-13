@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "state": "IA",
+  "electionId": "2024-11-05-general",
+  "retrievedAtUtc": "2026-08-12T23:58:58Z",
+  "source": {
+    "publisher": "The New York Times",
+    "repository": "https://github.com/nytimes/presidential-precinct-map-2024",
+    "repositoryHeadAtReview": "f4136e0fe585b20e764e06ae79dd0032ec79a17d",
+    "readmeUrl": "https://github.com/nytimes/presidential-precinct-map-2024/blob/main/README.md",
+    "dataUrl": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/IA-precincts-with-results.geojson.gz",
+    "iowaAvailability": "complete",
+    "iowaBoundaryDescription": "official boundaries"
+  },
+  "artifacts": [
+    {
+      "path": "data/precinct-geometry/IA/2024-11-05-general/raw/nytimes/IA-precincts-with-results.geojson.gz",
+      "byteCount": 8544896,
+      "sha256": "1bbe63c8316e4333fe2aa0cbc3477f6a4c454706e80d06cae857f4c6a8f66817",
+      "featureCount": 1653,
+      "officialBoundaryFeatureCount": 1653
+    },
+    {
+      "path": "data/precinct-geometry/IA/2024-11-05-general/raw/nytimes/LICENSE",
+      "byteCount": 4106,
+      "sha256": "77e8635500262b129a50772647773c2c66d812902aba6ac13bdb2bab14fd59c2"
+    },
+    {
+      "path": "data/precinct-geometry/IA/2024-11-05-general/raw/nytimes/README.md",
+      "byteCount": 49879,
+      "sha256": "987ea44ab04c77182d335670207dac88f7114f3ae02675ea5d7076e581ffccdf"
+    }
+  ],
+  "terms": {
+    "name": "NYT Computational Use of Data Agreement v1.0 - Non-Commercial",
+    "attributionRequired": true,
+    "nonCommercialOnly": true,
+    "downstreamTermsRequired": true,
+    "note": "The retained LICENSE is authoritative. This source must not be silently treated as unrestricted or as an authority for vote values."
+  },
+  "review": {
+    "role": "Secondary statewide geometry compilation and identity bridge only.",
+    "officialResultAuthority": "Iowa Secretary of State",
+    "retainedOfficialGeometryContext": "252 Iowa Secretary of State county/city packages with 2,415 source features are retained separately in the source-package manifest.",
+    "joinRule": "All 1,653 source features must declare official_boundary=true and match exactly one official Iowa result by county and complete presidential vote signature.",
+    "reconciliation": {
+      "officialResultUnitCount": 1653,
+      "sourceFeatureCount": 1653,
+      "uniqueExactSignatureMatches": 1653,
+      "unmatchedResultUnits": 0,
+      "unusedSourceFeatures": 0,
+      "ambiguousSignatures": 0
+    }
+  }
+}

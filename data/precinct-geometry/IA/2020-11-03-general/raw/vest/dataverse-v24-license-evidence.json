@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "state": "IA",
+  "electionId": "2020-11-03-general",
+  "retrievedAtUtc": "2026-08-12T23:58:58Z",
+  "source": {
+    "authority": "Voting and Election Science Team",
+    "repository": "Harvard Dataverse",
+    "datasetTitle": "2020 Precinct-Level Election Results",
+    "datasetPersistentId": "doi:10.7910/DVN/K7760H",
+    "datasetVersion": "24.0",
+    "fileId": 4789403,
+    "fileName": "ia_2020.zip",
+    "fileLandingUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4789403&version=24.0",
+    "downloadAccess": "Public, subject to acceptance of the displayed dataset terms"
+  },
+  "terms": {
+    "name": "Creative Commons Attribution 4.0 International",
+    "spdx": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "displayedByRepository": true,
+    "acceptedForDownload": true,
+    "attributionRequired": true
+  },
+  "artifact": {
+    "path": "data/precinct-geometry/IA/2020-11-03-general/raw/vest/ia_2020.zip",
+    "byteCount": 5191970,
+    "md5": "f204468e6747db41f97573af1844a959",
+    "sha256": "b480ee62f073126c866821fc76f44b27d72d37eaa34d693cd0256b447e981a9f"
+  },
+  "review": {
+    "role": "Secondary geometry reconstruction only; never the authority for the vote values displayed by CivicResultMaps.",
+    "officialResultAuthority": "Iowa Secretary of State",
+    "joinRule": "Each of the 1,661 geometry features must match exactly one official result row by county and complete presidential vote signature before vote fields are removed.",
+    "caveat": "VEST combines statewide and county election-authority source material. The retained reviewed crosswalk, exact hash, and official-result reconciliation are required for use."
+  }
+}

@@ -1,0 +1,935 @@
+{
+ "displayFieldName": "NAME",
+ "fieldAliases": {
+  "NAME": "NAME",
+  "BASENAME": "BASENAME",
+  "GEOID": "GEOID",
+  "STATE": "STATE",
+  "COUNTY": "COUNTY"
+ },
+ "fields": [
+  {
+   "name": "NAME",
+   "type": "esriFieldTypeString",
+   "alias": "NAME",
+   "length": 100
+  },
+  {
+   "name": "BASENAME",
+   "type": "esriFieldTypeString",
+   "alias": "BASENAME",
+   "length": 100
+  },
+  {
+   "name": "GEOID",
+   "type": "esriFieldTypeString",
+   "alias": "GEOID",
+   "length": 5
+  },
+  {
+   "name": "STATE",
+   "type": "esriFieldTypeString",
+   "alias": "STATE",
+   "length": 2
+  },
+  {
+   "name": "COUNTY",
+   "type": "esriFieldTypeString",
+   "alias": "COUNTY",
+   "length": 3
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "NAME": "Adair County",
+    "BASENAME": "Adair",
+    "GEOID": "19001",
+    "STATE": "19",
+    "COUNTY": "001"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Adams County",
+    "BASENAME": "Adams",
+    "GEOID": "19003",
+    "STATE": "19",
+    "COUNTY": "003"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Allamakee County",
+    "BASENAME": "Allamakee",
+    "GEOID": "19005",
+    "STATE": "19",
+    "COUNTY": "005"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Appanoose County",
+    "BASENAME": "Appanoose",
+    "GEOID": "19007",
+    "STATE": "19",
+    "COUNTY": "007"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Audubon County",
+    "BASENAME": "Audubon",
+    "GEOID": "19009",
+    "STATE": "19",
+    "COUNTY": "009"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Benton County",
+    "BASENAME": "Benton",
+    "GEOID": "19011",
+    "STATE": "19",
+    "COUNTY": "011"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Black Hawk County",
+    "BASENAME": "Black Hawk",
+    "GEOID": "19013",
+    "STATE": "19",
+    "COUNTY": "013"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Boone County",
+    "BASENAME": "Boone",
+    "GEOID": "19015",
+    "STATE": "19",
+    "COUNTY": "015"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Bremer County",
+    "BASENAME": "Bremer",
+    "GEOID": "19017",
+    "STATE": "19",
+    "COUNTY": "017"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Buchanan County",
+    "BASENAME": "Buchanan",
+    "GEOID": "19019",
+    "STATE": "19",
+    "COUNTY": "019"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Buena Vista County",
+    "BASENAME": "Buena Vista",
+    "GEOID": "19021",
+    "STATE": "19",
+    "COUNTY": "021"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Butler County",
+    "BASENAME": "Butler",
+    "GEOID": "19023",
+    "STATE": "19",
+    "COUNTY": "023"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Calhoun County",
+    "BASENAME": "Calhoun",
+    "GEOID": "19025",
+    "STATE": "19",
+    "COUNTY": "025"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Carroll County",
+    "BASENAME": "Carroll",
+    "GEOID": "19027",
+    "STATE": "19",
+    "COUNTY": "027"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Cass County",
+    "BASENAME": "Cass",
+    "GEOID": "19029",
+    "STATE": "19",
+    "COUNTY": "029"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Cedar County",
+    "BASENAME": "Cedar",
+    "GEOID": "19031",
+    "STATE": "19",
+    "COUNTY": "031"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Cerro Gordo County",
+    "BASENAME": "Cerro Gordo",
+    "GEOID": "19033",
+    "STATE": "19",
+    "COUNTY": "033"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Cherokee County",
+    "BASENAME": "Cherokee",
+    "GEOID": "19035",
+    "STATE": "19",
+    "COUNTY": "035"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Chickasaw County",
+    "BASENAME": "Chickasaw",
+    "GEOID": "19037",
+    "STATE": "19",
+    "COUNTY": "037"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Clarke County",
+    "BASENAME": "Clarke",
+    "GEOID": "19039",
+    "STATE": "19",
+    "COUNTY": "039"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Clay County",
+    "BASENAME": "Clay",
+    "GEOID": "19041",
+    "STATE": "19",
+    "COUNTY": "041"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Clayton County",
+    "BASENAME": "Clayton",
+    "GEOID": "19043",
+    "STATE": "19",
+    "COUNTY": "043"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Clinton County",
+    "BASENAME": "Clinton",
+    "GEOID": "19045",
+    "STATE": "19",
+    "COUNTY": "045"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Crawford County",
+    "BASENAME": "Crawford",
+    "GEOID": "19047",
+    "STATE": "19",
+    "COUNTY": "047"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Dallas County",
+    "BASENAME": "Dallas",
+    "GEOID": "19049",
+    "STATE": "19",
+    "COUNTY": "049"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Davis County",
+    "BASENAME": "Davis",
+    "GEOID": "19051",
+    "STATE": "19",
+    "COUNTY": "051"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Decatur County",
+    "BASENAME": "Decatur",
+    "GEOID": "19053",
+    "STATE": "19",
+    "COUNTY": "053"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Delaware County",
+    "BASENAME": "Delaware",
+    "GEOID": "19055",
+    "STATE": "19",
+    "COUNTY": "055"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Des Moines County",
+    "BASENAME": "Des Moines",
+    "GEOID": "19057",
+    "STATE": "19",
+    "COUNTY": "057"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Dickinson County",
+    "BASENAME": "Dickinson",
+    "GEOID": "19059",
+    "STATE": "19",
+    "COUNTY": "059"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Dubuque County",
+    "BASENAME": "Dubuque",
+    "GEOID": "19061",
+    "STATE": "19",
+    "COUNTY": "061"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Emmet County",
+    "BASENAME": "Emmet",
+    "GEOID": "19063",
+    "STATE": "19",
+    "COUNTY": "063"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Fayette County",
+    "BASENAME": "Fayette",
+    "GEOID": "19065",
+    "STATE": "19",
+    "COUNTY": "065"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Floyd County",
+    "BASENAME": "Floyd",
+    "GEOID": "19067",
+    "STATE": "19",
+    "COUNTY": "067"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Franklin County",
+    "BASENAME": "Franklin",
+    "GEOID": "19069",
+    "STATE": "19",
+    "COUNTY": "069"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Fremont County",
+    "BASENAME": "Fremont",
+    "GEOID": "19071",
+    "STATE": "19",
+    "COUNTY": "071"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Greene County",
+    "BASENAME": "Greene",
+    "GEOID": "19073",
+    "STATE": "19",
+    "COUNTY": "073"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Grundy County",
+    "BASENAME": "Grundy",
+    "GEOID": "19075",
+    "STATE": "19",
+    "COUNTY": "075"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Guthrie County",
+    "BASENAME": "Guthrie",
+    "GEOID": "19077",
+    "STATE": "19",
+    "COUNTY": "077"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Hamilton County",
+    "BASENAME": "Hamilton",
+    "GEOID": "19079",
+    "STATE": "19",
+    "COUNTY": "079"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Hancock County",
+    "BASENAME": "Hancock",
+    "GEOID": "19081",
+    "STATE": "19",
+    "COUNTY": "081"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Hardin County",
+    "BASENAME": "Hardin",
+    "GEOID": "19083",
+    "STATE": "19",
+    "COUNTY": "083"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Harrison County",
+    "BASENAME": "Harrison",
+    "GEOID": "19085",
+    "STATE": "19",
+    "COUNTY": "085"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Henry County",
+    "BASENAME": "Henry",
+    "GEOID": "19087",
+    "STATE": "19",
+    "COUNTY": "087"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Howard County",
+    "BASENAME": "Howard",
+    "GEOID": "19089",
+    "STATE": "19",
+    "COUNTY": "089"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Humboldt County",
+    "BASENAME": "Humboldt",
+    "GEOID": "19091",
+    "STATE": "19",
+    "COUNTY": "091"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Ida County",
+    "BASENAME": "Ida",
+    "GEOID": "19093",
+    "STATE": "19",
+    "COUNTY": "093"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Iowa County",
+    "BASENAME": "Iowa",
+    "GEOID": "19095",
+    "STATE": "19",
+    "COUNTY": "095"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Jackson County",
+    "BASENAME": "Jackson",
+    "GEOID": "19097",
+    "STATE": "19",
+    "COUNTY": "097"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Jasper County",
+    "BASENAME": "Jasper",
+    "GEOID": "19099",
+    "STATE": "19",
+    "COUNTY": "099"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Jefferson County",
+    "BASENAME": "Jefferson",
+    "GEOID": "19101",
+    "STATE": "19",
+    "COUNTY": "101"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Johnson County",
+    "BASENAME": "Johnson",
+    "GEOID": "19103",
+    "STATE": "19",
+    "COUNTY": "103"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Jones County",
+    "BASENAME": "Jones",
+    "GEOID": "19105",
+    "STATE": "19",
+    "COUNTY": "105"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Keokuk County",
+    "BASENAME": "Keokuk",
+    "GEOID": "19107",
+    "STATE": "19",
+    "COUNTY": "107"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Kossuth County",
+    "BASENAME": "Kossuth",
+    "GEOID": "19109",
+    "STATE": "19",
+    "COUNTY": "109"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Lee County",
+    "BASENAME": "Lee",
+    "GEOID": "19111",
+    "STATE": "19",
+    "COUNTY": "111"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Linn County",
+    "BASENAME": "Linn",
+    "GEOID": "19113",
+    "STATE": "19",
+    "COUNTY": "113"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Louisa County",
+    "BASENAME": "Louisa",
+    "GEOID": "19115",
+    "STATE": "19",
+    "COUNTY": "115"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Lucas County",
+    "BASENAME": "Lucas",
+    "GEOID": "19117",
+    "STATE": "19",
+    "COUNTY": "117"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Lyon County",
+    "BASENAME": "Lyon",
+    "GEOID": "19119",
+    "STATE": "19",
+    "COUNTY": "119"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Madison County",
+    "BASENAME": "Madison",
+    "GEOID": "19121",
+    "STATE": "19",
+    "COUNTY": "121"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Mahaska County",
+    "BASENAME": "Mahaska",
+    "GEOID": "19123",
+    "STATE": "19",
+    "COUNTY": "123"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Marion County",
+    "BASENAME": "Marion",
+    "GEOID": "19125",
+    "STATE": "19",
+    "COUNTY": "125"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Marshall County",
+    "BASENAME": "Marshall",
+    "GEOID": "19127",
+    "STATE": "19",
+    "COUNTY": "127"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Mills County",
+    "BASENAME": "Mills",
+    "GEOID": "19129",
+    "STATE": "19",
+    "COUNTY": "129"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Mitchell County",
+    "BASENAME": "Mitchell",
+    "GEOID": "19131",
+    "STATE": "19",
+    "COUNTY": "131"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Monona County",
+    "BASENAME": "Monona",
+    "GEOID": "19133",
+    "STATE": "19",
+    "COUNTY": "133"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Monroe County",
+    "BASENAME": "Monroe",
+    "GEOID": "19135",
+    "STATE": "19",
+    "COUNTY": "135"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Montgomery County",
+    "BASENAME": "Montgomery",
+    "GEOID": "19137",
+    "STATE": "19",
+    "COUNTY": "137"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Muscatine County",
+    "BASENAME": "Muscatine",
+    "GEOID": "19139",
+    "STATE": "19",
+    "COUNTY": "139"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "O'Brien County",
+    "BASENAME": "O'Brien",
+    "GEOID": "19141",
+    "STATE": "19",
+    "COUNTY": "141"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Osceola County",
+    "BASENAME": "Osceola",
+    "GEOID": "19143",
+    "STATE": "19",
+    "COUNTY": "143"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Page County",
+    "BASENAME": "Page",
+    "GEOID": "19145",
+    "STATE": "19",
+    "COUNTY": "145"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Palo Alto County",
+    "BASENAME": "Palo Alto",
+    "GEOID": "19147",
+    "STATE": "19",
+    "COUNTY": "147"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Plymouth County",
+    "BASENAME": "Plymouth",
+    "GEOID": "19149",
+    "STATE": "19",
+    "COUNTY": "149"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Pocahontas County",
+    "BASENAME": "Pocahontas",
+    "GEOID": "19151",
+    "STATE": "19",
+    "COUNTY": "151"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Polk County",
+    "BASENAME": "Polk",
+    "GEOID": "19153",
+    "STATE": "19",
+    "COUNTY": "153"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Pottawattamie County",
+    "BASENAME": "Pottawattamie",
+    "GEOID": "19155",
+    "STATE": "19",
+    "COUNTY": "155"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Poweshiek County",
+    "BASENAME": "Poweshiek",
+    "GEOID": "19157",
+    "STATE": "19",
+    "COUNTY": "157"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Ringgold County",
+    "BASENAME": "Ringgold",
+    "GEOID": "19159",
+    "STATE": "19",
+    "COUNTY": "159"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Sac County",
+    "BASENAME": "Sac",
+    "GEOID": "19161",
+    "STATE": "19",
+    "COUNTY": "161"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Scott County",
+    "BASENAME": "Scott",
+    "GEOID": "19163",
+    "STATE": "19",
+    "COUNTY": "163"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Shelby County",
+    "BASENAME": "Shelby",
+    "GEOID": "19165",
+    "STATE": "19",
+    "COUNTY": "165"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Sioux County",
+    "BASENAME": "Sioux",
+    "GEOID": "19167",
+    "STATE": "19",
+    "COUNTY": "167"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Story County",
+    "BASENAME": "Story",
+    "GEOID": "19169",
+    "STATE": "19",
+    "COUNTY": "169"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Tama County",
+    "BASENAME": "Tama",
+    "GEOID": "19171",
+    "STATE": "19",
+    "COUNTY": "171"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Taylor County",
+    "BASENAME": "Taylor",
+    "GEOID": "19173",
+    "STATE": "19",
+    "COUNTY": "173"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Union County",
+    "BASENAME": "Union",
+    "GEOID": "19175",
+    "STATE": "19",
+    "COUNTY": "175"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Van Buren County",
+    "BASENAME": "Van Buren",
+    "GEOID": "19177",
+    "STATE": "19",
+    "COUNTY": "177"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Wapello County",
+    "BASENAME": "Wapello",
+    "GEOID": "19179",
+    "STATE": "19",
+    "COUNTY": "179"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Warren County",
+    "BASENAME": "Warren",
+    "GEOID": "19181",
+    "STATE": "19",
+    "COUNTY": "181"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Washington County",
+    "BASENAME": "Washington",
+    "GEOID": "19183",
+    "STATE": "19",
+    "COUNTY": "183"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Wayne County",
+    "BASENAME": "Wayne",
+    "GEOID": "19185",
+    "STATE": "19",
+    "COUNTY": "185"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Webster County",
+    "BASENAME": "Webster",
+    "GEOID": "19187",
+    "STATE": "19",
+    "COUNTY": "187"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Winnebago County",
+    "BASENAME": "Winnebago",
+    "GEOID": "19189",
+    "STATE": "19",
+    "COUNTY": "189"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Winneshiek County",
+    "BASENAME": "Winneshiek",
+    "GEOID": "19191",
+    "STATE": "19",
+    "COUNTY": "191"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Woodbury County",
+    "BASENAME": "Woodbury",
+    "GEOID": "19193",
+    "STATE": "19",
+    "COUNTY": "193"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Worth County",
+    "BASENAME": "Worth",
+    "GEOID": "19195",
+    "STATE": "19",
+    "COUNTY": "195"
+   }
+  },
+  {
+   "attributes": {
+    "NAME": "Wright County",
+    "BASENAME": "Wright",
+    "GEOID": "19197",
+    "STATE": "19",
+    "COUNTY": "197"
+   }
+  }
+ ]
+}

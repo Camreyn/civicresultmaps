@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 
-const PRECINCT_PUBLICATION_GATED_STATES = new Set(["MN", "NV", "TX"]);
+const PRECINCT_PUBLICATION_GATED_STATES = new Set(["IA", "MN", "NV", "TX"]);
 
 export function requiresPrecinctResultPublicationGate(input: {
   state: string;
@@ -112,7 +112,7 @@ export function matchesPrecinctGeometryPublicationMetadata(
     && typeof releaseCandidate.id === "string"
     && new RegExp(
       "^" + manifest.state.toLowerCase() + "-precinct-gis-"
-        + (manifest.state === "NV" ? "three" : "four")
+        + (["IA", "NV"].includes(manifest.state) ? "three" : "four")
         + "-election-v\\d+$",
     ).test(releaseCandidate.id)
     && typeof releaseSha256 === "string"

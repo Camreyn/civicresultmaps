@@ -698,7 +698,8 @@
         "JSON",
         "detail XML ZIP",
         "Excel/statistical report links",
-        "county precinct shapefile ZIP leads"
+        "county precinct shapefile and map archives",
+        "reviewed GeoJSON and result-to-geometry crosswalks"
       ],
       "sourceUrls": [
         "https://electionresults.iowa.gov/IA/",
@@ -715,22 +716,25 @@
         "precinct U.S. House comparison rows",
         "precinct turnout/registration fields",
         "President and U.S. House candidate vote type splits in official detail XML",
-        "official county precinct shapefile source leads",
+        "complete official presidential precinct rows for 2012, 2016, 2020, and 2024",
+        "reviewed 2016, 2020, and 2024 statewide precinct geometry and exact one-to-one crosswalks",
+        "hash-pinned geometry attribution and redistribution terms",
+        "official county precinct shapefile source leads and retained 2012 county map availability evidence",
         "official 2024 county precinct-audit source lead",
         "official historical result/statistical-report replacement leads"
       ],
       "missingFields": [
         "normalized ballot-method package for the public vote-method API/UI",
-        "collected and crosswalked precinct boundary geometry",
+        "complete election-effective 2012 statewide precinct boundary geometry",
         "normalized post-election audit selection/outcome rows",
         "normalized recount, CVR availability, incident, correction, and litigation artifacts",
         "official historical baseline parser replacing secondary contextual rows"
       ],
-      "parserStatus": "iowaClarityCountyDetailXmlDirectory loaded for results, review, and precinct turnout; detail XML VoteType fields are confirmed but not normalized into vote-method rows; official SOS shapefile, precinct-audit, and historical replacement leads are inventoried but not normalized",
+      "parserStatus": "iowaClarityCountyDetailXmlDirectory remains loaded for 2024 results, review, and precinct turnout. The precinct GIS pipeline now deterministically normalizes all four official presidential result universes, reviews 2016/2020/2024 geometry and crosswalks, and keeps 2012 geometry blocked. Detail XML VoteType, precinct-audit, and broader historical county-baseline replacement work remain separate.",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "U.S. House is district-based, so review rows remain advisory. The official detail XML includes candidate VoteType splits such as Election Day and Absentee, but the public vote-method contract does not yet load Iowa Clarity method rows. County geometry is loaded; official precinct shapefile ZIP leads require collection, normalization, and Clarity precinct-name crosswalk work. The 2024 precinct-audit image is identified but not normalized. Historical baseline rows remain secondary context until official SOS historical county artifacts are parsed.",
-      "nextAction": "Use data/ia-2024-data-coverage-inventory.json as the current IA source-search record; next steps are an Iowa Clarity vote-method normalizer, official SOS precinct shapefile collection/crosswalk work, browser/manual collection or request-produced 2024 audit records, and request/normalization paths for recount, CVR availability, incident, correction, litigation, and official historical baseline replacement artifacts."
+      "caveats": "U.S. House is district-based, so review rows remain advisory. The official detail XML includes candidate VoteType splits such as Election Day and Absentee, but the public vote-method contract does not yet load Iowa Clarity method rows. The 2016 map uses official LSA/SOS geometry; 2020 uses explicitly attributed VEST CC BY 4.0 geometry; 2024 uses the attributed New York Times official-boundary compilation under non-commercial terms. Complete official 2012 result rows are retained, but no complete election-effective statewide 2012 polygon set was found, and later boundaries are not backcast. The 2024 precinct-audit image is identified but not normalized. Historical county baseline rows remain secondary context until the separate official replacement work is complete.",
+      "nextAction": "Review and publish the guarded 2016, 2020, and 2024 immutable precinct package through the database and Blob gates. Continue the tracked no-email archive search for complete election-effective 2012 geometry without weakening the vintage rule. Vote-method, audit, recount, CVR, incident, correction, litigation, and county historical-baseline work remain separate tasks."
     },
     {
       "state": "ID",

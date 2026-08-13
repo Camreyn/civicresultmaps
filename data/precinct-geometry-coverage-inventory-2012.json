@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-11T03:34:09.050Z",
+  "updatedAt": "2026-08-12T23:58:58.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 2,
+    "totalJurisdictions": 3,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 2
+      "reviewed": 3
     },
     "disposition": {
       "undecided": 0,
       "mapped": 2,
       "partial": 0,
       "official_geometry_unavailable": 0,
-      "blocked": 0
+      "blocked": 1
     },
     "publicEligibleJurisdictions": 2
   },
@@ -148,6 +148,65 @@
       "notes": [
         "Texas Legislative Council VTDs are presented as VTD / precinct approximations; exact official IDs, not display names, govern joins.",
         "TLC VTD totals remain a distinct official local product and do not replace certified Texas Secretary of State county or statewide totals."
+      ]
+    },
+    {
+      "state": "IA",
+      "stateName": "Iowa",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 7,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-12T23:58:58.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://sos.iowa.gov/elections/pdf/precinctresults/2012general/",
+        "https://sos.iowa.gov/elections/pdf/precinctmaps/",
+        "https://sos.iowa.gov/iowans/election-results-statistics"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "ia-2012-11-06-official-county-pdf-conversion-pending-v5"
+        ],
+        "officialSourceLeads": [
+          "https://sos.iowa.gov/elections/pdf/precinctmaps/"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/IA/2012-11-06-general/reviewed-source-evidence.json",
+          "data/precinct-geometry/IA/2012-11-06-general/normalized/ia-2012-11-06-no-approved-precinct-geometry.json",
+          "data/precinct-geometry/IA/2012-11-06-general/crosswalk/ia-2012-11-06-results-to-geometry-unavailable.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 0,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 1687,
+        "colorableResultUnits": 1686,
+        "matchedResultUnits": 0,
+        "unmatchedResultUnits": 1686,
+        "nonGeographicResultUnits": 1,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "The retained Iowa Secretary of State 2012 county map archive covers only 52 counties and does not provide complete election-effective statewide geometry.",
+        "The later 2014 statewide layer is retained only as a boundary-change diagnostic and is not backcast to 2012."
+      ],
+      "nextAction": "Acquire and review the missing election-effective county boundary files tracked in GitHub issue #223; keep the 2012 manifest outside the public registry until every geographic result unit has an authoritative reviewed relationship.",
+      "notes": [
+        "All 1,686 geographic presidential result rows reconcile to the retained official Iowa Secretary of State workbooks.",
+        "One all-zero Dallas ABSENTEE administrative row is explicitly non-geographic and is never assigned a polygon.",
+        "No 2012 vote value or polygon is invented from a later boundary."
       ]
     }
   ]

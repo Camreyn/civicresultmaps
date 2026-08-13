@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "id": "ia-2024-precinct-geometry-reviewed-source-evidence-v1",
+  "state": "IA",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+  "retrievedAt": "2026-08-12T23:58:58.000Z",
+  "sourceCrs": "source-defined and normalized to EPSG:4326",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/normalized/ia-2024-president-results.json.gz",
+      "byteCount": 57195,
+      "sha256": "693297ea851aa46a108353b48cd38db6087a55a42d8fe4948a3effe63e7b09a5",
+      "sourceUrl": "https://electionresults.iowa.gov/IA/Adair/122323/354568/reports/detailxml.zip",
+      "authority": "Iowa Secretary of State",
+      "derivation": "Deterministically parsed and normalized by scripts/collect-ia-precinct-results.mjs from the exact official artifacts recorded in collection.sources.",
+      "note": "Normalized official presidential rows; collection metadata retains 99 exact upstream source artifacts with URLs and hashes.",
+      "uncompressedByteCount": 488424,
+      "uncompressedSha256": "08da0f1dbb485f56825516ae8a33ceaf53bbd51e66524e7b189f9b415f8e0b57"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/raw/nytimes/IA-precincts-with-results.geojson.gz",
+      "byteCount": 8544896,
+      "sha256": "1bbe63c8316e4333fe2aa0cbc3477f6a4c454706e80d06cae857f4c6a8f66817",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Election-specific statewide source; result fields are used only for exact relationship review and are removed from normalized geometry.",
+      "uncompressedByteCount": 31489512,
+      "uncompressedSha256": "ce52a6a7f006966c9fb62b21e18401bb154faf362f6183ba58b99758c26328f9"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/raw/nytimes/source-evidence.json",
+      "byteCount": 2474,
+      "sha256": "999c70d302f4037253784f64b933635f83ec5ea2cb106cb138d2c6adb096705f",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Repository commit, source declaration, terms, and exact match evidence."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/raw/nytimes/LICENSE",
+      "byteCount": 4106,
+      "sha256": "77e8635500262b129a50772647773c2c66d812902aba6ac13bdb2bab14fd59c2",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "NYT C-UDA v1.0 Non-Commercial terms."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/raw/nytimes/README.md",
+      "byteCount": 49879,
+      "sha256": "987ea44ab04c77182d335670207dac88f7114f3ae02675ea5d7076e581ffccdf",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Source README identifying Iowa as complete with official boundaries."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/source-package-manifest.json",
+      "byteCount": 340044,
+      "sha256": "a041f368f22368dfc110c82c857bcc84b30d765d7e33b160c285d49ec7f4f3ac",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+      "derivation": "Retained from or deterministically derived from the cited source; the nested source ledger preserves more specific upstream URLs and byte identities where applicable.",
+      "note": "Retained Iowa Secretary of State county/city geometry packages used as independent official context."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/normalized/ia-2024-precincts-reviewed.geojson.gz",
+      "byteCount": 8644260,
+      "sha256": "8a56337fc0b5d782d5fd5ac413b369ba5cf0fc0e72e1fd9db9ef918c3014c3c2",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+      "derivation": "Deterministically normalized from the retained source geometry by the manifest normalization script; election-result fields are removed.",
+      "note": "Reviewed normalized geometry; contains no election-result value fields.",
+      "uncompressedByteCount": 31840064,
+      "uncompressedSha256": "7a8ef9666be3c5c2871aa455072e325912dd3c9b5a152ac0aed95c1a26082ea9"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/IA/2024-11-05-general/crosswalk/ia-2024-results-to-reviewed-geometry.json",
+      "byteCount": 1745309,
+      "sha256": "a7db3e042c757b1b111ad7105e32e98f7b7250978fc113cf7dd2fa4135bcbb36",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+      "derivation": "Deterministically generated from the hash-pinned reviewed relationship procedure; contains no election-result values.",
+      "note": "Reviewed result-to-geometry relationship records; contains no election-result values."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "ia-sos-2024-general-county-detailxml-reports",
+    "sourceResultUnits": 1653,
+    "colorableResultUnits": 1653,
+    "excludedResultUnits": 0,
+    "officialStatewideTotals": {
+      "democratic": 707278,
+      "republican": 927019,
+      "other": 29209,
+      "total": 1663506
+    },
+    "normalizedResultArtifact": {
+      "path": "data/precinct-geometry/IA/2024-11-05-general/normalized/ia-2024-president-results.json.gz",
+      "sha256": "693297ea851aa46a108353b48cd38db6087a55a42d8fe4948a3effe63e7b09a5",
+      "byteCount": 57195
+    },
+    "authority": "Iowa Secretary of State"
+  },
+  "boundaryContext": {
+    "vintage": "New York Times 2024 Iowa election-specific compilation; all 1,653 source features declare official_boundary=true",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction",
+    "sourceGatePassed": true,
+    "blockCode": null,
+    "licenseOrTerms": "NYT Computational Use of Data Agreement v1.0 - Non-Commercial. Attribution to The New York Times, non-commercial use, and downstream terms are required; see the retained LICENSE."
+  },
+  "reconciliation": {
+    "resultUnits": 1653,
+    "geometryFeatures": 1653,
+    "reviewedRelationshipRecords": 1653,
+    "unmatchedResultUnits": 0,
+    "status": "passed"
+  },
+  "caveats": [
+    "The New York Times is a secondary statewide geometry compiler, not the authority for displayed Iowa vote values.",
+    "The retained Iowa SOS county/city packages provide substantial official boundary context but do not themselves form a uniform complete statewide election-date layer.",
+    "Public use is limited by the retained NYT C-UDA v1.0 Non-Commercial terms."
+  ]
+}
