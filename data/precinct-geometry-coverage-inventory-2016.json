@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-12T14:47:11.155Z",
+  "updatedAt": "2026-08-13T03:25:00.748Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2016-11-08-general",
@@ -26,20 +26,20 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 3,
+    "totalJurisdictions": 4,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 3
+      "reviewed": 4
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 3,
+      "mapped": 4,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
     },
-    "publicEligibleJurisdictions": 3
+    "publicEligibleJurisdictions": 4
   },
   "states": [
     {
@@ -204,6 +204,62 @@
         "VEST election-specific geometry is explicitly attributed and used only with the official Nevada Secretary of State precinct result export and retained license evidence.",
         "Privacy-suppressed result cells remain unknown; no vote value is inferred. Reviewed no-data polygons remain visible without invented result rows.",
         "The 2012 election remains separately blocked pending the election-date Washoe County precinct archive tracked in GitHub issue #220."
+      ]
+    },
+    {
+      "state": "IA",
+      "stateName": "Iowa",
+      "electionId": "2016-11-08-general",
+      "programStatus": "reviewed",
+      "wave": 7,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-13T03:25:00.748Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+        "https://sos.iowa.gov/iowans/election-results-statistics"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "ia-2016-2016-11-08-precinct-geometry-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/IA/2016-11-08-general/reviewed-source-evidence.json",
+          "data/precinct-geometry/IA/2016-11-08-general/normalized/ia-2016-precincts-reviewed.geojson.gz",
+          "data/precinct-geometry/IA/2016-11-08-general/crosswalk/ia-2016-results-to-reviewed-geometry.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 1680,
+        "publicEligibleManifestCount": 1
+      },
+      "crosswalk": {
+        "resultUnits": 1680,
+        "colorableResultUnits": 1680,
+        "matchedResultUnits": 1680,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
+      "notes": [
+        "The official Iowa Legislative Services Agency election-cycle precinct layer supplies the reviewed presentation geometry.",
+        "The election-effective Iowa LSA/SOS geometry is joined to the official Iowa Secretary of State results through the retained reviewed identity bridge.",
+        "Geometry redistribution terms and exact source provenance are retained with the release artifacts.",
+        "The 2012 election remains separately blocked because a complete election-effective statewide precinct boundary archive has not been located."
       ]
     }
   ]
