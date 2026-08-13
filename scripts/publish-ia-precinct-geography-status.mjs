@@ -17,11 +17,14 @@ import {
 import { buildIowaPrecinctGisPlan } from "./lib/ia-precinct-gis-plan.mjs";
 import { productionEndpointFingerprint } from "./lib/ia-precinct-production-preflight.mjs";
 import {
+  IOWA_PUBLIC_ROLLBACK_SCOPES,
+  buildIowaPublicRollbackAuthorizationTemplate,
   buildIowaPublicationAuthorizationTemplate,
   inspectIowaPublicationPlan,
   semanticallyEqual,
   serializeIowaPublicationDocument,
   sha256,
+  validateIowaPublicRollbackAuthorization,
   validateIowaPublicationAuthorization,
 } from "./lib/ia-precinct-publication.mjs";
 
@@ -38,11 +41,14 @@ function parseArguments(args) {
     planSha256: read("--plan-sha256"),
     authorizationPath: read("--authorization"),
     authorizationSha256: read("--authorization-sha256"),
+    publicationReceiptPath: read("--publication-receipt"),
+    publicationReceiptSha256: read("--publication-receipt-sha256"),
     outputPath: read("--output"),
     writePlan: args.includes("--write-plan"),
     writeAuthorizationTemplate: args.includes("--write-authorization-template"),
     apply: args.includes("--apply"),
     recoverReceipt: args.includes("--recover-receipt"),
+    rollback: args.includes("--rollback"),
   };
   const allowed = new Set([
     "--package",
@@ -54,6 +60,8 @@ function parseArguments(args) {
     "--plan-sha256",
     "--authorization",
     "--authorization-sha256",
+    "--publication-receipt",
+    "--publication-receipt-sha256",
     "--output",
   ]);
   for (const arg of args) {
@@ -63,6 +71,7 @@ function parseArguments(args) {
         "--write-authorization-template",
         "--apply",
         "--recover-receipt",
+        "--rollback",
       ].includes(arg)
       && ![...allowed].some((name) => arg.startsWith(name + "="))
     ) {
@@ -86,6 +95,12 @@ function parseArguments(args) {
     "blobEvidenceSha256",
   ]) {
     if (!parsed[field]) throw new Error("Iowa publication-status requires " + field);
+  }
+  if (
+    parsed.rollback
+    && (!parsed.publicationReceiptPath || !parsed.publicationReceiptSha256)
+  ) {
+    throw new Error("Iowa rollback requires the exact publication receipt and SHA-256");
   }
   return parsed;
 }
@@ -159,46 +174,120 @@ function productionUrl(environment = process.env) {
   return value;
 }
 
-function currentGitSha(root) {
-  const sha = execFileSync("git", ["rev-parse", "HEAD"], {
+function runGit(root, args, runner = execFileSync) {
+  return runner("git", args, {
     cwd: root,
     encoding: "utf8",
     windowsHide: true,
   }).trim();
-  if (!/^[a-f0-9]{40}$/.test(sha)) {
-    throw new Error("Iowa publication checkout HEAD is invalid");
-  }
-  const trackedStatus = execFileSync(
-    "git",
-    ["status", "--porcelain", "--untracked-files=no"],
-    { cwd: root, encoding: "utf8", windowsHide: true },
-  ).trim();
-  if (trackedStatus) {
-    throw new Error("Iowa publication checkout has tracked changes");
-  }
-  return sha;
 }
 
-function expectedActivationMetadata(context, manifest, previousCaveat, revision) {
+export function verifyIowaPublicationGitCandidate(
+  root,
+  publicAuthorization,
+  runner = execFileSync,
+) {
+  let head;
+  let headTree;
+  let productionTree;
+  let rollbackTree;
+  let trackedStatus;
+  try {
+    head = runGit(root, ["rev-parse", "HEAD"], runner);
+    headTree = runGit(root, ["rev-parse", "HEAD^{tree}"], runner);
+    productionTree = runGit(
+      root,
+      ["rev-parse", `${publicAuthorization.productionDeployment.gitSha}^{tree}`],
+      runner,
+    );
+    rollbackTree = runGit(
+      root,
+      ["rev-parse", `${publicAuthorization.rollbackTarget.gitSha}^{tree}`],
+      runner,
+    );
+    trackedStatus = runGit(
+      root,
+      ["status", "--porcelain", "--untracked-files=no"],
+      runner,
+    );
+  } catch {
+    throw new Error("Iowa publication Git evidence could not be resolved locally");
+  }
+  if (
+    head !== publicAuthorization.productionDeployment.gitSha
+    || headTree !== publicAuthorization.productionDeployment.gitTreeSha
+    || productionTree !== publicAuthorization.productionDeployment.gitTreeSha
+    || rollbackTree !== publicAuthorization.rollbackTarget.gitTreeSha
+    || trackedStatus
+  ) {
+    throw new Error("Iowa publication checkout or deployment Git evidence drifted");
+  }
   return {
+    gitSha: head,
+    gitTreeSha: headTree,
+    rollbackTarget: {
+      gitSha: publicAuthorization.rollbackTarget.gitSha,
+      gitTreeSha: rollbackTree,
+    },
+    trackedWorktreeClean: true,
+  };
+}
+
+function expectedActivationMetadata(
+  context,
+  manifest,
+  previousCaveat,
+  revision,
+  changedAtUtc = context.changedAtUtc,
+) {
+  const publication = context.publicationReceipt ?? {
     activationId: context.authorization.activationId,
+    authorizationSha256: context.authorizationSha256,
+    rollbackTarget: context.authorization.rollbackTarget,
+  };
+  return {
+    activationId: publication.activationId,
     activationCandidateSha256: context.planSha256,
     releasePackageSha256: context.plan.releaseCandidate.sha256,
     blobPublicationSha256: context.plan.blobPublication.sha256,
     deliveryOrigin: context.plan.blobPublication.deliveryOrigin,
-    authorizationSha256: context.authorizationSha256,
+    authorizationSha256: publication.authorizationSha256,
+    rollbackTarget: publication.rollbackTarget,
     mode: "publish",
     year: manifest.year,
     manifestId: manifest.manifestId,
     publicManifestSha256: manifest.publicManifestSha256,
     delivery: manifest.delivery,
     previousCaveat,
-    changedAtUtc: context.changedAtUtc,
+    changedAtUtc,
     revision,
   };
 }
 
-async function verifyPostconditions(nv, context, revision) {
+function expectedRollbackMetadata(context, revision) {
+  return {
+    rollbackId: context.authorization.rollbackId,
+    publicationActivationId: context.publicationReceipt.activationId,
+    activationCandidateSha256: context.planSha256,
+    releasePackageSha256: context.plan.releaseCandidate.sha256,
+    blobPublicationSha256: context.plan.blobPublication.sha256,
+    authorizationSha256: context.authorizationSha256,
+    publicationReceiptSha256: context.publicationReceipt.sha256,
+    rollbackTarget: context.authorization.applicationRollback.target,
+    changedAtUtc: context.changedAtUtc,
+    revision,
+    mode: "rollback",
+  };
+}
+
+async function verifyPostconditions(
+  nv,
+  context,
+  revision,
+  mode = context.mode ?? "publish",
+) {
+  const publicAuthorized = mode === "publish";
+  const wantedStatus = publicAuthorized ? "published" : "blocked";
   const versions = await nv.unsafe([
     "select e.year,gv.status,gv.caveat,gv.metadata",
     "from geography_versions gv join elections e on e.id=gv.election_id",
@@ -214,22 +303,35 @@ async function verifyPostconditions(nv, context, revision) {
     const previousCaveat = context.gisPlan.years[index].manifest.validation.errors
       .join(" ");
     const metadata = row.metadata ?? {};
+    const publicationRevision = context.publicationReceipt?.revision ?? revision;
+    const publicationChangedAt = context.publicationReceipt?.changedAtUtc
+      ?? context.changedAtUtc;
+    const originalActivation = expectedActivationMetadata(
+      context,
+      manifest,
+      previousCaveat,
+      publicationRevision,
+      publicationChangedAt,
+    );
+    const expectedActivation = publicAuthorized
+      ? originalActivation
+      : {
+        ...originalActivation,
+        rollback: expectedRollbackMetadata(context, revision),
+      };
+    const expectedCaveat = publicAuthorized
+      ? "Reviewed Iowa election-specific precinct geometry is publicly authorized under activation "
+        + originalActivation.activationId + "."
+      : previousCaveat;
     if (
       Number(row.year) !== manifest.year
-      || row.status !== "published"
+      || row.status !== wantedStatus
+      || String(row.caveat ?? "") !== expectedCaveat
       || metadata.manifestId !== manifest.manifestId
-      || metadata.publicDeliveryAuthorized !== true
-      || metadata.releaseCandidate?.publicDeliveryAuthorized !== true
+      || metadata.publicDeliveryAuthorized !== publicAuthorized
+      || metadata.releaseCandidate?.publicDeliveryAuthorized !== publicAuthorized
       || metadata.releaseCandidate?.sha256 !== context.plan.releaseCandidate.sha256
-      || !semanticallyEqual(
-        metadata.publicActivation,
-        expectedActivationMetadata(
-          context,
-          manifest,
-          previousCaveat,
-          revision,
-        ),
-      )
+      || !semanticallyEqual(metadata.publicActivation, expectedActivation)
     ) {
       throw new Error("Iowa " + manifest.year + " geography publication drifted");
     }
@@ -238,42 +340,42 @@ async function verifyPostconditions(nv, context, revision) {
     "select count(*)::int total,",
     " count(*) filter (where x.relationship_type='one_to_one'",
     "  and x.match_method='exact_official_id' and x.review_status='reviewed'",
-    "  and x.confidence='high' and x.metadata->>'publicDeliveryAuthorized'='true'",
-    "  and x.metadata->'releaseCandidate'->>'publicDeliveryAuthorized'='true')::int exact",
+    "  and x.confidence='high' and x.metadata->>'publicDeliveryAuthorized'=$2",
+    "  and x.metadata->'releaseCandidate'->>'publicDeliveryAuthorized'=$2)::int exact",
     "from reporting_unit_geometry_crosswalks x",
     "join geography_versions gv on gv.id=x.geometry_version_id",
     "where gv.state_code='IA' and gv.metadata->'releaseCandidate'->>'sha256'=$1",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, String(publicAuthorized)]);
   if (Number(linked[0]?.total) !== 4_994 || Number(linked[0]?.exact) !== 4_994) {
     throw new Error("Iowa publication crosswalk postcondition failed");
   }
   const units = await nv.unsafe([
     "select count(*)::int total, count(*) filter (where",
-    " metadata->>'publicDeliveryAuthorized'='true' and",
-    " metadata->'releaseCandidate'->>'publicDeliveryAuthorized'='true')::int exact",
+    " metadata->>'publicDeliveryAuthorized'=$2 and",
+    " metadata->'releaseCandidate'->>'publicDeliveryAuthorized'=$2)::int exact",
     "from reporting_units where state_code='IA' and reporting_grain='precinct'",
     " and metadata->'releaseCandidate'->>'sha256'=$1",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, String(publicAuthorized)]);
   if (Number(units[0]?.total) !== 4_994 || Number(units[0]?.exact) !== 4_994) {
     throw new Error("Iowa publication reporting-unit postcondition failed");
   }
   const sources = await nv.unsafe([
     "select count(*)::int total, count(*) filter (where",
-    " metadata->>'publicDeliveryAuthorized'='true' and",
-    " metadata->'releaseCandidate'->>'publicDeliveryAuthorized'='true')::int exact",
+    " metadata->>'publicDeliveryAuthorized'=$2 and",
+    " metadata->'releaseCandidate'->>'publicDeliveryAuthorized'=$2)::int exact",
     "from source_documents where state_code='IA'",
     " and metadata->'releaseCandidate'->>'sha256'=$1",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, String(publicAuthorized)]);
   if (Number(sources[0]?.total) !== 6 || Number(sources[0]?.exact) !== 6) {
     throw new Error("Iowa publication source-document postcondition failed");
   }
   const runs = await nv.unsafe([
     "select count(*)::int total, count(*) filter (where",
-    " summary->>'publicDeliveryAuthorized'='true' and",
-    " summary->'releaseCandidate'->>'publicDeliveryAuthorized'='true')::int exact",
+    " summary->>'publicDeliveryAuthorized'=$2 and",
+    " summary->'releaseCandidate'->>'publicDeliveryAuthorized'=$2)::int exact",
     "from import_runs where state_code='IA'",
     " and summary->'releaseCandidate'->>'sha256'=$1",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, String(publicAuthorized)]);
   if (Number(runs[0]?.total) !== 3 || Number(runs[0]?.exact) !== 3) {
     throw new Error("Iowa publication import-run postcondition failed");
   }
@@ -292,7 +394,24 @@ async function verifyPostconditions(nv, context, revision) {
   if (Number(invalid[0]?.count) !== 0) {
     throw new Error("Iowa publication left invalid public constraints");
   }
+  const revisionRows = await nv.unsafe([
+    "select revision::int revision,reason from public_data_revisions",
+    "where scope='public'",
+  ].join("\n"));
+  const expectedReason = "Iowa precinct geometry " + mode + " "
+    + (publicAuthorized
+      ? context.authorization.activationId
+      : context.authorization.rollbackId);
+  if (
+    Number(revisionRows[0]?.revision) !== revision
+    || String(revisionRows[0]?.reason) !== expectedReason
+  ) {
+    throw new Error("Iowa publication revision postcondition failed");
+  }
   return {
+    mode,
+    status: wantedStatus,
+    publicDeliveryAuthorized: publicAuthorized,
     geographyVersions: 3,
     crosswalks: 4_994,
     reportingUnits: 4_994,
@@ -304,6 +423,24 @@ async function verifyPostconditions(nv, context, revision) {
 }
 
 export async function applyIowaGeographyPublicationTransaction(nv, context) {
+  const mode = context.mode ?? "publish";
+  if (!new Set(["publish", "rollback"]).has(mode)) {
+    throw new Error("Iowa publication transaction mode is invalid");
+  }
+  const publicAuthorized = mode === "publish";
+  if (mode === "rollback" && !context.publicationReceipt) {
+    throw new Error("Iowa rollback requires the exact publication receipt");
+  }
+  if (mode === "rollback" && (
+    context.authorization.publicationActivationId
+      !== context.publicationReceipt.activationId
+    || !semanticallyEqual(
+      context.authorization.applicationRollback?.target,
+      context.publicationReceipt.rollbackTarget,
+    )
+  )) {
+    throw new Error("Iowa rollback authorization drifted from the publication receipt");
+  }
   const identity = await nv.unsafe([
     "select current_database() database_name,",
     " current_setting('transaction_read_only') transaction_read_only",
@@ -322,13 +459,22 @@ export async function applyIowaGeographyPublicationTransaction(nv, context) {
   const revisions = await nv.unsafe(
     "select revision::int revision from public_data_revisions where scope='public' for update",
   );
-  if (revisions.length !== 1) throw new Error("Iowa public revision is missing");
-  const revision = Number(revisions[0].revision) + 1;
+  const currentRevision = Number(revisions[0]?.revision);
+  if (
+    revisions.length !== 1
+    || !Number.isInteger(currentRevision)
+    || currentRevision < 0
+  ) {
+    throw new Error("Iowa public revision is missing or invalid");
+  }
+  const revision = currentRevision + 1;
   const gisPlan = context.gisPlan;
-  await validateIowaPrecinctGisClient(nv, gisPlan, {
-    executionContext: context.executionContext,
-    readOnlySession: false,
-  });
+  if (mode === "publish") {
+    await (context.validateCurrentDatabase ?? validateIowaPrecinctGisClient)(nv, gisPlan, {
+      executionContext: context.executionContext,
+      readOnlySession: false,
+    });
+  }
   const versions = await nv.unsafe([
     "select gv.id,e.year,gv.status,gv.caveat,gv.metadata",
     "from geography_versions gv join elections e on e.id=gv.election_id",
@@ -337,44 +483,83 @@ export async function applyIowaGeographyPublicationTransaction(nv, context) {
     "order by e.year for update of gv",
   ].join("\n"), [context.plan.releaseCandidate.sha256]);
   if (versions.length !== 3) {
-    throw new Error("Iowa publication requires three blocked geography versions");
+    throw new Error("Iowa publication requires three exact geography versions");
   }
   for (const [index, version] of versions.entries()) {
     const manifest = context.plan.manifests[index];
     const expectedBlockedCaveat = gisPlan.years[index].manifest.validation.errors
       .join(" ");
-    if (
-      Number(version.year) !== manifest.year
-      || version.status !== "blocked"
+    const commonDrift = Number(version.year) !== manifest.year
       || version.metadata?.manifestId !== manifest.manifestId
+      || version.metadata?.releaseCandidate?.sha256
+        !== context.plan.releaseCandidate.sha256;
+    const originalActivation = mode === "rollback"
+      ? expectedActivationMetadata(
+        context,
+        manifest,
+        expectedBlockedCaveat,
+        context.publicationReceipt.revision,
+        context.publicationReceipt.changedAtUtc,
+      )
+      : null;
+    if (mode === "publish" && (
+      commonDrift
+      || version.status !== "blocked"
       || version.metadata?.manifestSha256 !== manifest.blockedManifestSha256
       || version.metadata?.publicDeliveryAuthorized !== false
       || version.metadata?.releaseCandidate?.publicDeliveryAuthorized !== false
-      || version.metadata?.releaseCandidate?.sha256 !== context.plan.releaseCandidate.sha256
       || String(version.caveat ?? "") !== expectedBlockedCaveat
       || Object.hasOwn(version.metadata ?? {}, "publicActivation")
-    ) {
+    )) {
       throw new Error("Iowa " + manifest.year + " publication precondition drifted");
     }
-    const activation = expectedActivationMetadata(
-      context,
-      manifest,
-      expectedBlockedCaveat,
-      revision,
-    );
+    if (mode === "rollback" && (
+      commonDrift
+      || version.status !== "published"
+      || String(version.caveat ?? "")
+        !== "Reviewed Iowa election-specific precinct geometry is publicly authorized under activation "
+          + context.publicationReceipt.activationId + "."
+      || version.metadata?.publicDeliveryAuthorized !== true
+      || version.metadata?.releaseCandidate?.publicDeliveryAuthorized !== true
+      || !semanticallyEqual(version.metadata?.publicActivation, originalActivation)
+    )) {
+      throw new Error(
+        "Iowa " + manifest.year
+          + " rollback does not match the publication being reversed",
+      );
+    }
+    const activation = mode === "publish"
+      ? expectedActivationMetadata(
+        context,
+        manifest,
+        expectedBlockedCaveat,
+        revision,
+      )
+      : {
+        ...originalActivation,
+        rollback: expectedRollbackMetadata(context, revision),
+      };
+    const wantedStatus = publicAuthorized ? "published" : "blocked";
+    const wantedCaveat = publicAuthorized
+      ? "Reviewed Iowa election-specific precinct geometry is publicly authorized under activation "
+        + context.authorization.activationId + "."
+      : originalActivation.previousCaveat;
+    const currentStatus = publicAuthorized ? "blocked" : "published";
     const updated = await nv.unsafe([
-      "update geography_versions set status='published',",
-      " caveat=$2,",
-      " metadata=jsonb_set(jsonb_set(metadata,",
-      "  '{publicDeliveryAuthorized}','true'::jsonb,true),",
-      "  '{releaseCandidate,publicDeliveryAuthorized}','true'::jsonb,true)",
-      "  || jsonb_build_object('publicActivation',$3::text::jsonb),",
-      " updated_at=now() where id=$1::uuid and status='blocked' returning id",
+      "update geography_versions set status=$2,",
+      " caveat=$3,",
+      " metadata=jsonb_set(jsonb_set(jsonb_set(metadata,",
+      "  '{publicDeliveryAuthorized}',$4::text::jsonb,true),",
+      "  '{releaseCandidate,publicDeliveryAuthorized}',$4::text::jsonb,true),",
+      "  '{publicActivation}',$5::text::jsonb,true),",
+      " updated_at=now() where id=$1::uuid and status=$6 returning id",
     ].join("\n"), [
       version.id,
-      "Reviewed Iowa election-specific precinct geometry is publicly authorized under activation "
-        + context.authorization.activationId + ".",
+      wantedStatus,
+      wantedCaveat,
+      JSON.stringify(publicAuthorized),
       JSON.stringify(activation),
+      currentStatus,
     ]);
     if (updated.length !== 1) {
       throw new Error("Iowa " + manifest.year + " publication update lost its lock");
@@ -382,40 +567,40 @@ export async function applyIowaGeographyPublicationTransaction(nv, context) {
   }
   const crosswalks = await nv.unsafe([
     "update reporting_unit_geometry_crosswalks x set metadata=",
-    " jsonb_set(jsonb_set(x.metadata,'{publicDeliveryAuthorized}','true'::jsonb,true),",
-    " '{releaseCandidate,publicDeliveryAuthorized}','true'::jsonb,true)",
+    " jsonb_set(jsonb_set(x.metadata,'{publicDeliveryAuthorized}',$2::text::jsonb,true),",
+    " '{releaseCandidate,publicDeliveryAuthorized}',$2::text::jsonb,true)",
     "from geography_versions gv where gv.id=x.geometry_version_id",
     " and gv.state_code='IA' and gv.metadata->'releaseCandidate'->>'sha256'=$1",
     "returning x.id",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, JSON.stringify(publicAuthorized)]);
   if (crosswalks.length !== 4_994) {
     throw new Error("Iowa publication crosswalk update count drifted");
   }
   const units = await nv.unsafe([
     "update reporting_units set metadata=",
-    " jsonb_set(jsonb_set(metadata,'{publicDeliveryAuthorized}','true'::jsonb,true),",
-    " '{releaseCandidate,publicDeliveryAuthorized}','true'::jsonb,true)",
+    " jsonb_set(jsonb_set(metadata,'{publicDeliveryAuthorized}',$2::text::jsonb,true),",
+    " '{releaseCandidate,publicDeliveryAuthorized}',$2::text::jsonb,true)",
     "where state_code='IA' and reporting_grain='precinct'",
     " and metadata->'releaseCandidate'->>'sha256'=$1 returning id",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, JSON.stringify(publicAuthorized)]);
   if (units.length !== 4_994) {
     throw new Error("Iowa publication reporting-unit update count drifted");
   }
   const sources = await nv.unsafe([
     "update source_documents set metadata=",
-    " jsonb_set(jsonb_set(metadata,'{publicDeliveryAuthorized}','true'::jsonb,true),",
-    " '{releaseCandidate,publicDeliveryAuthorized}','true'::jsonb,true)",
+    " jsonb_set(jsonb_set(metadata,'{publicDeliveryAuthorized}',$2::text::jsonb,true),",
+    " '{releaseCandidate,publicDeliveryAuthorized}',$2::text::jsonb,true)",
     "where state_code='IA' and metadata->'releaseCandidate'->>'sha256'=$1 returning id",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, JSON.stringify(publicAuthorized)]);
   if (sources.length !== 6) {
     throw new Error("Iowa publication source-document update count drifted");
   }
   const runs = await nv.unsafe([
     "update import_runs set summary=",
-    " jsonb_set(jsonb_set(summary,'{publicDeliveryAuthorized}','true'::jsonb,true),",
-    " '{releaseCandidate,publicDeliveryAuthorized}','true'::jsonb,true)",
+    " jsonb_set(jsonb_set(summary,'{publicDeliveryAuthorized}',$2::text::jsonb,true),",
+    " '{releaseCandidate,publicDeliveryAuthorized}',$2::text::jsonb,true)",
     "where state_code='IA' and summary->'releaseCandidate'->>'sha256'=$1 returning id",
-  ].join("\n"), [context.plan.releaseCandidate.sha256]);
+  ].join("\n"), [context.plan.releaseCandidate.sha256, JSON.stringify(publicAuthorized)]);
   if (runs.length !== 3) {
     throw new Error("Iowa publication import-run update count drifted");
   }
@@ -423,17 +608,22 @@ export async function applyIowaGeographyPublicationTransaction(nv, context) {
     "update public_data_revisions set revision=revision+1,updated_at=now(),reason=$1",
     "where scope='public' returning revision::int revision,updated_at",
   ].join("\n"), [
-    "Iowa precinct geometry publish " + context.authorization.activationId,
+    "Iowa precinct geometry " + mode + " "
+      + (publicAuthorized
+        ? context.authorization.activationId
+        : context.authorization.rollbackId),
   ]);
   if (Number(revisionRows[0]?.revision) !== revision) {
     throw new Error("Iowa publication revision increment drifted");
   }
-  const postconditions = await verifyPostconditions(nv, context, revision);
+  const postconditions = await verifyPostconditions(nv, context, revision, mode);
   return {
-    result: "PUBLISHED",
+    result: publicAuthorized ? "PUBLISHED" : "ROLLED_BACK",
+    mode,
     revision,
     changedAtUtc: context.changedAtUtc,
     postconditions,
+    publicDeliveryAuthorized: publicAuthorized,
   };
 }
 
@@ -442,14 +632,97 @@ function defaultPlanPath(planSha256) {
     + planSha256.slice(0, 12) + ".json";
 }
 
-function defaultAuthorizationPath(planSha256) {
-  return ".etl/production-authorizations/IA/ia-publication-authorization-template-"
+function defaultAuthorizationPath(planSha256, mode = "publish") {
+  return ".etl/production-authorizations/IA/ia-" + mode + "-authorization-template-"
     + planSha256.slice(0, 12) + ".json";
 }
 
-function defaultReceiptPath(planSha256, activationId) {
+export function inspectIowaPublicationReceipt(root, options, built) {
+  const artifact = safeJson(
+    root,
+    options.publicationReceiptPath,
+    options.publicationReceiptSha256,
+    ".etl/production-publication-receipts/IA",
+  );
+  const value = artifact.value;
+  const publicAuthorizationArtifact = safeJson(
+    root,
+    value?.authorization?.path,
+    value?.authorization?.sha256,
+    ".etl/production-authorizations/IA",
+  );
+  const publicAuthorization = validateIowaPublicationAuthorization(
+    publicAuthorizationArtifact.value,
+    {
+      plan: built.plan,
+      planSha256: built.sha256,
+      now: options.now ?? Date.now(),
+      recovery: true,
+    },
+  );
+  const changedAt = Date.parse(value?.changedAtUtc);
+  if (
+    value?.schemaVersion !== 1
+    || value?.state !== "IA"
+    || value?.mode !== "publish"
+    || value?.decision !== "PUBLISHED"
+    || value?.activationId !== publicAuthorization.activationId
+    || value?.approvedBy !== publicAuthorization.approvedBy
+    || !semanticallyEqual(value?.releaseCandidate, built.plan.releaseCandidate)
+    || value?.publicationPlan?.id !== built.plan.id
+    || value?.publicationPlan?.sha256 !== built.sha256
+    || value?.authorization?.path !== publicAuthorizationArtifact.path
+    || value?.authorization?.sha256 !== publicAuthorizationArtifact.sha256
+    || value?.hiddenLoad?.path !== built.plan.hiddenLoad.path
+    || value?.hiddenLoad?.sha256 !== built.plan.hiddenLoad.sha256
+    || value?.blobPublication?.path !== built.plan.blobPublication.path
+    || value?.blobPublication?.sha256 !== built.plan.blobPublication.sha256
+    || value?.blobPublication?.deliveryOrigin
+      !== built.plan.blobPublication.deliveryOrigin
+    || !semanticallyEqual(
+      value?.productionDeployment,
+      publicAuthorization.productionDeployment,
+    )
+    || !semanticallyEqual(value?.rollbackTarget, publicAuthorization.rollbackTarget)
+    || Number.isNaN(changedAt)
+    || changedAt > (options.now ?? Date.now())
+    || Date.parse(publicAuthorization.rollbackTarget.verifiedAtUtc) > changedAt
+    || !Number.isInteger(Number(value?.revision))
+    || Number(value.revision) < 1
+    || value?.postconditions?.mode !== "publish"
+    || value?.postconditions?.status !== "published"
+    || value?.postconditions?.publicDeliveryAuthorized !== true
+    || value?.postconditions?.geographyVersions !== 3
+    || value?.postconditions?.crosswalks !== 4_994
+    || value?.postconditions?.reportingUnits !== 4_994
+    || value?.postconditions?.sourceDocuments !== 6
+    || value?.postconditions?.importRuns !== 3
+    || value?.postconditions?.resultRows !== 14_982
+    || value?.postconditions?.invalidConstraints !== 0
+    || value?.productionMutationPerformed !== true
+    || value?.publicDeliveryAuthorized !== true
+  ) {
+    throw new Error("Iowa publication receipt is incomplete or incompatible");
+  }
+  return {
+    artifact,
+    publicAuthorization,
+    summary: {
+      path: artifact.path,
+      sha256: artifact.sha256,
+      activationId: value.activationId,
+      authorizationSha256: publicAuthorizationArtifact.sha256,
+      revision: Number(value.revision),
+      changedAtUtc: value.changedAtUtc,
+      rollbackTarget: value.rollbackTarget,
+      productionDeployment: value.productionDeployment,
+    },
+  };
+}
+
+function defaultReceiptPath(planSha256, activationId, mode = "publish") {
   const safeId = activationId.replace(/[^a-zA-Z0-9._-]+/g, "-").slice(0, 80);
-  return ".etl/production-publication-receipts/IA/ia-publication-"
+  return ".etl/production-publication-receipts/IA/ia-" + mode + "-"
     + planSha256.slice(0, 12) + "-" + safeId + ".json";
 }
 
@@ -458,6 +731,8 @@ function reserveReceipt(
   relativePath,
   planSha256,
   authorizationSha256,
+  mode,
+  publicationReceiptSha256 = null,
   options = {},
 ) {
   const absolute = path.resolve(root, ...relativePath.split("/"));
@@ -472,8 +747,10 @@ function reserveReceipt(
     schemaVersion: 1,
     state: "IA",
     purpose: "ambiguous-commit recovery marker",
+    mode,
     planSha256,
     authorizationSha256,
+    publicationReceiptSha256,
   };
   const pendingBytes = serializeIowaPublicationDocument(pendingDocument);
   if (existsSync(pending)) {
@@ -483,7 +760,7 @@ function reserveReceipt(
     ) {
       return { absolute, pending, pendingBytes, disposition: "reused" };
     }
-    throw new Error("A Iowa publication recovery marker already exists; reconcile it before retrying");
+    throw new Error("An Iowa publication recovery marker already exists; reconcile it before retrying");
   }
   writeFileSync(pending, pendingBytes, { flag: "wx", mode: 0o600 });
   return { absolute, pending, pendingBytes, disposition: "created" };
@@ -510,11 +787,31 @@ function finishPublicationReceipt(reservation, receipt) {
 export async function runIowaGeographyPublication(options = {}) {
   const root = path.resolve(options.root ?? process.cwd());
   const parsed = options.packagePath ? options : parseArguments(process.argv.slice(2));
+  const mode = parsed.rollback ? "rollback" : "publish";
+  const environment = options.environment ?? process.env;
+  const clock = options.nowFactory ?? (() => options.now ?? new Date());
+  const currentTime = () => {
+    const value = clock();
+    const result = value instanceof Date ? new Date(value.getTime()) : new Date(value);
+    if (Number.isNaN(result.getTime())) {
+      throw new Error("Iowa publication clock returned an invalid time");
+    }
+    return result;
+  };
   const built = inspectIowaPublicationPlan({ ...parsed, root });
   if (parsed.planSha256 && parsed.planSha256 !== built.sha256) {
     throw new Error("Iowa publication plan SHA-256 drifted");
   }
+  const publicationReceipt = mode === "rollback"
+    ? inspectIowaPublicationReceipt(root, {
+      ...parsed,
+      now: currentTime().getTime(),
+    }, built)
+    : null;
   if (parsed.writePlan) {
+    if (mode === "rollback") {
+      throw new Error("Iowa rollback reuses the exact hash-pinned publication plan");
+    }
     const artifact = immutableJson(
       root,
       parsed.outputPath ?? defaultPlanPath(built.sha256),
@@ -529,15 +826,23 @@ export async function runIowaGeographyPublication(options = {}) {
     };
   }
   if (parsed.writeAuthorizationTemplate) {
+    const template = mode === "rollback"
+      ? buildIowaPublicRollbackAuthorizationTemplate(
+        built.plan,
+        built.sha256,
+        publicationReceipt.summary,
+      )
+      : buildIowaPublicationAuthorizationTemplate(built.plan, built.sha256);
     const artifact = immutableJson(
       root,
-      parsed.outputPath ?? defaultAuthorizationPath(built.sha256),
-      buildIowaPublicationAuthorizationTemplate(built.plan, built.sha256),
+      parsed.outputPath ?? defaultAuthorizationPath(built.sha256, mode),
+      template,
       ".etl/production-authorizations/IA",
     );
     return {
       mode: "write_authorization_template",
-      decision: "NO_GO_PUBLIC",
+      operation: mode,
+      decision: mode === "rollback" ? "NO_GO_ROLLBACK" : "NO_GO_PUBLIC",
       publicationPlanSha256: built.sha256,
       authorizationTemplate: artifact,
       productionMutationPerformed: false,
@@ -546,8 +851,14 @@ export async function runIowaGeographyPublication(options = {}) {
   if (!parsed.apply && !parsed.recoverReceipt) {
     return {
       mode: "plan",
-      decision: built.plan.decision,
+      operation: mode,
+      decision: mode === "rollback"
+        ? "GO_ROLLBACK_AUTHORIZATION_REQUIRED"
+        : built.plan.decision,
       publicationPlanSha256: built.sha256,
+      requiredScopes: mode === "rollback"
+        ? [...IOWA_PUBLIC_ROLLBACK_SCOPES]
+        : undefined,
       productionMutationPerformed: false,
       expectedTotals: built.plan.expectedTotals,
     };
@@ -558,20 +869,20 @@ export async function runIowaGeographyPublication(options = {}) {
     parsed.authorizationSha256,
     ".etl/production-authorizations/IA",
   );
-  const environment = options.environment ?? process.env;
-  const clock = options.nowFactory ?? (() => options.now ?? new Date());
-  const currentTime = () => {
-    const value = clock();
-    const result = value instanceof Date ? new Date(value.getTime()) : new Date(value);
-    if (Number.isNaN(result.getTime())) {
-      throw new Error("Iowa publication clock returned an invalid time");
-    }
-    return result;
-  };
-  const validateAuthorizationAt = (now) => validateIowaPublicationAuthorization(
-    authorizationArtifact.value,
-    { plan: built.plan, planSha256: built.sha256, now: now.getTime() },
-  );
+  const validateAuthorizationAt = (now, recovery = false) => mode === "rollback"
+    ? validateIowaPublicRollbackAuthorization(authorizationArtifact.value, {
+      plan: built.plan,
+      planSha256: built.sha256,
+      publicationReceipt: publicationReceipt.summary,
+      now: now.getTime(),
+      recovery,
+    })
+    : validateIowaPublicationAuthorization(authorizationArtifact.value, {
+      plan: built.plan,
+      planSha256: built.sha256,
+      now: now.getTime(),
+      recovery,
+    });
   const databaseUrl = productionUrl(environment);
   const endpointFingerprint = productionEndpointFingerprint(databaseUrl);
   if (endpointFingerprint !== built.plan.hiddenLoad.endpointFingerprint) {
@@ -589,46 +900,63 @@ export async function runIowaGeographyPublication(options = {}) {
     productionReleaseAudit: built.plan.hiddenLoad.productionReleaseAudit,
   };
   buildIowaPrecinctExecutionContext(executionContext);
-  const rawActivationId = typeof authorizationArtifact.value?.activationId === "string"
-    ? authorizationArtifact.value.activationId.trim()
+  const rawOperationId = mode === "rollback"
+    ? authorizationArtifact.value?.rollbackId
+    : authorizationArtifact.value?.activationId;
+  const operationId = typeof rawOperationId === "string"
+    ? rawOperationId.trim()
     : "";
   const receiptPath = parsed.outputPath ?? defaultReceiptPath(
     built.sha256,
-    rawActivationId || "invalid-activation",
+    operationId || "invalid-authorization",
+    mode,
   );
+  const publicAuthorization = mode === "publish"
+    ? null
+    : publicationReceipt.publicAuthorization;
 
-  const receiptDocument = (authorization, committed, recovery = null) => ({
-    schemaVersion: 1,
-    state: "IA",
-    decision: "PUBLISHED",
-    activationId: authorization.activationId,
-    approvedBy: authorization.approvedBy,
-    releaseCandidate: built.plan.releaseCandidate,
-    publicationPlan: {
-      id: built.plan.id,
-      sha256: built.sha256,
-    },
-    authorization: {
-      path: authorizationArtifact.path,
-      sha256: authorizationArtifact.sha256,
-    },
-    hiddenLoad: {
-      path: built.plan.hiddenLoad.path,
-      sha256: built.plan.hiddenLoad.sha256,
-    },
-    blobPublication: {
-      path: built.plan.blobPublication.path,
-      sha256: built.plan.blobPublication.sha256,
-      deliveryOrigin: built.plan.blobPublication.deliveryOrigin,
-    },
-    productionDeployment: authorization.productionDeployment,
-    changedAtUtc: committed.changedAtUtc,
-    revision: committed.revision,
-    postconditions: committed.postconditions,
-    ...(recovery ? { recovery } : {}),
-    productionMutationPerformed: true,
-    publicDeliveryAuthorized: true,
-  });
+  const receiptDocument = (authorization, committed, recovery = null) => {
+    const originalPublicAuthorization = mode === "publish"
+      ? authorization
+      : publicAuthorization;
+    return {
+      schemaVersion: 1,
+      state: "IA",
+      mode,
+      decision: mode === "publish" ? "PUBLISHED" : "ROLLED_BACK",
+      activationId: mode === "publish"
+        ? authorization.activationId
+        : publicationReceipt.summary.activationId,
+      ...(mode === "rollback" ? { rollbackId: authorization.rollbackId } : {}),
+      approvedBy: authorization.approvedBy,
+      releaseCandidate: built.plan.releaseCandidate,
+      publicationPlan: { id: built.plan.id, sha256: built.sha256 },
+      authorization: {
+        path: authorizationArtifact.path,
+        sha256: authorizationArtifact.sha256,
+      },
+      hiddenLoad: {
+        path: built.plan.hiddenLoad.path,
+        sha256: built.plan.hiddenLoad.sha256,
+      },
+      blobPublication: {
+        path: built.plan.blobPublication.path,
+        sha256: built.plan.blobPublication.sha256,
+        deliveryOrigin: built.plan.blobPublication.deliveryOrigin,
+      },
+      productionDeployment: originalPublicAuthorization.productionDeployment,
+      rollbackTarget: originalPublicAuthorization.rollbackTarget,
+      ...(mode === "rollback"
+        ? { publicationReceipt: publicationReceipt.summary }
+        : {}),
+      changedAtUtc: committed.changedAtUtc,
+      revision: committed.revision,
+      postconditions: committed.postconditions,
+      ...(recovery ? { recovery } : {}),
+      productionMutationPerformed: true,
+      publicDeliveryAuthorized: mode === "publish",
+    };
+  };
 
   if (parsed.recoverReceipt) {
     if (
@@ -636,14 +964,21 @@ export async function runIowaGeographyPublication(options = {}) {
       || environment.CRM_IA_PRECINCT_PUBLICATION_RECEIPT_RECOVERY !== built.sha256
       || environment.CRM_IA_PRECINCT_PUBLICATION_AUTHORIZATION_SHA256
         !== authorizationArtifact.sha256
+      || (mode === "rollback"
+        && environment.CRM_IA_PRECINCT_PUBLICATION_RECEIPT_SHA256
+          !== publicationReceipt.summary.sha256)
     ) {
-      throw new Error("Iowa publication receipt recovery is not explicitly read-only and hash-authorized");
+      throw new Error(
+        "Iowa publication receipt recovery is not explicitly read-only and hash-authorized",
+      );
     }
     const reservation = reserveReceipt(
       root,
       receiptPath,
       built.sha256,
       authorizationArtifact.sha256,
+      mode,
+      publicationReceipt?.summary.sha256 ?? null,
       { allowExisting: true },
     );
     let sql;
@@ -678,7 +1013,7 @@ export async function runIowaGeographyPublication(options = {}) {
           throw new Error("Iowa publication receipt recovery database identity drifted");
         }
         const versions = await nv.unsafe([
-          "select e.year,gv.metadata from geography_versions gv",
+          "select e.year,gv.status,gv.caveat,gv.metadata from geography_versions gv",
           "join elections e on e.id=gv.election_id",
           "where gv.state_code='IA' and gv.geography_type='precinct'",
           " and gv.metadata->'releaseCandidate'->>'sha256'=$1 order by e.year",
@@ -686,9 +1021,11 @@ export async function runIowaGeographyPublication(options = {}) {
         if (versions.length !== 3) {
           throw new Error("Iowa publication receipt recovery found an incomplete version set");
         }
-        const firstActivation = versions[0]?.metadata?.publicActivation;
-        const changedAtUtc = firstActivation?.changedAtUtc;
-        const revision = Number(firstActivation?.revision);
+        const operationAudit = mode === "publish"
+          ? versions[0]?.metadata?.publicActivation
+          : versions[0]?.metadata?.publicActivation?.rollback;
+        const changedAtUtc = operationAudit?.changedAtUtc;
+        const revision = Number(operationAudit?.revision);
         const recoveryNow = currentTime();
         if (
           typeof changedAtUtc !== "string"
@@ -697,33 +1034,29 @@ export async function runIowaGeographyPublication(options = {}) {
           || !Number.isInteger(revision)
           || revision < 1
         ) {
-          throw new Error("Iowa publication receipt recovery activation metadata is incomplete");
+          throw new Error("Iowa publication receipt recovery audit is incomplete");
         }
-        const authorization = validateAuthorizationAt(new Date(changedAtUtc));
-        if (currentGitSha(root) !== authorization.productionDeployment.gitSha) {
-          throw new Error("Iowa publication recovery checkout does not match the verified deployment");
-        }
+        const authorization = validateAuthorizationAt(
+          new Date(changedAtUtc),
+          true,
+        );
         const context = {
+          mode,
           plan: built.plan,
           planSha256: built.sha256,
           authorization,
           authorizationSha256: authorizationArtifact.sha256,
+          publicationReceipt: publicationReceipt?.summary ?? null,
           changedAtUtc,
           gisPlan,
           executionContext,
         };
-        const postconditions = await verifyPostconditions(nv, context, revision);
-        const revisionRows = await nv.unsafe([
-          "select revision::int revision,reason from public_data_revisions",
-          "where scope='public'",
-        ].join("\n"));
-        if (
-          Number(revisionRows[0]?.revision) !== revision
-          || String(revisionRows[0]?.reason)
-            !== "Iowa precinct geometry publish " + authorization.activationId
-        ) {
-          throw new Error("Iowa publication receipt recovery public revision drifted");
-        }
+        const postconditions = await verifyPostconditions(
+          nv,
+          context,
+          revision,
+          mode,
+        );
         return { authorization, changedAtUtc, revision, postconditions };
       });
     } catch (error) {
@@ -741,11 +1074,14 @@ export async function runIowaGeographyPublication(options = {}) {
     const receiptBytes = finishPublicationReceipt(reservation, receipt);
     return {
       mode: "recover_receipt",
-      decision: "RECOVERED_PUBLICATION_RECEIPT",
+      operation: mode,
+      decision: mode === "publish"
+        ? "RECOVERED_PUBLICATION_RECEIPT"
+        : "RECOVERED_ROLLBACK_RECEIPT",
       activationId: recovered.authorization.activationId,
       revision: recovered.revision,
       productionMutationPerformed: false,
-      publicDeliveryAuthorized: true,
+      publicDeliveryAuthorized: mode === "publish",
       receipt: {
         path: receiptPath,
         sha256: sha256(receiptBytes),
@@ -756,28 +1092,38 @@ export async function runIowaGeographyPublication(options = {}) {
 
   const initialNow = currentTime();
   const authorization = validateAuthorizationAt(initialNow);
+  const writeAuthorized = mode === "publish"
+    ? environment.CRM_IA_PRECINCT_PUBLICATION_WRITES
+        === "I_ACKNOWLEDGE_ATOMIC_IOWA_PRECINCT_PUBLIC_CUTOVER"
+      && environment.CRM_IA_PRECINCT_PUBLICATION_ACTIVATION_ID
+        === authorization.activationId
+    : environment.CRM_IA_PRECINCT_ROLLBACK_WRITES
+        === "I_ACKNOWLEDGE_DATABASE_FIRST_IOWA_PRECINCT_PUBLIC_ROLLBACK"
+      && environment.CRM_IA_PRECINCT_ROLLBACK_ID === authorization.rollbackId
+      && environment.CRM_IA_PRECINCT_PUBLICATION_RECEIPT_SHA256
+        === publicationReceipt.summary.sha256;
   if (
     environment.CRM_DATABASE_ENVIRONMENT !== "production"
-    || environment.CRM_IA_PRECINCT_PUBLICATION_WRITES
-      !== "I_ACKNOWLEDGE_ATOMIC_IOWA_PRECINCT_PUBLIC_CUTOVER"
+    || !writeAuthorized
     || environment.CRM_IA_PRECINCT_PUBLICATION_PACKAGE_SHA256
       !== built.plan.releaseCandidate.sha256
     || environment.CRM_IA_PRECINCT_PUBLICATION_PLAN_SHA256 !== built.sha256
     || environment.CRM_IA_PRECINCT_PUBLICATION_AUTHORIZATION_SHA256
       !== authorizationArtifact.sha256
-    || environment.CRM_IA_PRECINCT_PUBLICATION_ACTIVATION_ID
-      !== authorization.activationId
   ) {
-    throw new Error("Iowa public cutover is not explicitly hash-authorized");
+    throw new Error("Iowa public " + mode + " is not explicitly hash-authorized");
   }
-  if (currentGitSha(root) !== authorization.productionDeployment.gitSha) {
-    throw new Error("Iowa publication checkout does not match the verified deployment");
-  }
+  const activePublicAuthorization = mode === "publish"
+    ? authorization
+    : publicAuthorization;
+  verifyIowaPublicationGitCandidate(root, activePublicAuthorization, options.gitRunner);
   const reservation = reserveReceipt(
     root,
     receiptPath,
     built.sha256,
     authorizationArtifact.sha256,
+    mode,
+    publicationReceipt?.summary.sha256 ?? null,
   );
   let sql;
   try {
@@ -797,17 +1143,21 @@ export async function runIowaGeographyPublication(options = {}) {
     committed = await sql.begin(async (nv) => {
       const transactionNow = currentTime();
       const finalAuthorization = validateAuthorizationAt(transactionNow);
-      if (
-        finalAuthorization.activationId !== authorization.activationId
-        || currentGitSha(root) !== finalAuthorization.productionDeployment.gitSha
-      ) {
-        throw new Error("Iowa publication authorization or checkout drifted before the transaction");
+      if (finalAuthorization.activationId !== authorization.activationId) {
+        throw new Error("Iowa publication authorization drifted before the transaction");
       }
+      verifyIowaPublicationGitCandidate(
+        root,
+        activePublicAuthorization,
+        options.gitRunner,
+      );
       const result = await applyIowaGeographyPublicationTransaction(nv, {
+        mode,
         plan: built.plan,
         planSha256: built.sha256,
         authorization: finalAuthorization,
         authorizationSha256: authorizationArtifact.sha256,
+        publicationReceipt: publicationReceipt?.summary ?? null,
         changedAtUtc: transactionNow.toISOString(),
         gisPlan,
         executionContext,
@@ -827,11 +1177,12 @@ export async function runIowaGeographyPublication(options = {}) {
   const receiptBytes = finishPublicationReceipt(reservation, receipt);
   return {
     mode: "apply",
-    decision: "PUBLISHED",
+    operation: mode,
+    decision: mode === "publish" ? "PUBLISHED" : "ROLLED_BACK",
     activationId: authorization.activationId,
     revision: committed.revision,
     productionMutationPerformed: true,
-    publicDeliveryAuthorized: true,
+    publicDeliveryAuthorized: mode === "publish",
     receipt: {
       path: receiptPath,
       sha256: sha256(receiptBytes),

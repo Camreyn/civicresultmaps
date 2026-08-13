@@ -64,6 +64,8 @@
 
 # Preserve every hash-pinned Iowa precinct source and reviewed artifact byte-for-byte.
 /data/precinct-geometry/IA/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/IA/raw-shared/dspg-isu/DESCRIPTION text eol=crlf
+/data/precinct-geometry/IA/raw-shared/dspg-isu/LICENSE.md text eol=crlf
 /data/precinct-geometry/IA/**/*.pdf -diff
 /data/precinct-geometry/IA/**/*.zip -diff
 /data/precinct-geometry/IA/**/*.gz -diff
