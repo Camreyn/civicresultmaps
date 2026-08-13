@@ -7269,10 +7269,19 @@ evidence against its verified top-level package.
   immutable package, canonical activation, production preflight, full backup
   and restore proof, sole-owner hidden load, Blob publication, database-gated
   deployment, atomic public cutover, and read-only receipt-recovery paths are
-  documented in `docs/developer/ia-precinct-gis-runbook.md`. That runbook also
-  records the remaining production stop condition accurately: this change does
-  not include an executable receipt-bound public rollback, so `GO_PUBLIC`
-  remains unauthorized until that path is implemented and reviewed.
+  documented in `docs/developer/ia-precinct-gis-runbook.md`.
+
+- The follow-up Iowa rollback contract binds a new `GO_ROLLBACK` authorization
+  to the exact successful publication receipt and reloads the original
+  hash-pinned `GO_PUBLIC` authorization. The original receipt's activation,
+  revision, time, delivery origin, authorization hash, and gate-capable rollback
+  deployment are checked again inside the locked transaction. The database is
+  blocked first across all three geography versions, crosswalks, reporting
+  units, source records, and import runs; original caveats and publication
+  provenance remain intact under a nested rollback audit. Only afterward may
+  the exact pinned application deployment be restored. An ambiguous commit has
+  a read-only, receipt-recovery path that preserves the pending marker on failed
+  reconciliation.
 
 - This work performs no production database mutation, Blob upload, Vercel
   setting or deployment change, canonical activation, or public eligibility

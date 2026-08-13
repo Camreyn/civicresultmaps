@@ -14,6 +14,11 @@ export const IOWA_PUBLICATION_SCOPES = Object.freeze([
   "authorize_ia_precinct_results",
   "increment_public_data_revision",
 ]);
+export const IOWA_PUBLIC_ROLLBACK_SCOPES = Object.freeze([
+  "block_ia_geography_versions",
+  "revoke_ia_precinct_results",
+  "increment_public_data_revision",
+]);
 
 const EXPECTED_TOTALS = Object.freeze({
   reportingUnits: 4_994,
@@ -430,6 +435,7 @@ export function buildIowaPublicationAuthorizationTemplate(plan, planSha256) {
       deploymentId: null,
       url: null,
       gitSha: null,
+      gitTreeSha: null,
       readyVerified: false,
       promotedVerified: false,
       blockedResultGateVerified: false,
@@ -437,6 +443,16 @@ export function buildIowaPublicationAuthorizationTemplate(plan, planSha256) {
       verifiedAtUtc: null,
       deliveryOrigin: plan.blobPublication.deliveryOrigin,
       staticRegistrySha256: plan.staticRegistry.sha256,
+    },
+    rollbackTarget: {
+      deploymentId: null,
+      url: null,
+      gitSha: null,
+      gitTreeSha: null,
+      verifiedAtUtc: null,
+      gateCapableVerified: false,
+      blockedResultGateVerified: false,
+      blockedGeometryGateVerified: false,
     },
     evidence: {
       hiddenLoad: { path: plan.hiddenLoad.path, sha256: plan.hiddenLoad.sha256 },
@@ -453,9 +469,17 @@ export function validateIowaPublicationAuthorization(value, context) {
   const authorizedAt = Date.parse(value?.authorizedAtUtc);
   const expiresAt = Date.parse(value?.expiresAtUtc);
   const deployedAt = Date.parse(value?.productionDeployment?.verifiedAtUtc);
+  const rollbackTargetAt = Date.parse(value?.rollbackTarget?.verifiedAtUtc);
+  const recovery = context.recovery === true;
   let deploymentUrl;
+  let rollbackTargetUrl;
   try {
     deploymentUrl = new URL(value?.productionDeployment?.url);
+  } catch {
+    // The common fail-closed check below reports an incompatible record.
+  }
+  try {
+    rollbackTargetUrl = new URL(value?.rollbackTarget?.url);
   } catch {
     // The common fail-closed check below reports an incompatible record.
   }
@@ -472,16 +496,13 @@ export function validateIowaPublicationAuthorization(value, context) {
     || value?.publicationPlan?.id !== context.plan.id
     || value?.publicationPlan?.sha256 !== context.planSha256
     || !semanticallyEqual(value?.scopes, IOWA_PUBLICATION_SCOPES)
-    || [authorizedAt, expiresAt, deployedAt].some(Number.isNaN)
-    || authorizedAt > now
+    || [authorizedAt, expiresAt, deployedAt, rollbackTargetAt].some(Number.isNaN)
     || expiresAt <= authorizedAt
-    || now > expiresAt
     || deployedAt > authorizedAt
-    || deployedAt > now
-    || now - deployedAt > 4 * 60 * 60 * 1000
     || typeof value?.productionDeployment?.deploymentId !== "string"
     || !value.productionDeployment.deploymentId.trim()
     || !/^[a-f0-9]{40}$/.test(value?.productionDeployment?.gitSha ?? "")
+    || !/^[a-f0-9]{40}$/.test(value?.productionDeployment?.gitTreeSha ?? "")
     || value?.productionDeployment?.readyVerified !== true
     || value?.productionDeployment?.promotedVerified !== true
     || value?.productionDeployment?.blockedResultGateVerified !== true
@@ -495,6 +516,31 @@ export function validateIowaPublicationAuthorization(value, context) {
     || deploymentUrl?.password
     || deploymentUrl?.search
     || deploymentUrl?.hash
+    || typeof value?.rollbackTarget?.deploymentId !== "string"
+    || !value.rollbackTarget.deploymentId.trim()
+    || value.rollbackTarget.deploymentId
+      === value.productionDeployment.deploymentId
+    || !/^[a-f0-9]{40}$/.test(value?.rollbackTarget?.gitSha ?? "")
+    || !/^[a-f0-9]{40}$/.test(value?.rollbackTarget?.gitTreeSha ?? "")
+    || value.rollbackTarget.gitTreeSha
+      === value.productionDeployment.gitTreeSha
+    || value?.rollbackTarget?.gateCapableVerified !== true
+    || value?.rollbackTarget?.blockedResultGateVerified !== true
+    || value?.rollbackTarget?.blockedGeometryGateVerified !== true
+    || rollbackTargetUrl?.protocol !== "https:"
+    || rollbackTargetUrl?.username
+    || rollbackTargetUrl?.password
+    || rollbackTargetUrl?.search
+    || rollbackTargetUrl?.hash
+    || rollbackTargetAt > authorizedAt
+    || (!recovery && (
+      authorizedAt > now
+      || now > expiresAt
+      || deployedAt > now
+      || now - deployedAt > 4 * 60 * 60 * 1000
+      || rollbackTargetAt > now
+      || now - rollbackTargetAt > 4 * 60 * 60 * 1000
+    ))
     || value?.evidence?.hiddenLoad?.path !== context.plan.hiddenLoad.path
     || value?.evidence?.hiddenLoad?.sha256 !== context.plan.hiddenLoad.sha256
     || value?.evidence?.blobPublication?.path
@@ -508,5 +554,100 @@ export function validateIowaPublicationAuthorization(value, context) {
     activationId: value.activationId.trim(),
     approvedBy: value.approvedBy.trim(),
     productionDeployment: value.productionDeployment,
+    rollbackTarget: value.rollbackTarget,
+  };
+}
+
+export function buildIowaPublicRollbackAuthorizationTemplate(
+  plan,
+  planSha256,
+  publicationReceipt,
+) {
+  return {
+    schemaVersion: 1,
+    state: "IA",
+    decision: "NO_GO_ROLLBACK",
+    rollbackId: null,
+    approvedBy: null,
+    authorizedAtUtc: null,
+    expiresAtUtc: null,
+    releaseCandidate: plan.releaseCandidate,
+    publicationPlan: { id: plan.id, sha256: planSha256 },
+    publication: {
+      activationId: publicationReceipt.activationId,
+      revision: publicationReceipt.revision,
+      changedAtUtc: publicationReceipt.changedAtUtc,
+    },
+    scopes: [...IOWA_PUBLIC_ROLLBACK_SCOPES],
+    rollbackWindow: {
+      startsAtUtc: null,
+      endsAtUtc: null,
+    },
+    applicationRollback: {
+      target: publicationReceipt.rollbackTarget,
+      databaseBlockFirstAcknowledged: false,
+      restoreAfterDatabaseRollbackAcknowledged: false,
+    },
+    evidence: {
+      publicationReceipt: {
+        path: publicationReceipt.path,
+        sha256: publicationReceipt.sha256,
+      },
+    },
+  };
+}
+
+export function validateIowaPublicRollbackAuthorization(value, context) {
+  const now = context.now ?? Date.now();
+  const authorizedAt = Date.parse(value?.authorizedAtUtc);
+  const expiresAt = Date.parse(value?.expiresAtUtc);
+  const startsAt = Date.parse(value?.rollbackWindow?.startsAtUtc);
+  const endsAt = Date.parse(value?.rollbackWindow?.endsAtUtc);
+  const receipt = context.publicationReceipt;
+  const recovery = context.recovery === true;
+  if (
+    value?.schemaVersion !== 1
+    || value?.state !== "IA"
+    || value?.decision !== "GO_ROLLBACK"
+    || typeof value?.rollbackId !== "string"
+    || !value.rollbackId.trim()
+    || typeof value?.approvedBy !== "string"
+    || !value.approvedBy.trim()
+    || value?.releaseCandidate?.id !== context.plan.releaseCandidate.id
+    || value?.releaseCandidate?.sha256 !== context.plan.releaseCandidate.sha256
+    || value?.publicationPlan?.id !== context.plan.id
+    || value?.publicationPlan?.sha256 !== context.planSha256
+    || value?.publication?.activationId !== receipt.activationId
+    || Number(value?.publication?.revision) !== receipt.revision
+    || value?.publication?.changedAtUtc !== receipt.changedAtUtc
+    || !semanticallyEqual(value?.scopes, IOWA_PUBLIC_ROLLBACK_SCOPES)
+    || [authorizedAt, expiresAt, startsAt, endsAt].some(Number.isNaN)
+    || expiresAt <= authorizedAt
+    || startsAt > endsAt
+    || (!recovery && (
+      authorizedAt > now
+      || now > expiresAt
+      || startsAt > now
+      || now > endsAt
+    ))
+    || !semanticallyEqual(
+      value?.applicationRollback?.target,
+      receipt.rollbackTarget,
+    )
+    || value?.applicationRollback?.databaseBlockFirstAcknowledged !== true
+    || value?.applicationRollback?.restoreAfterDatabaseRollbackAcknowledged
+      !== true
+    || value?.evidence?.publicationReceipt?.path !== receipt.path
+    || value?.evidence?.publicationReceipt?.sha256 !== receipt.sha256
+  ) {
+    throw new Error("Iowa rollback authorization is absent, expired, or incompatible");
+  }
+  return {
+    activationId: value.rollbackId.trim(),
+    rollbackId: value.rollbackId.trim(),
+    publicationActivationId: receipt.activationId,
+    approvedBy: value.approvedBy.trim(),
+    rollbackWindow: value.rollbackWindow,
+    applicationRollback: value.applicationRollback,
   };
 }

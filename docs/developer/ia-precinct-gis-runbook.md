@@ -198,15 +198,20 @@ hash. Preserve the Blob evidence path, SHA-256, and one credential-free HTTPS
 
 ## Deployment and atomic public cutover
 
-1. Set `CRM_PRECINCT_GEOGRAPHY_ORIGIN` to the exact Blob `deliveryOrigin` for
+1. Before changing Production, record the exact currently promoted,
+   gate-capable rollback deployment: deployment ID, credential-free HTTPS URL,
+   40-hex Git commit, resolved Git tree, and verification time. Confirm that
+   this deployment returns no Iowa precinct results and 404 for Iowa precinct
+   geometry while the database is blocked.
+2. Set `CRM_PRECINCT_GEOGRAPHY_ORIGIN` to the exact Blob `deliveryOrigin` for
    Preview only and create a fresh protected preview deployment of the static
    activation commit.
-2. Confirm its Git SHA and verify both Iowa endpoints remain closed while the
+3. Confirm its Git SHA and tree, and verify both Iowa endpoints remain closed while the
    database rows are blocked.
-3. Set the same origin for Production, merge the exact activation tree to
+4. Set the same origin for Production, merge the exact activation tree to
    `main`, and wait for its production deployment to be READY and PROMOTED.
-4. Again verify precinct results are empty and precinct geography returns 404.
-5. Build the database-publication plan from the exact hidden receipt and Blob
+5. Again verify precinct results are empty and precinct geography returns 404.
+6. Build the database-publication plan from the exact hidden receipt and Blob
    evidence:
 
 ```powershell
@@ -215,9 +220,11 @@ npm.cmd run precinct-gis:publication-status:ia -- --package=$PKG --package-sha25
 npm.cmd run precinct-gis:publication-status:ia -- --package=$PKG --package-sha256=$PKG_SHA --hidden-receipt=$HIDDEN_RECEIPT --hidden-receipt-sha256=$HIDDEN_SHA --blob-evidence=$BLOB_RECEIPT --blob-evidence-sha256=$BLOB_SHA --write-authorization-template
 ```
 
-Complete the publication authorization as `GO_PUBLIC`, pin the READY/PROMOTED
-production deployment and blocked-gate observations, and retain exactly these
-scopes:
+Complete the publication authorization as `GO_PUBLIC`. Pin the READY/PROMOTED
+production deployment's commit and resolved tree, the blocked-gate
+observations, and the previously recorded gate-capable rollback deployment's
+commit and resolved tree. The publication and rollback deployment IDs and
+trees must differ. Retain exactly these scopes:
 
 - `publish_ia_geography_versions`
 - `authorize_ia_precinct_results`
@@ -247,27 +254,65 @@ unavailable and issue #223 remains open.
 
 ## Rollback
 
-This implementation does **not** ship an executable, receipt-bound public
-rollback transaction. The full-schema backup is disaster-recovery evidence;
-it is not a substitute for a reviewed row-scoped rollback command. Therefore
-`GO_PUBLIC` is a hard stop until a separate change implements and tests all of
-the following:
+Preserve the exact successful publication receipt path and SHA-256. A rollback
+uses a new authorization; the original `GO_PUBLIC` record cannot authorize it.
+Generate the fail-closed template with the exact publication receipt:
 
-- one authorization bound to the exact successful Iowa publication receipt;
-- one atomic transaction that blocks the three geography versions and linked
-  reporting units together, preserving the original publication audit;
-- exact postconditions and read-only recovery for an ambiguous commit; and
-- a pinned gate-capable application deployment and fail-closed rollback order.
+```powershell
+npm.cmd run precinct-gis:publication-status:ia -- --package=$PKG --package-sha256=$PKG_SHA --hidden-receipt=$HIDDEN_RECEIPT --hidden-receipt-sha256=$HIDDEN_SHA --blob-evidence=$BLOB_RECEIPT --blob-evidence-sha256=$BLOB_SHA --plan-sha256=$PUBLICATION_PLAN_SHA --rollback --publication-receipt=$PUBLICATION_RECEIPT --publication-receipt-sha256=$PUBLICATION_RECEIPT_SHA --write-authorization-template
+```
 
-Before `GO_PUBLIC`, a failed preview, deployment, or Blob check simply stops the
-release while the database remains blocked. Do not improvise manual SQL, treat
-the full backup as an ordinary rollback, or claim that a public cutover is
-reversible with the tooling in this change.
+Complete it as `GO_ROLLBACK` with a unique rollback ID, an active window, the
+same pinned rollback target copied from the successful publication receipt,
+and both database-first/application-second acknowledgements. Retain exactly:
+
+- `block_ia_geography_versions`
+- `revoke_ia_precinct_results`
+- `increment_public_data_revision`
+
+Run the database reversal first while the activated, gate-capable application
+is still serving Production:
+
+```powershell
+$env:CRM_DATABASE_ENVIRONMENT='production'
+$env:CRM_IA_PRECINCT_ROLLBACK_WRITES='I_ACKNOWLEDGE_DATABASE_FIRST_IOWA_PRECINCT_PUBLIC_ROLLBACK'
+$env:CRM_IA_PRECINCT_PUBLICATION_PACKAGE_SHA256=$PKG_SHA
+$env:CRM_IA_PRECINCT_PUBLICATION_PLAN_SHA256=$PUBLICATION_PLAN_SHA
+$env:CRM_IA_PRECINCT_PUBLICATION_AUTHORIZATION_SHA256=$ROLLBACK_AUTH_SHA
+$env:CRM_IA_PRECINCT_PUBLICATION_RECEIPT_SHA256=$PUBLICATION_RECEIPT_SHA
+$env:CRM_IA_PRECINCT_ROLLBACK_ID='<rollback ID>'
+
+npm.cmd run precinct-gis:publication-status:ia -- --package=$PKG --package-sha256=$PKG_SHA --hidden-receipt=$HIDDEN_RECEIPT --hidden-receipt-sha256=$HIDDEN_SHA --blob-evidence=$BLOB_RECEIPT --blob-evidence-sha256=$BLOB_SHA --plan-sha256=$PUBLICATION_PLAN_SHA --rollback --publication-receipt=$PUBLICATION_RECEIPT --publication-receipt-sha256=$PUBLICATION_RECEIPT_SHA --authorization=$ROLLBACK_AUTH --authorization-sha256=$ROLLBACK_AUTH_SHA --apply
+```
+
+The transaction verifies the exact publication activation, authorization hash,
+receipt hash, revision, time, manifests, delivery origin, and rollback target;
+then it blocks all three geography versions and linked result units together,
+restores each original caveat, preserves the publication audit, records the
+rollback audit, and increments the public revision. Verify both endpoints are
+closed before restoring only the deployment pinned in the receipt. Hold other
+Production deployments until that restore and live verification finish.
+
+If the transaction body completed but commit acknowledgement or local receipt
+writing was ambiguous, do not rerun `--apply` or delete the `.pending` marker.
+Use the same command with `--recover-receipt` under these read-only guards:
+
+```powershell
+$env:CRM_DATABASE_ENVIRONMENT='production-read-only'
+$env:CRM_IA_PRECINCT_PUBLICATION_RECEIPT_RECOVERY=$PUBLICATION_PLAN_SHA
+$env:CRM_IA_PRECINCT_PUBLICATION_AUTHORIZATION_SHA256=$ROLLBACK_AUTH_SHA
+$env:CRM_IA_PRECINCT_PUBLICATION_RECEIPT_SHA256=$PUBLICATION_RECEIPT_SHA
+```
+
+Recovery opens a read-only transaction, requires the exact durable rollback
+metadata and public revision, and writes only the immutable local receipt. The
+full-schema backup remains disaster-recovery evidence; it is not a substitute
+for this row-scoped rollback.
 
 ## Current authorization status
 
 This implementation and its local rehearsals authorize no production write,
 Blob upload, Vercel environment change, deployment, canonical activation, or
-public database transition. Hidden-load and publication tooling remain
-fail-closed; the missing executable public rollback is an additional required
-gate before any `GO_PUBLIC` authorization.
+public database transition. Hidden-load, publication, database-first rollback,
+and both receipt-recovery paths remain fail-closed until their exact separately
+reviewed authorization records are completed.

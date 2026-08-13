@@ -49,7 +49,7 @@ export async function buildIowaPrecinctReleaseReadiness(options = {}) {
       "Continue no-email archive and official-download discovery for the complete election-effective Iowa 2012 precinct boundary set; retain the tracked blocker until it is found and reviewed.",
       "Review the regenerated exact hash-pinned artifacts, license terms, and official-result reconciliation.",
       "Build immutable parent-scoped delivery packages for 2016, 2020, and 2024 while the unresolved 2012 vintage remains blocked.",
-      "Implement and review a receipt-bound atomic public rollback before any GO_PUBLIC authorization.",
+      "Review the receipt-bound database-first rollback and recovery contract before any GO_PUBLIC authorization.",
       "Use a separately reviewed guarded production release; this readiness report performs no publication or database write.",
     ],
   };
