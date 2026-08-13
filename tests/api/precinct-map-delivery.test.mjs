@@ -192,6 +192,24 @@ test("delivery joins use explicit resultUnitCode rather than display name", () =
 
   assert.throws(
     () => joinPrecinctDeliveryResults([mapFeature], [matching, matching]),
-    /duplicate precinct result code/,
+    /duplicate local result code/,
   );
+});
+
+test("delivery joins accept Maine local reporting units explicitly", () => {
+  const mapFeature = feature("ME1", "23001");
+  mapFeature.properties.geographyType = "local_reporting_unit";
+  mapFeature.properties.resultUnitCode =
+    "reporting:ME:2024-11-05-general:local_reporting_unit:23001:ME1";
+  const matching = {
+    ...result(mapFeature.properties.resultUnitCode, "Auburn"),
+    state: "ME",
+    level: "local_reporting_unit",
+  };
+  const joined = joinPrecinctDeliveryResults(
+    [mapFeature],
+    [matching],
+    "local_reporting_unit",
+  );
+  assert.equal(joined[0].result?.jurisdictionCode, matching.jurisdictionCode);
 });

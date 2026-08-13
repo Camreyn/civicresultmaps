@@ -1,21 +1,61 @@
 import { createHash } from "node:crypto";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 
-const PRECINCT_PUBLICATION_GATED_STATES = new Set(["IA", "MN", "NV", "TX"]);
+const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
+  IA: {
+    geographyLevel: "precinct",
+    releaseCandidatePattern: /^ia-precinct-gis-three-election-v\d+$/,
+  },
+  ME: {
+    geographyLevel: "local_reporting_unit",
+    releaseCandidatePattern: /^me-local-reporting-gis-three-election-v\d+$/,
+  },
+  MN: {
+    geographyLevel: "precinct",
+    releaseCandidatePattern: /^mn-precinct-gis-four-election-v\d+$/,
+  },
+  NV: {
+    geographyLevel: "precinct",
+    releaseCandidatePattern: /^nv-precinct-gis-three-election-v\d+$/,
+  },
+  TX: {
+    geographyLevel: "precinct",
+    releaseCandidatePattern: /^tx-precinct-gis-four-election-v\d+$/,
+  },
+} satisfies Record<string, {
+  geographyLevel: string;
+  releaseCandidatePattern: RegExp;
+}>);
+
+type GuardedLocalGeographyState = keyof typeof GUARDED_LOCAL_GEOGRAPHY_RELEASES;
+
+function guardedReleaseContract(state: string) {
+  const normalized = state.trim().toUpperCase();
+  return Object.hasOwn(GUARDED_LOCAL_GEOGRAPHY_RELEASES, normalized)
+    ? GUARDED_LOCAL_GEOGRAPHY_RELEASES[
+        normalized as GuardedLocalGeographyState
+      ]
+    : null;
+}
+
+export function guardedLocalGeographyLevel(state: string) {
+  return guardedReleaseContract(state)?.geographyLevel ?? null;
+}
 
 export function requiresPrecinctResultPublicationGate(input: {
   state: string;
   level: string;
 }) {
-  return PRECINCT_PUBLICATION_GATED_STATES.has(input.state.toUpperCase())
-    && input.level === "precinct";
+  const contract = guardedReleaseContract(input.state);
+  return contract !== null && input.level === contract.geographyLevel;
 }
 
 export function requiresPrecinctGeometryPublicationGate(
   manifest: Pick<PrecinctGeometryManifest, "state" | "geography">,
 ) {
-  return PRECINCT_PUBLICATION_GATED_STATES.has(manifest.state)
-    && manifest.geography.level === "precinct";
+  const contract = guardedReleaseContract(manifest.state);
+  return contract !== null
+    && manifest.geography.level === contract.geographyLevel;
 }
 
 function canonicalize(value: unknown): unknown {
@@ -106,15 +146,13 @@ export function matchesPrecinctGeometryPublicationMetadata(
     ?? expectedFeatureCount;
   const releaseSha256 = releaseCandidate.sha256;
   const changedAtUtc = activation.changedAtUtc;
+  const releaseContract = guardedReleaseContract(manifest.state);
   return metadata.manifestId === manifest.id
     && metadata.publicDeliveryAuthorized === true
     && releaseCandidate.publicDeliveryAuthorized === true
     && typeof releaseCandidate.id === "string"
-    && new RegExp(
-      "^" + manifest.state.toLowerCase() + "-precinct-gis-"
-        + (["IA", "NV"].includes(manifest.state) ? "three" : "four")
-        + "-election-v\\d+$",
-    ).test(releaseCandidate.id)
+    && releaseContract !== null
+    && releaseContract.releaseCandidatePattern.test(releaseCandidate.id)
     && typeof releaseSha256 === "string"
     && /^[a-f0-9]{64}$/.test(releaseSha256)
     && recordValue(metadata.normalization)?.featureCount === expectedFeatureCount

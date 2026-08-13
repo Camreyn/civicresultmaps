@@ -28,7 +28,7 @@ export type ResultRow = {
   state: string;
   year: number;
   office: string;
-  level: "county" | "state" | "district" | "precinct" | "city" | "town" | "city_town" | "rest_of_county" | "federal_precincts" | "non_geographic";
+  level: "county" | "state" | "district" | "precinct" | "local_reporting_unit" | "city" | "town" | "city_town" | "rest_of_county" | "federal_precincts" | "non_geographic";
   jurisdictionCode: string;
   jurisdictionName: string;
   jurisdictionTag?: string | null;

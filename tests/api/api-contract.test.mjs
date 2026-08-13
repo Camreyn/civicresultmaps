@@ -202,7 +202,7 @@ test("results API keeps contest offices separated", () => {
     /listResults\(\{[\s\S]*?state,[\s\S]*?year,[\s\S]*?level,[\s\S]*?office,[\s\S]*?parentGeoid,/,
   );
   assert.match(route, /parentGeoidQuery\.safeParse/);
-  assert.match(route, /parentGeoid is supported only for precinct results/);
+  assert.match(route, /parentGeoid is supported only for county-scoped local results/);
   assert.match(
     dataAccess,
     /lower\(elections\.office\) = \$\{normalizedOffice\}/,

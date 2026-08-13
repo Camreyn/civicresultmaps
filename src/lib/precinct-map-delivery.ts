@@ -377,15 +377,16 @@ export function selectPrecinctDeliveryFeatures(
 export function joinPrecinctDeliveryResults(
   features: PrecinctDeliveryFeature[],
   results: ResultRow[],
+  expectedLevel = "precinct",
 ): JoinedPrecinctDeliveryFeature[] {
   const byCode = new Map<string, ResultRow>();
   for (const result of results) {
-    if (result.level !== "precinct") {
+    if (result.level !== expectedLevel) {
       continue;
     }
     if (byCode.has(result.jurisdictionCode)) {
       throw new Error(
-        "duplicate precinct result code " + result.jurisdictionCode,
+        "duplicate local result code " + result.jurisdictionCode,
       );
     }
     byCode.set(result.jurisdictionCode, result);

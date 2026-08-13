@@ -48,11 +48,11 @@ export async function GET(request: NextRequest) {
         manifestId,
       );
     } catch {
-      return errorResponse("local precinct rehearsal configuration failed", 500);
+      return errorResponse("local geography rehearsal configuration failed", 500);
     }
   }
   if (!manifest && !rehearsal) {
-    return errorResponse("eligible precinct geography manifest not found", 404);
+    return errorResponse("eligible local geography manifest not found", 404);
   }
   if (
     manifest
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     );
   }
   if (manifest && !(await isPrecinctGeometryManifestPublished(manifest))) {
-    return errorResponse("precinct geography publication is not active", 404);
+    return errorResponse("local geography publication is not active", 404);
   }
 
   try {
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
       apiEnvelope(delivery.collection, {
         source: localRehearsal
           ? "local-precinct-rehearsal-candidate"
-          : "immutable-precinct-geography-delivery",
+          : "immutable-local-geography-delivery",
         manifestId: selectedManifest.id,
         parentGeoid,
         rowCount: delivery.collection.features.length,
@@ -112,6 +112,6 @@ export async function GET(request: NextRequest) {
       { headers: publicDataCacheHeaders },
     );
   } catch {
-    return errorResponse("precinct geography delivery validation failed", 500);
+    return errorResponse("local geography delivery validation failed", 500);
   }
 }

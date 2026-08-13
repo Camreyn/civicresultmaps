@@ -77,7 +77,7 @@ export const officeQuery = z
   .default("president");
 
 export const levelQuery = z
-  .enum(["county", "state", "district", "precinct", "city", "city_town", "town", "federal_precincts", "non_geographic"])
+  .enum(["county", "state", "district", "precinct", "local_reporting_unit", "city", "city_town", "town", "federal_precincts", "non_geographic"])
   .default("county");
 
 export const parentGeoidQuery = z
