@@ -1198,13 +1198,15 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_geometry_admin_context",
       "tier": "tier_1_official_export_database",
-      "reportingGrain": "municipality_county",
+      "reportingGrain": "local_reporting_unit_county",
       "exportFormats": [
         "official Excel workbooks",
         "official RCV/CVR Excel exports",
         "EAC fallback turnout CSV",
         "registered/enrolled voter text files",
-        "county GeoJSON"
+        "county GeoJSON",
+        "official Maine GeoLibrary local boundary archive",
+        "reviewed election-specific secondary geometry"
       ],
       "sourceUrls": [
         "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
@@ -1212,11 +1214,17 @@
         "https://www.maine.gov/sos/elections-voting/election-results-data/previous-election-results",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23",
-        "https://www.maine.gov/sos/elections-voting/voter-data/statewide-registered-and-enrolled-voter"
+        "https://www.maine.gov/sos/elections-voting/voter-data/statewide-registered-and-enrolled-voter",
+        "https://www.maine.gov/geolib/",
+        "https://github.com/mggg-states/ME-shapefiles",
+        "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/NH5S2I",
+        "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/K7760H",
+        "https://github.com/nytimes/presidential-precinct-map-2024"
       ],
       "exampleUrls": [
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx"
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/2012presmuni.xls"
       ],
       "availableFields": [
         "official county/town presidential Excel rows loaded",
@@ -1226,19 +1234,24 @@
         "official Maine SOS active/inactive registered-enrolled denominator leads collected",
         "county geometry",
         "county equipment context",
-        "official 2016 and 2020 county historical baselines loaded"
+        "official 2016 and 2020 county historical baselines loaded",
+        "official Maine SOS local presidential rows parsed for 2012, 2016, 2020, and 2024",
+        "fail-closed local-reporting-unit geometry/crosswalk candidates for all four years",
+        "exact statewide local-result reconciliation for 2016, 2020, and 2024"
       ],
       "missingFields": [
         "state-native ballots-cast or voter-participation rows paired with registration denominators",
-        "municipality/town geometry or official reporting-unit crosswalk",
-        "normalized official 2012 historical baseline rows from legacy XLS artifacts",
+        "immutable public delivery and production activation for reviewed local-reporting-unit packages",
+        "uniquely attributable 2012 geometry for five rows totaling eight presidential votes",
+        "explicit derivative redistribution permission for the MGGG 2012 candidate or an official replacement with confirmed election-date applicability",
+        "native historical-baseline integration for the parsed 2012 legacy XLS rows",
         "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeMaineSosCountyTownXlsx loads official Maine SOS President county/town rows, U.S. Senate town comparison rows, EAC fallback turnout, and official 2016/2020 historical rows; data/me-2024-data-coverage-inventory.json documents remaining turnout, geometry, 2012 XLS, and admin gaps",
+      "parserStatus": "nativeMaineSosCountyTownXlsx loads official 2024 county/town and comparison rows plus 2016/2020 county baselines. scripts/collect-me-local-reporting-geometry.mjs separately parses the official statewide local result workbooks for all four years, builds reviewed one-to-one local geometry/crosswalk candidates, strips secondary vote attributes, and keeps every package blocked until delivery review.",
       "manualReviewBurden": "low",
       "confidence": "loaded_with_caveat",
-      "caveats": "State UOCAVA is loaded as a non-geographic certified result row and excluded from town review joins. Three town rows are vote-share-only because the Senate workbook grain differs. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review context only. Turnout remains EAC fallback until state-native ballots-cast semantics are reviewed.",
-      "nextAction": "Collect compatible Maine-native ballots-cast/voter-participation rows, municipality/town geometry or a crosswalk, legacy .xls parsing/conversion for 2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records."
+      "caveats": "Maine's statewide presidential workbooks mix towns, plantations, townships, voting districts, and combined units, so the geometry is labeled local reporting unit rather than precinct. No town total is copied to multiple ward polygons. The 2012 candidate is partial: five rows totaling eight votes remain excluded, the MGGG reconstruction is secondary, its exact official November 2012 boundary edition is unconfirmed, and no explicit derivative redistribution permission was located. State UOCAVA remains non-geographic. Turnout remains EAC fallback.",
+      "nextAction": "Build and review immutable delivery/production tooling for the complete 2016, 2020, and 2024 local-reporting-unit candidates. Keep 2012 blocked while seeking the five missing boundaries plus an official election-date replacement or explicit MGGG derivative permission; also collect compatible Maine-native turnout and normalized administration records."
     },
     {
       "state": "MI",

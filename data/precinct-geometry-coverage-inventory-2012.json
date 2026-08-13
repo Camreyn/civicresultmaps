@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-12T23:58:58.000Z",
+  "updatedAt": "2026-08-13T14:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,16 +26,16 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 3,
+    "totalJurisdictions": 4,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 3
+      "reviewed": 4
     },
     "disposition": {
       "undecided": 0,
       "mapped": 2,
-      "partial": 0,
+      "partial": 1,
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
@@ -51,7 +51,8 @@
       "disposition": "mapped",
       "checkedAt": "2026-08-10T01:20:59.259Z",
       "sourceTiers": [
-        "tier_1_official_export_database"
+        "tier_1_official_export_database",
+        "tier_3_secondary_geometry"
       ],
       "resultReportingGrains": [
         "precinct"
@@ -207,6 +208,71 @@
         "All 1,686 geographic presidential result rows reconcile to the retained official Iowa Secretary of State workbooks.",
         "One all-zero Dallas ABSENTEE administrative row is explicitly non-geographic and is never assigned a polygon.",
         "No 2012 vote value or polygon is invented from a later boundary."
+      ]
+    },
+    {
+      "state": "ME",
+      "stateName": "Maine",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 8,
+      "disposition": "partial",
+      "checkedAt": "2026-08-13T14:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "local_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/2012presmuni.xls",
+        "https://www.maine.gov/geolib/"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "me-2012-11-06-general-local-reporting-geometry-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://www.maine.gov/geolib/"
+        ],
+        "secondarySourceLeads": [
+          "https://github.com/mggg-states/ME-shapefiles"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/ME/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/ME/2012-11-06-general/normalized/me-2012-local-reporting-units.geojson.gz",
+          "data/precinct-geometry/ME/2012-11-06-general/crosswalk/me-2012-local-result-crosswalk.json"
+        ],
+        "levels": [
+          "local_reporting_unit"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 507,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 507,
+        "colorableResultUnits": 507,
+        "matchedResultUnits": 507,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "sourceResultUnits": 545,
+        "excludedSourceResultUnits": 5
+      },
+      "blockers": [
+        "Five separately published local rows totaling eight presidential votes have no uniquely attributable retained 2012 geometry.",
+        "The retained MGGG secondary reconstruction does not establish the exact official November 2012 boundary edition.",
+        "No explicit derivative redistribution permission was located for the retained MGGG candidate; an official replacement or permission is required for public delivery.",
+        "No immutable delivery or reviewed production release is declared."
+      ],
+      "nextAction": "Keep 2012 fail-closed while seeking the five missing local boundaries plus an official election-date replacement or explicit MGGG derivative permission.",
+      "notes": [
+        "All displayed vote values come from the retained Maine Secretary of State workbook; MGGG election values are stripped.",
+        "The July 2015 official GeoLibrary archive is retained for source lineage and the 2024 temporal bracket, not backcast as 2012 election geometry.",
+        "Maine publishes a mixed local grain of towns, plantations, townships, voting districts, and combined units. Town totals are never duplicated across ward polygons or proportionally allocated."
       ]
     }
   ]

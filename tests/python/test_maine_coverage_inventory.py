@@ -47,7 +47,7 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         inventory = load_json("data/me-2024-data-coverage-inventory.json")
 
         self.assertEqual(inventory["state"], "ME")
-        self.assertEqual(inventory["checkedAt"], "2026-07-06")
+        self.assertEqual(inventory["checkedAt"], "2026-08-13")
         self.assertIs(inventory["productionChecked"], False)
         self.assertEqual(inventory["repoDrift"][0]["path"], "docs/developer/index.md")
         self.assertEqual(inventory["officialSourceFindings"]["certifiedResults"]["status"], "official_excel_loaded")
@@ -55,7 +55,7 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(inventory["officialSourceFindings"]["rankedChoiceAndCastVoteRecords"]["status"], "official_cd2_rcv_cvr_leads_identified_not_loaded")
         self.assertEqual(inventory["officialSourceFindings"]["stateNativeTurnout"]["status"], "official_registration_denominator_artifacts_collected_not_loaded")
         self.assertEqual(inventory["officialSourceFindings"]["auditRecountCvrIncidentCorrectionLitigation"]["status"], "source_paths_documented_rows_not_loaded")
-        self.assertEqual(inventory["officialSourceFindings"]["historicalBaselines"]["status"], "official_2016_2020_loaded_2012_xls_blocked")
+        self.assertEqual(inventory["officialSourceFindings"]["historicalBaselines"]["status"], "official_2016_2020_loaded_2012_xls_parsed_for_gis_only")
         self.assertEqual(inventory["sourceAcquisitionDecision"]["tier"], "tier_1_official_export_database")
         self.assertTrue(any("not evidence of fraud or misconduct" in risk for risk in inventory["remainingRisks"]))
 
@@ -72,6 +72,20 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         me_package = next(row for row in native_packages["states"] if row["state"] == "ME")
         self.assertEqual(me_package["expected"]["localReviewRows"], 512)
         self.assertEqual(me_package["expected"]["comparisonRows"], 509)
+        self.assertEqual(me_package["artifacts"]["localReportingGeometry"]["level"], "local_reporting_unit")
+
+        for year, filename, features, public_eligible in [
+            (2012, "data/precinct-geometry-coverage-inventory-2012.json", 507, 0),
+            (2016, "data/precinct-geometry-coverage-inventory-2016.json", 532, 0),
+            (2020, "data/precinct-geometry-coverage-inventory-2020.json", 516, 0),
+            (2024, "data/precinct-geometry-coverage-inventory.json", 494, 0),
+        ]:
+            coverage = load_json(filename)
+            maine = next(row for row in coverage["states"] if row["state"] == "ME")
+            self.assertEqual(maine["electionId"][:4], str(year))
+            self.assertEqual(maine["geometry"]["levels"], ["local_reporting_unit"])
+            self.assertEqual(maine["geometry"]["featureCount"], features)
+            self.assertEqual(maine["geometry"]["publicEligibleManifestCount"], public_eligible)
 
         turnout_packages = load_json("data/turnout-source-packages.json")
         me_turnout = next(row for row in turnout_packages["stateYearStatuses"] if row["state"] == "ME")

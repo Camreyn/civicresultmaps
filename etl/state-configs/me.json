@@ -79,7 +79,7 @@
       "parser": "maineSosHistoricalPresidentXlsx",
       "authority": "Maine Secretary of State",
       "timestampBasis": "Official Maine SOS 2020 President by County/Town workbook collected July 2, 2026.",
-      "confidence": "Parsed for county plus State UOCAVA historical context rows.",
+      "confidence": "The native historical loader retains county plus State UOCAVA context rows. The precinct-GIS collector separately parses all 516 published local reporting rows and reconciles them exactly to reviewed local geometry without allocating town totals across wards.",
       "status": "loaded"
     },
     {
@@ -90,7 +90,7 @@
       "parser": "maineSosHistoricalPresidentXlsx",
       "authority": "Maine Secretary of State",
       "timestampBasis": "Official Maine SOS 2016 President workbook collected July 2, 2026.",
-      "confidence": "Parsed for county plus State UOCAVA historical context rows.",
+      "confidence": "The native historical loader retains county plus State UOCAVA context rows. The precinct-GIS collector separately parses all 532 published local reporting rows and reconciles them exactly to reviewed local geometry without allocating town totals across wards.",
       "status": "loaded"
     },
     {
@@ -107,12 +107,12 @@
     {
       "id": "me-2012-president-municipal",
       "category": "Official 2012 historical presidential municipal rows",
-      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012presmuni%282%29.xls",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/2012presmuni.xls",
       "localFile": "data/me-official-sources/me-2012-president-municipal.xls",
       "parser": "officialXlsReference",
       "authority": "Maine Secretary of State",
       "timestampBasis": "Official Maine SOS 2012 President municipal totals XLS collected July 2, 2026.",
-      "confidence": "Official artifact retained as provenance; not parsed because the current repo XLSX reader does not support legacy .xls files.",
+      "confidence": "The native historical loader does not consume legacy XLS. The local-GIS collector reproducibly parses all 545 published rows; 540 are represented by 507 reviewed MGGG secondary shapes, while five rows totaling eight votes remain explicit exclusions. Exact official November 2012 boundary applicability and derivative redistribution permission are unresolved, so this candidate is not public-release eligible.",
       "status": "candidate"
     },
     {
@@ -123,7 +123,7 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry supports county result map joins. Municipality/town geometry or reporting-unit crosswalk remains unloaded.",
+      "confidence": "County geometry supports the current county result map. Separate fail-closed local-reporting-unit packages now retain reviewed 2012, 2016, 2020, and 2024 geometry/crosswalk artifacts; those packages are not public until immutable delivery and production review are completed.",
       "status": "loaded"
     },
     {
@@ -145,7 +145,7 @@
       "parser": "coverageInventoryJson",
       "authority": "Maine Secretary of State",
       "timestampBasis": "Wave 17 official-source coverage inventory checked July 2, 2026.",
-      "confidence": "Documents loaded Maine 2024 Excel result/review artifacts and remaining state-native turnout, municipality geometry, 2012 .xls parsing, and administration-context gaps.",
+      "confidence": "Documents loaded Maine 2024 Excel result/review artifacts and remaining state-native turnout and administration-context gaps. The separate local-reporting-unit collector now parses the 2012 XLS and creates fail-closed four-year geometry packages.",
       "status": "candidate"
     }
   ],
@@ -212,7 +212,7 @@
         "sheetName": "Sheet1"
       }
     ],
-    "warning": "Maine historical baseline rows are official SOS county plus State UOCAVA context for 2016 and 2020. Official 2012 county and municipal XLS artifacts are collected but not parsed because the current repo reader supports .xlsx, not legacy .xls. Use historical rows as contextual baselines only, not 2024 certified data.",
+    "warning": "Maine native historical baseline rows remain official SOS county plus State UOCAVA context for 2016 and 2020. The precinct-GIS collector separately parses the official 2012 municipal XLS, but those local rows are not part of this native historical-baseline contract. Use historical rows as contextual baselines only, not 2024 certified data.",
     "expected": {
       "rowCount": 34,
       "years": [
@@ -220,5 +220,41 @@
         2020
       ]
     }
+  },
+  "localReportingGeometry": {
+    "level": "local_reporting_unit",
+    "label": "Local reporting unit",
+    "collector": "scripts/collect-me-local-reporting-geometry.mjs",
+    "warning": "Maine's statewide presidential workbooks mix towns, plantations, townships, voting districts, and combined local units. They are not uniformly precinct-grain. No town total is duplicated across wards and no vote is proportionally allocated.",
+    "years": [
+      {
+        "year": 2012,
+        "sourceUnits": 545,
+        "mapUnits": 507,
+        "excludedUnits": 5,
+        "status": "blocked_partial_secondary_geometry_terms_and_vintage_unresolved"
+      },
+      {
+        "year": 2016,
+        "sourceUnits": 532,
+        "mapUnits": 532,
+        "excludedUnits": 0,
+        "status": "delivery_pending"
+      },
+      {
+        "year": 2020,
+        "sourceUnits": 516,
+        "mapUnits": 516,
+        "excludedUnits": 0,
+        "status": "delivery_pending"
+      },
+      {
+        "year": 2024,
+        "sourceUnits": 512,
+        "mapUnits": 494,
+        "excludedUnits": 0,
+        "status": "delivery_pending"
+      }
+    ]
   }
 }

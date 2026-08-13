@@ -20,6 +20,8 @@ For the guarded Nevada 2016/2020/2024 precinct-map release, including immutable 
 
 For the guarded Iowa 2016/2020/2024 precinct-map release, official four-year result replay, immutable county delivery, database-gated cutover, and the separately blocked 2012 boundary follow-up, read [`docs/developer/ia-precinct-gis-runbook.md`](ia-precinct-gis-runbook.md).
 
+For Maine's four-year local-reporting-unit collection, mixed-grain labeling rules, deterministic replay, exact SOS reconciliation, and the separately blocked 2012 gaps, read [`docs/developer/me-local-reporting-gis-runbook.md`](me-local-reporting-gis-runbook.md).
+
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
 ## Coordinator Protocol

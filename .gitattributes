@@ -74,6 +74,14 @@
 /data/precinct-geometry/IA/**/*.rda -diff
 /data/precinct-geometry/IA/**/*.geojson -diff
 
+# Preserve every hash-pinned Maine local-reporting source and derivative byte-for-byte.
+/data/precinct-geometry/ME/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/ME/**/*.zip -diff
+/data/precinct-geometry/ME/**/*.gz -diff
+/data/precinct-geometry/ME/**/*.xlsx -diff
+/data/precinct-geometry/ME/**/*.html -diff
+/data/precinct-geometry/ME/**/*.geojson -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

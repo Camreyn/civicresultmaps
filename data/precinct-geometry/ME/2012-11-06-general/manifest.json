@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "me-2012-11-06-general-local-reporting-geometry-candidate-v1",
+  "state": "ME",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "local_reporting_unit",
+    "parentLevel": "county",
+    "boundaryVintage": "MGGG 2012 election reconstruction derived from Maine GeoLibrary and other public boundaries; exact official November 2012 edition unconfirmed",
+    "vintageStatus": "unknown",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Maine Secretary of State results with reviewed MGGG secondary local geometry",
+    "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/2012presmuni.xls",
+    "retrievedAt": "2026-08-13T14:00:00Z",
+    "artifact": "data/precinct-geometry/ME/2012-11-06-general/source-evidence.json",
+    "sha256": "1018d24b5681d9c942e3507a8a2b56e4969b12d5b390c426f7e5eb2069d1efac",
+    "byteCount": 5224,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Maine results. The MGGG derivative is retained from a public repository, but no explicit derivative redistribution license was located; public delivery remains blocked pending permission or an official replacement. Maine's GeoLibrary reuse statute is retained for the original state source."
+  },
+  "normalization": {
+    "script": "scripts/collect-me-local-reporting-geometry.mjs",
+    "sourceCrs": "source-defined and normalized by shpjs or retained EPSG:4326 GeoJSON",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/ME/2012-11-06-general/normalized/me-2012-local-reporting-units.geojson.gz",
+    "sha256": "927e9ccc6d8e1eb148b63dcff7ba677eff339b007164a5319a7105af68856b6e",
+    "byteCount": 3416724,
+    "featureCount": 507,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "me-2012-president-local-results",
+    "artifact": "data/precinct-geometry/ME/2012-11-06-general/crosswalk/me-2012-local-result-crosswalk.json",
+    "sha256": "11eac8759debb941b7368b4540a65164b208d39b3e6af662d1746bb5b4664a51",
+    "byteCount": 470708,
+    "resultUnits": 507,
+    "colorableResultUnits": 507,
+    "matchedResultUnits": 507,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 507,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 507,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "reviewed_name"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "errors": [
+      "An immutable parent-scoped public delivery package and production release review have not been completed.",
+      "Five separately published local reporting rows lack uniquely attributable election geometry and remain excluded from row-level rendering.",
+      "The MGGG secondary boundary derivative has no retained explicit redistribution permission and no confirmed exact November 2012 official boundary edition; use an official replacement or obtain permission before public delivery."
+    ],
+    "warnings": [
+      "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+      "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+      "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported.",
+      "The 2012 layer maps 507 reviewed secondary local shapes covering 540 of 545 official local source rows. Five tiny reporting rows totaling eight presidential votes have no uniquely attributable source polygon and remain excluded rather than guessed.",
+      "The retained MGGG reconstruction is supplemental geometry only. Its exact official election-date boundary edition and derivative redistribution permission have not been established, so 2012 cannot enter public delivery even if the five exclusions are later resolved."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+    "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+    "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported.",
+    "The 2012 layer maps 507 reviewed secondary local shapes covering 540 of 545 official local source rows. Five tiny reporting rows totaling eight presidential votes have no uniquely attributable source polygon and remain excluded rather than guessed.",
+    "The retained MGGG reconstruction is supplemental geometry only. Its exact official election-date boundary edition and derivative redistribution permission have not been established, so 2012 cannot enter public delivery even if the five exclusions are later resolved."
+  ]
+}

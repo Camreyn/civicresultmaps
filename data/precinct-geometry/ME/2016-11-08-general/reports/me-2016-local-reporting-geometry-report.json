@@ -1,0 +1,821 @@
+{
+  "schemaVersion": 1,
+  "state": "ME",
+  "electionId": "2016-11-08-general",
+  "generatedAt": "2026-08-13T14:00:00Z",
+  "disposition": "source_and_crosswalk_gates_passed_delivery_pending",
+  "source": {
+    "sourceResultUnits": 532,
+    "colorableResultUnits": 532,
+    "excludedResultUnits": 0,
+    "sourceFeatureCount": 609,
+    "assignedSourceFeatures": 582,
+    "unassignedSourceFeatures": 27
+  },
+  "crosswalk": {
+    "resultUnits": 532,
+    "colorableResultUnits": 532,
+    "matchedResultUnits": 532,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 532,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "reconciliation": {
+    "status": "passed",
+    "scopes": [
+      {
+        "scopeType": "state",
+        "scopeId": "ME",
+        "resultTotals": {
+          "democratic": 354718,
+          "republican": 334945,
+          "other": 54278,
+          "total": 743941
+        },
+        "mappedTotals": {
+          "democratic": 354718,
+          "republican": 334945,
+          "other": 54278,
+          "total": 743941
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23001",
+        "resultTotals": {
+          "democratic": 23009,
+          "republican": 28227,
+          "other": 4365,
+          "total": 55601
+        },
+        "mappedTotals": {
+          "democratic": 23009,
+          "republican": 28227,
+          "other": 4365,
+          "total": 55601
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23003",
+        "resultTotals": {
+          "democratic": 13386,
+          "republican": 19419,
+          "other": 2292,
+          "total": 35097
+        },
+        "mappedTotals": {
+          "democratic": 13386,
+          "republican": 19419,
+          "other": 2292,
+          "total": 35097
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23005",
+        "resultTotals": {
+          "democratic": 102981,
+          "republican": 57709,
+          "other": 11128,
+          "total": 171818
+        },
+        "mappedTotals": {
+          "democratic": 102981,
+          "republican": 57709,
+          "other": 11128,
+          "total": 171818
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23007",
+        "resultTotals": {
+          "democratic": 7016,
+          "republican": 7918,
+          "other": 1554,
+          "total": 16488
+        },
+        "mappedTotals": {
+          "democratic": 7016,
+          "republican": 7918,
+          "other": 1554,
+          "total": 16488
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23009",
+        "resultTotals": {
+          "democratic": 16117,
+          "republican": 13705,
+          "other": 2308,
+          "total": 32130
+        },
+        "mappedTotals": {
+          "democratic": 16117,
+          "republican": 13705,
+          "other": 2308,
+          "total": 32130
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23011",
+        "resultTotals": {
+          "democratic": 29302,
+          "republican": 31675,
+          "other": 5231,
+          "total": 66208
+        },
+        "mappedTotals": {
+          "democratic": 29302,
+          "republican": 31675,
+          "other": 5231,
+          "total": 66208
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23013",
+        "resultTotals": {
+          "democratic": 12443,
+          "republican": 9148,
+          "other": 1556,
+          "total": 23147
+        },
+        "mappedTotals": {
+          "democratic": 12443,
+          "republican": 9148,
+          "other": 1556,
+          "total": 23147
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23015",
+        "resultTotals": {
+          "democratic": 10241,
+          "republican": 9727,
+          "other": 1535,
+          "total": 21503
+        },
+        "mappedTotals": {
+          "democratic": 10241,
+          "republican": 9727,
+          "other": 1535,
+          "total": 21503
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23017",
+        "resultTotals": {
+          "democratic": 12172,
+          "republican": 16210,
+          "other": 2819,
+          "total": 31201
+        },
+        "mappedTotals": {
+          "democratic": 12172,
+          "republican": 16210,
+          "other": 2819,
+          "total": 31201
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23019",
+        "resultTotals": {
+          "democratic": 32838,
+          "republican": 41622,
+          "other": 6080,
+          "total": 80540
+        },
+        "mappedTotals": {
+          "democratic": 32838,
+          "republican": 41622,
+          "other": 6080,
+          "total": 80540
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23021",
+        "resultTotals": {
+          "democratic": 3098,
+          "republican": 5406,
+          "other": 678,
+          "total": 9182
+        },
+        "mappedTotals": {
+          "democratic": 3098,
+          "republican": 5406,
+          "other": 678,
+          "total": 9182
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23023",
+        "resultTotals": {
+          "democratic": 10664,
+          "republican": 9304,
+          "other": 1648,
+          "total": 21616
+        },
+        "mappedTotals": {
+          "democratic": 10664,
+          "republican": 9304,
+          "other": 1648,
+          "total": 21616
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23025",
+        "resultTotals": {
+          "democratic": 9092,
+          "republican": 15001,
+          "other": 1971,
+          "total": 26064
+        },
+        "mappedTotals": {
+          "democratic": 9092,
+          "republican": 15001,
+          "other": 1971,
+          "total": 26064
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23027",
+        "resultTotals": {
+          "democratic": 10440,
+          "republican": 10378,
+          "other": 1889,
+          "total": 22707
+        },
+        "mappedTotals": {
+          "democratic": 10440,
+          "republican": 10378,
+          "other": 1889,
+          "total": 22707
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23029",
+        "resultTotals": {
+          "democratic": 6075,
+          "republican": 9093,
+          "other": 1197,
+          "total": 16365
+        },
+        "mappedTotals": {
+          "democratic": 6075,
+          "republican": 9093,
+          "other": 1197,
+          "total": 16365
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23031",
+        "resultTotals": {
+          "democratic": 55844,
+          "republican": 50403,
+          "other": 8027,
+          "total": 114274
+        },
+        "mappedTotals": {
+          "democratic": 55844,
+          "republican": 50403,
+          "other": 8027,
+          "total": 114274
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      }
+    ]
+  },
+  "sourceAccountingReconciliation": {
+    "status": "passed",
+    "scopes": [
+      {
+        "scopeType": "state",
+        "scopeId": "ME",
+        "resultTotals": {
+          "democratic": 354718,
+          "republican": 334945,
+          "other": 54278,
+          "total": 743941
+        },
+        "mappedTotals": {
+          "democratic": 354718,
+          "republican": 334945,
+          "other": 54278,
+          "total": 743941
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23001",
+        "resultTotals": {
+          "democratic": 23009,
+          "republican": 28227,
+          "other": 4365,
+          "total": 55601
+        },
+        "mappedTotals": {
+          "democratic": 23009,
+          "republican": 28227,
+          "other": 4365,
+          "total": 55601
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23003",
+        "resultTotals": {
+          "democratic": 13386,
+          "republican": 19419,
+          "other": 2292,
+          "total": 35097
+        },
+        "mappedTotals": {
+          "democratic": 13386,
+          "republican": 19419,
+          "other": 2292,
+          "total": 35097
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23005",
+        "resultTotals": {
+          "democratic": 102981,
+          "republican": 57709,
+          "other": 11128,
+          "total": 171818
+        },
+        "mappedTotals": {
+          "democratic": 102981,
+          "republican": 57709,
+          "other": 11128,
+          "total": 171818
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23007",
+        "resultTotals": {
+          "democratic": 7016,
+          "republican": 7918,
+          "other": 1554,
+          "total": 16488
+        },
+        "mappedTotals": {
+          "democratic": 7016,
+          "republican": 7918,
+          "other": 1554,
+          "total": 16488
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23009",
+        "resultTotals": {
+          "democratic": 16117,
+          "republican": 13705,
+          "other": 2308,
+          "total": 32130
+        },
+        "mappedTotals": {
+          "democratic": 16117,
+          "republican": 13705,
+          "other": 2308,
+          "total": 32130
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23011",
+        "resultTotals": {
+          "democratic": 29302,
+          "republican": 31675,
+          "other": 5231,
+          "total": 66208
+        },
+        "mappedTotals": {
+          "democratic": 29302,
+          "republican": 31675,
+          "other": 5231,
+          "total": 66208
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23013",
+        "resultTotals": {
+          "democratic": 12443,
+          "republican": 9148,
+          "other": 1556,
+          "total": 23147
+        },
+        "mappedTotals": {
+          "democratic": 12443,
+          "republican": 9148,
+          "other": 1556,
+          "total": 23147
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23015",
+        "resultTotals": {
+          "democratic": 10241,
+          "republican": 9727,
+          "other": 1535,
+          "total": 21503
+        },
+        "mappedTotals": {
+          "democratic": 10241,
+          "republican": 9727,
+          "other": 1535,
+          "total": 21503
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23017",
+        "resultTotals": {
+          "democratic": 12172,
+          "republican": 16210,
+          "other": 2819,
+          "total": 31201
+        },
+        "mappedTotals": {
+          "democratic": 12172,
+          "republican": 16210,
+          "other": 2819,
+          "total": 31201
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23019",
+        "resultTotals": {
+          "democratic": 32838,
+          "republican": 41622,
+          "other": 6080,
+          "total": 80540
+        },
+        "mappedTotals": {
+          "democratic": 32838,
+          "republican": 41622,
+          "other": 6080,
+          "total": 80540
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23021",
+        "resultTotals": {
+          "democratic": 3098,
+          "republican": 5406,
+          "other": 678,
+          "total": 9182
+        },
+        "mappedTotals": {
+          "democratic": 3098,
+          "republican": 5406,
+          "other": 678,
+          "total": 9182
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23023",
+        "resultTotals": {
+          "democratic": 10664,
+          "republican": 9304,
+          "other": 1648,
+          "total": 21616
+        },
+        "mappedTotals": {
+          "democratic": 10664,
+          "republican": 9304,
+          "other": 1648,
+          "total": 21616
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23025",
+        "resultTotals": {
+          "democratic": 9092,
+          "republican": 15001,
+          "other": 1971,
+          "total": 26064
+        },
+        "mappedTotals": {
+          "democratic": 9092,
+          "republican": 15001,
+          "other": 1971,
+          "total": 26064
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23027",
+        "resultTotals": {
+          "democratic": 10440,
+          "republican": 10378,
+          "other": 1889,
+          "total": 22707
+        },
+        "mappedTotals": {
+          "democratic": 10440,
+          "republican": 10378,
+          "other": 1889,
+          "total": 22707
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23029",
+        "resultTotals": {
+          "democratic": 6075,
+          "republican": 9093,
+          "other": 1197,
+          "total": 16365
+        },
+        "mappedTotals": {
+          "democratic": 6075,
+          "republican": 9093,
+          "other": 1197,
+          "total": 16365
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      {
+        "scopeType": "parent",
+        "scopeId": "23031",
+        "resultTotals": {
+          "democratic": 55844,
+          "republican": 50403,
+          "other": 8027,
+          "total": 114274
+        },
+        "mappedTotals": {
+          "democratic": 55844,
+          "republican": 50403,
+          "other": 8027,
+          "total": 114274
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      }
+    ]
+  },
+  "artifacts": {
+    "normalizedGeometry": {
+      "localArtifactPath": "data/precinct-geometry/ME/2016-11-08-general/normalized/me-2016-local-reporting-units.geojson.gz",
+      "sha256": "5af0adb10ea8dad5a4b2e79c6f1a1590382f72bb42f37940b45fb15e9f386bfa",
+      "byteCount": 2465979
+    },
+    "normalizedGeometryUncompressed": {
+      "sha256": "658662b1ab721850652f173aef2b048837758b219649977c21af85886569974e",
+      "byteCount": 9262991
+    },
+    "normalizedResults": {
+      "localArtifactPath": "data/precinct-geometry/ME/2016-11-08-general/normalized/me-2016-president-local-results.json.gz",
+      "sha256": "eee124e13eaa5ddc337a71d8f8ac764107d046bb2b56c0902525ea3ce8d82a50",
+      "byteCount": 21370
+    },
+    "normalizedResultsUncompressed": {
+      "sha256": "19a6860cd58f7905984b5e865c7522bf456884062dd358ca60c2091feacd9e15",
+      "byteCount": 229009
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/ME/2016-11-08-general/crosswalk/me-2016-local-result-crosswalk.json",
+      "sha256": "267993c18680083d917cb8a104f0186d3d7466bcfc2644530c5027205045e2ab",
+      "byteCount": 446258
+    }
+  },
+  "exclusions": [],
+  "caveats": [
+    "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+    "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+    "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported."
+  ]
+}
