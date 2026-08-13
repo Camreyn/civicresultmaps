@@ -181,6 +181,14 @@ function assertNoElectionValueProperties(value, context) {
   }
 }
 
+export function canonicalJson(value) {
+  if (Array.isArray(value)) return value.map(canonicalJson);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.keys(value).sort().map((key) => [key, canonicalJson(value[key])]),
+  );
+}
+
 function query(client, lines, params = []) {
   return client.unsafe(Array.isArray(lines) ? lines.join("\n") : lines, params);
 }
