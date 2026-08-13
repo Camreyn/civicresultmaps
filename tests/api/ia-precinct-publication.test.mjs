@@ -450,6 +450,7 @@ function rollbackClient(fixture) {
     }
     if (sql.includes("select e.year,gv.status")) return fixture.versions;
     if (sql.includes("from reporting_unit_geometry_crosswalks")) {
+      assert.match(sql, /x\.match_method='official_crosswalk'/);
       return [{ total: 4_994, exact: 4_994 }];
     }
     if (sql.includes("from reporting_units where")) {
