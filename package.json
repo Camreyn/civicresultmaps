@@ -313,7 +313,19 @@
     "precinct-gis:replay:me:2020": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2020 --retrieved-at=2026-08-13T14:00:00Z",
     "precinct-gis:collect:me:2024": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2024 --retrieved-at=2026-08-13T14:00:00Z",
     "precinct-gis:replay:me:2024": "node --experimental-strip-types scripts/collect-me-local-reporting-geometry.mjs --year=2024 --retrieved-at=2026-08-13T14:00:00Z",
-    "test:precinct-geometry:me": "node --experimental-strip-types --test tests/api/me-local-reporting-geometry.test.mjs"
+    "local-gis:plan:me": "node --experimental-strip-types scripts/setup-me-local-gis-local.mjs",
+    "local-gis:setup:me:local": "node --experimental-strip-types scripts/setup-me-local-gis-local.mjs --apply",
+    "local-gis:validate:me:local": "node --experimental-strip-types scripts/validate-me-local-gis-local.mjs",
+    "local-gis:release-candidate:me": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-me-local-release-candidate.mjs",
+    "local-gis:release-candidate:me:write": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-me-local-release-candidate.mjs --write",
+    "local-gis:delivery-publish:me": "node --experimental-strip-types scripts/publish-me-local-delivery-assets.mjs",
+    "local-gis:production-preflight:me": "node --experimental-strip-types scripts/report-me-local-production-preflight.mjs",
+    "local-gis:production-backup:me": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-me-local-production.ps1",
+    "local-gis:production-release:me": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-me-local-release.mjs",
+    "local-gis:public-activation:me": "node --experimental-strip-types scripts/prepare-me-local-public-activation.mjs",
+    "local-gis:publication-status:me": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-me-local-geography-status.mjs",
+    "test:precinct-geometry:me": "node --experimental-strip-types --test tests/api/me-local-reporting-geometry.test.mjs",
+    "test:local-gis:me": "node --experimental-strip-types --test tests/api/me-local-reporting-geometry.test.mjs tests/api/me-local-gis-plan.test.mjs tests/api/me-local-gis-local.test.mjs tests/api/me-local-release-candidate.test.mjs tests/api/me-local-blob-publication.test.mjs tests/api/me-local-production-release.test.mjs tests/api/me-local-public-activation.test.mjs tests/api/me-local-publication-gate.test.mjs tests/api/me-local-publication.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",

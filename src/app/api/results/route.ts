@@ -30,9 +30,15 @@ export async function GET(request: NextRequest) {
     );
   }
   const parentGeoid = parsedParentGeoid?.data;
-  if (parentGeoid && level !== "precinct") {
+  if (
+    parentGeoid
+    && level !== "precinct"
+    && level !== "local_reporting_unit"
+  ) {
     return NextResponse.json(
-      apiErrorEnvelope("parentGeoid is supported only for precinct results"),
+      apiErrorEnvelope(
+        "parentGeoid is supported only for county-scoped local results",
+      ),
       { status: 400, headers: publicApiErrorHeaders },
     );
   }

@@ -127,7 +127,11 @@ test("the API and UI use the marked rehearsal path without requesting blocked la
   assert.match(dataAccess, /resolveMinnesotaPrecinctRehearsal/);
   assert.match(
     dataAccess,
-    /requiresPrecinctResultPublicationGate\(input\)\s*&& !resolveMinnesotaPrecinctRehearsal\(\)\.enabled/,
+    /input\.state\.toUpperCase\(\) === "MN"\s*\? resolveMinnesotaPrecinctRehearsal\(\)/,
+  );
+  assert.match(
+    dataAccess,
+    /requiresPrecinctResultPublicationGate\(input\)\s*&& !minnesotaRehearsal\.enabled/,
   );
   assert.match(
     api,

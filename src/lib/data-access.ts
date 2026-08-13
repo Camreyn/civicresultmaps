@@ -338,7 +338,7 @@ export async function isPrecinctGeometryManifestPublished(
             and geography_features.is_geographic = true
             and reporting_units.election_id = geography_versions.election_id
             and reporting_units.state_code = geography_versions.state_code
-            and reporting_units.reporting_grain = 'precinct'
+            and reporting_units.reporting_grain = ${manifest.geography.level}
             and reporting_units.is_geographic = true
             and reporting_units.metadata->>'publicDeliveryAuthorized' = 'true'
             and reporting_units.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
@@ -571,15 +571,19 @@ export async function listResults(input: {
     : { enabled: false } as const;
   const requiresPublicationGate = requiresPrecinctResultPublicationGate(input)
     && !minnesotaRehearsal.enabled;
-  if (parentGeoid && (input.level !== "precinct" || !/^\d{5}$/.test(parentGeoid))) {
+  const parentScopedLocalLevel = input.level === "precinct"
+    || input.level === "local_reporting_unit";
+  if (parentGeoid && (!parentScopedLocalLevel || !/^\d{5}$/.test(parentGeoid))) {
     throw new Error(
-      "parentGeoid requires precinct results and a five-digit county GEOID",
+      "parentGeoid requires county-scoped local results and a five-digit county GEOID",
     );
   }
   const matchesParent = (row: ResultRow) => !parentGeoid
     || row.jurisdictionCode.startsWith(
       "reporting:" + input.state + ":",
-    ) && row.jurisdictionCode.includes(":precinct:" + parentGeoid + ":");
+    ) && row.jurisdictionCode.includes(
+      ":" + input.level + ":" + parentGeoid + ":",
+    );
   if (!hasReadableDatabase()) {
     if (requiresPublicationGate) return [];
     return seedResults
@@ -645,7 +649,7 @@ export async function listResults(input: {
           on result_rows.reporting_unit_id = reporting_units.id
           and reporting_units.election_id = elections.id
           and reporting_units.state_code = result_rows.state_code
-          and reporting_units.reporting_grain = 'precinct'
+          and reporting_units.reporting_grain = ${input.level}
         left join source_documents on result_rows.source_document_id = source_documents.id
         where result_rows.state_code = ${input.state}
           and result_rows.level = ${input.level}
@@ -669,7 +673,7 @@ export async function listResults(input: {
                 where gate_crosswalk.reporting_unit_id = reporting_units.id
                   and gate_version.election_id = elections.id
                   and gate_version.state_code = result_rows.state_code
-                  and gate_version.geography_type = 'precinct'
+                  and gate_version.geography_type = ${input.level}
                   and gate_version.status = 'published'
                   and gate_version.metadata->>'publicDeliveryAuthorized' = 'true'
                   and gate_version.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'
@@ -750,7 +754,7 @@ export async function listResults(input: {
         on result_rows.reporting_unit_id = reporting_units.id
         and reporting_units.election_id = elections.id
         and reporting_units.state_code = result_rows.state_code
-        and reporting_units.reporting_grain = 'precinct'
+        and reporting_units.reporting_grain = ${input.level}
       left join source_documents on result_rows.source_document_id = source_documents.id
       where result_rows.state_code = ${input.state}
         and result_rows.level = ${input.level}
@@ -773,7 +777,7 @@ export async function listResults(input: {
               where gate_crosswalk.reporting_unit_id = reporting_units.id
                 and gate_version.election_id = elections.id
                 and gate_version.state_code = result_rows.state_code
-                and gate_version.geography_type = 'precinct'
+                and gate_version.geography_type = ${input.level}
                 and gate_version.status = 'published'
                 and gate_version.metadata->>'publicDeliveryAuthorized' = 'true'
                 and gate_version.metadata->'releaseCandidate'->>'publicDeliveryAuthorized' = 'true'

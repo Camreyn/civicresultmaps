@@ -7350,3 +7350,42 @@ evidence against its verified top-level package.
   candidate, these are directional review inputs rather than evidence of fraud
   or misconduct. Production was neither promoted nor queried for indicator
   counts in this collection task.
+
+### 2026-08-13 - Maine guarded three-election local release tooling
+
+- The application publication contract now maps Maine specifically to
+  `local_reporting_unit`. Existing IA, MN, NV, and TX releases remain pinned to
+  `precinct`. Manifest lookup, exact database publication checks, parent-scoped
+  result queries, delivery joins, and map copy all preserve the selected grain.
+  A Minnesota-only local rehearsal cannot bypass Maine's publication gate.
+
+- New deterministic Maine plan, local setup, read-only validation, release
+  candidate, production preflight, full backup/restore proof, hidden-load,
+  immutable Blob publication, static activation, database publication,
+  database-first rollback, and read-only receipt-recovery tools cover only
+  2016, 2020, and 2024. The loaders use Maine SOS values exclusively and reject
+  2012 at plan construction.
+
+- The exact three-election plan contains 1,542 reporting units, 4,626
+  candidate rows, 1,542 polygons, and 1,542 reviewed relationships across all
+  16 counties per year. It produces 48 parent-scoped GeoJSON files followed by
+  three hash-pinned indexes. The one official 2020 zero-vote unit is retained.
+
+- The fixed loopback `crm_clone_dev` load and an independent read-only
+  validation passed with exact per-year feature, result, relationship, and vote
+  totals, zero invalid constraints, all versions blocked, and all public
+  authorization flags false. The resulting immutable local candidate is
+  `me-local-reporting-gis-three-election-v1`; its package SHA-256 is
+  `9c92f333130825f3e573de75d927878ecc2cb782550642cda4b3f763d4f3e4f6`.
+  A dry static-activation plan produced exactly the registry plus three
+  coverage-ledger outputs and did not write them.
+
+- Maine 2012 remains separately fail-closed and tracked in issue #230. Its five
+  unmatched source rows/eight votes, election-vintage uncertainty, and
+  unresolved derivative redistribution permission are not waived by the
+  three-election tooling.
+
+- This implementation performs no production database mutation, public Blob
+  upload, Vercel environment or deployment change, canonical registry change,
+  or public eligibility transition. The guarded operational sequence is in
+  `docs/developer/me-local-reporting-gis-runbook.md`.

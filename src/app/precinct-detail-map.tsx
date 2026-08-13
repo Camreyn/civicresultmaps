@@ -26,6 +26,7 @@ import {
   type OpenStreetMapViewport,
 } from "@/lib/openstreetmap-basemap";
 import type { ResultRow } from "@/lib/types";
+import { guardedLocalGeographyLevel } from "@/lib/precinct-result-publication";
 
 type PrecinctDetailMapProps = {
   electionYear: SupportedPresidentialYear;
@@ -141,6 +142,7 @@ function isRenderableManifest(
     || !isRecord(value.election)
     || typeof value.election.year !== "number"
     || !isRecord(value.geography)
+    || typeof value.geography.level !== "string"
     || typeof value.geography.boundaryVintage !== "string"
     || !isRecord(value.source)
     || typeof value.source.authority !== "string"
@@ -152,12 +154,12 @@ function isRenderableManifest(
   return true;
 }
 
-function isResultRow(value: unknown): value is ResultRow {
+function isResultRow(value: unknown, expectedLevel: string): value is ResultRow {
   return isRecord(value)
     && typeof value.state === "string"
     && typeof value.year === "number"
     && typeof value.office === "string"
-    && value.level === "precinct"
+    && value.level === expectedLevel
     && typeof value.jurisdictionCode === "string"
     && typeof value.jurisdictionName === "string"
     && isRecord(value.votes)
@@ -276,7 +278,13 @@ export function PrecinctDetailMap({
   selectedState,
 }: PrecinctDetailMapProps) {
   const electionDate = electionDates[electionYear];
-  const manifestQueryKey = selectedState + "|" + electionDate;
+  const requestedGeographyLevel = guardedLocalGeographyLevel(selectedState)
+    ?? "precinct";
+  const manifestQueryKey = selectedState
+    + "|"
+    + electionDate
+    + "|"
+    + requestedGeographyLevel;
   const [manifestLoad, setManifestLoad] = useState<ManifestLoadState>({
     queryKey: "",
     status: "loading",
@@ -297,18 +305,19 @@ export function PrecinctDetailMap({
           geographyManifestApiPath({
             state: selectedState,
             electionDate,
+            level: requestedGeographyLevel,
           }),
           controller.signal,
         );
         if (!Array.isArray(data)) {
-          throw new Error("Precinct manifest response is not an array");
+          throw new Error("Local-geometry manifest response is not an array");
         }
         if (data.length === 0) {
           setManifestLoad({
             queryKey: manifestQueryKey,
             status: "unavailable",
             message:
-              "No reviewed, reconciled, election-date-confirmed precinct "
+              "No reviewed, reconciled, election-date-confirmed local "
               + "layer is published for this state and election.",
           });
           return;
@@ -316,15 +325,16 @@ export function PrecinctDetailMap({
         const candidates = data.filter(isRenderableManifest);
         if (candidates.length !== data.length || candidates.length !== 1) {
           throw new Error(
-            "Precinct manifest response is invalid or ambiguous",
+            "Local-geometry manifest response is invalid or ambiguous",
           );
         }
         const manifest = candidates[0];
         if (
           manifest.state !== selectedState
           || manifest.election.year !== electionYear
+          || manifest.geography.level !== requestedGeographyLevel
         ) {
-          throw new Error("Precinct manifest does not match the selected event");
+          throw new Error("Local-geometry manifest does not match the selected event");
         }
         const deliveryFormat = manifest.delivery?.format
           ?? manifest.localRehearsal?.delivery.format;
@@ -336,7 +346,7 @@ export function PrecinctDetailMap({
             queryKey: manifestQueryKey,
             status: "unavailable",
             message:
-              "The reviewed precinct layer uses a delivery format that this "
+              "The reviewed local layer uses a delivery format that this "
               + "detail map does not yet support.",
           });
           return;
@@ -355,13 +365,19 @@ export function PrecinctDetailMap({
           status: "error",
           message: error instanceof Error
             ? error.message
-            : "Precinct manifest request failed",
+            : "Local-geometry manifest request failed",
         });
       }
     })();
 
     return () => controller.abort();
-  }, [electionDate, electionYear, manifestQueryKey, selectedState]);
+  }, [
+    electionDate,
+    electionYear,
+    manifestQueryKey,
+    requestedGeographyLevel,
+    selectedState,
+  ]);
 
   const currentManifestLoad = manifestLoad.queryKey === manifestQueryKey
     ? manifestLoad
@@ -372,6 +388,13 @@ export function PrecinctDetailMap({
   const localRehearsal = manifest?.localRehearsal ?? null;
   const manifestId = manifest?.id ?? null;
   const manifestOffice = manifest?.election.office ?? null;
+  const manifestLevel = manifest?.geography.level ?? requestedGeographyLevel;
+  const unitLabel = manifestLevel === "local_reporting_unit"
+    ? "local reporting unit"
+    : "precinct";
+  const unitLabelPlural = manifestLevel === "local_reporting_unit"
+    ? "local reporting units"
+    : "precincts";
   const deliveryQueryKey = manifestId && parentGeoid
     ? manifestId + "|" + parentGeoid
     : "";
@@ -398,7 +421,7 @@ export function PrecinctDetailMap({
               + new URLSearchParams({
                 state: selectedState,
                 year: String(electionYear),
-                level: "precinct",
+                level: manifestLevel,
                 office: manifestOffice,
                 parentGeoid,
               }).toString(),
@@ -411,13 +434,13 @@ export function PrecinctDetailMap({
         );
         if (
           !Array.isArray(resultData)
-          || resultData.some((row) => !isResultRow(row))
+          || resultData.some((row) => !isResultRow(row, manifestLevel))
         ) {
-          throw new Error("Precinct result response is invalid");
+          throw new Error("Local result response is invalid");
         }
         const results = resultData.filter(
           (row): row is ResultRow =>
-            isResultRow(row)
+            isResultRow(row, manifestLevel)
             && row.state === selectedState
             && row.year === electionYear
             && row.office.toLowerCase() === manifestOffice.toLowerCase(),
@@ -425,6 +448,7 @@ export function PrecinctDetailMap({
         const rows = joinPrecinctDeliveryResults(
           collection.features,
           results,
+          manifestLevel,
         );
         if (rows.length === 0) {
           setDeliveryLoad({
@@ -447,7 +471,7 @@ export function PrecinctDetailMap({
           status: "error",
           message: error instanceof Error
             ? error.message
-            : "Precinct detail request failed",
+            : "Local detail request failed",
         });
       }
     })();
@@ -459,6 +483,7 @@ export function PrecinctDetailMap({
     manifestId,
     parentGeoid,
     manifestOffice,
+    manifestLevel,
     selectedState,
   ]);
 
@@ -510,7 +535,7 @@ export function PrecinctDetailMap({
   let body;
   if (currentManifestLoad.status === "loading") {
     body = statusPanel(
-      "Checking precinct coverage",
+      "Checking " + unitLabel + " coverage",
       "Looking for a reviewed layer for the selected election.",
     );
   } else if (currentManifestLoad.status === "unavailable") {
@@ -520,35 +545,35 @@ export function PrecinctDetailMap({
     );
   } else if (currentManifestLoad.status === "error") {
     body = statusPanel(
-      "Precinct coverage check failed",
+      unitLabel[0].toUpperCase() + unitLabel.slice(1) + " coverage check failed",
       currentManifestLoad.message,
     );
   } else if (!parentGeoid) {
     body = statusPanel(
       "Select a county first",
-      "Precinct geometry is requested only after a county is pinned, which "
+      "Local geometry is requested only after a county is pinned, which "
         + "keeps the map and transfer size bounded.",
     );
   } else if (!currentDeliveryLoad || currentDeliveryLoad.status === "loading") {
     body = statusPanel(
-      "Loading county precincts",
+      "Loading county " + unitLabelPlural,
       "Verifying the immutable geometry artifact and joining explicit "
         + "reporting-unit IDs.",
     );
   } else if (currentDeliveryLoad.status === "empty") {
     body = statusPanel(
-      "No displayable precincts",
-      "The reviewed layer contains no eligible precinct features for this "
+      "No displayable " + unitLabelPlural,
+      "The reviewed layer contains no eligible " + unitLabel + " features for this "
         + "county. County results remain available above.",
     );
   } else if (currentDeliveryLoad.status === "error") {
     body = statusPanel(
-      "Precinct detail unavailable",
+      unitLabel[0].toUpperCase() + unitLabel.slice(1) + " detail unavailable",
       currentDeliveryLoad.message,
     );
   } else if (!viewport) {
     body = statusPanel(
-      "Precinct coordinates unavailable",
+      unitLabel[0].toUpperCase() + unitLabel.slice(1) + " coordinates unavailable",
       "The county delivery passed its envelope checks but did not contain "
         + "renderable polygon coordinates.",
     );
@@ -618,7 +643,10 @@ export function PrecinctDetailMap({
                 {OPENSTREETMAP_ATTRIBUTION}
               </a>
             </div>
-            <div className="precinct-detail-legend" aria-label="Precinct map legend">
+            <div
+              className="precinct-detail-legend"
+              aria-label={unitLabel + " map legend"}
+            >
               <span><i className="dem" aria-hidden /> Democratic winner</span>
               <span><i className="rep" aria-hidden /> Republican winner</span>
               <span><i className="other" aria-hidden /> Other winner</span>
@@ -629,7 +657,7 @@ export function PrecinctDetailMap({
           </div>
           <div className="precinct-detail-controls">
             <label htmlFor="precinct-detail-selection">
-              Precinct to inspect
+              {unitLabel[0].toUpperCase() + unitLabel.slice(1)} to inspect
               <select
                 id="precinct-detail-selection"
                 onChange={(event) =>
@@ -660,7 +688,7 @@ export function PrecinctDetailMap({
                   <>
                     {selectedOutcome === "privacy_suppressed" ? (
                       <p>
-                        Clark County reports this precinct&apos;s exact total,
+                        The election authority reports this unit&apos;s exact total,
                         but suppresses the candidate allocation for ballot
                         privacy. CivicResultMaps does not estimate the hidden
                         candidate values.
@@ -746,13 +774,15 @@ export function PrecinctDetailMap({
 
   return (
     <section
-      aria-label={selectedState + " precinct detail map"}
+      aria-label={selectedState + " " + unitLabel + " detail map"}
       className="panel precinct-detail-panel"
       data-tour="precinct-detail-map"
     >
       <div className="panel-header">
         <div>
-          <h2>Precinct Detail</h2>
+          <h2>
+            {unitLabel[0].toUpperCase() + unitLabel.slice(1)} Detail
+          </h2>
           <span>
             {parentName
               ? parentName + ", " + electionYear

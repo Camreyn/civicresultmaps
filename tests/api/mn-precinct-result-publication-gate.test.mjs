@@ -181,5 +181,5 @@ test("precinct geometry fails closed on the same database publication state", ()
   assert.match(dataAccess, /authorizedLinkCount/);
   assert.match(dataAccess, /matchesPrecinctGeometryPublicationMetadata/);
   assert.match(route, /await isPrecinctGeometryManifestPublished\(manifest\)/);
-  assert.match(route, /precinct geography publication is not active/);
+  assert.match(route, /local geography publication is not active/);
 });

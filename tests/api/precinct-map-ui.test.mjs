@@ -15,7 +15,9 @@ test("precinct detail stays county-gated and eligible-manifest-only", () => {
   assert.match(component, /office: manifestOffice/);
   assert.match(component, /parentGeoid,/);
   assert.match(component, /row\.office\.toLowerCase\(\) === manifestOffice\.toLowerCase\(\)/);
-  assert.match(component, /level: "precinct"/);
+  assert.match(component, /level: manifestLevel/);
+  assert.match(component, /guardedLocalGeographyLevel/);
+  assert.match(component, /local_reporting_unit/);
   assert.match(component, /joinPrecinctDeliveryResults/);
   assert.match(component, /resultOutcomeDescription/);
   assert.match(component, /No votes reported/);
@@ -58,7 +60,7 @@ test("precinct map has one keyboard control rather than focusable GIS paths", ()
     "src/app/precinct-detail-map.tsx",
     "utf8",
   );
-  assert.match(component, /Precinct to inspect/);
+  assert.match(component, /\{unitLabel\[0\]\.toUpperCase\(\)/);
   assert.match(component, /<select/);
   assert.match(component, /aria-hidden="true"/);
   assert.match(component, /focusable="false"/);
