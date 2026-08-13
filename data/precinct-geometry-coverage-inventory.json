@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-12T14:47:11.155Z",
+  "updatedAt": "2026-08-13T03:25:00.748Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -26,20 +26,20 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 3,
+    "totalJurisdictions": 4,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 3
+      "reviewed": 4
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 3,
+      "mapped": 4,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
     },
-    "publicEligibleJurisdictions": 3
+    "publicEligibleJurisdictions": 4
   },
   "states": [
     {
@@ -203,6 +203,63 @@
         "The official Nevada Legislative Counsel Bureau election-cycle precinct layer supplies the reviewed presentation geometry.",
         "Clark County's official Statement of Vote supplies exact totals for 58 mapped precincts whose candidate allocation remains suppressed; the map displays a distinct privacy-suppressed state and never infers a winner. Reviewed no-data polygons remain visible without invented result rows.",
         "The 2012 election remains separately blocked pending the election-date Washoe County precinct archive tracked in GitHub issue #220."
+      ]
+    },
+    {
+      "state": "IA",
+      "stateName": "Iowa",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 7,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-13T03:25:00.748Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_3_secondary_geometry"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://github.com/nytimes/presidential-precinct-map-2024",
+        "https://sos.iowa.gov/iowans/election-results-statistics"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "ia-2024-2024-11-05-precinct-geometry-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://github.com/nytimes/presidential-precinct-map-2024"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/IA/2024-11-05-general/reviewed-source-evidence.json",
+          "data/precinct-geometry/IA/2024-11-05-general/normalized/ia-2024-precincts-reviewed.geojson.gz",
+          "data/precinct-geometry/IA/2024-11-05-general/crosswalk/ia-2024-results-to-reviewed-geometry.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 1653,
+        "publicEligibleManifestCount": 1
+      },
+      "crosswalk": {
+        "resultUnits": 1653,
+        "colorableResultUnits": 1653,
+        "matchedResultUnits": 1653,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
+      "notes": [
+        "The New York Times election-specific official-boundary compilation is explicitly attributed and used only with official Iowa Secretary of State result rows under the retained non-commercial terms.",
+        "The attributed election-specific geometry is joined to official Iowa Secretary of State precinct results by a retained, uniquely reconciled vote-signature crosswalk; election values are excluded from geometry delivery.",
+        "The 2024 geometry is distributed under the retained New York Times C-UDA 1.0 Non-Commercial terms; the public map and provenance must preserve attribution, non-commercial use, and downstream terms.",
+        "The 2012 election remains separately blocked because a complete election-effective statewide precinct boundary archive has not been located."
       ]
     }
   ]

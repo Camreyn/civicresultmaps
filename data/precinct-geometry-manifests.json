@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-12T14:47:11.155Z",
+  "updatedAt": "2026-08-13T03:25:00.748Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -1113,6 +1113,318 @@
         "The April 2024 LCB layer contains 91 Clark feature identities absent from both official 2024 result universes. They are excluded from the election-specific normalized layer rather than displayed as precincts with missing results. Clark retains 910 mapped reporting precincts; six Statement-of-Vote identities lack geometry, of which five report zero votes and special unit 9996 reports 40 votes without a geographic feature.",
         "The reviewed statewide delivery contract retains 1,635 election-relevant polygons: 1,576 have result relationships and 59 remain explicit no-data features outside Clark County.",
         "The official LCB layer is public_authoritative, has no item-level use constraint, and is covered by retained ArcGIS Online public-sharing permission for end-user use, reproduction, derivative works, and distribution."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "ia-2016-2016-11-08-precinct-geometry-candidate-v1",
+      "state": "IA",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "Iowa Precincts 2016 official LSA/SOS service, updated March 29, 2016",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export"
+      },
+      "source": {
+        "authority": "Iowa Secretary of State and Iowa Legislative Services Agency",
+        "url": "https://gis.legis.iowa.gov/arcgis/rest/services/AR/Precincts/MapServer",
+        "retrievedAt": "2026-08-12T23:58:58.000Z",
+        "artifact": "data/precinct-geometry/IA/2016-11-08-general/reviewed-source-evidence.json",
+        "sha256": "20ecc3af814f5644a32e54c7b3a877f9ff7c840a9d751945d302fe38174bc6fc",
+        "byteCount": 7094,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "Official LSA/SOS service attribution retained; the reviewed DSPG/ISU identity bridge is MIT licensed and its copyright notice accompanies the source package."
+      },
+      "normalization": {
+        "script": "scripts/build-ia-reviewed-precinct-crosswalks.py",
+        "sourceCrs": "Official LSA source normalized to EPSG:4326",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/IA/2016-11-08-general/normalized/ia-2016-precincts-reviewed.geojson.gz",
+        "sha256": "154f248f2bebe7ea7a77a1c1a3bac30343581a2f60d089e99313d4f1c448fd66",
+        "byteCount": 3707853,
+        "featureCount": 1680,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "ia-sos-2016-general-county-precinct-workbooks",
+        "artifact": "data/precinct-geometry/IA/2016-11-08-general/crosswalk/ia-2016-results-to-reviewed-geometry.json",
+        "sha256": "a68c487cf0a8ee91b2245d67c21c241f3cf56ec118cc8e43405c467606674952",
+        "byteCount": 1471807,
+        "resultUnits": 1680,
+        "colorableResultUnits": 1680,
+        "matchedResultUnits": 1680,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 1680,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 1680,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "All displayed vote values come only from 99 retained Iowa Secretary of State county workbooks.",
+          "The official LSA/SOS polygon layer is linked through a hash-pinned reviewed DSPG/ISU identity bridge; no vote value is copied into geometry.",
+          "One Dickinson result identity combines two official source components; the normalized public feature is their reviewed union and remains a single result relationship.",
+          "All 1680 displayable precinct-result relationships are reviewed one-to-one across all 99 Iowa counties.",
+          "The 0 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/ia/2016-11-08/precinct/ia-2016-2016-11-08-precinct-geometry-candidate-v1-bd068904c7ba/index.json",
+        "sha256": "bd068904c7bafc06f666ba2c2c3542aa7d57726efcc4218153229d3656e71d15",
+        "byteCount": 18935,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 99,
+        "featureCount": 1680
+      },
+      "caveats": [
+        "The service calls this Iowa Precincts 2016 and records a March 29, 2016 update under Iowa Secretary of State purview.",
+        "The DSPG/ISU package is an identity bridge, not the authority for vote values or certified totals.",
+        "The official service and bridge attribution and terms must accompany public delivery."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "ia-2020-2020-11-03-precinct-geometry-candidate-v1",
+      "state": "IA",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "VEST Iowa 2020 election-specific precinct reconstruction, Harvard Dataverse version 24.0",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Iowa Secretary of State results with attributed VEST election-specific geometry",
+        "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4789403&version=24.0",
+        "retrievedAt": "2026-08-12T23:58:58.000Z",
+        "artifact": "data/precinct-geometry/IA/2020-11-03-general/reviewed-source-evidence.json",
+        "sha256": "dc39b62d9d7fe2029760764838af03cca1d60c3bee048a77f5b6f3795ad6cb61",
+        "byteCount": 5875,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "VEST geometry is Creative Commons Attribution 4.0 per the retained Harvard Dataverse version-24 terms; Iowa Secretary of State vote values remain the official result authority."
+      },
+      "normalization": {
+        "script": "scripts/build-ia-2020-reviewed-precincts.mjs",
+        "sourceCrs": "source-defined",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/IA/2020-11-03-general/normalized/ia-2020-precincts-reviewed.geojson.gz",
+        "sha256": "b4a3a8cc7cc59bf492d08525067a1088c58e1f6ae2a0c91b4b1f807fa6e8e5bb",
+        "byteCount": 6359367,
+        "featureCount": 1661,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "ia-sos-2020-general-precinct-results",
+        "artifact": "data/precinct-geometry/IA/2020-11-03-general/crosswalk/ia-2020-results-to-reviewed-geometry.json",
+        "sha256": "4e88aaef1af517c3d1218bf5e1dac6698e91d47c872c31a3c24a628da55c4a43",
+        "byteCount": 1721164,
+        "resultUnits": 1661,
+        "colorableResultUnits": 1661,
+        "matchedResultUnits": 1661,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 1661,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 1661,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every one of the 1,661 VEST polygons matches exactly one official Iowa result row by county and the complete presidential vote signature.",
+          "All source vote fields are removed before normalized geometry is written; displayed values come only from the official Iowa artifact.",
+          "VEST must be identified as the secondary election-specific geometry reconstruction and credited under CC BY 4.0.",
+          "All 1661 displayable precinct-result relationships are reviewed one-to-one across all 99 Iowa counties.",
+          "The 0 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/ia/2020-11-03/precinct/ia-2020-2020-11-03-precinct-geometry-candidate-v1-e4b46923db15/index.json",
+        "sha256": "e4b46923db15b4f4b0c228206bad6fa96aceb05eed8be98ff96ae5778232d93d",
+        "byteCount": 18989,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 99,
+        "featureCount": 1661
+      },
+      "caveats": [
+        "Iowa did not expose a retained statewide election-date GIS archive through the reviewed official pages; VEST supplies geometry only.",
+        "The exact Dataverse version-24 file and terms evidence are hash-pinned.",
+        "No VEST vote value replaces or supplements an Iowa Secretary of State value."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "ia-2024-2024-11-05-precinct-geometry-candidate-v1",
+      "state": "IA",
+      "election": {
+        "id": "2024-11-05-general",
+        "date": "2024-11-05",
+        "year": 2024,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "New York Times 2024 Iowa election-specific compilation; all 1,653 source features declare official_boundary=true",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Iowa Secretary of State results with attributed New York Times official-boundary compilation",
+        "url": "https://github.com/nytimes/presidential-precinct-map-2024",
+        "retrievedAt": "2026-08-12T23:58:58.000Z",
+        "artifact": "data/precinct-geometry/IA/2024-11-05-general/reviewed-source-evidence.json",
+        "sha256": "42b3ae2f342d90ff148f3762c4997dfcda7b7bd453b0bdf341fc71663599905f",
+        "byteCount": 8288,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "NYT Computational Use of Data Agreement v1.0 - Non-Commercial. Attribution to The New York Times, non-commercial use, and downstream terms are required; see the retained LICENSE."
+      },
+      "normalization": {
+        "script": "scripts/build-ia-2024-reviewed-precincts.mjs",
+        "sourceCrs": "source-defined",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/IA/2024-11-05-general/normalized/ia-2024-precincts-reviewed.geojson.gz",
+        "sha256": "8a56337fc0b5d782d5fd5ac413b369ba5cf0fc0e72e1fd9db9ef918c3014c3c2",
+        "byteCount": 8644260,
+        "featureCount": 1653,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "ia-sos-2024-general-county-detailxml-reports",
+        "artifact": "data/precinct-geometry/IA/2024-11-05-general/crosswalk/ia-2024-results-to-reviewed-geometry.json",
+        "sha256": "a7db3e042c757b1b111ad7105e32e98f7b7250978fc113cf7dd2fa4135bcbb36",
+        "byteCount": 1745309,
+        "resultUnits": 1653,
+        "colorableResultUnits": 1653,
+        "matchedResultUnits": 1653,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 1653,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 1653,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every one of the 1,653 source polygons declares official_boundary=true and matches exactly one official Iowa result row by county and complete presidential vote signature.",
+          "All source vote fields are removed; displayed values come only from the 99 official Iowa county detail XML reports.",
+          "The NYT non-commercial license, attribution, and downstream terms must remain visible in every public delivery.",
+          "All 1653 displayable precinct-result relationships are reviewed one-to-one across all 99 Iowa counties.",
+          "The 0 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/ia/2024-11-05/precinct/ia-2024-2024-11-05-precinct-geometry-candidate-v1-134448b79c4c/index.json",
+        "sha256": "134448b79c4c2ba5c0bd867c78358a3b0178a810d38fa755a5a9969f786914ba",
+        "byteCount": 19025,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 99,
+        "featureCount": 1653
+      },
+      "caveats": [
+        "The New York Times is a secondary statewide geometry compiler, not the authority for displayed Iowa vote values.",
+        "The retained Iowa SOS county/city packages provide substantial official boundary context but do not themselves form a uniform complete statewide election-date layer.",
+        "Public use is limited by the retained NYT C-UDA v1.0 Non-Commercial terms."
       ]
     }
   ]

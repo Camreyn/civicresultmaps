@@ -7,14 +7,17 @@ import { prepareIowaPrecinctReleaseCandidate } from "../../scripts/prepare-ia-pr
 export const IOWA_TEST_VALIDATION_PATH =
   ".etl/test-artifacts/IA/ia-public-precinct-gis-validation.json";
 
-async function writeSyntheticValidationReport(root) {
+async function writeSyntheticValidationReport(
+  root,
+  generatedAtUtc = "2026-08-12T23:58:58.000Z",
+) {
   const plan = await buildIowaPrecinctGisPlan({
     root,
     years: [2016, 2020, 2024],
   });
   const report = {
     schemaVersion: 1,
-    generatedAtUtc: "2026-08-12T23:58:58.000Z",
+    generatedAtUtc,
     productionMutationPerformed: false,
     publicDeliveryAuthorized: false,
     validation: {
@@ -50,7 +53,7 @@ async function writeSyntheticValidationReport(root) {
 
 export async function buildIowaTestReleaseFixture(options = {}) {
   const root = path.resolve(options.root ?? process.cwd());
-  await writeSyntheticValidationReport(root);
+  await writeSyntheticValidationReport(root, options.generatedAtUtc);
   const built = await buildIowaPrecinctReleaseCandidate({
     root,
     validationReportPath: IOWA_TEST_VALIDATION_PATH,
