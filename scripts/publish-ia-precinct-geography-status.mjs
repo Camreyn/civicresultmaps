@@ -339,7 +339,7 @@ async function verifyPostconditions(
   const linked = await nv.unsafe([
     "select count(*)::int total,",
     " count(*) filter (where x.relationship_type='one_to_one'",
-    "  and x.match_method='exact_official_id' and x.review_status='reviewed'",
+    "  and x.match_method='official_crosswalk' and x.review_status='reviewed'",
     "  and x.confidence='high' and x.metadata->>'publicDeliveryAuthorized'=$2",
     "  and x.metadata->'releaseCandidate'->>'publicDeliveryAuthorized'=$2)::int exact",
     "from reporting_unit_geometry_crosswalks x",
