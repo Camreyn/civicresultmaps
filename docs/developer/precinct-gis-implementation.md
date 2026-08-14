@@ -7507,3 +7507,36 @@ evidence against its verified top-level package.
   rejects reintroduction of the stale three-version condition. The normal
   publication transaction, source artifacts, manifests, and public eligibility
   are unchanged.
+
+### 2026-08-14 - Alaska four-election production publication complete
+
+- Production deployment `dpl_G5oQrrA97nv3TWcRgWZPqSzBQefA`, Git commit
+  `031b8857d3cd24c7b417ca40d47fc31b9542d1f9`, was verified `READY` and
+  `PROMOTED` with the exact static Alaska registry and immutable Blob origin.
+  Before publication, all four eligible manifests were visible while both the
+  result and geometry APIs remained closed for 2012, 2016, 2020, and 2024.
+
+- The hash-authorized atomic database transaction used publication plan
+  SHA-256 `10eec31062436626ffd2f668e03e72042e790f137c52e7286593879bdf4d0265`
+  and activation ID `ak-public-20260814T213902Z-031b8857`. It published all
+  four reviewed geography versions, authorized only their linked geographic
+  result units and retained release metadata, and advanced the public data
+  revision from 16 to 17.
+
+- The immutable publication receipt is
+  `.etl/production-publication-receipts/AK/ak-precinct-publish-10eec3106243-ak-public-20260814T213902Z-031b8857.json`,
+  SHA-256 `6661c3be4355cf65c89456a968d87dde4d09276b8047b8907d377796458ce42f`.
+  The pinned rollback target is the preceding gate-capable production
+  deployment at commit `f4b5c87b4e00d58b2f6996d321c2861a838dd869`.
+
+- Post-cutover verification exercised both public endpoints for every one of
+  the 40 House District parents in every election. Served result rows and
+  polygons matched exactly: 438 in 2012, 441 in 2016, 441 in 2020, and 402 in
+  2024. Administrative parent `HD99` was rejected with HTTP 400 in all four
+  years. The production API smoke passed against the exact deployment SHA.
+
+- Browser verification loaded the OpenStreetMap-backed precinct detail map,
+  joined result rows, source/vintage text, and correct election title for all
+  four years with no console errors. The 2020 Exports & API view also retained
+  `year=2020` and displayed year-pinned public API paths rather than reverting
+  to 2024.
