@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-13T14:00:00.000Z",
+  "updatedAt": "2026-08-14T00:06:29.584Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2016-11-08-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 0
     },
-    "publicEligibleJurisdictions": 4
+    "publicEligibleJurisdictions": 5
   },
   "states": [
     {
@@ -269,7 +269,7 @@
       "programStatus": "reviewed",
       "wave": 8,
       "disposition": "mapped",
-      "checkedAt": "2026-08-13T14:00:00.000Z",
+      "checkedAt": "2026-08-14T00:06:29.584Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_3_secondary_geometry"
@@ -300,7 +300,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 532,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 532,
@@ -311,10 +311,8 @@
         "sourceAliasResultUnits": 0,
         "sourceResultUnits": 532
       },
-      "blockers": [
-        "The reviewed source/crosswalk package has no immutable parent-scoped delivery or reviewed production release yet."
-      ],
-      "nextAction": "Build the guarded local database, immutable delivery, production-review, and public-activation path without relabeling Maine local units as uniform precincts.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source election values are stripped.",
         "Maine publishes a mixed local grain of towns, plantations, townships, voting districts, and combined units. Town totals are never duplicated across ward polygons or proportionally allocated."
