@@ -596,7 +596,14 @@ test("pull-request CI stays hermetic while production data checks remain strict"
     ".github/workflows/production-data-smoke.yml",
     "utf8",
   );
+  const deploymentSmokeWorkflow = readFileSync(
+    ".github/workflows/security-production-smoke.yml",
+    "utf8",
+  );
 
+  assert.match(ciWorkflow, /api-integration:/);
+  assert.match(ciWorkflow, /name: Public API integration/);
+  assert.match(ciWorkflow, /npm run test:e2e:api/);
   assert.match(ciWorkflow, /npm run validate:map-geometry(?:\r?\n|$)/);
   assert.doesNotMatch(ciWorkflow, /npm run validate:maps(?:\r?\n|$)/);
   assert.doesNotMatch(ciWorkflow, /npm run validate:provenance(?:\r?\n|$)/);
@@ -607,6 +614,11 @@ test("pull-request CI stays hermetic while production data checks remain strict"
   assert.match(productionWorkflow, /npm run validate:provenance(?:\r?\n|$)/);
   assert.doesNotMatch(productionWorkflow, /pull_request:/);
   assert.doesNotMatch(productionWorkflow, /continue-on-error/);
+  assert.match(deploymentSmokeWorkflow, /deployment_status:/);
+  assert.match(deploymentSmokeWorkflow, /verify-public-api-deployment\.mjs/);
+  assert.match(deploymentSmokeWorkflow, /base-url=https:\/\/civicresultmaps\.org/);
+  assert.match(deploymentSmokeWorkflow, /expect-source=database/);
+  assert.match(deploymentSmokeWorkflow, /expect-git-sha=\$\{\{ github\.event\.deployment\.sha \}\}/);
 });
 
 test("native source package handoff is validated in CI", () => {

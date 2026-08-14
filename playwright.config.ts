@@ -46,6 +46,7 @@ export default defineConfig({
           POSTGRES_URL: "",
           UI_LAYOUT_ADMIN_EMAILS: "",
           UI_LAYOUT_TEST_HARNESS: "true",
+          VERCEL_GIT_COMMIT_SHA: "1111111111111111111111111111111111111111",
         },
         reuseExistingServer: false,
         timeout: 180_000,
