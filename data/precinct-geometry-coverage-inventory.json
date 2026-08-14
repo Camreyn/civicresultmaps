@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-14T04:30:00.000Z",
+  "updatedAt": "2026-08-14T14:40:03.296Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 0
     },
-    "publicEligibleJurisdictions": 5
+    "publicEligibleJurisdictions": 6
   },
   "states": [
     {
@@ -49,7 +49,7 @@
       "programStatus": "reviewed",
       "wave": 8,
       "disposition": "mapped",
-      "checkedAt": "2026-08-14T04:30:00.000Z",
+      "checkedAt": "2026-08-14T14:40:03.296Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -79,7 +79,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 402,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 523,
@@ -89,10 +89,8 @@
         "nonGeographicResultUnits": 121,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable delivery, hidden production load, deployment verification, and atomic database publication remain pending."
-      ],
-      "nextAction": "Run the guarded four-election release while keeping non-geographic units outside polygon delivery.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "Official Alaska Division of Elections artifacts supply both displayed votes and election-applicable geometry.",
         "All 121 administrative buckets remain non-geographic and are never assigned to precinct polygons.",

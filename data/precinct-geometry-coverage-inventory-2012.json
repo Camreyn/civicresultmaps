@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-14T04:30:00.000Z",
+  "updatedAt": "2026-08-14T14:40:03.296Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
-    "publicEligibleJurisdictions": 2
+    "publicEligibleJurisdictions": 3
   },
   "states": [
     {
@@ -49,7 +49,7 @@
       "programStatus": "reviewed",
       "wave": 8,
       "disposition": "mapped",
-      "checkedAt": "2026-08-14T04:30:00.000Z",
+      "checkedAt": "2026-08-14T14:40:03.296Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_3_secondary_geometry"
@@ -83,7 +83,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 438,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 558,
@@ -93,10 +93,8 @@
         "nonGeographicResultUnits": 120,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable delivery, hidden production load, deployment verification, and atomic database publication remain pending."
-      ],
-      "nextAction": "Run the guarded four-election release; keep the secondary 2012 polygon custody and unstated formal license visible in provenance.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "Official Alaska Division of Elections artifacts are the sole vote source. The commit-pinned public mirror contributes polygon custody only.",
         "All 120 absentee, early-voting, questioned-ballot, federal-overseas, and administrative units remain non-geographic and are never assigned to precinct polygons.",

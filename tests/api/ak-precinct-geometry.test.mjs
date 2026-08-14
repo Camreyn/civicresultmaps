@@ -160,7 +160,7 @@ test("Alaska election vintages are independent rather than treated as an apples-
   assert.notEqual(manifests[2].normalization.sha256, manifests[3].normalization.sha256);
 });
 
-test("Alaska coverage ledgers retain all four reviewed packages as public-ineligible", () => {
+test("Alaska coverage ledgers activate all four reviewed packages", () => {
   const inventoryPaths = new Map([
     [2012, "data/precinct-geometry-coverage-inventory-2012.json"],
     [2016, "data/precinct-geometry-coverage-inventory-2016.json"],
@@ -178,11 +178,11 @@ test("Alaska coverage ledgers retain all four reviewed packages as public-inelig
       `ak-${spec.electionId}-precinct-geometry-candidate-v1`,
     ]);
     assert.equal(row.geometry.featureCount, spec.features);
-    assert.equal(row.geometry.publicEligibleManifestCount, 0);
+    assert.equal(row.geometry.publicEligibleManifestCount, 1);
     assert.equal(row.crosswalk.resultUnits, spec.units);
     assert.equal(row.crosswalk.matchedResultUnits, spec.features);
     assert.equal(row.crosswalk.nonGeographicResultUnits, spec.nonGeographic);
-    assert.ok(row.blockers.length > 0);
+    assert.deepEqual(row.blockers, []);
     assert.equal(
       inventory.summary.publicEligibleJurisdictions,
       inventory.states.filter((candidate) => (

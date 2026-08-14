@@ -7457,3 +7457,27 @@ evidence against its verified top-level package.
   environment/deployment change, canonical activation, or public eligibility
   transition. The reviewed sequence is documented in
   `docs/developer/ak-precinct-gis-runbook.md`.
+
+### 2026-08-14 - Alaska guarded production staging and static activation
+
+- A fresh package resealed from merged commit `4406cbb7` is
+  `ak-precinct-gis-four-election-v1`, SHA-256
+  `0eefe7cc4690876a76d8cc7b5e5ae5ea7fc04264ead3304a12e98dcfe218c3e5`.
+  A fresh production preflight found no preexisting Alaska release rows, and a
+  full 31-table public-schema backup was restored with exact table and row
+  counts before the guarded write.
+
+- The four-election package is now loaded in production in the hidden,
+  database-blocked state at public data revision 16. Both Alaska result and
+  geography APIs were checked after the transaction and remained closed. The
+  164 immutable delivery objects were then uploaded parent-first, downloaded,
+  and hash-verified; the Blob evidence SHA-256 is
+  `a7a979c1e2f523973a5935036eb81e3b948021e14bc28b8bd15eb592aa072064`.
+
+- The static activation candidate SHA-256 is
+  `d386d7210e25bf8bab1c027cb42de56429095f836ec359cd4ddb16a6ea816c61`.
+  It changes only the manifest registry and the four year-specific coverage
+  inventories. An off-by-one guard in the atomic writer was corrected to
+  require those exact five outputs. Deployment of these files still cannot
+  expose Alaska data until the separately authorized atomic database
+  publication transaction succeeds.
