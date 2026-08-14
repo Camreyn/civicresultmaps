@@ -157,6 +157,26 @@ test("workspace synchronizes automatic map-layer fallbacks", async ({ page }) =>
     .toHaveAttribute("href", /^\/\?state=[A-Z]{2}&year=2024&tab=map&mode=winner$/);
 });
 
+test("historical election context remains selected in Exports and API examples", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto("/?state=AK&year=2020&tab=exports");
+
+  const workspaceContext = page.getByRole("region", { name: "Election workspace context" });
+  await expect(workspaceContext.getByLabel("Workspace election year")).toHaveValue("2020");
+  await expect(page).toHaveURL(/state=AK&year=2020&tab=exports/);
+  await expect(page).not.toHaveURL(/mode=/);
+  await expect(workspaceContext.getByRole("heading", { level: 1 })).toContainText("2020 President");
+  await expect(page.getByRole("heading", { name: "Exports & API", exact: true })).toBeVisible();
+  await expect(page.locator("code").filter({ hasText: "/api/review-rows?state=AK&year=2020" })).toBeVisible();
+  await expect(page.locator("code").filter({ hasText: "/api/results?state=AK&year=2020" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Review Rows CSV", exact: true })).toBeDisabled();
+  await expect(page.getByText(/No 2020 review rows are loaded for AK/i)).toBeVisible();
+
+  await workspaceContext.getByLabel("Workspace election year").selectOption("2016");
+  await expect(page).toHaveURL(/state=AK&year=2016&tab=exports/);
+  await expect(workspaceContext.getByLabel("Workspace election year")).toHaveValue("2016");
+});
+
 test("layout administration fails safely when Clerk is not configured", async ({ page }) => {
   await page.goto("/admin/layout");
   await expect(page.getByRole("heading", { name: "Layout editor setup required" })).toBeVisible();

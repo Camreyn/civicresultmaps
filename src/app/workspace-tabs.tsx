@@ -40,6 +40,7 @@ import { WorkspaceLayoutGroupsV3 } from "./workspace-layout-v3-groups";
 import { rowsToCsv } from "@/lib/csv";
 import type { SupportedPresidentialYear } from "@/lib/api-version";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
+import { candidateNamesForYear } from "@/lib/state-year-results";
 import {
   type WorkspaceSectionId,
   type WorkspaceTabId,
@@ -65,6 +66,7 @@ import {
   workspaceLayoutSettingsV3,
   workspaceRuntimeGroupsV3,
 } from "@/lib/workspace-layout-v3-runtime";
+import { workspaceTabSupportsHistoricalYear } from "@/lib/workspace-navigation";
 import type {
   AnalysisIndicator,
   AdminSourceStatusSummary,
@@ -2930,8 +2932,10 @@ export function WorkspaceTabs({
     const tab = layoutTabs.some((item) => item.key === requested) ? requested : "map";
     setActiveTab(tab);
     const url = new URL(window.location.href);
-    if (tab !== "map") {
+    if (!workspaceTabSupportsHistoricalYear(tab)) {
       url.searchParams.set("year", "2024");
+    }
+    if (tab !== "map") {
       url.searchParams.delete("mode");
       url.searchParams.delete("fips");
     }
@@ -3463,7 +3467,10 @@ export function WorkspaceTabs({
     : [];
   const pendingCapabilities = capabilityEntries.filter(([, value]) => !value);
   const readyCapabilities = capabilityEntries.filter(([, value]) => value);
-  const selectedImportRuns = importRuns.filter((run) => run.state === selectedStateCode);
+  const selectedImportRuns = importRuns.filter((run) => (
+    run.state === selectedStateCode
+    && (activeTab !== "exports" || run.electionYear === electionYear)
+  ));
   const latestRun = selectedImportRuns[0];
   const sourcesWithoutUrls = sources.filter((source) => !source.sourceUrl.trim());
   const currentImportIsLegacyOnly = hasLegacyImport(selectedImportRuns) && !hasNativeImport(selectedImportRuns);
@@ -3713,13 +3720,24 @@ export function WorkspaceTabs({
       equipmentRows.length,
     ],
   );
-  const exportSlug = `${selectedStateCode.toLowerCase()}-2024-president`;
-  const resultExportHeaders = ["jurisdiction", "winner", "harris", "trump", "other", "total", "margin_votes", "margin_pct", "source"];
+  const electionCandidates = candidateNamesForYear(electionYear);
+  const exportSlug = `${selectedStateCode.toLowerCase()}-${electionYear}-president`;
+  const resultExportHeaders = [
+    "jurisdiction",
+    "winner",
+    electionCandidates.dem.toLowerCase(),
+    electionCandidates.rep.toLowerCase(),
+    "other",
+    "total",
+    "margin_votes",
+    "margin_pct",
+    "source",
+  ];
   const resultExportRows = results.map((row) => [
     row.jurisdictionName,
     row.winner,
-    row.votes.Harris ?? 0,
-    row.votes.Trump ?? 0,
+    row.votes[electionCandidates.dem] ?? 0,
+    row.votes[electionCandidates.rep] ?? 0,
     row.votes.Other ?? 0,
     row.totalVotes,
     row.marginVotes,
@@ -3798,17 +3816,19 @@ export function WorkspaceTabs({
     "total_votes",
     "source",
   ];
-  const historicalExportRows = historicalRows.map((row) => [
-    row.electionYear,
-    row.jurisdictionName,
-    row.localUnit,
-    row.sourceLevel,
-    row.demVotes ?? "",
-    row.repVotes ?? "",
-    row.otherVotes ?? "",
-    row.totalVotes ?? "",
-    row.sourceId,
-  ]);
+  const historicalExportRows = historicalRows
+    .filter((row) => electionYear === 2024 || row.electionYear === electionYear)
+    .map((row) => [
+      row.electionYear,
+      row.jurisdictionName,
+      row.localUnit,
+      row.sourceLevel,
+      row.demVotes ?? "",
+      row.repVotes ?? "",
+      row.otherVotes ?? "",
+      row.totalVotes ?? "",
+      row.sourceId,
+    ]);
   const sourceExportHeaders = ["category", "title", "authority", "source_url", "local_artifact", "parser", "timestamp_basis", "confidence", "status"];
   const sourceExportRows = sources.map((source) => [
     source.category,
@@ -3908,7 +3928,7 @@ export function WorkspaceTabs({
     sources,
     state: selectedStateCode,
     stateName,
-    year: 2024,
+    year: electionYear,
   };
   const importSummary = {
     completeness: selectedCompleteness ?? null,
@@ -3919,7 +3939,7 @@ export function WorkspaceTabs({
     selectedImportRuns,
     state: selectedStateCode,
     stateName,
-    year: 2024,
+    year: electionYear,
   };
 
   const reviewPacketManifest: ExportPacketManifest = {
@@ -3945,11 +3965,11 @@ export function WorkspaceTabs({
     },
     state: selectedStateCode,
     stateName,
-    year: 2024,
+    year: electionYear,
   };
 
   const reviewPacketMarkdown = [
-    `# ${stateName} (${selectedStateCode}) 2024 Review Packet`,
+    `# ${stateName} (${selectedStateCode}) ${electionYear} Review Packet`,
     "",
     "Advisory flags and screening charts are review prompts only. This package does not assert fraud, tampering, misconduct, intent, or causation.",
     "",
@@ -4041,7 +4061,7 @@ export function WorkspaceTabs({
     const { default: JSZip } = await import("jszip");
     const zip = new JSZip();
     const readme = [
-      `Civic Result Maps review package for ${stateName} (${selectedStateCode}), 2024 President`,
+      `Civic Result Maps review package for ${stateName} (${selectedStateCode}), ${electionYear} President`,
       "",
       "Use these normalized files with the source manifest, caveats, readiness summary, indicator summary, missing-data checklist, and issue links.",
       "Advisory flags and screening charts are triage prompts, not proof by themselves.",
@@ -6583,51 +6603,58 @@ export function WorkspaceTabs({
                 <Database aria-hidden size={18} />
               </div>
             </div>))}
-            {captureProduction("downloads", (<div className="export-grid" style={{ order: Math.min(workspaceSectionState(layoutManifest, "exports", "downloads").order, workspaceSectionState(layoutManifest, "exports", "review-packet").order) }}>
-              <button onClick={exportResults} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Results CSV
-              </button>
-              <button onClick={exportIndicators} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Review CSV
-              </button>
-              <button disabled={!reviewRows.length} onClick={exportReviewRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Review Rows CSV
-              </button>
-              <button disabled={!turnoutRows.length} onClick={exportTurnoutRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Turnout CSV
-              </button>
-              <button disabled={!historicalRows.length} onClick={exportHistoricalRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Historical Rows CSV
-              </button>
-              <button onClick={exportSources} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Sources CSV
-              </button>
-              <button onClick={exportCoverage} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Coverage CSV
-              </button>
-              <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Vote Methods CSV
-              </button>
-              <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Equipment CSV
-              </button>
-              <button onClick={exportSourceManifest} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Source Manifest JSON
-              </button>
-              <button onClick={exportImportSummary} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
-                <Download aria-hidden size={16} />
-                Import Summary JSON
-              </button>
+            {captureProduction("downloads", (<div className="export-downloads" style={{ order: Math.min(workspaceSectionState(layoutManifest, "exports", "downloads").order, workspaceSectionState(layoutManifest, "exports", "review-packet").order) }}>
+              <div className="export-grid">
+                <button onClick={exportResults} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Results CSV
+                </button>
+                <button onClick={exportIndicators} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Review CSV
+                </button>
+                <button disabled={!reviewRows.length} onClick={exportReviewRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Review Rows CSV
+                </button>
+                <button disabled={!turnoutRows.length} onClick={exportTurnoutRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Turnout CSV
+                </button>
+                <button disabled={!historicalExportRows.length} onClick={exportHistoricalRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Historical Rows CSV
+                </button>
+                <button onClick={exportSources} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Sources CSV
+                </button>
+                <button onClick={exportCoverage} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Coverage CSV
+                </button>
+                <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Vote Methods CSV
+                </button>
+                <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Equipment CSV
+                </button>
+                <button onClick={exportSourceManifest} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Source Manifest JSON
+                </button>
+                <button onClick={exportImportSummary} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
+                  <Download aria-hidden size={16} />
+                  Import Summary JSON
+                </button>
+              </div>
+              {!reviewRows.length && (
+                <p className="export-availability-note" role="status">
+                  No {electionYear} review rows are loaded for {stateName}. Review Rows CSV is unavailable; use Results CSV for election totals when results are available.
+                </p>
+              )}
             </div>))}
             {captureProduction("review-packet", (<div className="export-grid">
               <button data-tour="export-review-packet" onClick={exportReviewPackage} type="button" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
@@ -6678,35 +6705,35 @@ export function WorkspaceTabs({
               </li>
               <li>
                 <strong>Results</strong>
-                <code>/api/results?state={selectedStateCode}&amp;year=2024&amp;level=county</code>
+                <code>/api/results?state={selectedStateCode}&amp;year={electionYear}&amp;level={results[0]?.level ?? "county"}</code>
               </li>
               <li>
                 <strong>Indicators</strong>
-                <code>/api/indicators?state={selectedStateCode}&amp;year=2024</code>
+                <code>/api/indicators?state={selectedStateCode}&amp;year={electionYear}</code>
               </li>
               <li>
                 <strong>Raw review rows</strong>
-                <code>/api/review-rows?state={selectedStateCode}&amp;year=2024&amp;limit=500&amp;includeMetrics=true</code>
+                <code>/api/review-rows?state={selectedStateCode}&amp;year={electionYear}&amp;limit=500&amp;includeMetrics=true</code>
               </li>
               <li>
                 <strong>Turnout</strong>
-                <code>/api/turnout?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+                <code>/api/turnout?state={selectedStateCode}&amp;year={electionYear}&amp;limit=500</code>
               </li>
               <li>
                 <strong>Vote methods</strong>
-                <code>/api/vote-methods?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+                <code>/api/vote-methods?state={selectedStateCode}&amp;year={electionYear}&amp;limit=500</code>
               </li>
               <li>
                 <strong>Equipment context</strong>
-                <code>/api/equipment?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+                <code>/api/equipment?state={selectedStateCode}&amp;year={electionYear}&amp;limit=500</code>
               </li>
               <li>
                 <strong>Security incidents</strong>
-                <code>/api/security-incidents?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+                <code>/api/security-incidents?state={selectedStateCode}&amp;year={electionYear}&amp;limit=500</code>
               </li>
               <li>
                 <strong>Admin source statuses</strong>
-                <code>/api/admin-sources?state={selectedStateCode}&amp;year=2024</code>
+                <code>/api/admin-sources?state={selectedStateCode}&amp;year={electionYear}</code>
               </li>
               <li>
                 <strong>Historical baselines</strong>
@@ -6714,15 +6741,15 @@ export function WorkspaceTabs({
               </li>
               <li>
                 <strong>Sources</strong>
-                <code>/api/sources?state={selectedStateCode}&amp;year=2024</code>
+                <code>/api/sources?state={selectedStateCode}&amp;year={electionYear}</code>
               </li>
               <li>
                 <strong>Coverage</strong>
-                <code>/api/coverage?state={selectedStateCode}&amp;year=2024</code>
+                <code>/api/coverage?state={selectedStateCode}&amp;year={electionYear}</code>
               </li>
               <li>
                 <strong>Completeness</strong>
-                <code>/api/completeness?year=2024</code>
+                <code>/api/completeness?year={electionYear}</code>
               </li>
             </ul>))}
           </section>

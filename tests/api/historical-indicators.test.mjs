@@ -66,3 +66,14 @@ test("historical maps load same-year indicators and distinguish not evaluated", 
   assert.match(explorer, /demCorrelation/);
   assert.match(explorer, /repCorrelation/);
 });
+
+test("historical exports keep one election context across data, metadata, and API examples", () => {
+  assert.match(page, /workspaceTabSupportsHistoricalYear\(activeTab\) \? requestedYear : 2024/);
+  assert.match(page, /loadDisplaySources\(selectedState, selectedYear, activeTab !== "exports"\)/);
+  assert.match(page, /listTurnoutRows\(\{ state: selectedState, year: selectedYear/);
+  assert.match(workspaceTabs, /selectedStateCode\.toLowerCase\(\)\}-\$\{electionYear\}-president/);
+  assert.match(workspaceTabs, /candidateNamesForYear\(electionYear\)/);
+  assert.match(workspaceTabs, /activeTab !== "exports" \|\| run\.electionYear === electionYear/);
+  assert.match(workspaceTabs, /year=\{electionYear\}/);
+  assert.match(workspaceTabs, /No \{electionYear\} review rows are loaded/);
+});

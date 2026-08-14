@@ -10,6 +10,7 @@ import {
   workspaceNavigationContextFromSearchParams,
   workspaceNavigationHref,
   workspaceStateHref,
+  workspaceTabSupportsHistoricalYear,
   type WorkspaceContextChangeDetail,
   type WorkspaceMapMode,
   type WorkspaceNavigationContext,
@@ -167,7 +168,7 @@ export function WorkspaceContextBar({
               navigate(workspaceNavigationHref({
                 ...currentContext(),
                 fips: undefined,
-                tab: "map",
+                tab: workspaceTabSupportsHistoricalYear(activeTab) ? activeTab : "map",
                 year,
               }));
             }}
