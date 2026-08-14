@@ -7481,3 +7481,17 @@ evidence against its verified top-level package.
   require those exact five outputs. Deployment of these files still cannot
   expose Alaska data until the separately authorized atomic database
   publication transaction succeeds.
+
+### 2026-08-14 - Merge-gated public API verification
+
+- Pull requests now boot the real application in a separate `Public API
+  integration` GitHub job and exercise public HTTP routes before merge. The
+  reusable smoke suite checks response content types and envelopes, CORS,
+  state/year/grain filters, historical Alaska isolation, publication-gated
+  result and geometry behavior, and invalid parent/date errors.
+
+- The same smoke suite runs against `civicresultmaps.org` after every successful
+  Vercel production deployment. The pre-merge check is hermetic and uses seed
+  fallback data; the post-deployment check requires database-backed responses
+  and requires the public alias to report the exact triggering deployment Git
+  SHA. Neither check mutates election data or publication state.

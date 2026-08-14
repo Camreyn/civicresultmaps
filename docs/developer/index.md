@@ -254,6 +254,29 @@ Workers should verify the relevant state appears through the public API or UI pa
 
 If an endpoint is missing or incomplete, document that as remaining risk or add the smallest implementation needed.
 
+### Merge-gated API verification
+
+Every pull request runs the `Public API integration` GitHub check. It boots the
+actual Next.js application with the hermetic seed fallback and sends HTTP
+requests through the public route handlers. The check verifies JSON content
+types, API envelopes and CORS headers, state/year/grain filters, historical
+Alaska isolation, local-geography publication gating, and invalid-input error
+contracts. `main` branch protection requires `validate`, `Public API
+integration`, and Vercel; a green source-level unit test alone is not enough.
+
+Every successful Vercel production deployment also runs the same suite against
+`https://civicresultmaps.org` through `Production deployment smoke`. This
+post-deployment check requires database-backed responses and verifies that the
+public alias reports the exact Git SHA from the triggering deployment. It does
+not replace the pre-merge integration check.
+
+Run the checks directly with:
+
+```powershell
+npm run test:e2e:api
+npm run smoke:public-api -- --base-url=https://civicresultmaps.org
+```
+
 ## Final Worker Report
 
 Each worker must report:

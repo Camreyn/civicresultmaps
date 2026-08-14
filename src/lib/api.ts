@@ -50,7 +50,8 @@ function cachePublicData<Args extends unknown[], Result>(
 export const publicDataCacheHeaders = {
   "Cache-Control": "no-store",
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Expose-Headers": "Content-Disposition, X-Data-Sha256, X-Pagination-Limit, X-Pagination-Offset, X-Release-Id, X-Total-Count",
+  "Access-Control-Expose-Headers": "Content-Disposition, X-Data-Sha256, X-Deployment-Sha, X-Pagination-Limit, X-Pagination-Offset, X-Release-Id, X-Total-Count",
+  "X-Deployment-Sha": process.env.VERCEL_GIT_COMMIT_SHA?.trim() || "local",
   "CDN-Cache-Control": "no-store",
   "Vercel-CDN-Cache-Control": "no-store",
 };

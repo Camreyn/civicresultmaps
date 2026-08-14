@@ -12,6 +12,7 @@ jobs:
       github.event.deployment_status.state == 'success' &&
       github.event.deployment.environment == 'Production'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,6 +21,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Verify the public election data API
+        run: >-
+          node scripts/verify-public-api-deployment.mjs
+          --base-url=https://civicresultmaps.org
+          --expect-source=database
+          --expect-git-sha=${{ github.event.deployment.sha }}
 
       - name: Verify national, Georgia, and Minnesota security reports
         run: node scripts/verify-security-incidents-deployment.mjs --base-url=https://civicresultmaps.org
