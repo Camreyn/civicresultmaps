@@ -5039,6 +5039,18 @@ td {
   grid-template-columns: repeat(4, minmax(130px, 1fr));
 }
 
+.export-downloads {
+  display: grid;
+  gap: 10px;
+}
+
+.export-availability-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+}
+
 .export-summary-grid {
   border-top: 1px solid var(--line);
   grid-template-columns: repeat(4, minmax(130px, 1fr));
@@ -5058,9 +5070,14 @@ td {
   padding: 0 12px;
 }
 
-.export-grid button:hover {
+.export-grid button:hover:not(:disabled) {
   border-color: var(--accent-line);
   color: var(--accent);
+}
+
+.export-grid button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .contact-card,

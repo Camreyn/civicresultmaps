@@ -42,6 +42,10 @@ const workspaceTabs = new Set<WorkspaceTabId>([
 ]);
 const historicalMapModes = new Set<WorkspaceMapMode>(["winner", "margin", "volume"]);
 
+export function workspaceTabSupportsHistoricalYear(tab: WorkspaceTabId) {
+  return tab === "map" || tab === "exports";
+}
+
 function normalizeState(value: string | null | undefined, fallback: string) {
   const normalized = value?.trim().slice(0, 2).toUpperCase();
   return /^[A-Z]{2}$/.test(normalized ?? "") ? normalized! : fallback;
@@ -73,7 +77,7 @@ export function workspaceNavigationContextFromSearchParams(
   fallback: WorkspaceNavigationContext,
 ): WorkspaceNavigationContext {
   const tab = normalizeTab(searchParams.get("tab"), fallback.tab);
-  const year = tab === "map"
+  const year = workspaceTabSupportsHistoricalYear(tab)
     ? normalizeYear(searchParams.get("year"), fallback.year)
     : 2024;
   const mode = tab === "map" ? normalizeMapMode(searchParams.get("mode")) : undefined;
@@ -91,7 +95,7 @@ export function workspaceNavigationContextFromSearchParams(
 export function workspaceNavigationHref(context: WorkspaceNavigationContext): `/?${string}` {
   const state = normalizeState(context.state, "WA");
   const tab = normalizeTab(context.tab, "map");
-  const year = tab === "map" ? normalizeYear(context.year, 2024) : 2024;
+  const year = workspaceTabSupportsHistoricalYear(tab) ? normalizeYear(context.year, 2024) : 2024;
   const mode = tab === "map" ? normalizeMapMode(context.mode) : undefined;
   const fips = tab === "map" ? normalizeFips(context.fips) : undefined;
   const params = new URLSearchParams({
@@ -127,7 +131,7 @@ export function contextualizeWorkspaceHref(href: string, context: WorkspaceNavig
   const params = new URLSearchParams(url.searchParams);
   const tab = normalizeTab(params.get("tab"), context.tab);
   const state = normalizeState(params.get("state"), context.state);
-  const year = tab === "map"
+  const year = workspaceTabSupportsHistoricalYear(tab)
     ? normalizeYear(params.get("year"), context.year)
     : 2024;
   params.set("state", state);

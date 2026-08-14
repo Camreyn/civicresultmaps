@@ -29,6 +29,27 @@ test("secondary workspace destinations retain their tab and canonical 2024 conte
   );
 });
 
+test("exports preserve the selected historical election while removing map-only context", () => {
+  assert.equal(
+    workspaceStateHref({ ...mapContext, tab: "exports" }, "AK"),
+    "/?state=AK&year=2020&tab=exports",
+  );
+
+  assert.deepEqual(
+    workspaceNavigationContextFromSearchParams(
+      new URLSearchParams("state=AK&year=2016&tab=exports&mode=margin&fips=02020"),
+      mapContext,
+    ),
+    {
+      fips: undefined,
+      mode: undefined,
+      state: "AK",
+      tab: "exports",
+      year: 2016,
+    },
+  );
+});
+
 test("historical navigation removes administration-only map layers", () => {
   assert.equal(
     workspaceNavigationHref({ ...mapContext, mode: "equipment", year: 2016 }),
@@ -63,6 +84,17 @@ test("custom workspace links inherit state context and discard map-only context 
   assert.equal(url.searchParams.has("fips"), false);
   assert.equal(url.searchParams.has("mode"), false);
   assert.equal(url.hash, "#catalog");
+});
+
+test("custom exports links inherit the selected historical election", () => {
+  const href = contextualizeWorkspaceHref("/?tab=exports#downloads", mapContext);
+  const url = new URL(href, "https://civicresultmaps.local");
+  assert.equal(url.searchParams.get("state"), "WA");
+  assert.equal(url.searchParams.get("year"), "2020");
+  assert.equal(url.searchParams.get("tab"), "exports");
+  assert.equal(url.searchParams.has("fips"), false);
+  assert.equal(url.searchParams.has("mode"), false);
+  assert.equal(url.hash, "#downloads");
 });
 
 test("bare workspace links retain map context while external and non-workspace paths remain unchanged", () => {

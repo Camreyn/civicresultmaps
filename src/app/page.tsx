@@ -41,6 +41,7 @@ import {
 import { buildStateSocialPreview } from "@/lib/social-preview";
 import { listSecurityIncidentStateSummaries } from "@/lib/security-incidents";
 import { historicalCountyRowsToResults } from "@/lib/state-year-results";
+import { workspaceTabSupportsHistoricalYear } from "@/lib/workspace-navigation";
 
 const mapModes = new Set(["winner", "margin", "volume", "method", "equipment", "security"]);
 const securityIncidentStateSummaries = listSecurityIncidentStateSummaries(2024);
@@ -103,9 +104,13 @@ async function loadDisplayResults(state: string, year: SupportedPresidentialYear
   };
 }
 
-async function loadDisplaySources(state: string, year: SupportedPresidentialYear) {
+async function loadDisplaySources(
+  state: string,
+  year: SupportedPresidentialYear,
+  fallbackTo2024 = true,
+) {
   const sources = await listSources({ state, year });
-  if (sources.length || year === 2024) {
+  if (sources.length || year === 2024 || !fallbackTo2024) {
     return sources;
   }
   return listSources({ state, year: 2024 });
@@ -159,7 +164,8 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
   const activeTab = resolveVisibleWorkspaceTabV2(layoutManifest, params?.tab);
   const requestedYear = parseYear(params?.year);
-  const selectedYear = activeTab === "map" ? requestedYear : 2024;
+  const selectedYear = workspaceTabSupportsHistoricalYear(activeTab) ? requestedYear : 2024;
+  const workspaceSummaryYear = activeTab === "exports" ? selectedYear : 2024;
   const requestedMapMode = mapModes.has(params?.mode ?? "")
     ? params?.mode as "winner" | "margin" | "volume" | "method" | "equipment" | "security"
     : undefined;
@@ -173,8 +179,10 @@ export default async function Home({ searchParams }: HomeProps) {
   const needsIndicators = activeTab === "map" || needsReview;
   const needsTurnout = ["history", "data", "exports"].includes(activeTab);
   const needsHistory = ["history", "data", "exports"].includes(activeTab);
-  const needsMethods = selectedYear === 2024 && ["map", "electronic", "data", "exports"].includes(activeTab);
-  const needsSecurity = selectedYear === 2024 && ["map", "data", "exports"].includes(activeTab);
+  const needsMethods = (selectedYear === 2024 || activeTab === "exports")
+    && ["map", "electronic", "data", "exports"].includes(activeTab);
+  const needsSecurity = (selectedYear === 2024 || activeTab === "exports")
+    && ["map", "data", "exports"].includes(activeTab);
   const needsImports = ["review", "data", "exports", "imports"].includes(activeTab);
 
   const [
@@ -197,24 +205,24 @@ export default async function Home({ searchParams }: HomeProps) {
     sourceRecordsRequests,
   ] = await Promise.all([
     listStates(),
-    listCompletenessReport({ year: 2024 }),
+    listCompletenessReport({ year: workspaceSummaryYear }),
     loadDisplayResults(selectedState, selectedYear),
-    loadDisplaySources(selectedState, selectedYear),
+    loadDisplaySources(selectedState, selectedYear, activeTab !== "exports"),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     needsImports ? listImportRuns() : Promise.resolve([]),
     needsIndicators ? listIndicators({ state: selectedState, year: selectedYear }) : Promise.resolve([]),
     needsReview
       ? listReviewRows({ state: selectedState, year: selectedYear, includeMetrics: true, limit: 5000 })
       : Promise.resolve([]),
-    needsTurnout ? listTurnoutRows({ state: selectedState, year: 2024, limit: 20000 }) : Promise.resolve([]),
+    needsTurnout ? listTurnoutRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
     needsHistory ? listHistoricalResultRows({ state: selectedState, limit: 5000 }) : Promise.resolve([]),
-    needsMethods ? listVoteMethodRows({ state: selectedState, year: 2024, limit: 20000 }) : Promise.resolve([]),
-    needsMethods ? listEquipmentRows({ state: selectedState, year: 2024, limit: 20000 }) : Promise.resolve([]),
-    needsSecurity ? listSecurityIncidents({ state: selectedState, year: 2024, limit: 5000 }) : Promise.resolve([]),
-    listAdminSourceStatuses({ state: selectedState, year: 2024 }),
-    listElectronicIntegrityArtifacts({ state: selectedState, year: 2024 }),
-    listElectronicIntegrityRequests({ state: selectedState, year: 2024 }),
-    listSourceRecordsRequests({ state: selectedState, year: 2024 }),
+    needsMethods ? listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
+    needsMethods ? listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
+    needsSecurity ? listSecurityIncidents({ state: selectedState, year: selectedYear, limit: 5000 }) : Promise.resolve([]),
+    listAdminSourceStatuses({ state: selectedState, year: workspaceSummaryYear }),
+    listElectronicIntegrityArtifacts({ state: selectedState, year: workspaceSummaryYear }),
+    listElectronicIntegrityRequests({ state: selectedState, year: workspaceSummaryYear }),
+    listSourceRecordsRequests({ state: selectedState, year: workspaceSummaryYear }),
   ]);
 
   const {
@@ -392,7 +400,7 @@ export default async function Home({ searchParams }: HomeProps) {
               />
             </section>
 
-            <NationalOverview report={completenessReport} year={2024} />
+            <NationalOverview report={completenessReport} year={workspaceSummaryYear} />
           </section>
         </section>
       </div>
