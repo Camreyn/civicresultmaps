@@ -35,7 +35,7 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.equal(config.turnout.stateNativeLeadReview.decision, "remain_documented_lead_not_active_turnout");
   assert.equal(config.turnout.stateNativeLeadReview.zeroRegistrationBallotUnits, 120);
   assert.equal(config.turnout.stateNativeLeadReview.zeroRegistrationBallots, 165047);
-  assert.equal(config.expected.sources, 12);
+  assert.equal(config.expected.sources, 16);
   assert.equal(config.expected.canonicalCountyEquivalentFeatures, 30);
   assert.ok(config.sources.some((source) => source.id === "ak-county-equivalent-boundary"));
   assert.equal(config.expected.stateTotal, 338177);
@@ -51,12 +51,13 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.match(reviewCsv, /HD01 01-600 Ketchikan No\. 1/);
   assert.match(reviewCsv, /District 40\s+- Question/);
 
-  assert.equal(inventory.completionDecision.decision, "materially_advanced_precinct_review_loaded_with_caveats");
-  assert.match(inventory.completionDecision.reason, /523 same-grain precinct\/reporting-unit/i);
+  assert.equal(inventory.completionDecision.decision, "four_election_precinct_gis_reviewed_guarded_release_pending");
+  assert.match(inventory.completionDecision.reason, /402 geographic precincts.*121.*non-geographic/i);
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-general-enr-by-precinct"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-enr-turnout-semantics"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-official-source-request-packet"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-county-equivalent-boundary"));
+  assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-precinct-gis-package"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.expectedCounts?.usHouseWriteInGapVersusSummary === 750));
   assert.ok(inventory.sourceNeeds.some((need) => need.id === "ak-us-house-write-in-precinct-allocation"));
   assert.ok(inventory.displayCaveats.some((caveat) => /not proof of fraud or misconduct/i.test(caveat)));
@@ -77,7 +78,7 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.ok(tierAk);
   assert.equal(tierAk.confidence, "loaded_with_caveat");
   assert.match(tierAk.parserStatus, /523 localComparisonCsv review rows/);
-  assert.match(tierAk.caveats, /750 votes below/);
+  assert.match(tierAk.caveats, /750 U\.S\. House write-ins/i);
 
   assert.ok(requestRows.some((row) => row.id === "ak-us-house-write-in-precinct-allocation"));
   assert.ok(requestRows.some((row) => row.id === "ak-local-turnout-denominator" && row.local_artifact_status === "semantics_reconciliation_lead_collected"));

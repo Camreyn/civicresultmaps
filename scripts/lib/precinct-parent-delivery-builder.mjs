@@ -3,6 +3,10 @@ import {
   selectPrecinctDeliveryFeatures,
   selectPrecinctParentDeliveryArtifact,
 } from "../../src/lib/precinct-map-delivery.ts";
+import {
+  isValidLocalGeographyDeliveryParentId,
+  localGeographyDeliveryParentValidationMessage,
+} from "../../src/lib/local-geography-parent.ts";
 
 function sha256(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
@@ -22,12 +26,17 @@ function parentGeoids(value) {
   ) {
     throw new Error("parent-scoped delivery requires a nonempty FeatureCollection");
   }
+  const state = String(value?.metadata?.state ?? "").trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(state)) {
+    throw new Error("parent-scoped delivery metadata requires a two-letter state");
+  }
   const parents = new Set();
   for (const [index, feature] of value.features.entries()) {
     const parentGeoid = String(feature?.properties?.parentGeoid ?? "");
-    if (!/^\d{5}$/.test(parentGeoid)) {
+    if (!isValidLocalGeographyDeliveryParentId(state, parentGeoid)) {
       throw new Error(
-        "delivery feature " + index + " requires a five-digit parentGeoid",
+        "delivery feature " + index + " "
+        + localGeographyDeliveryParentValidationMessage(state),
       );
     }
     parents.add(parentGeoid);
@@ -47,7 +56,7 @@ export function buildParentScopedPrecinctDeliveryPackage(
       options.featureLimit,
     );
     if (collection.features.length === 0) {
-      throw new Error("parent-scoped delivery produced an empty county");
+      throw new Error("parent-scoped delivery produced an empty parent area");
     }
     const bytes = serialize(collection);
     const digest = sha256(bytes);

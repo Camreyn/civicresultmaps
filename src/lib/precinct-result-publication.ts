@@ -2,6 +2,10 @@ import { createHash } from "node:crypto";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 
 const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
+  AK: {
+    geographyLevel: "precinct",
+    releaseCandidatePattern: /^ak-precinct-gis-four-election-v\d+$/,
+  },
   IA: {
     geographyLevel: "precinct",
     releaseCandidatePattern: /^ia-precinct-gis-three-election-v\d+$/,

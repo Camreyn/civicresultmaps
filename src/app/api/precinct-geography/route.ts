@@ -12,6 +12,12 @@ import {
   findMinnesotaPrecinctRehearsalManifest,
   readMinnesotaPrecinctRehearsalDelivery,
 } from "@/lib/mn-precinct-rehearsal-server";
+import {
+  isSupportedLocalGeographyParentId,
+  isValidLocalGeographyParentId,
+  localGeographyParentScope,
+  localGeographyParentValidationMessage,
+} from "@/lib/local-geography-parent";
 import registry from "../../../../data/precinct-geometry-manifests.json";
 
 export const runtime = "nodejs";
@@ -34,8 +40,11 @@ export async function GET(request: NextRequest) {
       400,
     );
   }
-  if (!/^\d{5}$/.test(parentGeoid)) {
-    return errorResponse("parentGeoid must be a five-digit county GEOID", 400);
+  if (!isSupportedLocalGeographyParentId(parentGeoid)) {
+    return errorResponse(
+      "parentGeoid must be a supported county or House District identifier",
+      400,
+    );
   }
 
   const manifest = listPrecinctGeometryManifestViews(registry)
@@ -53,6 +62,20 @@ export async function GET(request: NextRequest) {
   }
   if (!manifest && !rehearsal) {
     return errorResponse("eligible local geography manifest not found", 404);
+  }
+  const selectedManifest = manifest ?? rehearsal!.manifest;
+  if (!isValidLocalGeographyParentId({
+    state: selectedManifest.state,
+    geographyLevel: selectedManifest.geography.level,
+    parentGeoid,
+  })) {
+    return errorResponse(
+      localGeographyParentValidationMessage({
+        state: selectedManifest.state,
+        geographyLevel: selectedManifest.geography.level,
+      }),
+      400,
+    );
   }
   if (
     manifest
@@ -76,8 +99,12 @@ export async function GET(request: NextRequest) {
         rehearsal!,
         parentGeoid,
       );
-    const selectedManifest = manifest ?? rehearsal!.manifest;
     const localRehearsal = Boolean(rehearsal);
+    const parentScope = localGeographyParentScope({
+      state: selectedManifest.state,
+      geographyLevel: selectedManifest.geography.level,
+    });
+    const parentLabel = parentScope?.singularLabel ?? "parent area";
     return NextResponse.json(
       apiEnvelope(delivery.collection, {
         source: localRehearsal
@@ -104,9 +131,11 @@ export async function GET(request: NextRequest) {
           localRehearsal
             ? "This hash-pinned candidate is available only through the guarded "
               + "loopback crm_clone_dev rehearsal. Its canonical manifest remains "
-              + "blocked and unpublished. Geometry is county-filtered before transfer."
+              + "blocked and unpublished. Geometry is filtered to the requested "
+              + parentLabel + " before transfer."
             : "Geometry is served only from a reviewed, election-vintage-confirmed "
-              + "manifest, is filtered to the requested county before transfer, "
+              + "manifest, is filtered to the requested " + parentLabel
+              + " before transfer, "
               + "and carries the source authority, URL, and license or disclaimer.",
       }),
       { headers: publicDataCacheHeaders },

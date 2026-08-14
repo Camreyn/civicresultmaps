@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "state": "AK",
+  "electionId": "2016-11-08-general",
+  "generatedAt": "2026-08-14T04:30:00Z",
+  "disposition": "source_and_crosswalk_gates_passed_delivery_pending",
+  "results": {
+    "resultUnits": 562,
+    "geographicResultUnits": 441,
+    "nonGeographicResultUnits": 121,
+    "contestTotals": {
+      "president": {
+        "totalVotes": 318608,
+        "candidateTotals": {
+          "Castle, Darrell L.": 3866,
+          "Clinton, Hillary": 116454,
+          "De La Fuente, Roque": 1240,
+          "Johnson, Gary": 18725,
+          "Stein, Jill": 5735,
+          "Trump, Donald J.": 163387,
+          "Write-in": 9201
+        }
+      },
+      "senate": {
+        "totalVotes": 311441,
+        "candidateTotals": {
+          "Craig, Breck A.": 2609,
+          "Gianoutsos, Ted": 1758,
+          "Metcalfe, Ray": 36200,
+          "Miller, Joe": 90825,
+          "Murkowski, Lisa": 138149,
+          "Stock, Margaret": 41194,
+          "Write-in": 706
+        }
+      }
+    }
+  },
+  "geometry": {
+    "sourceFeatureCount": 441,
+    "outputFeatureCount": 441,
+    "matchedFeatureCount": 441,
+    "unassignedSourceFeatureCount": 0,
+    "excludedSourceFeatures": [],
+    "correction": null,
+    "parentLevel": "house_district"
+  },
+  "crosswalk": {
+    "resultUnits": 562,
+    "colorableResultUnits": 441,
+    "matchedResultUnits": 441,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 121,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 441,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 121,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "artifacts": {
+    "normalizedGeometry": {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/normalized/ak-2016-precincts.geojson.gz",
+      "sha256": "3b9090edd217ba8f8dc1c3ea39ef52405a292709cb0f69e69a3eb70bc1e808d4",
+      "byteCount": 7294203
+    },
+    "normalizedGeometryUncompressed": {
+      "sha256": "8a882716bbfcc5da00c8a70823be75ae0797e9a6605d6fd3123c5458c29325f5",
+      "byteCount": 26817323
+    },
+    "normalizedResults": {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/normalized/ak-2016-official-precinct-results.json.gz",
+      "sha256": "96ba0f935b8f4b908a32ae5b1bc31974cdecf579f0046bc44d1704b0a83bfb84",
+      "byteCount": 59804
+    },
+    "normalizedResultsUncompressed": {
+      "sha256": "d4c38e979796a320cbef27deb904f839041f14af2c507def44e699232e50fb07",
+      "byteCount": 3847847
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/crosswalk/ak-2016-precinct-result-crosswalk.json",
+      "sha256": "e39f312ff2ff05e0eb2e348c5304ab84307506f0e48558dc376a5084987d690e",
+      "byteCount": 415249
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/source-evidence.json",
+      "sha256": "6d84230b507c9d1938031658451d7bbbfafdbab6a49dd4287c0e6cc2b0c2d900",
+      "byteCount": 5870
+    }
+  },
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk."
+  ]
+}

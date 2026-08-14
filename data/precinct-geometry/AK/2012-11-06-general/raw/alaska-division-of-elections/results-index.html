@@ -1,0 +1,377 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, inital-scale=1">
+<link href="https://elections.alaska.gov/css/nstatewide.css" type="text/css" rel="stylesheet">
+
+<link href="https://elections.alaska.gov/css/nstyle.css" type="text/css" rel="stylesheet">
+
+<link href="https://elections.alaska.gov/css/nfont-style.css" type="text/css" rel="stylesheet">
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="https://elections.alaska.gov/css/ncustom-style.css" type="text/css" rel="stylesheet">
+
+
+
+
+<link href="https://elections.alaska.gov/css/2019Style.css" type="text/css" rel="stylesheet">
+
+
+<style>
+
+<!-- Footer Style Sheet Classes -->
+.ftr { clear:both; }
+
+.ftrc { display:inline-block;
+		vertical-align:text-top;
+		width:32%;
+		margin:4px; }
+		
+.ftctr { text-align:center;}
+.ftrgt { text-align:right;}
+
+.ftr ul{ padding:0px; 
+		 list-style:none;}
+
+.hlst li{ display:inline-block; margin:5px; font-size:10px; font-style:normal; }
+
+.ftb { font-weight:bold;}
+
+</style>
+
+
+
+
+<link rel="Shortcut Icon" 
+	href="https://elections.alaska.gov/img/favicon.ico"
+	type="image/x-icon">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+jQuery(function( $ ){
+	$("header .genesis-nav-menu, .nav-primary .genesis-nav-menu").addClass("responsive-menu").before('<div class="responsive-menu-icon"></div>');
+
+	$(".responsive-menu-icon").click(function(){
+		$(this).next("header .genesis-nav-menu, .nav-primary .genesis-nav-menu").slideToggle();
+	});
+
+	$(window).resize(function(){
+		if(window.innerWidth > 800) {
+			$("header .genesis-nav-menu, .nav-primary .genesis-nav-menu, nav .sub-menu").removeAttr("style");
+			$(".responsive-menu > .menu-item").removeClass("menu-open");
+		}
+	});
+
+	$(".responsive-menu > .menu-item").click(function(event){
+		if (event.target !== this)
+		return;
+			$(this).find(".sub-menu:first").slideToggle(function() {
+			$(this).parent().toggleClass("menu-open");
+		});
+	});
+
+});
+</script>
+
+
+
+<title>Alaska Division of Elections</title>
+<meta http-equiv="pragma" content="no-cache">
+<meta name="description" 
+    content="State of Alaska Official web site for Alaska Election Information." >
+<meta name="keywords" 
+    content="Alaska Elections">
+
+
+<style>
+</style>
+
+</head>
+
+
+<body>
+<a href="#main_content" class="hidden">Skip to content</a> 
+<nav class="global-nav-menu ">
+  <ul id="menu-statewide-navigation">
+    <li> <a href="https://www.alaska.gov" itemprop="url">State of Alaska</a> </li>
+    <li> <a href="https://my.alaska.gov" itemprop="url">myAlaska</a></li>
+    <li> <a href="https://www.alaska.gov/akdir1.html" itemprop="url">Departments</a> </li>
+    <li> <a href="https://www.alaska.gov/employeeHome.html" itemprop="url">State Employees</a> </li>
+    <li> <a href="#SOAfooterlinks" itemprop="url">Statewide Links</a></li>
+  </ul>
+</nav>
+
+
+<div class="site-container">
+<div class="site-header divtopback" itemscope="" itemtype="http://schema.org/WPHeader">
+  <div class="wrap">
+    <div class="responsive-menu-icon"> </div>
+    <a class="site-title-link" href="https://www.elections.alaska.gov/"> <span class="site-logo"> <img 	src="https://www.elections.alaska.gov/img/coloredstateseal.png"
+	alt="Alaska Division of Elections "
+	title="Alaska Division of Elections "/> </span> <span class="site-title"> Alaska Division of Elections</span> </a>
+    <div class="search-form">
+      <form 
+	class="search-soa"
+	action="https://elections.alaska.gov/search.html" 
+	method="get"
+	itemtype="https://schema.org/SearchAction"
+	itemscope=""
+	itemprop="potentialAction">
+        <input 
+	name="s" 
+	class="search-form-input" 
+	id="searchform-5c3fd47a25f3d5.54563150" 
+	type="search" 
+	placeholder="Search this website …" 
+	value="">
+        <button class="search-form-submit"  id="search-button" type="submit" name="submit" value="Search" alt="Search"> <span class="search-soa-submit-text">Search</span> </button>
+        <meta content="https://elections.alaska.gov/?s={s}" itemprop="target">
+      </form>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-primary" itemscope="" itemtype="https://schema.org/SiteNavigationElement">
+  <div class="wrap">
+    <ul id="menu-sub-menu" class="menu genesis-nav-menu menu-primary responsive-menu">
+      <li class="menu-item"> <a href="https://www.elections.alaska.gov/voter-information/"><span>Voters</span></a>
+        <ul class="sub-menu">
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/voter-information/#pfdavr"><span>PFD Voter Registration</span></a> </li>
+          <li class="menu-item"> <a href="https://voterregistration.alaska.gov/"><span>Register Or Update Registration</span></a> </li>
+          <li class="menu-item"> <a href="https://myvoterportal.alaska.gov/"><span>My Voter Information</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/absentee-and-early-voting/"><span>Absentee and Early Voting</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/voting-assistance/#lets-begin"><span>Disabled Voter Assistance</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/voter-information/military-overseas-and-college-voters/#lets-begin"><span>Military And Overseas Voters</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/voter-information/military-overseas-and-college-voters/#lets-begin"><span>College Voters</span></a> </li>
+        </ul>
+      </li>
+      <li class="menu-item"> <a href="https://www.elections.alaska.gov/election-information"><span>Elections</span></a>
+            <ul class="sub-menu">
+              <li class="menu-item"> <a href="https://www.elections.alaska.gov/Core/sampleballots.php"><span>Sample Ballots</span></a> </li>
+              <li class="menu-item"> <a href="https://www.elections.alaska.gov/election-information/#GENR"><span>General Election Information</span></a>
+        <ul class="sub-menu">
+              <li class="menu-item"> <a href="https://www.elections.alaska.gov/election-information/#RankChoice"><span>Rank Choice Voting</span></a></li>
+				</ul>
+				  </li>
+				<li class="menu-item"> <a href="https://www.elections.alaska.gov/election-information/#PRIM"><span>Primary Election Information</span></a> </li>
+              <li class="menu-item"> <a href="https://www.elections.alaska.gov/reaa"><span>REAA Election Information</span></a> </li>
+              <li class="menu-item"> <a href="https://www.elections.alaska.gov/specialelections.php"><span>Special Elections</span></a> </li>
+		<li class="menu-item"> <a href="https://www.elections.alaska.gov/publications"><span>Election Pamphlets</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/petitions-and-ballot-measures/#ballotmeasures"><span>Ballot Measures</span></a></li>
+              <li class="menu-item"> <a href="https://www.elections.alaska.gov/election-results"><span>Election Results</span></a> </li>
+		  </ul>
+		</li>
+	<li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/"><span>Language Assistance</span></a>
+        <ul class="sub-menu">
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/tagalog.php" itemprop="url"><span itemprop="name">Tagalog (Filipino)</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/bby/" itemprop="url"><span itemprop="name">Yugtun Mumigcisteḿek Ikayungcalleq (Bristol Bay Yup’ik)</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/gcy/" itemprop="url"><span itemprop="name">Yugtun Mumigcisteḿek Ikayungcalleq (General Central Yup’ik)</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/gcy/" itemprop="url"><span itemprop="name">Yugtun Mumigcisteḿek Ikayungcalleq (General Central Yup’ik)</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/hby/" itemprop="url"><span itemprop="name">Yugtun Mumigcisteḿeng Ikayungcalleq (Hooper Bay Yup’ik)</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/nc/" itemprop="url"><span itemprop="name">Cugtun Qantulimeg Ukisqangcall’er (Nunivak Cup’ig)</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/northerninupiatun.php" itemprop="url"><span itemprop="name">Northern Inupiaq</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/nsky/" itemprop="url"><span itemprop="name">Yugtun Mumigcisteḿek Ikasungcalleq (Norton Sound Kotlik Yup’ik)</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/language-assistance/yy/" itemprop="url"><span itemprop="name">Yugtun Mumigcisteḿek Ikayungcalleq (Yukon Yup’ik)</span></a></li>
+        </ul>
+      </li>
+      <li class="menu-item"> <a href="https://www.elections.alaska.gov/candidates"><span>Candidates</span></a>
+        <ul class="sub-menu">
+          <li class="menu-item"> <a href="https://elections.alaska.gov/candidates"><span>State Candidates</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/reaa/reaa-candidates"><span>REAA Candidates</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/electoral-process/#elected-officials"><span>Elected Officials</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/candidates/file-for-candidacy/"><span>File as a Candidate</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/reaa/file-for-an-reaa-election/"><span>File as a REAA Candidate</span></a> </li>
+		  </ul>
+      </li>
+      <li class="menu-item"> <a href="https://www.elections.alaska.gov/petitions-and-ballot-measures/#petitions"><span>Petitions</span></a>
+        <ul class="sub-menu">
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/petitions-and-ballot-measures/#ballotmeasures"><span>Ballot Measures</span></a> </li>
+        </ul>
+      </li>
+      <li class="menu-item"> <a href="https://www.elections.alaska.gov/political-parties/"><span>Political Parties</span></a>
+      </li>
+      <li class="menu-item"> <a href="https://www.elections.alaska.gov/election-workers"><span>Join Us</span></a>
+      </li>
+      <li class="menu-item"> <a href="https://www.elections.alaska.gov/research"><span>Research</span></a>
+        <ul class="sub-menu">
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/newsroom/"><span>Press Releases and <br />Public Notices</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/ballot-counting-process/"><span>Ballot Count System & Election Security</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/research/statistics"><span>Statistics</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/research/district-maps/"><span>District and Precinct Maps</span></a> </li>
+          <li class="menu-item"> <a href="https://www.akleg.gov/basis/statutes.asp#15.05.005"><span>Election Law</span></a> </li>
+          <li class="menu-item"> <a href="https://www.akleg.gov/basis/aac.asp#6.25.010"><span>Regulations</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/Core/sampleballots.php"><span>Sample Ballots</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/petitions-and-ballot-measures/#ballotmeasures"><span>Ballot Measures</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/research"><span>Lists And Reports</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/electoral-process/"><span>Electoral College</span></a></li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/electoral-process/#elected-officials"><span>Elected Officials</span></a> </li>
+          <li class="menu-item"> <a href="https://www.elections.alaska.gov/Core/electionresources.php#akcl"> <span>Alaska Community List</span></a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+<div class="site-inner bc">
+
+<h2 class="pgheading">
+General Election - August 28, 2012
+<br>
+General Election Results</h2>
+
+
+<div class="rbox colsngl">
+
+<div class="colsngl">
+
+<h3 class="goldLine">
+House District 34 - Recount Official</h3>
+
+
+<ul>
+<li><a href="data/Results-HD34-Recount.pdf">House District 34 Results</a></li>
+
+<li><a href="data/SOVC-HD34-Recount.pdf">Statement of Votes Cast </a></li>
+<br></ul>
+
+
+<h3 class="goldLine">
+Senate District J - Recount Official</h3>
+
+
+<ul>
+<li><a href="data/Senate-J-Results-Official.pdf">Senate District J Results</a></li>
+<li><a href="data/Senate-J-sovc-Official.pdf">Statement of Votes Cast </a></li></ul>
+
+
+<h3 class="goldLine">
+<br>
+STATEWIDE SUMMARY - OFFICIAL</h3>
+
+
+<p>
+This report is the statewide summary of all races appearing on the ballot. To view this report, select one of the formats listed below:</p>
+
+
+<ul>
+<li><a href="data/results.htm"> HTML</a></li>  
+<li><a href="data/results.pdf"> PDF</a></li>
+<li><a href="data/results.txt"> TEXT </a> </li>
+
+<br></ul>
+
+
+
+
+
+<h3 class="goldLine">
+CARDS CAST REPORT - OFFICIAL </h3>
+
+
+<ul>
+<li><a href="https://www.elections.alaska.gov/results/12GENR/data/cards.pdf">Cards Cast Report</a></li></ul>
+
+
+<h3 class="goldLine">
+<br>
+STATEMENT OF VOTES CAST - OFFICIAL</h3>
+
+
+<p>
+This PDF report shows the results of all races appearing on the ballot by district and and precinct. Click on a house district from the following list to view the results by district and precinct.</p>
+
+
+<div>
+
+<strong><a href="data/sovc/hd1.pdf">- 1</a> - <a href="/results/12GENR/data/sovc/hd2.pdf">2</a> - <a href="/results/12GENR/data/sovc/hd3.pdf">3</a> - 
+          <a href="/results/12GENR/data/sovc/hd4.pdf">4</a> - <a href="/results/12GENR/data/sovc/hd5.pdf">5</a> - <a href="/results/12GENR/data/sovc/hd6.pdf">6</a> - 
+          <a href="/results/12GENR/data/sovc/hd7.pdf">7</a> - <a href="/results/12GENR/data/sovc/hd8.pdf">8</a> - <a href="/results/12GENR/data/sovc/hd9.pdf">9</a> - 
+          <a href="/results/12GENR/data/sovc/hd10.pdf">10</a> -<a href="/results/12GENR/data/sovc/hd11.pdf">11</a> - <a href="/results/12GENR/data/sovc/hd12.pdf">12</a> - <a href="/results/12GENR/data/sovc/hd13.pdf">13</a> - 
+          <a href="/results/12GENR/data/sovc/hd14.pdf">14</a> - <a href="/results/12GENR/data/sovc/hd15.pdf">15</a> - <a href="/results/12GENR/data/sovc/hd16.pdf">16</a> - 
+          <a href="/results/12GENR/data/sovc/hd17.pdf">17</a> - <a href="/results/12GENR/data/sovc/hd18.pdf">18</a> - <a href="/results/12GENR/data/sovc/hd19.pdf">19</a> - 
+        <a href="/results/12GENR/data/sovc/hd20.pdf">20</a> - <a href="/results/12GENR/data/sovc/hd21.pdf">21</a> <br>
+          <br>
+        - <a href="/results/12GENR/data/sovc/hd22.pdf">22</a> - <a href="/results/12GENR/data/sovc/hd23.pdf">23</a> - 
+          <a href="/results/12GENR/data/sovc/hd24.pdf">24</a> - <a href="/results/12GENR/data/sovc/hd25.pdf">25</a> - <a href="/results/12GENR/data/sovc/hd26.pdf">26</a> - 
+          <a href="/results/12GENR/data/sovc/hd27.pdf">27</a> - <a href="/results/12GENR/data/sovc/hd28.pdf">28</a> - <a href="/results/12GENR/data/sovc/hd29.pdf">29</a> - 
+          <a href="/results/12GENR/data/sovc/hd30.pdf">30</a> - <a href="/results/12GENR/data/sovc/hd31.pdf">31</a> - <a href="/results/12GENR/data/sovc/hd32.pdf">32</a> - <a href="/results/12GENR/data/sovc/hd33.pdf">33</a> - 
+          <a href="/results/12GENR/data/sovc/hd34.pdf">34</a> - <a href="/results/12GENR/data/sovc/hd35.pdf">35</a> - <a href="/results/12GENR/data/sovc/hd36.pdf">36</a> - 
+          <a href="/results/12GENR/data/sovc/hd37.pdf">37</a> - <a href="/results/12GENR/data/sovc/hd38.pdf">38</a> - <a href="/results/12GENR/data/sovc/hd39.pdf">39</a> - 
+          <a href="/results/12GENR/data/sovc/hd40.pdf">40</a><br>
+        <br>
+      </strong>
+<br>
+<strong><br>
+          Last Updated 
+          
+          11:38:36 AKST, November 28, 2012
+          <br>
+      </strong>
+<br>
+<div align="left"><strong>
+      <p></p>
+      </strong>
+      <strong>Election results reporting web sites have been donated by GCI &amp; ACS. </strong>
+          <strong><br>
+        </strong>    
+</div></div>
+
+</div>
+
+</div>
+
+
+
+</div>
+
+<footer>
+  <div class="ftr">
+    <div class="ftrAlignLft">
+      <div> <a  class="ilb" href="https://www.facebook.com/akelections/">facebook</a></div>
+      <div> <a class="ilb" href="https://www.elections.alaska.gov/accessibility/">Accessibility</a> <a class="ilb" href="https://www.elections.alaska.gov/website-disclaimer/">Disclaimer</a></div>
+    </div>
+    <div class="ftrAlignCntr">
+      <div> Our mission is to ensure public confidence in the electoral process by administering voter 
+        registration and elections with the highest level of professional standards, integrity, security, accuracy and fairness. </div>
+    </div>
+    <div class="ftrAlignRgt"> <a  style="margin-right:5px; vertical-align: top;" href="https://www.elections.alaska.gov">Alaska Division of Elections</a>
+      <div> <a style="margin-right:5px; vertical-align: top;" href="https://www.elections.alaska.gov/contact-information">Contact Information</a> </div>
+    </div>
+  </div>
+  <div class="ftrCenterBot">
+    <ul class="horiztlist">
+      <li> <a href="https://alaska.gov/">State of Alaska </a></li>
+      <li> <a href="https://my.alaska.gov/">myAlaska</a></li>
+      <li> <a href="https://alaska.gov/akdir1.html">Departments</a></li>
+      <a href="http://doa.alaska.gov/resources/privacy.html">Privacy Policy</a>
+      <li> <a href="https://alaska.gov/employeeHome.html">State Employees</a></li>
+    </ul>
+    <ul class="horiztlist">
+      <a href=""> </a>
+      <p class="ilb"> Copyright @ State of Alaska - Alaska Division of Elections </p>
+      <a class="ilb" href="https://www.elections.alaska.gov/send-email">Email Us</a>
+    </ul>
+  </div>
+</footer>
+
+</div>
+
+</body>
+
+</html>
+

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "id": "ak-2016-precinct-geometry-source-evidence",
+  "state": "AK",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Alaska Division of Elections",
+  "retrievedAt": "2026-08-14T04:30:00Z",
+  "sourceCrs": "GEOGCS[\"GCS_GRS_1980\",DATUM[\"D_GRS_1980\",SPHEROID[\"GRS_1980\",6378137,298.2572221]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]]",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/raw/alaska-division-of-elections/results-index.html",
+      "url": "https://www.elections.alaska.gov/results/16GENR/",
+      "authority": "Alaska Division of Elections",
+      "format": "HTML",
+      "sha256": "bc8a9af13ba3b9f95b2dddc7bc122f71b48c122c159acbc8dbdfc3e71f5a5520",
+      "byteCount": 9577,
+      "note": "Official 2016 General Election results index."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/raw/alaska-division-of-elections/results-summary.html",
+      "url": "https://www.elections.alaska.gov/results/16GENR/data/results.htm",
+      "authority": "Alaska Division of Elections",
+      "format": "HTML",
+      "sha256": "251f1977e41af35fdc92f4e8d8efaf5faeef8d34c3fe2fa1ff9e45dd12f65124",
+      "byteCount": 103515,
+      "note": "Official certified statewide result summary."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/raw/alaska-division-of-elections/resultsbyprct.txt",
+      "url": "https://www.elections.alaska.gov/results/16GENR/data/resultsbyprct.txt",
+      "authority": "Alaska Division of Elections",
+      "format": "TXT",
+      "sha256": "1c86d1b77ffd015cd6ffe0de741f9120d8efb4b9fa13d5bcfe6ece6446c66afc",
+      "byteCount": 7584294,
+      "note": "Official machine-readable results by precinct and administrative reporting unit."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/raw-shared/alaska-division-of-elections/2013-SW-Precinct-Proc-Plan.zip",
+      "url": "https://www.elections.alaska.gov/Core/Archive/2013districtmaps.php",
+      "authority": "Alaska Division of Elections",
+      "format": "ESRI Shapefile ZIP",
+      "sha256": "ad14aa1515d3b2922397c42fd20526d44e433d511e4dfcdceac489bff6a1260e",
+      "byteCount": 10660812,
+      "note": "Official statewide precinct shapefile for the July 14, 2013 proclamation plan used by this election."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/raw-shared/alaska-division-of-elections/2014-Statewide-Prec-Boundary-Regs.pdf",
+      "url": "https://www.elections.alaska.gov/doc/prpsa/2014-Statewide-Prec-Boundary-Regs.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "0d2ccf13e2dc97eae57b1788405a63f260562f1aa26afed7d198258498e028b9",
+      "byteCount": 1152898,
+      "note": "Official statewide legal precinct-boundary descriptions for the 2013 proclamation plan."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "ak-2016-official-precinct-results",
+    "resultUnits": 562,
+    "geographicResultUnits": 441,
+    "nonGeographicResultUnits": 121,
+    "normalizedResultArtifact": {
+      "localArtifactPath": "data/precinct-geometry/AK/2016-11-08-general/normalized/ak-2016-official-precinct-results.json.gz",
+      "sha256": "96ba0f935b8f4b908a32ae5b1bc31974cdecf579f0046bc44d1704b0a83bfb84",
+      "byteCount": 59804
+    },
+    "contestTotals": {
+      "president": {
+        "totalVotes": 318608,
+        "candidateTotals": {
+          "Castle, Darrell L.": 3866,
+          "Clinton, Hillary": 116454,
+          "De La Fuente, Roque": 1240,
+          "Johnson, Gary": 18725,
+          "Stein, Jill": 5735,
+          "Trump, Donald J.": 163387,
+          "Write-in": 9201
+        }
+      },
+      "senate": {
+        "totalVotes": 311441,
+        "candidateTotals": {
+          "Craig, Breck A.": 2609,
+          "Gianoutsos, Ted": 1758,
+          "Metcalfe, Ray": 36200,
+          "Miller, Joe": 90825,
+          "Murkowski, Lisa": 138149,
+          "Stock, Margaret": 41194,
+          "Write-in": 706
+        }
+      }
+    },
+    "comparisonContestComplete": true
+  },
+  "geometryContext": {
+    "sourceFeatureCount": 441,
+    "outputFeatureCount": 441,
+    "matchedFeatureCount": 441,
+    "unassignedSourceFeatureCount": 0,
+    "excludedSourceFeatures": [],
+    "correction": null,
+    "parentLevel": "house_district"
+  },
+  "publicReuse": {
+    "status": "official_public_record_no_additional_restriction_stated",
+    "terms": "Official Alaska public election and GIS records; the source pages state no additional redistribution restriction. Preserve Alaska Division of Elections attribution and source links."
+  },
+  "crossYearComparison": {
+    "directPrecinctComparisonSafe": false,
+    "reason": "Precinct boundaries and identifiers can change after redistricting or election-administration revisions.",
+    "supportedUse": "Render each election on its own verified boundary vintage.",
+    "futureRequirement": "Build a separately reviewed common-geography crosswalk before presenting precinct trend values as apples-to-apples."
+  },
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk."
+  ]
+}

@@ -27,6 +27,11 @@ import {
 } from "@/lib/openstreetmap-basemap";
 import type { ResultRow } from "@/lib/types";
 import { guardedLocalGeographyLevel } from "@/lib/precinct-result-publication";
+import {
+  ALASKA_HOUSE_DISTRICT_PARENT_IDS,
+  localGeographyParentDisplayName,
+  localGeographyParentScope,
+} from "@/lib/local-geography-parent";
 
 type PrecinctDetailMapProps = {
   electionYear: SupportedPresidentialYear;
@@ -294,6 +299,8 @@ export function PrecinctDetailMap({
     status: "loading",
   });
   const [selectedResultUnitCode, setSelectedResultUnitCode] = useState("");
+  const [selectedAlaskaHouseDistrict, setSelectedAlaskaHouseDistrict] =
+    useState("HD01");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -395,12 +402,27 @@ export function PrecinctDetailMap({
   const unitLabelPlural = manifestLevel === "local_reporting_unit"
     ? "local reporting units"
     : "precincts";
-  const deliveryQueryKey = manifestId && parentGeoid
-    ? manifestId + "|" + parentGeoid
+  const parentScope = localGeographyParentScope({
+    state: selectedState,
+    geographyLevel: manifestLevel,
+  });
+  const usesHouseDistrictParent = parentScope?.level === "house_district";
+  const effectiveParentGeoid = usesHouseDistrictParent
+    ? selectedAlaskaHouseDistrict
+    : parentGeoid;
+  const effectiveParentName = effectiveParentGeoid
+    ? usesHouseDistrictParent
+      ? localGeographyParentDisplayName(effectiveParentGeoid)
+      : parentName
+    : null;
+  const parentLabel = parentScope?.singularLabel ?? "parent area";
+  const parentLabelLower = parentLabel.toLowerCase();
+  const deliveryQueryKey = manifestId && effectiveParentGeoid
+    ? manifestId + "|" + effectiveParentGeoid
     : "";
 
   useEffect(() => {
-    if (!manifestId || !manifestOffice || !parentGeoid) {
+    if (!manifestId || !manifestOffice || !effectiveParentGeoid) {
       return;
     }
     const controller = new AbortController();
@@ -412,7 +434,7 @@ export function PrecinctDetailMap({
           fetchApiData(
             parentScopedPrecinctDeliveryApiPath({
               manifestId,
-              parentGeoid,
+              parentGeoid: effectiveParentGeoid,
             }),
             controller.signal,
           ),
@@ -423,14 +445,14 @@ export function PrecinctDetailMap({
                 year: String(electionYear),
                 level: manifestLevel,
                 office: manifestOffice,
-                parentGeoid,
+                parentGeoid: effectiveParentGeoid,
               }).toString(),
             controller.signal,
           ),
         ]);
         const collection = selectPrecinctDeliveryFeatures(
           geometryData,
-          parentGeoid,
+          effectiveParentGeoid,
         );
         if (
           !Array.isArray(resultData)
@@ -479,9 +501,9 @@ export function PrecinctDetailMap({
     return () => controller.abort();
   }, [
     deliveryQueryKey,
+    effectiveParentGeoid,
     electionYear,
     manifestId,
-    parentGeoid,
     manifestOffice,
     manifestLevel,
     selectedState,
@@ -540,7 +562,7 @@ export function PrecinctDetailMap({
     );
   } else if (currentManifestLoad.status === "unavailable") {
     body = statusPanel(
-      "County map remains active",
+      "Summary map remains active",
       currentManifestLoad.message,
     );
   } else if (currentManifestLoad.status === "error") {
@@ -548,15 +570,16 @@ export function PrecinctDetailMap({
       unitLabel[0].toUpperCase() + unitLabel.slice(1) + " coverage check failed",
       currentManifestLoad.message,
     );
-  } else if (!parentGeoid) {
+  } else if (!effectiveParentGeoid) {
     body = statusPanel(
-      "Select a county first",
-      "Local geometry is requested only after a county is pinned, which "
+      "Select a " + parentLabelLower + " first",
+      "Local geometry is requested only after a " + parentLabelLower
+        + " is selected, which "
         + "keeps the map and transfer size bounded.",
     );
   } else if (!currentDeliveryLoad || currentDeliveryLoad.status === "loading") {
     body = statusPanel(
-      "Loading county " + unitLabelPlural,
+      "Loading " + parentLabel + " " + unitLabelPlural,
       "Verifying the immutable geometry artifact and joining explicit "
         + "reporting-unit IDs.",
     );
@@ -564,7 +587,7 @@ export function PrecinctDetailMap({
     body = statusPanel(
       "No displayable " + unitLabelPlural,
       "The reviewed layer contains no eligible " + unitLabel + " features for this "
-        + "county. County results remain available above.",
+        + parentLabelLower + ". Summary results remain available above.",
     );
   } else if (currentDeliveryLoad.status === "error") {
     body = statusPanel(
@@ -574,7 +597,8 @@ export function PrecinctDetailMap({
   } else if (!viewport) {
     body = statusPanel(
       unitLabel[0].toUpperCase() + unitLabel.slice(1) + " coordinates unavailable",
-      "The county delivery passed its envelope checks but did not contain "
+      "The " + parentLabelLower
+        + " delivery passed its envelope checks but did not contain "
         + "renderable polygon coordinates.",
     );
   } else {
@@ -784,8 +808,8 @@ export function PrecinctDetailMap({
             {unitLabel[0].toUpperCase() + unitLabel.slice(1)} Detail
           </h2>
           <span>
-            {parentName
-              ? parentName + ", " + electionYear
+            {effectiveParentName
+              ? effectiveParentName + ", " + electionYear
               : selectedState + ", " + electionYear}
           </span>
         </div>
@@ -795,6 +819,29 @@ export function PrecinctDetailMap({
             : "Reviewed geometry only"}
         </span>
       </div>
+      {usesHouseDistrictParent && currentManifestLoad.status === "ready" ? (
+        <div className="precinct-detail-parent-selector">
+          <label htmlFor="precinct-detail-parent-selection">
+            House District to map
+            <select
+              id="precinct-detail-parent-selection"
+              onChange={(event) =>
+                setSelectedAlaskaHouseDistrict(event.target.value)}
+              value={selectedAlaskaHouseDistrict}
+            >
+              {ALASKA_HOUSE_DISTRICT_PARENT_IDS.map((districtId) => (
+                <option key={districtId} value={districtId}>
+                  {localGeographyParentDisplayName(districtId)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <span>
+            Alaska precinct delivery is scoped by the election&apos;s House
+            District plan rather than by borough or census area.
+          </span>
+        </div>
+      ) : null}
       {body}
     </section>
   );

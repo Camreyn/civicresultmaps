@@ -83,7 +83,10 @@ export const levelQuery = z
 export const parentGeoidQuery = z
   .string()
   .trim()
-  .regex(/^\d{5}$/, "parentGeoid must be a five-digit county GEOID");
+  .regex(
+    /^(?:\d{5}|HD(?:0[1-9]|[1-3][0-9]|40))$/,
+    "parentGeoid must be a supported county or House District identifier",
+  );
 
 export function apiEnvelope<T>(data: T, meta: Record<string, unknown> = {}) {
   return {

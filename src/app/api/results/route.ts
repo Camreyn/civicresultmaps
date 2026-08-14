@@ -11,6 +11,10 @@ import {
   stateQuery,
   yearQuery,
 } from "@/lib/api";
+import {
+  isValidLocalGeographyParentId,
+  localGeographyParentValidationMessage,
+} from "@/lib/local-geography-parent";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -25,19 +29,27 @@ export async function GET(request: NextRequest) {
     : null;
   if (parsedParentGeoid && !parsedParentGeoid.success) {
     return NextResponse.json(
-      apiErrorEnvelope("parentGeoid must be a five-digit county GEOID"),
+      apiErrorEnvelope(
+        "parentGeoid must be a supported county or House District identifier",
+      ),
       { status: 400, headers: publicApiErrorHeaders },
     );
   }
   const parentGeoid = parsedParentGeoid?.data;
   if (
     parentGeoid
-    && level !== "precinct"
-    && level !== "local_reporting_unit"
+    && !isValidLocalGeographyParentId({
+      state,
+      geographyLevel: level,
+      parentGeoid,
+    })
   ) {
     return NextResponse.json(
       apiErrorEnvelope(
-        "parentGeoid is supported only for county-scoped local results",
+        localGeographyParentValidationMessage({
+          state,
+          geographyLevel: level,
+        }),
       ),
       { status: 400, headers: publicApiErrorHeaders },
     );

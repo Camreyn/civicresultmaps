@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 1,
+  "id": "ak-2020-precinct-geometry-source-evidence",
+  "state": "AK",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Alaska Division of Elections",
+  "retrievedAt": "2026-08-14T04:30:00Z",
+  "sourceCrs": "GEOGCS[\"GCS_GRS_1980\",DATUM[\"D_GRS_1980\",SPHEROID[\"GRS_1980\",6378137,298.2572221]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]]",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/resultsbyprecinct.txt",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/resultsbyprecinct.txt",
+      "authority": "Alaska Division of Elections",
+      "format": "TXT",
+      "sha256": "5a5cd01ca9e017830396c283dd6780ad100a41ae6c8484ad79408b79b8b02cad",
+      "byteCount": 7070988,
+      "note": "Official machine-readable named-candidate results by precinct and administrative reporting unit."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/final-summary.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/results.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "90aa214d8543227b72d6617a6a2ad1fde23ee231d9a4e6428b20f949c67bc156",
+      "byteCount": 436496,
+      "note": "Official certified statewide result summary used to confirm contest totals."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD1p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD1p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "63c6d422cb19eebae4585843b6d2df3d03c1a6108071224b23344eb48f196aba",
+      "byteCount": 347384,
+      "note": "Official HD1 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD2p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD2p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "fb8a69d1532aeb7a380e85e3de61c60b478eaba5aec90bef1f699c8451e18ee0",
+      "byteCount": 302627,
+      "note": "Official HD2 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD3p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD3p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "feed4e0d48119e2cdff90ad645e83e1ee111e6150cd60fde496cfd7fd0802aef",
+      "byteCount": 325658,
+      "note": "Official HD3 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD4p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD4p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "d1b8287a7a5f6c15f8ebc80438e6e62ac9c76b4a64bb720b96f9184a3725d2e6",
+      "byteCount": 349586,
+      "note": "Official HD4 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD5p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD5p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "f00b9070b87e4fb1500e609f8fc1911d9f09614e0750718a196209ac60089491",
+      "byteCount": 352017,
+      "note": "Official HD5 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD6p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD6p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "dbf180cb878a3e6c75c51e865ab2ec5898a472d7dca4ffd9280e073a78eeab08",
+      "byteCount": 815140,
+      "note": "Official HD6 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD7p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD7p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "b4a4fc59b75ecc5d7975e410944192879ad31d269888ba89eebe8ac0584277ef",
+      "byteCount": 528908,
+      "note": "Official HD7 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD8p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD8p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "4e9a2ca1161cc686299c1d370ff0ec520c75b49f7ac3b8e7d33ed6a11bb09c95",
+      "byteCount": 507969,
+      "note": "Official HD8 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD9p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD9p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "6f4764cb7762008839992f055c9798c05a3ef8d8202fa183cc57c1275cf37fd0",
+      "byteCount": 589818,
+      "note": "Official HD9 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD10p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD10p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "7e502e769cddde39bc08c8babb8adb84549bfd25b074ffb59b81c08cc944a006",
+      "byteCount": 584090,
+      "note": "Official HD10 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD11p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD11p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "c8a353bb7c775aa15535aae005e72ce4e84a184b499525dea54275678ae34b2c",
+      "byteCount": 666587,
+      "note": "Official HD11 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD12p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD12p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "ac8e11de38af19ea572602acc8dcafbeb51714c4f37a4aa6106a3288b5848800",
+      "byteCount": 578291,
+      "note": "Official HD12 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD13p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD13p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "458ebea27d7c4bbeb00cc45a2c6b8357ce84044267997a0d255f794f7ad82356",
+      "byteCount": 493374,
+      "note": "Official HD13 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD14p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD14p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "e31bf304df41b37be33ee870ca36d23c9e7c19c60121990fc1571a625b680356",
+      "byteCount": 511867,
+      "note": "Official HD14 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD15p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD15p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "b40e331f998f77ec8441dd42f5f91a5beb3c9cbbd04efe3d4b2858c7a7f34426",
+      "byteCount": 484094,
+      "note": "Official HD15 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD16p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD16p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "b827035b040903493fece1efe7de653065b380e940b7c85e25fbb22c16609a5f",
+      "byteCount": 598006,
+      "note": "Official HD16 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD17p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD17p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "bfc21bb7a6a8ed6f34cf4661b05db4752f74bada5349960b61ac20e7c88bd7c3",
+      "byteCount": 507641,
+      "note": "Official HD17 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD18p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD18p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "220e9c5450475322082d349690eb08d2a5105973cc7fe9507154c9cffa10d231",
+      "byteCount": 566730,
+      "note": "Official HD18 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD19p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD19p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "2fa95dc92a84b1185449f0a2a129b1ae384a96b1f054e1eb9b7e26077ea89705",
+      "byteCount": 502615,
+      "note": "Official HD19 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD20p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD20p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "ebe1d61d0601a134c478803504921da3f0f112a28e9649c32c80ccdfad0345f9",
+      "byteCount": 565372,
+      "note": "Official HD20 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD21p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD21p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "9035b102fe5dd8bb295c02f437cfac4dc9ecfcd7ec6ff908155f51b7f0336106",
+      "byteCount": 525415,
+      "note": "Official HD21 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD22p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD22p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "d313cdc6ed985a541b2fb935f5917e8e3d162afa06850201e810e82640d9c052",
+      "byteCount": 505323,
+      "note": "Official HD22 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD23p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD23p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "f8b0d0a638c0c1822cc3939d3f39b386c037be3980b0a5046d05afbf2172dddf",
+      "byteCount": 546975,
+      "note": "Official HD23 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD24p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD24p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "0c05800dd5c27a291fc2f573c41b1049a4f0e3a6f7248971e73daf56192e492f",
+      "byteCount": 526323,
+      "note": "Official HD24 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD25p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD25p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "5337fb90adeb0fa9148715e42c623a02a0a3fb26716de6b1355ed04da1c20068",
+      "byteCount": 520861,
+      "note": "Official HD25 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD26p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD26p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "b8a9e51a1c02e3cfcf18667f655dd8d5c0b33c08707c4f5ee046ed5c8a4e4e17",
+      "byteCount": 549658,
+      "note": "Official HD26 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD27p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD27p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "40d88c2feb8edcdf18d4baa80e13f34f38d8f6684d95a6e19c2fd9ba2a51c893",
+      "byteCount": 551725,
+      "note": "Official HD27 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD28p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD28p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "e698162aecd6847ba85021285ec0b3ab8baa32c0a686a96f96ae0086094d1c13",
+      "byteCount": 566653,
+      "note": "Official HD28 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD29p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD29p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "965e9e9d49a9e732dad367156117918fdca37bdcd3dc7276319beab45a7f2c84",
+      "byteCount": 587328,
+      "note": "Official HD29 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD30p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD30p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "178ea866ad151ba08c8162c52cc85430db844a6586f1c99c04774bf4b644d138",
+      "byteCount": 484960,
+      "note": "Official HD30 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD31p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD31p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "b313190ffe1e95764d98a77550cc4954748488321941f5094160aff87314c9b3",
+      "byteCount": 563612,
+      "note": "Official HD31 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD32p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD32p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "8f1357b287e480b0ffde0a70af4e8fb076b136a58b8da3b16d1543cfdfbfcff4",
+      "byteCount": 655726,
+      "note": "Official HD32 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD33p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD33p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "cefc6f0028d0a9a14ec7b4c2411c46c408fd002bba52bba7b2b875a0f20f5b99",
+      "byteCount": 314396,
+      "note": "Official HD33 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD34p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD34p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "70848777f0435283d747101e94be2d203f77a619b2b0a5098dfbe2eb2e9935b0",
+      "byteCount": 287160,
+      "note": "Official HD34 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD35p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD35p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "1d2cd13a20f19de53eb27f5494de668649b86020908ded380264e64f78be7ec3",
+      "byteCount": 363379,
+      "note": "Official HD35 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD36p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD36p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "1ffebc320961492a1bdb2730f08e9cf1d313dfdadd74c5ac875f97fc35f1589c",
+      "byteCount": 324550,
+      "note": "Official HD36 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD37p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD37p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "60cf4dd75e6ca34c91986fab1c1d5dd396751259033d4ad33d126d23a717f352",
+      "byteCount": 1029915,
+      "note": "Official HD37 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD38p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD38p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "64a2a151bea8ac09758913e2da5a902d77474281cc37a38848fe02c0c171c6e5",
+      "byteCount": 646412,
+      "note": "Official HD38 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD39p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD39p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "3dd20d165eadf192602d29b019a9e79252f701ff192df5002a225fe2d3e45e50",
+      "byteCount": 647128,
+      "note": "Official HD39 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD40p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD40p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "322e1072eb98c3fcb3b3f99e095011129301edb4a59a5e785b2b91ff2c91e3f8",
+      "byteCount": 535640,
+      "note": "Official HD40 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/raw/alaska-division-of-elections/sovc/HD99p.pdf",
+      "url": "https://www.elections.alaska.gov/results/20GENR/data/sovc/HD99p.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "c63e9cc088e3251d57741ef5ab4c04fc5ebccc0053b33c56fdb50af7d05d2283",
+      "byteCount": 168910,
+      "note": "Official HD99 Statement of Votes Cast used to restore and reconcile write-in votes omitted from the text export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/raw-shared/alaska-division-of-elections/2013-SW-Precinct-Proc-Plan.zip",
+      "url": "https://www.elections.alaska.gov/Core/Archive/2013districtmaps.php",
+      "authority": "Alaska Division of Elections",
+      "format": "ESRI Shapefile ZIP",
+      "sha256": "ad14aa1515d3b2922397c42fd20526d44e433d511e4dfcdceac489bff6a1260e",
+      "byteCount": 10660812,
+      "note": "Official statewide precinct shapefile for the July 14, 2013 proclamation plan used by this election."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/raw-shared/alaska-division-of-elections/2014-Statewide-Prec-Boundary-Regs.pdf",
+      "url": "https://www.elections.alaska.gov/doc/prpsa/2014-Statewide-Prec-Boundary-Regs.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "0d2ccf13e2dc97eae57b1788405a63f260562f1aa26afed7d198258498e028b9",
+      "byteCount": 1152898,
+      "note": "Official statewide legal precinct-boundary descriptions for the 2013 proclamation plan."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "ak-2020-official-precinct-results",
+    "resultUnits": 562,
+    "geographicResultUnits": 441,
+    "nonGeographicResultUnits": 121,
+    "normalizedResultArtifact": {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/normalized/ak-2020-official-precinct-results.json.gz",
+      "sha256": "2903c49f3ba23fa1464457f78ad763ccb8c5ecc8295e13ae16b92125a82aebbd",
+      "byteCount": 51612
+    },
+    "contestTotals": {
+      "president": {
+        "totalVotes": 359530,
+        "candidateTotals": {
+          "Biden, Joseph R. Jr. / Harris, Kamala D.": 153778,
+          "Blankenship, Don / Mohr, William": 1127,
+          "De La Fuente, Roque / Richardson, Darcy G.": 318,
+          "Jorgensen, Jo / Cohen, Jeremy": 8897,
+          "Pierce, Brock / Ballard, Karla": 825,
+          "Trump, Donald J. / Pence, Michael R.": 189951,
+          "Ventura, Jesse / McKinney, Cynthia": 2673,
+          "Write-in": 1961
+        }
+      },
+      "senate": {
+        "totalVotes": 354587,
+        "candidateTotals": {
+          "Gross, Al": 146068,
+          "Howe, John Wayne": 16806,
+          "Sullivan, Dan": 191112,
+          "Write-in": 601
+        }
+      }
+    },
+    "comparisonContestComplete": true
+  },
+  "geometryContext": {
+    "sourceFeatureCount": 441,
+    "outputFeatureCount": 441,
+    "matchedFeatureCount": 441,
+    "unassignedSourceFeatureCount": 0,
+    "excludedSourceFeatures": [],
+    "correction": null,
+    "parentLevel": "house_district"
+  },
+  "publicReuse": {
+    "status": "official_public_record_no_additional_restriction_stated",
+    "terms": "Official Alaska public election and GIS records; the source pages state no additional redistribution restriction. Preserve Alaska Division of Elections attribution and source links."
+  },
+  "crossYearComparison": {
+    "directPrecinctComparisonSafe": false,
+    "reason": "Precinct boundaries and identifiers can change after redistricting or election-administration revisions.",
+    "supportedUse": "Render each election on its own verified boundary vintage.",
+    "futureRequirement": "Build a separately reviewed common-geography crosswalk before presenting precinct trend values as apples-to-apples."
+  },
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk.",
+    "The official text export omits write-in rows. All 41 official SOVC PDFs are parsed to restore exact precinct/reporting-unit write-ins; presidential and Senate totals then reconcile exactly to the certified summary."
+  ]
+}

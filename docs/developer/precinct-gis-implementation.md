@@ -7389,3 +7389,71 @@ evidence against its verified top-level package.
   upload, Vercel environment or deployment change, canonical registry change,
   or public eligibility transition. The guarded operational sequence is in
   `docs/developer/me-local-reporting-gis-runbook.md`.
+
+### 2026-08-14 - Alaska four-election precinct collection
+
+- Alaska now has deterministic, election-specific precinct packages for the
+  2012, 2016, 2020, and 2024 presidential general elections under
+  `data/precinct-geometry/AK/`. Displayed votes come only from Alaska Division
+  of Elections artifacts. Normalized geometry carries source and CRM identity
+  metadata but no candidate, party, or vote fields.
+
+- The source universes contain 438 geographic and 120 non-geographic units in
+  2012; 441 and 121 in both 2016 and 2020; and 402 and 121 in 2024. Absentee,
+  early-voting, questioned-ballot, and federal-overseas buckets are retained
+  for exact statewide reconciliation but receive no polygon and cannot be
+  painted on the map. The visible geographic vote totals are therefore
+  explicitly smaller than the official statewide totals.
+
+- The 2016 and 2020 maps use the official 2013 plan; 2024 uses the official
+  2023 final plan. The 2012 map uses a commit-pinned public mirror of the
+  April 5, 2012 amended-proclamation plan, reconciled against official result
+  identities and official successor-plan evidence. Its secondary custody and
+  lack of a stated formal license remain visible caveats. One source DBF typo,
+  `36-616`, is corrected to official result ID `36-040` only after exact
+  topology, area, population, and name checks identify Lake Iliamna No. 1.
+
+- The collector restores the 2020 write-in rows from all 41 official Statement
+  of Votes Cast PDFs, producing exact certified presidential and Senate totals.
+  The 2024 presidential rows also reconcile exactly. The 2024 U.S. House
+  comparison remains named-candidate context only because the precinct export
+  omits 750 statewide write-in votes.
+
+- Each election preserves its own boundary vintage. The application does not
+  imply that the same precinct identifier or polygon is stable across years.
+  Apples-to-apples trends require a separate reviewed common-geography
+  crosswalk or areal translation with explicit split/merge treatment.
+
+### 2026-08-14 - Alaska guarded four-election release tooling
+
+- The application now supports Alaska's exact House District parent contract,
+  `HD01` through `HD40`, without forcing precincts into borough or county-
+  equivalent parents. API validation, immutable delivery lookup, map joining,
+  and the House District selector use the same contract. IA, ME, MN, NV, and TX
+  retain their prior parent/grain behavior.
+
+- The fixed loopback clone successfully loaded and independently validated all
+  four elections: 2,205 reporting units, 12,021 geographic presidential result
+  rows, four blocked geography versions, 1,722 polygons, 2,205 reviewed
+  relationships, and zero invalid constraints. Every public-delivery flag is
+  false. The 483 non-geographic units remain query-ineligible map metadata.
+
+- Deterministic guarded tooling now covers local plan/setup/validation,
+  candidate sealing, read-only production preflight, full restore-verified
+  backup, hidden-load receipt recovery, immutable Blob planning/publication,
+  static activation, atomic database publication, database-first rollback, and
+  read-only publication-receipt recovery. Initial production preflight rejects
+  any preexisting Alaska release rows.
+
+- The sealed local candidate is `ak-precinct-gis-four-election-v1`, SHA-256
+  `270e3c771cfb7544ef9c9b4c1b4963babf448327ddeb4846d24e45dfcf969749`.
+  It produces 160 House-District-scoped GeoJSON objects followed by four
+  indexes (164 immutable public objects total), with no election values in
+  delivery geometry. Static activation would change only the registry and the
+  four year-specific coverage inventories while both public APIs remain
+  database-gated.
+
+- This task performs no production database mutation, Blob upload, Vercel
+  environment/deployment change, canonical activation, or public eligibility
+  transition. The reviewed sequence is documented in
+  `docs/developer/ak-precinct-gis-runbook.md`.

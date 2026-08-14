@@ -3245,6 +3245,13 @@
           "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2702%27&outFields=GEOID%2CSTATE%2CCOUNTY%2CNAME%2CBASENAME&returnGeometry=true&outSR=4326&f=geojson",
           "localFile": "data/ak-counties.geojson",
           "parserHint": "All 30 current county-equivalent FIPS tags are canonical metadata only until an exact election-result crosswalk exists."
+        },
+        "precinctGeometry": {
+          "sourceTitle": "Alaska Division of Elections four-election precinct results and boundary packages",
+          "sourceUrl": "https://www.elections.alaska.gov/election-results/",
+          "localFile": "data/precinct-geometry/AK",
+          "level": "precinct_with_explicit_non_geographic_administrative_units",
+          "parserHint": "scripts/collect-ak-precinct-geometry.mjs builds separate 2012, 2016, 2020, and 2024 election-vintage packages. The guarded database release remains separate from native statewide/county promotion."
         }
       },
       "expected": {
@@ -3262,14 +3269,16 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "official_reporting_units_unforced",
         "turnoutMode": "statewide_fallback",
-        "countyFipsStatus": "30_current_registry_tags_no_exact_result_allocation"
+        "countyFipsStatus": "30_current_registry_tags_no_exact_result_allocation",
+        "precinctReleaseStatus": "four_elections_reviewed_guarded_release_not_production_activated"
       },
       "caveats": [
         "Twelve 2024 House districts span multiple county equivalents and contain district-only ballots; assigning those votes to county FIPS would fabricate geography.",
         "The 2016 Valdez-Cordova vintage split also requires a reviewed current-geography allocation.",
-        "Alaska result rows remain statewide and untagged while the 30 current Census county-equivalent tags are queryable as canonical metadata."
+        "Alaska native certified result rows remain statewide and untagged while the 30 current Census county-equivalent tags are queryable as canonical metadata.",
+        "Separate guarded GIS packages now cover all four election vintages. They preserve 483 non-geographic administrative units without assigning their votes to polygons, and they do not infer cross-election precinct stability."
       ],
-      "nextAction": "Request official county-equivalent totals or ballot-to-home-precinct mappings for 2016, 2020, and 2024."
+      "nextAction": "Review and execute the separate guarded four-election precinct release; continue requesting exact county-equivalent allocations only for county trend coverage."
     },
     {
       "state": "DC",
@@ -3338,7 +3347,7 @@
       "state": "AK",
       "name": "Alaska",
       "priority": 20,
-      "currentStatus": "official_statewide_result_precinct_review_loaded_write_in_geometry_turnout_gaps_remaining",
+      "currentStatus": "official_statewide_result_and_four_election_precinct_gis_reviewed_public_release_pending",
       "officialSourcePages": [
         "https://www.elections.alaska.gov/election-results/",
         "https://www.elections.alaska.gov/election-results/e/?id=24genr",
@@ -3360,11 +3369,13 @@
         "data/ak-2024-data-coverage-inventory.json and data/ak-2024-source-request-matrix.tsv documenting the remaining U.S. House write-in allocation, geometry/crosswalk, turnout, historical, and administration-context request fields",
         "official results page evidence artifact documenting concrete ENR, SOVC, CVR, and RCV source URLs",
         "data/ak-2024-enr-turnout-semantics.json documenting ENR Reg_voters/total_ballots reconciliation and mixed reporting-unit caveats",
-        "data/ak-2024-official-source-request-packet.json refreshing request fields for write-ins, geometry/crosswalk, turnout semantics, historical baselines, and administration context"
+        "data/ak-2024-official-source-request-packet.json refreshing request fields for write-ins, geometry/crosswalk, turnout semantics, historical baselines, and administration context",
+        "data/precinct-geometry/AK four-election manifests, source evidence, normalized geometry/results, reviewed relationships, and reconciliation reports",
+        "guarded Alaska local validation, immutable delivery, hidden-load, activation, publication, rollback, and receipt-recovery tooling"
       ],
       "preferredComparisonContest": "U.S. Representative first-choice votes; official ENRbyPrecinct.csv now provides same-grain President plus U.S. House named-candidate rows for 523 precinct/reporting units, with a 750-vote U.S. House write-in caveat.",
-      "parserNeeded": "scripts/normalize-ak-election-summary.mjs generates statewide President CSVs from data/ak-2024-general-election-summary-report.pdf. scripts/normalize-ak-enr-by-precinct.mjs reads official data/ak-2024-general-enr-by-precinct.csv and writes data/ak-2024-general-precinct-president-us-house-review.csv for localComparisonCsv review rows. civic_etl/native.py uses countyPresidentCsv for the statewide certified row and localComparisonCsv for 523 AK review rows.",
-      "blocker": "Wave 25 keeps AK in sourceDiscoveryQueue but narrows the remaining blockers. AK stages one certified statewide President row, 523 official precinct/reporting-unit President-versus-U.S.-House named-candidate first-choice review rows, and one EAC turnout row. ENRbyPrecinct.csv still does not itemize 750 statewide U.S. House write-in votes by reporting unit. ENR Reg_voters and total_ballots de-duplicate to 523 reporting units and reconcile to 611,078 registered voters and 340,981 ballots, but district absentee, early-voting, and question rows carry ballots with zero registered voters, so active turnout remains EAC fallback until source-side denominator semantics are reviewed. Geometry/crosswalk, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain request-tracked in data/ak-2024-official-source-request-packet.json.",
+      "parserNeeded": "scripts/normalize-ak-election-summary.mjs and scripts/normalize-ak-enr-by-precinct.mjs retain the native statewide/review path. scripts/collect-ak-precinct-geometry.mjs separately builds exact 2012/2016/2020/2024 election-specific GIS packages; guarded production tooling consumes those packages without changing the native statewide/county import contract.",
+      "blocker": "Alaska precinct geometry and official historical presidential packages are no longer source-discovery gaps: four reviewed election vintages are retained with exact geographic/non-geographic relationships. Public availability remains an operational guarded-release sequence, not a collection blocker. The 2024 ENRbyPrecinct.csv still leaves 750 U.S. House write-ins unitemized; lower-grain turnout denominator semantics, exact county-equivalent allocations, and normalized audit/CVR/recount/incident/correction/litigation context also remain. The 2012 polygon mirror's secondary custody and unstated formal license remain explicit provenance caveats.",
       "availableArtifacts": {
         "presidentialStatewideResults": {
           "sourceTitle": "State of Alaska 2024 General Election Election Summary Report, official results",

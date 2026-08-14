@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "state": "AK",
+  "electionId": "2020-11-03-general",
+  "generatedAt": "2026-08-14T04:30:00Z",
+  "disposition": "source_and_crosswalk_gates_passed_delivery_pending",
+  "results": {
+    "resultUnits": 562,
+    "geographicResultUnits": 441,
+    "nonGeographicResultUnits": 121,
+    "contestTotals": {
+      "president": {
+        "totalVotes": 359530,
+        "candidateTotals": {
+          "Biden, Joseph R. Jr. / Harris, Kamala D.": 153778,
+          "Blankenship, Don / Mohr, William": 1127,
+          "De La Fuente, Roque / Richardson, Darcy G.": 318,
+          "Jorgensen, Jo / Cohen, Jeremy": 8897,
+          "Pierce, Brock / Ballard, Karla": 825,
+          "Trump, Donald J. / Pence, Michael R.": 189951,
+          "Ventura, Jesse / McKinney, Cynthia": 2673,
+          "Write-in": 1961
+        }
+      },
+      "senate": {
+        "totalVotes": 354587,
+        "candidateTotals": {
+          "Gross, Al": 146068,
+          "Howe, John Wayne": 16806,
+          "Sullivan, Dan": 191112,
+          "Write-in": 601
+        }
+      }
+    }
+  },
+  "geometry": {
+    "sourceFeatureCount": 441,
+    "outputFeatureCount": 441,
+    "matchedFeatureCount": 441,
+    "unassignedSourceFeatureCount": 0,
+    "excludedSourceFeatures": [],
+    "correction": null,
+    "parentLevel": "house_district"
+  },
+  "crosswalk": {
+    "resultUnits": 562,
+    "colorableResultUnits": 441,
+    "matchedResultUnits": 441,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 121,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 441,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 121,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "artifacts": {
+    "normalizedGeometry": {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/normalized/ak-2020-precincts.geojson.gz",
+      "sha256": "adfd10606cff597c965f3259e3d14949682e02b34c3f0a668b917d01e6926f21",
+      "byteCount": 7294220
+    },
+    "normalizedGeometryUncompressed": {
+      "sha256": "16973205e230229ccd43f6dd747733e423c4b6ff37b6efe9ce85d8163c579da4",
+      "byteCount": 26817335
+    },
+    "normalizedResults": {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/normalized/ak-2020-official-precinct-results.json.gz",
+      "sha256": "2903c49f3ba23fa1464457f78ad763ccb8c5ecc8295e13ae16b92125a82aebbd",
+      "byteCount": 51612
+    },
+    "normalizedResultsUncompressed": {
+      "sha256": "83a8ed741fedd7cb1607971ac9114ba09e89e975b4d8831f4d06d1c5b87bb08f",
+      "byteCount": 3378429
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/crosswalk/ak-2020-precinct-result-crosswalk.json",
+      "sha256": "48dbdc1c4edc99281671c5b77e184d8d622c0cfc2b7a84c751094d1001d73f50",
+      "byteCount": 415261
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/AK/2020-11-03-general/source-evidence.json",
+      "sha256": "50942a6f294fa4f1ecd08ab827cb258ca7ca769277c1555c31eb85feb9d85ecc",
+      "byteCount": 27621
+    }
+  },
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk.",
+    "The official text export omits write-in rows. All 41 official SOVC PDFs are parsed to restore exact precinct/reporting-unit write-ins; presidential and Senate totals then reconcile exactly to the certified summary."
+  ]
+}

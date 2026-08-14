@@ -1,0 +1,522 @@
+{
+  "schemaVersion": 1,
+  "id": "ak-2012-precinct-geometry-source-evidence",
+  "state": "AK",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Alaska Division of Elections results and boundary-plan evidence with a commit-pinned 2012 polygon mirror",
+  "retrievedAt": "2026-08-14T04:30:00Z",
+  "sourceCrs": "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.25722356]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]]",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/results-index.html",
+      "url": "https://www.elections.alaska.gov/Core/Archive/ElectionReturns_2012_GENR.php",
+      "authority": "Alaska Division of Elections",
+      "format": "HTML",
+      "sha256": "3dc1e2beb708c74afa1f78e27dab2e9e72dbce7e02712a5435e888d737290888",
+      "byteCount": 18584,
+      "note": "Official 2012 General Election result index retaining all 40 SOVC links."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/results-summary.html",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/results.htm",
+      "authority": "Alaska Division of Elections",
+      "format": "HTML",
+      "sha256": "2f665f60b79987ac92d5056445eb8498dceea39f66f195f373f56a85e37cfdf9",
+      "byteCount": 101210,
+      "note": "Official certified statewide totals and 438-of-438 reporting-precinct count."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd1.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd1.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "921a754898e09c0a7d5c72582169b755fb2553b0cab50d2c344e31b5693fdb0b",
+      "byteCount": 28061,
+      "note": "Official House District 1 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd2.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd2.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "042006ec8cd985bc93fca0aba6a98b4ff4500d16e4bf97497b250f372e264e82",
+      "byteCount": 28494,
+      "note": "Official House District 2 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd3.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd3.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "7aba954cb638d2a18bd0711d039c4e6d99e612d897e0cc7994f91d755445469e",
+      "byteCount": 25828,
+      "note": "Official House District 3 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd4.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd4.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "406d22d93a78f8a35a9645507b323b9ec5326c852f78d0ddfe0aafac082d70b6",
+      "byteCount": 30036,
+      "note": "Official House District 4 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd5.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd5.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "8d4c71757759859011836f81c94039407b649eb2f80f9f92d0b97dea316ffd8a",
+      "byteCount": 31444,
+      "note": "Official House District 5 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd6.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd6.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "5209a078a63cf906d47573643182823e4c679b2de75931f56f88d4edc6fa2043",
+      "byteCount": 59487,
+      "note": "Official House District 6 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd7.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd7.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "d8cee2bccc3ad59cdc72a81692324abe902a67ab1ace74a668c9d59ec68ecc0c",
+      "byteCount": 53267,
+      "note": "Official House District 7 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd8.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd8.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "95cc24b5aa26f8116670f1b03115ccd88a058e9a34e6f91efe961d341bb766c6",
+      "byteCount": 53914,
+      "note": "Official House District 8 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd9.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd9.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "10eb7fdb8bd50d771e87db735ea70b4901e4a3b68dae089a4ee2bf2a3fdee866",
+      "byteCount": 47605,
+      "note": "Official House District 9 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd10.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd10.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "7fc6dde91fa47e7b66aee44f19707924a84d6ebcd7681246ca61d31d0707f08b",
+      "byteCount": 48358,
+      "note": "Official House District 10 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd11.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd11.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "f83e304337593ea3974e0fc103e867e6175757bdc4b5b21d7a963c5fb17558f3",
+      "byteCount": 49295,
+      "note": "Official House District 11 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd12.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd12.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "5dbc2d73f3290615a403dff925528574f382ca82e56f98507dfb6ee4a5d4b625",
+      "byteCount": 47180,
+      "note": "Official House District 12 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd13.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd13.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "f0f3ef6f45b3993f4b6109c230ac8b294ed42760f5f4bb75be484e8615de391f",
+      "byteCount": 45524,
+      "note": "Official House District 13 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd14.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd14.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "11d51806920abafb0c7da846c8811096c9d0972847c06b2be088151402d5f182",
+      "byteCount": 51978,
+      "note": "Official House District 14 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd15.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd15.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "287fc06ad38b6c173bddea75fa1ae1b27fa29eb5bb6c1b003a314539ba42ecb1",
+      "byteCount": 50762,
+      "note": "Official House District 15 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd16.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd16.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "b54e2166a89c2ce6618e587d83fb7fd94c5c850215c2cb2e906d87391f6db6ee",
+      "byteCount": 55764,
+      "note": "Official House District 16 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd17.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd17.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "dbcb1a53b3935b46bb562c2abc46ae530c9c2404d128aa97c1b4663af7012b17",
+      "byteCount": 46725,
+      "note": "Official House District 17 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd18.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd18.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "307a1045b33d755334cbde5b021c0f4c6c77623cf1532ddc847a436454ae6d19",
+      "byteCount": 55213,
+      "note": "Official House District 18 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd19.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd19.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "6a6e511d0a67635c417e6f7b440d243a95feb0a20bc28defcbb060ef1f0b70e6",
+      "byteCount": 51528,
+      "note": "Official House District 19 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd20.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd20.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "756a223f8e3fca756e15a8d10f1bd2251651868269aef280e622adfa596bba18",
+      "byteCount": 49529,
+      "note": "Official House District 20 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd21.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd21.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "8652bbdf555e04828e29c1bba6771ff4d97d10d2f016f86d4a948c174e4a949b",
+      "byteCount": 49673,
+      "note": "Official House District 21 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd22.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd22.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "070216b0a26adf39e3b0bec2f847a1ee6896a2b3d88c7953d33af1a783bad1a1",
+      "byteCount": 52927,
+      "note": "Official House District 22 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd23.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd23.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "766fcda6f175af0db322b1940e4bc1471982080d2b9c617bfe3a97576c36b9d9",
+      "byteCount": 52999,
+      "note": "Official House District 23 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd24.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd24.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "2472a06066af4ed226ec75326b24d12c36128c356861507276e46f12dddc19d0",
+      "byteCount": 50784,
+      "note": "Official House District 24 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd25.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd25.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "1ab429f4ab14f2239bef2f66c96780deadc18e066307f26d231a9104cd776d80",
+      "byteCount": 53557,
+      "note": "Official House District 25 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd26.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd26.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "ab6c59b2f76cd9ad6ca64ee8c3571d9c09d499ea09268eff08e7c762602e5362",
+      "byteCount": 51142,
+      "note": "Official House District 26 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd27.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd27.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "bf625eb84029347272006397702b9d69af4a6ab7a7fff7ce066bf065eb7c707b",
+      "byteCount": 55207,
+      "note": "Official House District 27 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd28.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd28.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "336f4355bcff397998cca602b71fb17eb18bc984b81f2a1029897302a9e4a369",
+      "byteCount": 57727,
+      "note": "Official House District 28 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd29.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd29.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "3398f3404ea3604706d5c2326134cefeda558fb3cc73859a9481b5fe02127027",
+      "byteCount": 46648,
+      "note": "Official House District 29 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd30.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd30.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "280e07d9f09aded609d24b4ec891535f318325a886429fb1274a0acbc2f6a0e5",
+      "byteCount": 58356,
+      "note": "Official House District 30 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd31.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd31.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "afa6eb7099c63a1f11863aabe879aabd795e48c12fe81a319518845164b382b6",
+      "byteCount": 26490,
+      "note": "Official House District 31 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd32.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd32.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "3a38160bd69ef2fa9702eb34a1f911085626e9b629ed2e323c777b4ecd4a6c0b",
+      "byteCount": 29212,
+      "note": "Official House District 32 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd33.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd33.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "6a94d8c7bc962d52c5654fb90de83292b5c95345d1f3ed67e2d899d9c6fa5835",
+      "byteCount": 32500,
+      "note": "Official House District 33 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd34.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd34.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "25c7bf751feb321aab5a03562e528bad24d98f33bde72e686053232574dae2eb",
+      "byteCount": 35312,
+      "note": "Official House District 34 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd35.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd35.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "50e6483de90acbb9f13e16b62e33e7e5c0a59a5d121b6290327b1954f079143f",
+      "byteCount": 67794,
+      "note": "Official House District 35 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd36.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd36.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "2ddd854e2b6f6bc4229c75d7f595d3e49c80e0806cadb863019f855b3b89ca13",
+      "byteCount": 150510,
+      "note": "Official House District 36 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd37.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd37.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "1518cce1685a0cf9c7be1d80c714e5988555989dd07bd98d6530928b5ee11556",
+      "byteCount": 79463,
+      "note": "Official House District 37 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd38.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd38.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "84c63b38997deaad9b2c391322573b2b0da4630ce9ffa223b978c94605665942",
+      "byteCount": 48195,
+      "note": "Official House District 38 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd39.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd39.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "5710f672dffc4186c06c4e322dc0fed9dfa7392eb55b431cdd6f99fc08bb2d1b",
+      "byteCount": 136115,
+      "note": "Official House District 39 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/sovc/hd40.pdf",
+      "url": "https://www.elections.alaska.gov/results/12GENR/data/sovc/hd40.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "da5f7ccfaa81acb18a64540e44e59be8b325be90309965d4925ccd4f193f71c3",
+      "byteCount": 34478,
+      "note": "Official House District 40 Statement of Votes Cast with precinct and administrative reporting-unit results."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/precinct-shapefiles-mirror/2012_ak_precincts.zip",
+      "url": "https://raw.githubusercontent.com/aaron-strauss/precinct-shapefiles/dbacfd394b7759d4143ea4203cc00e2d503a7f6c/ak/2012_ak_precincts.zip",
+      "authority": "Alaska 2012 amended-proclamation plan, retained through the Aaron Strauss precinct-shapefiles mirror",
+      "format": "ESRI Shapefile ZIP",
+      "sha256": "73c934c98ccbb312783cd53c5a738caa8a59b0d29c0202d1f0ed5ccf689d4861",
+      "byteCount": 10671795,
+      "note": "Commit-pinned copy of the 2012 statewide precinct polygons. Election identity and vintage are independently checked against official Alaska materials; the mirror custody and missing formal license are disclosed."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/precinct-shapefiles-mirror/README.md",
+      "url": "https://raw.githubusercontent.com/aaron-strauss/precinct-shapefiles/dbacfd394b7759d4143ea4203cc00e2d503a7f6c/README.md",
+      "authority": "Aaron Strauss precinct-shapefiles mirror",
+      "format": "MD",
+      "sha256": "1a1edc6026235a9309041018b712239e1b87c0b776fdc8aa648ee7e3e1be2c48",
+      "byteCount": 714,
+      "note": "Retained repository description; it does not state a formal license."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/precinct-shapefiles-mirror/content-metadata.json",
+      "url": "https://api.github.com/repos/aaron-strauss/precinct-shapefiles/contents/ak/2012_ak_precincts.zip?ref=dbacfd394b7759d4143ea4203cc00e2d503a7f6c",
+      "authority": "GitHub API",
+      "format": "JSON",
+      "sha256": "5f3f74d6a06e695f27a6585c53e46867d029262e61db100695042d431597d4ef",
+      "byteCount": 1157,
+      "note": "Commit-pinned file identity and custody evidence."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/precinct-shapefiles-mirror/commit-metadata.json",
+      "url": "https://api.github.com/repos/aaron-strauss/precinct-shapefiles/commits/dbacfd394b7759d4143ea4203cc00e2d503a7f6c",
+      "authority": "GitHub API",
+      "format": "JSON",
+      "sha256": "b5156fe7a45286688db7ef0c5fd060df5a9b465e4818bb5f2915da2447b4688f",
+      "byteCount": 29271,
+      "note": "Commit metadata proving the retained file was added December 23, 2013."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/raw/alaska-division-of-elections/2012-amended-proclamation-media.pdf",
+      "url": "https://www.elections.alaska.gov/doc/mp/2012/2012PRIM-Media.pdf",
+      "authority": "Alaska Division of Elections",
+      "format": "PDF",
+      "sha256": "fa1aa5e9bba3c38160b0f501846e9d80103f9ec001ee36bd8b51b7b64652dd3e",
+      "byteCount": 338965,
+      "note": "Official media packet identifies the April 5, 2012 amended-proclamation precinct plan and the election precinct IDs/names."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/AK/raw-shared/alaska-division-of-elections/2013-SW-Precinct-Proc-Plan.zip",
+      "url": "https://www.elections.alaska.gov/Core/Archive/2013districtmaps.php",
+      "authority": "Alaska Division of Elections",
+      "format": "ESRI Shapefile ZIP",
+      "sha256": "ad14aa1515d3b2922397c42fd20526d44e433d511e4dfcdceac489bff6a1260e",
+      "byteCount": 10660812,
+      "note": "Official successor precinct plan used only to prove the retained 2012 Lake Iliamna polygon's mislabeled ID; it is not substituted for the 2012 boundary layer."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "ak-2012-official-precinct-results",
+    "resultUnits": 558,
+    "geographicResultUnits": 438,
+    "nonGeographicResultUnits": 120,
+    "normalizedResultArtifact": {
+      "localArtifactPath": "data/precinct-geometry/AK/2012-11-06-general/normalized/ak-2012-official-precinct-results.json.gz",
+      "sha256": "e54d636ebd5b016831891ef0a888e5cc4aacfada0e1b1bd52c7e6773b29f58ef",
+      "byteCount": 47135
+    },
+    "contestTotals": {
+      "president": {
+        "totalVotes": 300495,
+        "candidateTotals": {
+          "Johnson/Gray": 7392,
+          "Obama/Biden": 122640,
+          "Romney/Ryan": 164676,
+          "Stein/Honkala": 2917,
+          "Write-In Votes": 2870
+        }
+      },
+      "us_house": {
+        "totalVotes": 289804,
+        "candidateTotals": {
+          "Cissna, Sharon M.": 82927,
+          "Gianoutsos, Ted": 5589,
+          "McDermott, Jim C.": 15028,
+          "Write-In Votes": 964,
+          "Young, Don": 185296
+        }
+      }
+    },
+    "comparisonContestComplete": true
+  },
+  "geometryContext": {
+    "sourceFeatureCount": 439,
+    "outputFeatureCount": 438,
+    "matchedFeatureCount": 438,
+    "unassignedSourceFeatureCount": 1,
+    "excludedSourceFeatures": [
+      {
+        "sourceRecordId": 1,
+        "reason": "blank_zero_population_non_precinct_source_artifact"
+      }
+    ],
+    "correction": {
+      "originalSourceId": "36-616",
+      "correctedSourceId": "36-040",
+      "official2012Name": "Lake Iliamna No.1",
+      "confirmationSourceId": "37-726",
+      "confirmationSourceName": "37-726 LAKE ILIAMNA NO. 1",
+      "confirmationMethod": "identical_area_population_and_topology_in_official_2013_plan"
+    },
+    "parentLevel": "house_district"
+  },
+  "publicReuse": {
+    "status": "requires_release_review",
+    "terms": "Official Alaska election and boundary-plan evidence. The exact polygon archive is retained through a commit-pinned public mirror that states no formal license; public release requires preserving this custody/reuse caveat or replacing it with a redistributable official copy."
+  },
+  "crossYearComparison": {
+    "directPrecinctComparisonSafe": false,
+    "reason": "Precinct boundaries and identifiers can change after redistricting or election-administration revisions.",
+    "supportedUse": "Render each election on its own verified boundary vintage.",
+    "futureRequirement": "Build a separately reviewed common-geography crosswalk before presenting precinct trend values as apples-to-apples."
+  },
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk.",
+    "The 2012 statewide polygon archive is a commit-pinned public mirror of the April 5, 2012 amended-proclamation plan. Official Alaska results/media independently confirm all 438 displayed IDs except one reviewed DBF typo: source 36-616 is Lake Iliamna No. 1 and is corrected to official result ID 36-040 after identical topology, area, and population are confirmed in the official 2013 successor plan.",
+    "The 2012 mirror states no formal license. Its custody and reuse limitation must remain visible until an official redistributable replacement or explicit permission is retained."
+  ]
+}

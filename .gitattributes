@@ -82,6 +82,14 @@
 /data/precinct-geometry/ME/**/*.html -diff
 /data/precinct-geometry/ME/**/*.geojson -diff
 
+# Preserve every hash-pinned Alaska precinct source and derivative byte-for-byte.
+/data/precinct-geometry/AK/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/AK/**/*.zip -diff
+/data/precinct-geometry/AK/**/*.gz -diff
+/data/precinct-geometry/AK/**/*.pdf -diff
+/data/precinct-geometry/AK/**/*.html -diff
+/data/precinct-geometry/AK/**/*.txt -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff
