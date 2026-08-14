@@ -60,7 +60,7 @@ function Assert-ReleasePackage {
     $document.decision -ne 'NO_GO_PRODUCTION' -or
     $document.safety.productionMutationPerformed -ne $false -or
     $document.safety.canonicalManifestChanged -ne $false -or
-    $document.totals.elections -ne 3
+    $document.totals.elections -ne 4
   ) {
     Fail 'The release package contract is incompatible.'
   }

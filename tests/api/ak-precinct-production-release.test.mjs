@@ -147,3 +147,13 @@ test("Alaska production runners use the correctly spelled environment guard", ()
   assert.doesNotMatch(files, /CRM_DATABASE_EIAIRONMENT|NODE_EIA/);
   assert.doesNotMatch(files, /replacement-publication-receipt|GO_PRODUCTION_UPGRADE/);
 });
+
+test("Alaska backup guard accepts only the four-election release package", () => {
+  const backupScript = readFileSync(
+    "scripts/backup-ak-precinct-production.ps1",
+    "utf8",
+  );
+  assert.equal(built.packageDocument.totals.elections, 4);
+  assert.match(backupScript, /\$document\.totals\.elections -ne 4/);
+  assert.doesNotMatch(backupScript, /\$document\.totals\.elections -ne 3/);
+});
