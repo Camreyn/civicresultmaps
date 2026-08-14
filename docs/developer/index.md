@@ -261,8 +261,8 @@ actual Next.js application with the hermetic seed fallback and sends HTTP
 requests through the public route handlers. The check verifies JSON content
 types, API envelopes and CORS headers, state/year/grain filters, historical
 Alaska isolation, local-geography publication gating, and invalid-input error
-contracts. Configure `main` branch protection to require both `validate` and
-`Public API integration`; a green source-level unit test alone is not enough.
+contracts. `main` branch protection requires `validate`, `Public API
+integration`, and Vercel; a green source-level unit test alone is not enough.
 
 Every successful Vercel production deployment also runs the same suite against
 `https://civicresultmaps.org` through `Production deployment smoke`. This
