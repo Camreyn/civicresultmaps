@@ -54,8 +54,8 @@ function immutableWrite(root, relativePath, bytes) {
 }
 
 export function writeAlaskaActivationTrackedOutputs(outputs) {
-  if (outputs.length !== 4 || new Set(outputs.map((item) => item.path)).size !== 4) {
-    throw new Error("Alaska activation requires exactly four unique tracked outputs");
+  if (outputs.length !== 5 || new Set(outputs.map((item) => item.path)).size !== 5) {
+    throw new Error("Alaska activation requires exactly five unique tracked outputs");
   }
   const staged = [];
   const committed = [];
