@@ -6961,6 +6961,48 @@ td {
   max-width: 760px;
 }
 
+.precinct-detail-parent-selector {
+  align-items: end;
+  background: var(--panel-strong);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 12px 18px;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  padding: 14px 18px;
+}
+
+.precinct-detail-parent-selector label {
+  color: var(--muted);
+  display: grid;
+  font-size: 12px;
+  font-weight: 750;
+  gap: 7px;
+}
+
+.precinct-detail-parent-selector select {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--foreground);
+  font: inherit;
+  min-height: 42px;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.precinct-detail-parent-selector select:focus-visible {
+  border-color: var(--accent-line);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.precinct-detail-parent-selector span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  padding-bottom: 6px;
+}
+
 .precinct-detail-body {
   container-type: inline-size;
   display: grid;
@@ -7212,6 +7254,11 @@ td {
 }
 
 @media (max-width: 800px) {
+  .precinct-detail-parent-selector {
+    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .precinct-detail-layout {
     grid-template-columns: minmax(0, 1fr);
   }

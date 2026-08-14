@@ -105,21 +105,23 @@
         "official CVR ZIP and RCV report URLs documented as follow-up context",
         "ENR Reg_voters and total_ballots statewide reconciliation evidence matching EAC fallback and summary Times Cast totals",
         "official request packet covering write-ins, geometry/crosswalk, turnout semantics, historical baselines, CVR, audit, recount, incident, correction, and litigation fields",
-        "all 30 current Census county-equivalent FIPS tags and geometry"
+        "all 30 current Census county-equivalent FIPS tags and geometry",
+        "reviewed election-specific precinct geometry and result relationships for 2012, 2016, 2020, and 2024, parent-scoped by Alaska House District",
+        "explicit non-geographic classification for every absentee, early-voting, questioned-ballot, federal-overseas, and administrative result bucket",
+        "official historical presidential result packages for 2012, 2016, and 2020 with exact statewide reconciliation"
       ],
       "missingFields": [
         "U.S. House write-in allocation by precinct/reporting unit or source confirmation of omission",
-        "geometry/crosswalk for mixed precinct, absentee, early, question, remote, and HD99 reporting units",
         "state-native lower-grain turnout denominator rows reviewed for denominator timing",
-        "loaded 2012/2016/2020 historical baselines",
+        "native/API promotion of the reviewed 2012/2016/2020 historical precinct packages",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows",
         "exact county-equivalent presidential allocations for 2016, 2020, and 2024"
       ],
-      "parserStatus": "statewide President rows load from scripts/normalize-ak-election-summary.mjs; official ENRbyPrecinct.csv is retained and scripts/normalize-ak-enr-by-precinct.mjs generates 523 localComparisonCsv review rows at precinct/reporting-unit grain with a 750-vote U.S. House write-in caveat; scripts/report-ak-enr-turnout-semantics.mjs confirms ENR Reg_voters/total_ballots reconcile statewide but active turnout remains EAC fallback pending source-side semantics; data/ak-counties.geojson now supplies 30 canonical county-equivalent FIPS tags without changing statewide result grain",
+      "parserStatus": "statewide President rows load from scripts/normalize-ak-election-summary.mjs; official ENRbyPrecinct.csv is retained and scripts/normalize-ak-enr-by-precinct.mjs generates 523 localComparisonCsv review rows with a 750-vote U.S. House write-in caveat; scripts/collect-ak-precinct-geometry.mjs deterministically builds reviewed 2012/2016/2020/2024 election-specific precinct geometry, official result universes, and explicit non-geographic relationships; guarded release tooling keeps those rows blocked until separate production authorization; active turnout remains EAC fallback pending source-side semantics",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "AK native staging includes official precinct/reporting-unit President versus U.S. House named-candidate first-choice review rows, but certified map results remain statewide only. The ENR precinct CSV omits U.S. House write-in rows, so comparison_other is 750 votes below the statewide summary. ENR turnout fields reconcile statewide after de-duplication, but absentee/early/question units carry ballots with zero registered voters; rows include non-geographic reporting units and should not be joined to geometry without a reviewed crosswalk. Twelve 2024 House districts span multiple county equivalents, so county election totals remain unavailable and no allocation is forced.",
-      "nextAction": "Request official county-equivalent totals or ballot-to-home-precinct mappings for 2016, 2020, and 2024, including a reviewed current-geography treatment for the 2016 Valdez-Cordova split."
+      "caveats": "AK native staging still exposes the certified map result at statewide grain until the guarded precinct release is separately activated. The reviewed GIS packages map only geographic precincts; 483 four-election administrative units remain unpainted and their votes are retained solely for statewide reconciliation. The 2012 polygon source is a commit-pinned public mirror with no stated formal license. The 2024 ENR precinct CSV omits 750 U.S. House write-ins, so that comparison remains incomplete. No precinct is assigned to a borough or census area, and cross-election precinct comparability is not inferred.",
+      "nextAction": "Review and execute the guarded Alaska four-election production release; separately pursue county-equivalent totals or ballot-to-home-precinct mappings where county trend analysis is required."
     },
     {
       "state": "AL",

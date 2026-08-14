@@ -93,7 +93,7 @@ test("parent-scoped builder rejects invalid parent and duplicate result identity
   invalidParent.features[0].properties.parentGeoid = "19";
   assert.throws(
     () => buildParentScopedPrecinctDeliveryPackage(invalidParent),
-    /five-digit parentGeoid/,
+    /five-digit county GEOID/,
   );
 
   const duplicate = statewideCollection();
@@ -102,5 +102,54 @@ test("parent-scoped builder rejects invalid parent and duplicate result identity
   assert.throws(
     () => buildParentScopedPrecinctDeliveryPackage(duplicate),
     /result-unit identity is not one-to-one/,
+  );
+});
+
+test("parent-scoped builder supports Alaska House District parents without weakening county states", () => {
+  const alaska = statewideCollection();
+  alaska.metadata = {
+    ...alaska.metadata,
+    manifestId: "ak-2024-11-05-general-precinct-geometry-candidate-v1",
+    state: "AK",
+    sourceAuthority: "Alaska Division of Elections",
+  };
+  alaska.features = [
+    feature("01-001", "HD01"),
+    feature("01-002", "HD01"),
+    feature("40-001", "HD40"),
+  ].map((candidate) => ({
+    ...candidate,
+    properties: {
+      ...candidate.properties,
+      resultUnitCode:
+        "reporting:AK:2024-11-05-general:precinct:"
+        + candidate.properties.parentGeoid
+        + ":"
+        + candidate.properties.displayName.slice("Precinct ".length),
+    },
+  }));
+  const delivery = buildParentScopedPrecinctDeliveryPackage(alaska);
+  assert.deepEqual(
+    delivery.parentArtifacts.map((artifact) => artifact.parentGeoid),
+    ["HD01", "HD40"],
+  );
+  assert.equal(
+    selectPrecinctParentDeliveryArtifact(delivery.index, "HD01")
+      .artifact.featureCount,
+    2,
+  );
+
+  const alaskaCountyParent = structuredClone(alaska);
+  alaskaCountyParent.features[0].properties.parentGeoid = "02020";
+  assert.throws(
+    () => buildParentScopedPrecinctDeliveryPackage(alaskaCountyParent),
+    /Alaska House District ID/,
+  );
+
+  const iowaHouseDistrictParent = statewideCollection();
+  iowaHouseDistrictParent.features[0].properties.parentGeoid = "HD01";
+  assert.throws(
+    () => buildParentScopedPrecinctDeliveryPackage(iowaHouseDistrictParent),
+    /five-digit county GEOID/,
   );
 });

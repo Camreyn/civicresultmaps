@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "ak-2024-11-05-general-precinct-geometry-candidate-v1",
+  "state": "AK",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "house_district",
+    "boundaryVintage": "May 15, 2023 final-proclamation precinct plan approved and adopted for elections in April 2024",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "official_export"
+  },
+  "source": {
+    "authority": "Alaska Division of Elections",
+    "url": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+    "retrievedAt": "2026-08-14T04:30:00Z",
+    "artifact": "data/precinct-geometry/AK/2024-11-05-general/source-evidence.json",
+    "sha256": "b7b827b850795b51dd8492f1fda191f81eea746100768b6401e9bde0d2e872bf",
+    "byteCount": 5488,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Alaska public election and GIS records; the source pages state no additional redistribution restriction. Preserve Alaska Division of Elections attribution and source links."
+  },
+  "normalization": {
+    "script": "scripts/collect-ak-precinct-geometry.mjs",
+    "sourceCrs": "PROJCS[\"WGS_1984_Web_Mercator_Auxiliary_Sphere\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Mercator_Auxiliary_Sphere\"],PARAMETER[\"False_Easting\",0.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",0.0],PARAMETER[\"Standard_Parallel_1\",0.0],PARAMETER[\"Auxiliary_Sphere_Type\",0.0],UNIT[\"Meter\",1.0]]",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/AK/2024-11-05-general/normalized/ak-2024-precincts.geojson.gz",
+    "sha256": "64775ee450a8aa7f39c03d73154511daa5b2a42225b36b9257aca3916a3fcb06",
+    "byteCount": 12574615,
+    "featureCount": 402,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "ak-2024-official-precinct-results",
+    "artifact": "data/precinct-geometry/AK/2024-11-05-general/crosswalk/ak-2024-precinct-result-crosswalk.json",
+    "sha256": "99e50bff8f9b7337028fa39f455c4b0f5313c9092bd59fa1003ec86c50b95897",
+    "byteCount": 389622,
+    "resultUnits": 523,
+    "colorableResultUnits": 402,
+    "matchedResultUnits": 402,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 121,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 402,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 121,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 523,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "exact_official_id",
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "errors": [
+      "An immutable House-District-scoped public delivery package and production release review have not been completed."
+    ],
+    "warnings": [
+      "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+      "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+      "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk.",
+      "The 2024 ENR precinct CSV fully reconciles presidential votes. Its U.S. House rows omit 750 statewide write-in votes, so the House comparison is retained as named-candidate context only and is not represented as a complete contest total."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk.",
+    "The 2024 ENR precinct CSV fully reconciles presidential votes. Its U.S. House rows omit 750 statewide write-in votes, so the House comparison is retained as named-candidate context only and is not represented as a complete contest total."
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "ak-2016-11-08-general-precinct-geometry-candidate-v1",
+  "state": "AK",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "house_district",
+    "boundaryVintage": "July 14, 2013 proclamation precinct plan",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "official_export"
+  },
+  "source": {
+    "authority": "Alaska Division of Elections",
+    "url": "https://www.elections.alaska.gov/results/16GENR/",
+    "retrievedAt": "2026-08-14T04:30:00Z",
+    "artifact": "data/precinct-geometry/AK/2016-11-08-general/source-evidence.json",
+    "sha256": "6d84230b507c9d1938031658451d7bbbfafdbab6a49dd4287c0e6cc2b0c2d900",
+    "byteCount": 5870,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Alaska public election and GIS records; the source pages state no additional redistribution restriction. Preserve Alaska Division of Elections attribution and source links."
+  },
+  "normalization": {
+    "script": "scripts/collect-ak-precinct-geometry.mjs",
+    "sourceCrs": "GEOGCS[\"GCS_GRS_1980\",DATUM[\"D_GRS_1980\",SPHEROID[\"GRS_1980\",6378137,298.2572221]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]]",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/AK/2016-11-08-general/normalized/ak-2016-precincts.geojson.gz",
+    "sha256": "3b9090edd217ba8f8dc1c3ea39ef52405a292709cb0f69e69a3eb70bc1e808d4",
+    "byteCount": 7294203,
+    "featureCount": 441,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "ak-2016-official-precinct-results",
+    "artifact": "data/precinct-geometry/AK/2016-11-08-general/crosswalk/ak-2016-precinct-result-crosswalk.json",
+    "sha256": "e39f312ff2ff05e0eb2e348c5304ab84307506f0e48558dc376a5084987d690e",
+    "byteCount": 415249,
+    "resultUnits": 562,
+    "colorableResultUnits": 441,
+    "matchedResultUnits": 441,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 121,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 441,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 121,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 562,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "exact_official_id",
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "errors": [
+      "An immutable House-District-scoped public delivery package and production release review have not been completed."
+    ],
+    "warnings": [
+      "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+      "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+      "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk."
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-13T14:00:00.000Z",
+  "updatedAt": "2026-08-14T04:30:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 4,
+    "totalJurisdictions": 5,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 4
+      "reviewed": 5
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 2,
+      "mapped": 3,
       "partial": 1,
       "official_geometry_unavailable": 0,
       "blocked": 1
@@ -42,6 +42,67 @@
     "publicEligibleJurisdictions": 2
   },
   "states": [
+    {
+      "state": "AK",
+      "stateName": "Alaska",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 8,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-14T04:30:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_3_secondary_geometry"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.elections.alaska.gov/Core/Archive/ElectionReturns_2012_GENR.php"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "ak-2012-11-06-general-precinct-geometry-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://www.elections.alaska.gov/Core/Archive/ElectionReturns_2012_GENR.php"
+        ],
+        "secondarySourceLeads": [
+          "https://github.com/aaron-strauss/precinct-shapefiles"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/AK/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/AK/2012-11-06-general/normalized/ak-2012-precincts.geojson.gz",
+          "data/precinct-geometry/AK/2012-11-06-general/crosswalk/ak-2012-precinct-result-crosswalk.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 438,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 558,
+        "colorableResultUnits": 438,
+        "matchedResultUnits": 438,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 120,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable delivery, hidden production load, deployment verification, and atomic database publication remain pending."
+      ],
+      "nextAction": "Run the guarded four-election release; keep the secondary 2012 polygon custody and unstated formal license visible in provenance.",
+      "notes": [
+        "Official Alaska Division of Elections artifacts are the sole vote source. The commit-pinned public mirror contributes polygon custody only.",
+        "All 120 absentee, early-voting, questioned-ballot, federal-overseas, and administrative units remain non-geographic and are never assigned to precinct polygons.",
+        "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
+      ]
+    },
     {
       "state": "MN",
       "stateName": "Minnesota",

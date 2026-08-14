@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "ak-2012-11-06-general-precinct-geometry-candidate-v1",
+  "state": "AK",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "house_district",
+    "boundaryVintage": "April 5, 2012 amended-proclamation precinct plan",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "hybrid_reconstruction"
+  },
+  "source": {
+    "authority": "Alaska Division of Elections results and boundary-plan evidence with a commit-pinned 2012 polygon mirror",
+    "url": "https://www.elections.alaska.gov/Core/Archive/ElectionReturns_2012_GENR.php",
+    "retrievedAt": "2026-08-14T04:30:00Z",
+    "artifact": "data/precinct-geometry/AK/2012-11-06-general/source-evidence.json",
+    "sha256": "812818592d3193647f8bc801c43409f75ab504fea892566772b550ceb612bb8e",
+    "byteCount": 29962,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Alaska election and boundary-plan evidence. The exact polygon archive is retained through a commit-pinned public mirror that states no formal license; public release requires preserving this custody/reuse caveat or replacing it with a redistributable official copy."
+  },
+  "normalization": {
+    "script": "scripts/collect-ak-precinct-geometry.mjs",
+    "sourceCrs": "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.25722356]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]]",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/AK/2012-11-06-general/normalized/ak-2012-precincts.geojson.gz",
+    "sha256": "d7850088a516ff5fac49b907ea420feb4ae8117fafc4a0f71333ee01fb61e761",
+    "byteCount": 7376957,
+    "featureCount": 438,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "ak-2012-official-precinct-results",
+    "artifact": "data/precinct-geometry/AK/2012-11-06-general/crosswalk/ak-2012-precinct-result-crosswalk.json",
+    "sha256": "7c18bd5553b255d4ec9a0fdfca228e745e5413241acaf5e0a1e3e7742dd66011",
+    "byteCount": 412857,
+    "resultUnits": 558,
+    "colorableResultUnits": 438,
+    "matchedResultUnits": 438,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 120,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 438,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 120,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 558,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "exact_official_id",
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "errors": [
+      "An immutable House-District-scoped public delivery package and production release review have not been completed."
+    ],
+    "warnings": [
+      "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+      "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+      "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk.",
+      "The 2012 statewide polygon archive is a commit-pinned public mirror of the April 5, 2012 amended-proclamation plan. Official Alaska results/media independently confirm all 438 displayed IDs except one reviewed DBF typo: source 36-616 is Lake Iliamna No. 1 and is corrected to official result ID 36-040 after identical topology, area, and population are confirmed in the official 2013 successor plan.",
+      "The 2012 mirror states no formal license. Its custody and reuse limitation must remain visible until an official redistributable replacement or explicit permission is retained."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Alaska results contain separately reported absentee, early-voting, questioned-ballot, and federal-overseas buckets. They are preserved for statewide reconciliation but are non-geographic and are never assigned to a precinct polygon.",
+    "The map is parent-scoped by Alaska House District, not by county or county equivalent. No precinct is centroid-assigned or proportionally allocated to a borough or census area.",
+    "Each election retains its own boundary vintage. Precinct IDs and shapes are not assumed comparable across elections; cross-year trend comparison requires a separate reviewed common-geography crosswalk.",
+    "The 2012 statewide polygon archive is a commit-pinned public mirror of the April 5, 2012 amended-proclamation plan. Official Alaska results/media independently confirm all 438 displayed IDs except one reviewed DBF typo: source 36-616 is Lake Iliamna No. 1 and is corrected to official result ID 36-040 after identical topology, area, and population are confirmed in the official 2013 successor plan.",
+    "The 2012 mirror states no formal license. Its custody and reuse limitation must remain visible until an official redistributable replacement or explicit permission is retained."
+  ]
+}

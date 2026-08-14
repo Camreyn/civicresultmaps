@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-14T00:06:29.584Z",
+  "updatedAt": "2026-08-14T04:30:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 5,
+    "totalJurisdictions": 6,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 5
+      "reviewed": 6
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 5,
+      "mapped": 6,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
@@ -42,6 +42,63 @@
     "publicEligibleJurisdictions": 5
   },
   "states": [
+    {
+      "state": "AK",
+      "stateName": "Alaska",
+      "electionId": "2020-11-03-general",
+      "programStatus": "reviewed",
+      "wave": 8,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-14T04:30:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.elections.alaska.gov/results/20GENR/"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "ak-2020-11-03-general-precinct-geometry-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://www.elections.alaska.gov/results/20GENR/"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/AK/2020-11-03-general/source-evidence.json",
+          "data/precinct-geometry/AK/2020-11-03-general/normalized/ak-2020-precincts.geojson.gz",
+          "data/precinct-geometry/AK/2020-11-03-general/crosswalk/ak-2020-precinct-result-crosswalk.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 441,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 562,
+        "colorableResultUnits": 441,
+        "matchedResultUnits": 441,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 121,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable delivery, hidden production load, deployment verification, and atomic database publication remain pending."
+      ],
+      "nextAction": "Run the guarded four-election release while keeping non-geographic units outside polygon delivery.",
+      "notes": [
+        "Official Alaska Division of Elections artifacts supply displayed votes and election-applicable geometry; all 41 official SOVC PDFs restore the write-ins omitted from the text export.",
+        "All 121 administrative buckets remain non-geographic and are never assigned to precinct polygons.",
+        "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
+      ]
+    },
     {
       "state": "MN",
       "stateName": "Minnesota",

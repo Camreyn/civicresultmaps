@@ -88,12 +88,67 @@ test("parent-scoped delivery URL requires an explicit manifest and county", () =
     }),
     "/api/precinct-geography?manifestId=ia-2024-11-05-precinct-v1&parentGeoid=19001",
   );
+  assert.equal(
+    parentScopedPrecinctDeliveryApiPath({
+      manifestId: "ak-2024-11-05-general-precinct-geometry-candidate-v1",
+      parentGeoid: "HD01",
+    }),
+    "/api/precinct-geography?manifestId=ak-2024-11-05-general-precinct-geometry-candidate-v1&parentGeoid=HD01",
+  );
+  assert.throws(
+    () => parentScopedPrecinctDeliveryApiPath({
+      manifestId: "ak-2024-11-05-general-precinct-geometry-candidate-v1",
+      parentGeoid: "HD99",
+    }),
+    /supported county or House District identifier/,
+  );
   assert.throws(
     () => parentScopedPrecinctDeliveryApiPath({
       manifestId: "IA unsafe",
       parentGeoid: "19",
     }),
     /manifestId/,
+  );
+});
+
+test("Alaska delivery selection accepts only House District HD01 through HD40", () => {
+  const alaskaMetadata = {
+    ...metadata(),
+    manifestId: "ak-2024-11-05-general-precinct-geometry-candidate-v1",
+    state: "AK",
+    sourceAuthority: "Alaska Division of Elections",
+  };
+  const alaskaFeature = feature("01-001", "HD01");
+  alaskaFeature.properties.resultUnitCode =
+    "reporting:AK:2024-11-05-general:precinct:HD01:01-001";
+  const selected = selectPrecinctDeliveryFeatures({
+    type: "FeatureCollection",
+    metadata: alaskaMetadata,
+    features: [alaskaFeature],
+  }, "HD01");
+  assert.equal(selected.features.length, 1);
+
+  assert.throws(
+    () => selectPrecinctDeliveryFeatures({
+      type: "FeatureCollection",
+      metadata: alaskaMetadata,
+      features: [alaskaFeature],
+    }, "02020"),
+    /Alaska House District ID/,
+  );
+  assert.throws(
+    () => selectPrecinctDeliveryFeatures({
+      type: "FeatureCollection",
+      metadata: alaskaMetadata,
+      features: [{
+        ...alaskaFeature,
+        properties: {
+          ...alaskaFeature.properties,
+          parentGeoid: "HD99",
+        },
+      }],
+    }, "HD01"),
+    /Alaska House District ID/,
   );
 });
 

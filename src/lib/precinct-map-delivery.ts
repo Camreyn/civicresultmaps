@@ -1,4 +1,9 @@
 import type { ResultRow } from "./types";
+import {
+  isSupportedLocalGeographyParentId,
+  isValidLocalGeographyDeliveryParentId,
+  localGeographyDeliveryParentValidationMessage,
+} from "./local-geography-parent.ts";
 
 // Harris County, Texas has 1,070 election-specific VTD features in 2024.
 // Keep the guard bounded while allowing complete county-scoped delivery.
@@ -152,9 +157,6 @@ export function selectPrecinctParentDeliveryArtifact(
   index: PrecinctParentDeliveryIndex;
   artifact: PrecinctParentDeliveryArtifact;
 } {
-  if (!/^\d{5}$/.test(parentGeoid)) {
-    throw new Error("parentGeoid must be a five-digit county GEOID");
-  }
   if (
     !isRecord(value)
     || value.schemaVersion !== 1
@@ -165,6 +167,11 @@ export function selectPrecinctParentDeliveryArtifact(
     );
   }
   const metadata = deliveryMetadata(value.metadata);
+  if (!isValidLocalGeographyDeliveryParentId(metadata.state, parentGeoid)) {
+    throw new Error(
+      localGeographyDeliveryParentValidationMessage(metadata.state),
+    );
+  }
   const featureIdProperty = requiredString(
     value,
     "featureIdProperty",
@@ -194,8 +201,13 @@ export function selectPrecinctParentDeliveryArtifact(
     }
     const context = "index.parents[" + index + "]";
     const candidateParent = requiredString(candidate, "parentGeoid", context);
-    if (!/^\d{5}$/.test(candidateParent) || seen.has(candidateParent)) {
-      throw new Error(context + ".parentGeoid must be unique and five digits");
+    if (
+      !isValidLocalGeographyDeliveryParentId(metadata.state, candidateParent)
+      || seen.has(candidateParent)
+    ) {
+      throw new Error(
+        context + ".parentGeoid must be unique and satisfy the state parent contract",
+      );
     }
     seen.add(candidateParent);
     const artifactPath = requiredString(candidate, "path", context);
@@ -286,8 +298,10 @@ export function parentScopedPrecinctDeliveryApiPath(options: {
     throw new Error("manifestId must be a lowercase, dash-delimited identifier");
   }
   const parentGeoid = options.parentGeoid.trim();
-  if (!/^\d{5}$/.test(parentGeoid)) {
-    throw new Error("parentGeoid must be a five-digit county GEOID");
+  if (!isSupportedLocalGeographyParentId(parentGeoid)) {
+    throw new Error(
+      "parentGeoid must be a supported county or House District identifier",
+    );
   }
   return "/api/precinct-geography?" + new URLSearchParams({
     manifestId,
@@ -300,9 +314,6 @@ export function selectPrecinctDeliveryFeatures(
   parentGeoid: string,
   limit = MAX_SELECTED_PARENT_PRECINCT_FEATURES,
 ): PrecinctDeliveryFeatureCollection {
-  if (!/^\d{5}$/.test(parentGeoid)) {
-    throw new Error("parentGeoid must be a five-digit county GEOID");
-  }
   if (!isRecord(value) || value.type !== "FeatureCollection") {
     throw new Error("precinct delivery must be a GeoJSON FeatureCollection");
   }
@@ -310,6 +321,11 @@ export function selectPrecinctDeliveryFeatures(
     throw new Error("precinct delivery features must be an array");
   }
   const metadata = deliveryMetadata(value.metadata);
+  if (!isValidLocalGeographyDeliveryParentId(metadata.state, parentGeoid)) {
+    throw new Error(
+      localGeographyDeliveryParentValidationMessage(metadata.state),
+    );
+  }
 
   const selected = value.features.flatMap((candidate, index) => {
     if (!isRecord(candidate) || candidate.type !== "Feature") {
@@ -324,6 +340,15 @@ export function selectPrecinctDeliveryFeatures(
       "parentGeoid",
       "features[" + index + "].properties",
     );
+    if (!isValidLocalGeographyDeliveryParentId(
+      metadata.state,
+      candidateParent,
+    )) {
+      throw new Error(
+        "features[" + index + "].properties."
+        + localGeographyDeliveryParentValidationMessage(metadata.state),
+      );
+    }
     if (candidateParent !== parentGeoid) {
       return [];
     }

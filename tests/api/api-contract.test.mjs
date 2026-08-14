@@ -91,7 +91,7 @@ test("precinct geography API defaults to delivery-eligible manifests", () => {
   );
 });
 
-test("precinct delivery API validates immutable geometry before county transfer", () => {
+test("precinct delivery API validates immutable geometry before parent transfer", () => {
   const route = readFileSync(
     "src/app/api/precinct-geography/route.ts",
     "utf8",
@@ -202,7 +202,8 @@ test("results API keeps contest offices separated", () => {
     /listResults\(\{[\s\S]*?state,[\s\S]*?year,[\s\S]*?level,[\s\S]*?office,[\s\S]*?parentGeoid,/,
   );
   assert.match(route, /parentGeoidQuery\.safeParse/);
-  assert.match(route, /parentGeoid is supported only for county-scoped local results/);
+  assert.match(route, /isValidLocalGeographyParentId/);
+  assert.match(route, /localGeographyParentValidationMessage/);
   assert.match(
     dataAccess,
     /lower\(elections\.office\) = \$\{normalizedOffice\}/,

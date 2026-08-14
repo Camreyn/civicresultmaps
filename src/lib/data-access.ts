@@ -6,6 +6,10 @@ import {
   requiresPrecinctGeometryPublicationGate,
   requiresPrecinctResultPublicationGate,
 } from "./precinct-result-publication";
+import {
+  isValidLocalGeographyParentId,
+  localGeographyParentValidationMessage,
+} from "./local-geography-parent.ts";
 import { resolveMinnesotaPrecinctRehearsal } from "./mn-precinct-rehearsal-server";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 import {
@@ -308,9 +312,10 @@ export async function isPrecinctGeometryManifestPublished(
   const expectedFeatureCount = manifest.delivery.featureCount;
   const expectedRelationshipCount = manifest.crosswalk.reviewedRelationshipRecords
     ?? expectedFeatureCount;
+  const expectedLinkedRelationshipCount = manifest.crosswalk.matchedResultUnits;
   const expectedNoDataFeatureCount = manifest.crosswalk.reviewedNoDataFeatures
-    ?? expectedFeatureCount - expectedRelationshipCount;
-  const expectedReportingUnitCount = manifest.crosswalk.matchedResultUnits;
+    ?? expectedFeatureCount - expectedLinkedRelationshipCount;
+  const expectedReportingUnitCount = manifest.crosswalk.resultUnits;
   const publicManifestSha256 = precinctGeometryPublicManifestSha256(manifest);
   let rows: Array<{
     metadata: unknown;
@@ -397,12 +402,12 @@ export async function isPrecinctGeometryManifestPublished(
   return Boolean(
     row
     && Number(row.crosswalkCount) === expectedRelationshipCount
-    && Number(row.linkedFeatureCount) === expectedRelationshipCount
+    && Number(row.linkedFeatureCount) === expectedLinkedRelationshipCount
     && Number(row.totalFeatureCount) === expectedFeatureCount
     && Number(row.totalFeatureCount) - Number(row.linkedFeatureCount)
       === expectedNoDataFeatureCount
     && Number(row.reportingUnitCount) === expectedReportingUnitCount
-    && Number(row.authorizedLinkCount) === expectedRelationshipCount
+    && Number(row.authorizedLinkCount) === expectedLinkedRelationshipCount
     && matchesPrecinctGeometryPublicationMetadata(manifest, row.metadata),
   );
 }
@@ -571,11 +576,16 @@ export async function listResults(input: {
     : { enabled: false } as const;
   const requiresPublicationGate = requiresPrecinctResultPublicationGate(input)
     && !minnesotaRehearsal.enabled;
-  const parentScopedLocalLevel = input.level === "precinct"
-    || input.level === "local_reporting_unit";
-  if (parentGeoid && (!parentScopedLocalLevel || !/^\d{5}$/.test(parentGeoid))) {
+  if (parentGeoid && !isValidLocalGeographyParentId({
+    state: input.state,
+    geographyLevel: input.level,
+    parentGeoid,
+  })) {
     throw new Error(
-      "parentGeoid requires county-scoped local results and a five-digit county GEOID",
+      localGeographyParentValidationMessage({
+        state: input.state,
+        geographyLevel: input.level,
+      }),
     );
   }
   const matchesParent = (row: ResultRow) => !parentGeoid
