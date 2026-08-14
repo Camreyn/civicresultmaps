@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-13T03:25:00.748Z",
+  "updatedAt": "2026-08-14T00:06:29.584Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -1425,6 +1425,320 @@
         "The New York Times is a secondary statewide geometry compiler, not the authority for displayed Iowa vote values.",
         "The retained Iowa SOS county/city packages provide substantial official boundary context but do not themselves form a uniform complete statewide election-date layer.",
         "Public use is limited by the retained NYT C-UDA v1.0 Non-Commercial terms."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "me-2016-11-08-general-local-reporting-geometry-candidate-v1",
+      "state": "ME",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "local_reporting_unit",
+        "parentLevel": "county",
+        "boundaryVintage": "2016 election-specific VEST local boundary reconstruction",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "hybrid_reconstruction"
+      },
+      "source": {
+        "authority": "Maine Secretary of State results with reviewed official-source-derived local geometry",
+        "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/president.xlsx",
+        "retrievedAt": "2026-08-13T14:00:00Z",
+        "artifact": "data/precinct-geometry/ME/2016-11-08-general/source-evidence.json",
+        "sha256": "33a0eb3e7be204e33dd07563722ef6ed3360233dbcb276cf296a67ae11dfe4d8",
+        "byteCount": 4170,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "Official Maine results; VEST geometry under retained CC BY 4.0 terms and attribution."
+      },
+      "normalization": {
+        "script": "scripts/collect-me-local-reporting-geometry.mjs",
+        "sourceCrs": "source-defined and normalized by shpjs or retained EPSG:4326 GeoJSON",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/ME/2016-11-08-general/normalized/me-2016-local-reporting-units.geojson.gz",
+        "sha256": "5af0adb10ea8dad5a4b2e79c6f1a1590382f72bb42f37940b45fb15e9f386bfa",
+        "byteCount": 2465979,
+        "featureCount": 532,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "me-2016-president-local-results",
+        "artifact": "data/precinct-geometry/ME/2016-11-08-general/crosswalk/me-2016-local-result-crosswalk.json",
+        "sha256": "267993c18680083d917cb8a104f0186d3d7466bcfc2644530c5027205045e2ab",
+        "byteCount": 446258,
+        "resultUnits": 532,
+        "colorableResultUnits": 532,
+        "matchedResultUnits": 532,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 532,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 532,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+          "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+          "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported.",
+          "All 532 displayable local-result relationships are reviewed one-to-one across all 16 Maine counties.",
+          "The 0 zero-presidential-vote local units remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/me/2016-11-08/local_reporting_unit/me-2016-11-08-general-local-reporting-geometry-candidate-v1-6c0d308a8e5b/index.json",
+        "sha256": "6c0d308a8e5b2bc88d5340e3b905d9ae8beda227e873dfbc7c4fe70b6638cc0b",
+        "byteCount": 3993,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 16,
+        "featureCount": 532
+      },
+      "caveats": [
+        "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+        "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+        "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "me-2020-11-03-general-local-reporting-geometry-candidate-v1",
+      "state": "ME",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "local_reporting_unit",
+        "parentLevel": "county",
+        "boundaryVintage": "2020 election-specific VEST local boundary reconstruction",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "hybrid_reconstruction"
+      },
+      "source": {
+        "authority": "Maine Secretary of State results with reviewed official-source-derived local geometry",
+        "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/presandvisecnty1120.xlsx",
+        "retrievedAt": "2026-08-13T14:00:00Z",
+        "artifact": "data/precinct-geometry/ME/2020-11-03-general/source-evidence.json",
+        "sha256": "0bae94e707d3f6bc33572f9e613921dee58c1b6c6cc69ade91a25024507b5a16",
+        "byteCount": 4156,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "Official Maine results; VEST geometry under retained CC BY 4.0 terms and attribution."
+      },
+      "normalization": {
+        "script": "scripts/collect-me-local-reporting-geometry.mjs",
+        "sourceCrs": "source-defined and normalized by shpjs or retained EPSG:4326 GeoJSON",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/ME/2020-11-03-general/normalized/me-2020-local-reporting-units.geojson.gz",
+        "sha256": "eeb5216da916d5a427fccddb02c191e70a549a0e40774ebfa7eb1f612d6443cf",
+        "byteCount": 2426827,
+        "featureCount": 516,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "me-2020-president-local-results",
+        "artifact": "data/precinct-geometry/ME/2020-11-03-general/crosswalk/me-2020-local-result-crosswalk.json",
+        "sha256": "0e40290cd17e7ea6aa94198f2228b148f6ea75e57db3b66a054552dc85385747",
+        "byteCount": 433882,
+        "resultUnits": 516,
+        "colorableResultUnits": 516,
+        "matchedResultUnits": 516,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 516,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 516,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+          "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+          "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported.",
+          "All 516 displayable local-result relationships are reviewed one-to-one across all 16 Maine counties.",
+          "The 1 zero-presidential-vote local units remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/me/2020-11-03/local_reporting_unit/me-2020-11-03-general-local-reporting-geometry-candidate-v1-b31da93f5fd6/index.json",
+        "sha256": "b31da93f5fd6818accc198b19e9ee4c98a9eb0afc3e85c1350cc8c23b668553f",
+        "byteCount": 4003,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 16,
+        "featureCount": 516
+      },
+      "caveats": [
+        "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+        "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+        "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "me-2024-11-05-general-local-reporting-geometry-candidate-v1",
+      "state": "ME",
+      "election": {
+        "id": "2024-11-05-general",
+        "date": "2024-11-05",
+        "year": 2024,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "local_reporting_unit",
+        "parentLevel": "county",
+        "boundaryVintage": "2024 NYT official-boundary township geometry with one Maine GeoLibrary gap verified unchanged across 2015 and current snapshots",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "hybrid_reconstruction"
+      },
+      "source": {
+        "authority": "Maine Secretary of State results with reviewed official-source-derived local geometry",
+        "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+        "retrievedAt": "2026-08-13T14:00:00Z",
+        "artifact": "data/precinct-geometry/ME/2024-11-05-general/source-evidence.json",
+        "sha256": "d8a8830ebdab93d966ab4c35af309e540b4fccd75b6cedd4238a3bf66af93cfb",
+        "byteCount": 7695,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "Official Maine results; NYT official-boundary geometry under NYT C-UDA non-commercial attribution terms, plus Maine GeoLibrary public gap geometry verified unchanged across historical and current snapshots."
+      },
+      "normalization": {
+        "script": "scripts/collect-me-local-reporting-geometry.mjs",
+        "sourceCrs": "source-defined and normalized by shpjs or retained EPSG:4326 GeoJSON",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/ME/2024-11-05-general/normalized/me-2024-local-reporting-units.geojson.gz",
+        "sha256": "dc90b4e1700358ce6a9ea8fd98fe5dd583640b5fb0ded91b75e36cbcd117a37a",
+        "byteCount": 5407353,
+        "featureCount": 494,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "me-2024-president-local-results",
+        "artifact": "data/precinct-geometry/ME/2024-11-05-general/crosswalk/me-2024-local-result-crosswalk.json",
+        "sha256": "009e74407941185c82b9a3dcfc80bcd06dd02777777213bc7d285c262f3749ca",
+        "byteCount": 416577,
+        "resultUnits": 494,
+        "colorableResultUnits": 494,
+        "matchedResultUnits": 494,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 494,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 494,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "exact_official_id",
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+          "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+          "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported.",
+          "The NYT source marks every retained Maine shape official_boundary=true but combines 34 small official source rows into 16 boundary units; those rows are summed exactly and their identities are retained. T22 MD uses a Maine GeoLibrary gap geometry whose area and bounds are unchanged between the retained 2015 archive and current official service.",
+          "NYT C-UDA terms limit redistribution to non-commercial use with attribution. CivicResultMaps must preserve the terms and attribution with any public delivery.",
+          "All 494 displayable local-result relationships are reviewed one-to-one across all 16 Maine counties.",
+          "The 0 zero-presidential-vote local units remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/me/2024-11-05/local_reporting_unit/me-2024-11-05-general-local-reporting-geometry-candidate-v1-abf89314d973/index.json",
+        "sha256": "abf89314d973f4970ffc92ca8c7c0981ef20980591a0e47d8af831ffe65f69d7",
+        "byteCount": 4237,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 16,
+        "featureCount": 494
+      },
+      "caveats": [
+        "Maine publishes statewide presidential results at town, plantation, township, voting-district, and combined-local-unit grain—not a uniform statewide ward/precinct grain. This layer is labeled local reporting unit.",
+        "No town total is duplicated across ward polygons and no official vote is proportionally allocated. Where a retained source splits a municipality into wards, the ward polygons are dissolved before the one local total is attached.",
+        "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source vote attributes are stripped and never imported.",
+        "The NYT source marks every retained Maine shape official_boundary=true but combines 34 small official source rows into 16 boundary units; those rows are summed exactly and their identities are retained. T22 MD uses a Maine GeoLibrary gap geometry whose area and bounds are unchanged between the retained 2015 archive and current official service.",
+        "NYT C-UDA terms limit redistribution to non-commercial use with attribution. CivicResultMaps must preserve the terms and attribution with any public delivery."
       ]
     }
   ]

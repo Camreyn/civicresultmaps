@@ -76,9 +76,9 @@ class MaineCoverageInventoryTest(unittest.TestCase):
 
         for year, filename, features, public_eligible in [
             (2012, "data/precinct-geometry-coverage-inventory-2012.json", 507, 0),
-            (2016, "data/precinct-geometry-coverage-inventory-2016.json", 532, 0),
-            (2020, "data/precinct-geometry-coverage-inventory-2020.json", 516, 0),
-            (2024, "data/precinct-geometry-coverage-inventory.json", 494, 0),
+            (2016, "data/precinct-geometry-coverage-inventory-2016.json", 532, 1),
+            (2020, "data/precinct-geometry-coverage-inventory-2020.json", 516, 1),
+            (2024, "data/precinct-geometry-coverage-inventory.json", 494, 1),
         ]:
             coverage = load_json(filename)
             maine = next(row for row in coverage["states"] if row["state"] == "ME")
