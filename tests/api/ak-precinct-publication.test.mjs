@@ -451,6 +451,8 @@ function rollbackClient(fixture) {
     if (sql.includes("select e.year,gv.status")) return fixture.versions;
     if (sql.includes("from reporting_unit_geometry_crosswalks")) {
       assert.match(sql, /x\.match_method in \('exact_official_id','official_crosswalk'\)/);
+      assert.match(sql, /x\.geography_feature_id is not null/);
+      assert.doesNotMatch(sql, /x\.geometry_feature_id/);
       return [{ total: 2_205, exact: 2_205 }];
     }
     if (sql.includes("from reporting_units where")) {
