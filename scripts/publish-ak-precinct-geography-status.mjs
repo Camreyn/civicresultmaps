@@ -233,6 +233,13 @@ export function verifyAlaskaPublicationGitCandidate(
   };
 }
 
+export function assertAlaskaPublicationRecoveryVersionSet(versions) {
+  if (!Array.isArray(versions) || versions.length !== 4) {
+    throw new Error("Alaska publication receipt recovery found an incomplete version set");
+  }
+  return versions;
+}
+
 function expectedActivationMetadata(
   context,
   manifest,
@@ -1025,9 +1032,7 @@ export async function runAlaskaGeographyPublication(options = {}) {
           "where gv.state_code='AK' and gv.geography_type='precinct'",
           " and gv.metadata->'releaseCandidate'->>'sha256'=$1 order by e.year",
         ].join("\n"), [built.plan.releaseCandidate.sha256]);
-        if (versions.length !== 3) {
-          throw new Error("Alaska publication receipt recovery found an incomplete version set");
-        }
+        assertAlaskaPublicationRecoveryVersionSet(versions);
         const operationAudit = mode === "publish"
           ? versions[0]?.metadata?.publicActivation
           : versions[0]?.metadata?.publicActivation?.rollback;

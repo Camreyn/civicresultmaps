@@ -7495,3 +7495,15 @@ evidence against its verified top-level package.
   fallback data; the post-deployment check requires database-backed responses
   and requires the public alias to report the exact triggering deployment Git
   SHA. Neither check mutates election data or publication state.
+
+### 2026-08-14 - Alaska publication receipt recovery correction
+
+- Alaska's read-only public-cutover receipt recovery now requires all four
+  election geography versions. The prior guard incorrectly retained a
+  three-version count from a three-year release pattern, which would have
+  rejected recovery after an ambiguous successful Alaska commit.
+
+- A focused regression assertion pins the four-version recovery contract and
+  rejects reintroduction of the stale three-version condition. The normal
+  publication transaction, source artifacts, manifests, and public eligibility
+  are unchanged.

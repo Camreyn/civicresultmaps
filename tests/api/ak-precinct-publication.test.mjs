@@ -21,6 +21,7 @@ import {
 } from "../../scripts/lib/ak-precinct-publication.mjs";
 import {
   applyAlaskaGeographyPublicationTransaction,
+  assertAlaskaPublicationRecoveryVersionSet,
   inspectAlaskaPublicationReceipt,
   verifyAlaskaPublicationGitCandidate,
 } from "../../scripts/publish-ak-precinct-geography-status.mjs";
@@ -595,4 +596,13 @@ test("Alaska publication runner contains database-first rollback and read-only r
   assert.match(source, /publicationReceiptSha256/);
   assert.match(source, /transactionBodyCompleted/);
   assert.match(source, /disposition === "created"/);
+});
+
+test("Alaska publication receipt recovery requires all four geography versions", () => {
+  const versions = [2012, 2016, 2020, 2024].map((year) => ({ year }));
+  assert.equal(assertAlaskaPublicationRecoveryVersionSet(versions), versions);
+  assert.throws(
+    () => assertAlaskaPublicationRecoveryVersionSet(versions.slice(0, 3)),
+    /incomplete version set/,
+  );
 });
