@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-14T14:40:03.296Z",
+  "updatedAt": "2026-08-15T02:22:39.949Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 6,
+    "totalJurisdictions": 7,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 6
+      "reviewed": 7
     },
     "disposition": {
       "undecided": 0,
       "mapped": 6,
       "partial": 0,
       "official_geometry_unavailable": 0,
-      "blocked": 0
+      "blocked": 1
     },
     "publicEligibleJurisdictions": 6
   },
@@ -372,6 +372,67 @@
       "notes": [
         "All displayed vote values come from the retained Maine Secretary of State workbook; secondary-source election values are stripped.",
         "Maine publishes a mixed local grain of towns, plantations, townships, voting districts, and combined units. Town totals are never duplicated across ward polygons or proportionally allocated."
+      ]
+    },
+    {
+      "state": "MI",
+      "stateName": "Michigan",
+      "electionId": "2020-11-03-general",
+      "programStatus": "reviewed",
+      "wave": 9,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-15T02:22:39.949Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6",
+        "https://mvic.sos.state.mi.us/VoteHistory/GetPrecinctResultsFile?electionId=683"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "mi-2020-11-03-official-cycle-precinct-review-v2"
+        ],
+        "officialSourceLeads": [
+          "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/MI/2020-11-03-general/source-evidence.json",
+          "data/precinct-geometry/MI/2020-11-03-general/normalized/mi-2020-official-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/MI/2020-11-03-general/crosswalk/mi-2020-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 4752,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 4923,
+        "colorableResultUnits": 4750,
+        "matchedResultUnits": 4699,
+        "unmatchedResultUnits": 51,
+        "nonGeographicResultUnits": 168,
+        "sourceAliasResultUnits": 5
+      },
+      "blockers": [
+        "The official layer establishes the 2020 election cycle but does not prove an immutable November 3 snapshot.",
+        "Fifty-one geographic result units remain unresolved and 53 geometry units remain unlinked.",
+        "The official precinct ZIP differs from the certified statewide summary; all AVCB and statistical rows remain explicit and no proportional allocation is allowed."
+      ],
+      "nextAction": "Resolve the 51 official result identities and 53 unlinked polygons and reconcile the precinct-export scope to the certified summary before delivery.",
+      "notes": [
+        "The two repeated official PRECINCTID groups are merged only as multipart geometry, reducing 4,755 raw features to 4,752 unique geometry identities.",
+        "All retained candidate totals come only from the official Michigan SOS 2020GEN precinct ZIP.",
+        "All 168 administrative units remain non-geographic and are never assigned a polygon.",
+        "This election retains its own boundary evidence and is not treated as a stable precinct trend geography."
       ]
     }
   ]

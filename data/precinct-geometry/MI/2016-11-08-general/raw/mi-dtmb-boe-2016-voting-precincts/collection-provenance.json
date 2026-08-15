@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2016-11-08-general",
+  "retrievedAt": "2026-08-03T07:00:00.000Z",
+  "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+  "sourceUrls": {
+    "service": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer",
+    "layer": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+    "biennialPrecinctReport": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Election-Results-and-Statistics/Biennial-Precinct-Report/2016-Biennial-Precinct-Report.pdf?hash=D49781BF074C6D84506C7B9223663A6D&rev=e3ed6d2584724c5c8e245c403cc7a394",
+    "mvicIndex": "https://mvic.sos.state.mi.us/votehistory/Index?electionDate=11-8-2016&type=C"
+  },
+  "expectedFeatureCount": 4810,
+  "collectedFeatureCount": 4810,
+  "query": {
+    "outFields": [
+      "OBJECTID",
+      "VTD2016",
+      "CountyFips",
+      "Jurisdicti",
+      "ElectionYe",
+      "Label"
+    ],
+    "orderByFields": "OBJECTID",
+    "outCrs": "EPSG:4326",
+    "pageSize": 1000,
+    "pages": [
+      {
+        "offset": 0,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1/query?where=1%3D1&outFields=OBJECTID%2CVTD2016%2CCountyFips%2CJurisdicti%2CElectionYe%2CLabel&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=0&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 1000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1/query?where=1%3D1&outFields=OBJECTID%2CVTD2016%2CCountyFips%2CJurisdicti%2CElectionYe%2CLabel&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=1000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 2000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1/query?where=1%3D1&outFields=OBJECTID%2CVTD2016%2CCountyFips%2CJurisdicti%2CElectionYe%2CLabel&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=2000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 3000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1/query?where=1%3D1&outFields=OBJECTID%2CVTD2016%2CCountyFips%2CJurisdicti%2CElectionYe%2CLabel&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=3000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 4000,
+        "featureCount": 810,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1/query?where=1%3D1&outFields=OBJECTID%2CVTD2016%2CCountyFips%2CJurisdicti%2CElectionYe%2CLabel&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=4000&resultRecordCount=1000&f=geojson"
+      }
+    ]
+  },
+  "accessGate": {
+    "status": "blocked",
+    "resultArtifactRetained": false,
+    "electionId": "670",
+    "precinctResultsDownloadUrl": "https://mvic.sos.state.mi.us/VoteHistory/GetPrecinctResultsFile?electionId=670",
+    "presidentCandidateRows": 13,
+    "statewidePresidentTotalVotes": 4799284,
+    "reason": "The official browser observation identifies election 670 and statewide President context, but the tested precinct-download candidate was not retained after a Cloudflare challenge."
+  },
+  "artifacts": {
+    "serviceMetadata": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/service-metadata.json",
+      "byteCount": 5987,
+      "sha256": "b5b4f9799355729fbad0d1275922b847d70e4b3f1e189e618755374caff9f488"
+    },
+    "layerMetadata": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/layer-metadata.json",
+      "byteCount": 5826,
+      "sha256": "6c078419758bfbe1c02c3a9a5a013b448d0835634cc68b49c4db2dda646ceabf"
+    },
+    "queryCount": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/query-count.json",
+      "byteCount": 14,
+      "sha256": "25da30c3e44b9101c07daf6fef8d3ee445ceb14e2a1a2bd1037249f3a706d7a3"
+    },
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/2016-voting-precincts-wgs84.geojson.gz",
+      "byteCount": 7382064,
+      "sha256": "14ce9ebcedd5b5061ed7b858a3bd1bd9cc4a858c348fe2f338f3d1f7f8cdda62",
+      "compression": "gzip",
+      "uncompressedByteCount": 26026590,
+      "uncompressedSha256": "804ec461c475ac57f9b28ed0271c8c52b8d69d5d1a6e8f8717217357e84b2a1b"
+    },
+    "biennialPrecinctReport": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/2016-biennial-precinct-report.pdf",
+      "byteCount": 1242561,
+      "sha256": "69e3c473fc80c6e84a4224e2aed1e8f1c9a679a7e5eb9e2db5b03d6f432a092d"
+    },
+    "mvicIndexAccess": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/mvic-2016-index-access.json",
+      "byteCount": 435,
+      "sha256": "4c4c1814fe623cca4865de5bd09de68c6b17b56c54e5c3ec4f90baf4c34111be"
+    },
+    "mvicBrowserObservation": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/mvic-2016-browser-observation.json",
+      "byteCount": 2453,
+      "sha256": "09a470985296e6586219395f422e798c2e5cdf5a9e49f04b9ee0b530b99e5673"
+    }
+  }
+}

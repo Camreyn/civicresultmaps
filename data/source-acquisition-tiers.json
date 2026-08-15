@@ -1266,12 +1266,15 @@
       "exportFormats": [
         "TXT",
         "ZIP",
+        "ArcGIS GeoJSON",
+        "JSON source evidence and crosswalk",
         "PDF registration reference",
         "secondary historical CSV",
         "admin source inventory JSON"
       ],
       "sourceUrls": [
-        "https://mvic.sos.state.mi.us/VoteHistory/"
+        "https://mvic.sos.state.mi.us/VoteHistory/",
+        "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -1280,19 +1283,24 @@
         "precinct U.S. Senate rows",
         "county registration/turnout",
         "2012, 2016, and 2020 county historical presidential baseline rows",
+        "official 2012, 2016, 2020, and 2024 precinct result ZIPs",
+        "official election-cycle precinct geometry for all four years",
+        "reviewed complete 2024 result-to-geometry relationships with non-geographic and source-alias identities retained",
         "equipment context",
         "administration source inventory"
       ],
       "missingFields": [
-        "precinct boundary geometry",
-        "official script-readable 2012/2016/2020 historical county presidential exports",
+        "immutable public delivery and guarded production activation for the reviewed 2024 precinct package",
+        "authoritative resolution of the remaining 2016 and 2020 result-to-geometry gaps",
+        "immutable 2012 election-date geometry custody and affirmative derivative redistribution terms",
+        "native historical-baseline replacement using the now-retained official 2012/2016/2020 precinct exports",
         "normalized audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native precinct review package loaded with secondary historical baseline and administration source inventory",
+      "parserStatus": "native precinct review package loaded with secondary historical baseline and administration source inventory; scripts/build-mi-reviewed-precincts.mjs separately parses and hash-pins all four official precinct result ZIPs, official election-cycle geometry, explicit non-geographic units, and reviewed result-to-geometry evidence",
       "manualReviewBurden": "low",
       "confidence": "loaded_with_caveat",
-      "caveats": "Turnout is county-level, not precinct-level. Historical baseline rows are secondary contextual county tables because MVIC and mielections.us official historical paths were not script-readable in this environment; replace with official Michigan SOS exports if collected. Administration inventory documents source paths and request needs but does not load row-level audit, recount, CVR, incident, or correction records.",
-      "nextAction": "Collect official script-readable Michigan historical result exports, official statewide precinct boundary geometry or reporting-unit crosswalks, and row-level 2024 audit/recount/CVR/incident/correction artifacts if available."
+      "caveats": "Turnout is county-level, not precinct-level. The ordinary native historical baseline still uses secondary contextual county tables, although official 2012/2016/2020 precinct ZIPs are now retained in the separate GIS package. The 2024 geometry/result relationship is complete and allocation-free but awaits guarded delivery; 2012, 2016, and 2020 remain fail-closed for their documented vintage, terms, or unresolved-identity gaps. Administration inventory documents source paths and request needs but does not load row-level audit, recount, CVR, incident, or correction records.",
+      "nextAction": "Implement and review the guarded 2024 local-database, immutable delivery, and public-activation path. Keep 2012, 2016, and 2020 outside the public registry while resolving their exact documented blockers; separately replace the native secondary county history from retained official results and collect row-level administration records if available."
     },
     {
       "state": "MN",

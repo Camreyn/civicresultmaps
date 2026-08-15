@@ -22,6 +22,8 @@ For the guarded Iowa 2016/2020/2024 precinct-map release, official four-year res
 
 For Maine's four-year local-reporting-unit collection, mixed-grain labeling rules, deterministic replay, exact SOS reconciliation, and the separately blocked 2012 gaps, read [`docs/developer/me-local-reporting-gis-runbook.md`](me-local-reporting-gis-runbook.md).
 
+For Michigan's official four-election precinct source packages, hash-pinned replay, allocation-free 2024 crosswalk, historical blockers, and cross-year comparison rules, read [`docs/developer/mi-precinct-gis-runbook.md`](mi-precinct-gis-runbook.md).
+
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
 ## Coordinator Protocol

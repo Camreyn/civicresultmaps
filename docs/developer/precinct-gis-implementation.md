@@ -7540,3 +7540,44 @@ evidence against its verified top-level package.
   four years with no console errors. The 2020 Exports & API view also retained
   `year=2020` and displayed year-pinned public API paths rather than reverting
   to 2024.
+
+### 2026-08-14 - Michigan official four-election precinct source review
+
+- Michigan now retains hash-pinned official precinct-result ZIPs and official
+  election-cycle geometry for 2012, 2016, 2020, and 2024. The deterministic
+  builder verifies every raw byte before parsing or writing and emits a
+  vote-free normalized geometry, official normalized result rows, explicit
+  relationship records, source evidence, a review report, and a fail-closed
+  manifest for every election.
+- The reviewed 2024 package maps all 4,347 official geographic source
+  identities to all 4,340 official polygons without proportional allocation.
+  It retains seven duplicate/cross-county source identities as aliases and all
+  87 statistical or absent-voter-counting-board units as non-geographic. The
+  official presidential total is 5,664,186. Exact matching uses 3,866 parent
+  composites, eight statewide cross-county composites, and 473 unique official
+  county/municipality/precinct relationships after ward-convention review.
+- The historical packages remain explicit evidence rather than public maps.
+  The 2012 package has 4,862 matched units and 12 unlinked polygons plus an
+  election-snapshot/count/redistribution-terms block. The 2016 package has
+  4,788 matched, 21 unresolved, and 22 unlinked. The 2020 package has 4,699
+  matched, 51 unresolved, and 53 unlinked; two repeated source geometry IDs are
+  correctly merged into 4,752 unique polygon identities, while AVCB and
+  statistical rows remain unallocated.
+- The coverage ledgers record Michigan for all four years. Public eligibility
+  stays zero because no Michigan manifest is added to the canonical public
+  registry in this change. The 2024 next step is separately reviewed guarded
+  local-DB, immutable county delivery, hidden production load, deployment gate,
+  and atomic publication tooling. Historical activation remains blocked until
+  each documented source/crosswalk issue is resolved.
+- The replay test rebuilds all four packages under an alternate root and
+  requires byte-identical output. It also corrupts a copied official ZIP and
+  proves the raw-source preflight rejects it before any derived file changes.
+  Cross-election labels and shapes are never assumed stable; apples-to-apples
+  comparison still requires a separate reviewed common-geography crosswalk or
+  aggregation to a stable higher-level geography.
+- The normal Michigan 2024 ETL still emits 4,428 native review rows. The
+  advisory report calculates 128 screening rows across 77 flagged
+  jurisdictions/areas: 70 `vote_share_pattern` rows and 58
+  `average_down_ballot_difference` rows. These are review signals only, not
+  evidence of fraud or misconduct. This source-package task did not promote
+  staging or query production API/database indicator counts.

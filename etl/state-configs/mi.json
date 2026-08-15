@@ -68,7 +68,18 @@
       "parser": "censusTigerGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is used for county map joins; precinct boundary geometry is not included in this package.",
+      "confidence": "County geometry is used for county map joins. Election-cycle precinct geometry and official precinct results are retained separately in the reviewed precinct-GIS package.",
+      "status": "loaded"
+    },
+    {
+      "id": "mi-four-election-precinct-gis-review",
+      "category": "Official 2012, 2016, 2020, and 2024 precinct results and election-cycle geometry review",
+      "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer",
+      "localFile": "data/precinct-geometry/MI",
+      "parser": "precinctGeometryManifestSet",
+      "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+      "timestampBasis": "Official Michigan GIS election-cycle layers, official SOS precinct result ZIPs, Biennial Precinct Reports, and Census municipality identity tables retained and reviewed August 14, 2026.",
+      "confidence": "The 2024 review maps all 4,347 official geographic source identities to 4,340 official polygons, retains 87 non-geographic units and seven source aliases without allocation, and is ready for immutable delivery/release tooling. The 2012, 2016, and 2020 packages remain blocked with exact unresolved geometry/result and vintage caveats.",
       "status": "loaded"
     }
   ],
@@ -91,7 +102,7 @@
     "downBallotContest": {
       "officeCode": "5"
     },
-    "warning": "Michigan native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Precinct boundary geometry is not included in this package."
+    "warning": "Michigan native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Separately retained official precinct geometry is reviewed for 2024 but remains unavailable until immutable delivery and production activation complete; 2012, 2016, and 2020 remain blocked."
   },
   "turnout": {
     "format": "michiganMvicCountyTurnout",
@@ -106,7 +117,7 @@
   "expected": {
     "jurisdictions": 83,
     "resultRows": 83,
-    "sources": 6,
+    "sources": 7,
     "stateTotal": 5664186,
     "trump": 2816636,
     "harris": 2736533,

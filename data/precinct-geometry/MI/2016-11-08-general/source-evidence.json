@@ -1,0 +1,855 @@
+{
+  "schemaVersion": 1,
+  "id": "mi-2016-official-precinct-geometry-and-results-review",
+  "state": "MI",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+  "retrievedAt": "2026-08-03T07:00:00.000Z",
+  "reviewedAt": "2026-08-15T02:22:39.949Z",
+  "sourceUrls": [
+    "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+    "https://miboecfr.nictusa.com/cfr/presults/2016GEN.zip"
+  ],
+  "boundaryContext": {
+    "boundaryVintage": "State of Michigan 2016 Voting Precincts election-cycle layer; exact November 8 snapshot unconfirmed",
+    "vintageStatus": "unknown",
+    "sourceFeatureCount": 4810,
+    "normalizedFeatureCount": 4810,
+    "duplicateSourceParts": 0,
+    "licenseOrTerms": "The official ArcGIS item describes the dataset as a public record with no restrictions on use, reproduction, or distribution and provides it as-is."
+  },
+  "resultIdentity": {
+    "sourceUnitCount": 5077,
+    "geographicSourceUnitCount": 4811,
+    "nonGeographicSourceUnitCount": 266,
+    "canonicalGeographicUnitCount": 4809,
+    "mappedGeographicUnitCount": 4788,
+    "unmatchedGeographicUnitCount": 21,
+    "sourceAliasUnitCount": 2,
+    "officialTotals": {
+      "democraticVotes": 2268839,
+      "republicanVotes": 2279543,
+      "otherVotes": 250902,
+      "totalVotes": 4799284
+    },
+    "geographicTotals": {
+      "democraticVotes": 2210069,
+      "republicanVotes": 2270022,
+      "otherVotes": 243462,
+      "totalVotes": 4723553
+    },
+    "nonGeographicTotals": {
+      "democraticVotes": 58770,
+      "republicanVotes": 9521,
+      "otherVotes": 7440,
+      "totalVotes": 75731
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": false,
+    "matchMethodCounts": {
+      "parent_exact_composite": 4245,
+      "parent_unique_municipality_precinct": 543,
+      "statewide_exact_composite": 2
+    },
+    "crossCountyAssignments": [
+      {
+        "resultUnitCode": "reporting:MI:2016-11-08-general:precinct:26049:county%3D25%3Bmunicipality%3D56%3Bward%3D00%3Bprecinct%3D002%3Blabel%3D~",
+        "sourceUnitId": "county=63;municipality=61;ward=00;precinct=002;label=~",
+        "sourceParentGeoid": "26125",
+        "geometryParentGeoid": "26049",
+        "sourceDisplayName": "FENTON CITY - Precinct 2"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2016-11-08-general:precinct:26099:county%3D50%3Bmunicipality%3D64%3Bward%3D00%3Bprecinct%3D001%3Blabel%3D~",
+        "sourceUnitId": "county=74;municipality=63;ward=00;precinct=001;label=~",
+        "sourceParentGeoid": "26147",
+        "geometryParentGeoid": "26099",
+        "sourceDisplayName": "RICHMOND CITY - Precinct 1"
+      }
+    ],
+    "unmatchedResultUnits": [
+      {
+        "sourceUnit": {
+          "key": "11|52|0|2|",
+          "countyCode": "11",
+          "countyName": "BERRIEN",
+          "municipalityCode": "52",
+          "municipalityName": "BENTON HARBOR CITY",
+          "ward": "00",
+          "precinct": "002",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 599
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "BENTON HARBOR"
+        },
+        "municipalityCandidates": [
+          "07520"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "11|52|0|3|",
+          "countyCode": "11",
+          "countyName": "BERRIEN",
+          "municipalityCode": "52",
+          "municipalityName": "BENTON HARBOR CITY",
+          "ward": "00",
+          "precinct": "003",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 941
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "BENTON HARBOR"
+        },
+        "municipalityCandidates": [
+          "07520"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "11|52|0|4|",
+          "countyCode": "11",
+          "countyName": "BERRIEN",
+          "municipalityCode": "52",
+          "municipalityName": "BENTON HARBOR CITY",
+          "ward": "00",
+          "precinct": "004",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 894
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "BENTON HARBOR"
+        },
+        "municipalityCandidates": [
+          "07520"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "22|52|0|1|",
+          "countyCode": "22",
+          "countyName": "DICKINSON",
+          "municipalityCode": "52",
+          "municipalityName": "IRON MOUNTAIN CITY",
+          "ward": "00",
+          "precinct": "001",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 1171
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "IRON MOUNTAIN"
+        },
+        "municipalityCandidates": [
+          "40960"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "23|58|3|0|22L",
+          "countyCode": "23",
+          "countyName": "EATON",
+          "municipalityCode": "58",
+          "municipalityName": "LANSING CITY",
+          "ward": "03",
+          "precinct": "000",
+          "label": "22L",
+          "candidateVotes": {},
+          "totalVotes": 640
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LANSING"
+        },
+        "municipalityCandidates": [
+          "46000"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "24|54|0|2|",
+          "countyCode": "24",
+          "countyName": "EMMET",
+          "municipalityCode": "54",
+          "municipalityName": "PETOSKEY CITY",
+          "ward": "00",
+          "precinct": "002",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 842
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "PETOSKEY"
+        },
+        "municipalityCandidates": [
+          "63820"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "24|54|0|3|",
+          "countyCode": "24",
+          "countyName": "EMMET",
+          "municipalityCode": "54",
+          "municipalityName": "PETOSKEY CITY",
+          "ward": "00",
+          "precinct": "003",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 928
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "PETOSKEY"
+        },
+        "municipalityCandidates": [
+          "63820"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "24|54|0|4|",
+          "countyCode": "24",
+          "countyName": "EMMET",
+          "municipalityCode": "54",
+          "municipalityName": "PETOSKEY CITY",
+          "ward": "00",
+          "precinct": "004",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 647
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "PETOSKEY"
+        },
+        "municipalityCandidates": [
+          "63820"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "26|54|1|3|",
+          "countyCode": "26",
+          "countyName": "GLADWIN",
+          "municipalityCode": "54",
+          "municipalityName": "GLADWIN CITY",
+          "ward": "01",
+          "precinct": "003",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 308
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "GLADWIN"
+        },
+        "municipalityCandidates": [
+          "32320"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "26|54|1|4|",
+          "countyCode": "26",
+          "countyName": "GLADWIN",
+          "municipalityCode": "54",
+          "municipalityName": "GLADWIN CITY",
+          "ward": "01",
+          "precinct": "004",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 333
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "GLADWIN"
+        },
+        "municipalityCandidates": [
+          "32320"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "34|54|2|2|",
+          "countyCode": "34",
+          "countyName": "IONIA",
+          "municipalityCode": "54",
+          "municipalityName": "IONIA CITY",
+          "ward": "02",
+          "precinct": "002",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 479
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "IONIA"
+        },
+        "municipalityCandidates": [
+          "40860"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "34|54|3|3|",
+          "countyCode": "34",
+          "countyName": "IONIA",
+          "municipalityCode": "54",
+          "municipalityName": "IONIA CITY",
+          "ward": "03",
+          "precinct": "003",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 570
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "IONIA"
+        },
+        "municipalityCandidates": [
+          "40860"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "34|54|4|4|",
+          "countyCode": "34",
+          "countyName": "IONIA",
+          "municipalityCode": "54",
+          "municipalityName": "IONIA CITY",
+          "ward": "04",
+          "precinct": "004",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 565
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "IONIA"
+        },
+        "municipalityCandidates": [
+          "40860"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "58|56|0|3|",
+          "countyCode": "58",
+          "countyName": "MONROE",
+          "municipalityCode": "56",
+          "municipalityName": "MONROE CITY",
+          "ward": "00",
+          "precinct": "003",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 665
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "MONROE"
+        },
+        "municipalityCandidates": [
+          "55020"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "69|52|2|2|",
+          "countyCode": "69",
+          "countyName": "OTSEGO",
+          "municipalityCode": "52",
+          "municipalityName": "GAYLORD CITY",
+          "ward": "02",
+          "precinct": "002",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 582
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "GAYLORD"
+        },
+        "municipalityCandidates": [
+          "31720"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "69|52|3|3|",
+          "countyCode": "69",
+          "countyName": "OTSEGO",
+          "municipalityCode": "52",
+          "municipalityName": "GAYLORD CITY",
+          "ward": "03",
+          "precinct": "003",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 486
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "GAYLORD"
+        },
+        "municipalityCandidates": [
+          "31720"
+        ],
+        "candidateGeometryIds": []
+      }
+    ],
+    "ambiguousResultUnits": [
+      {
+        "sourceUnit": {
+          "key": "3|63|0|1|",
+          "countyCode": "3",
+          "countyName": "ALLEGAN",
+          "municipalityCode": "63",
+          "municipalityName": "SOUTH HAVEN CITY",
+          "ward": "00",
+          "precinct": "001",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 5
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "SOUTH HAVEN"
+        },
+        "municipalityCandidates": [
+          "74980"
+        ],
+        "candidateGeometryIds": [
+          "1597498001001",
+          "1597498002001",
+          "1597498003001"
+        ]
+      },
+      {
+        "sourceUnit": {
+          "key": "11|52|0|1|",
+          "countyCode": "11",
+          "countyName": "BERRIEN",
+          "municipalityCode": "52",
+          "municipalityName": "BENTON HARBOR CITY",
+          "ward": "00",
+          "precinct": "001",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 931
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "BENTON HARBOR"
+        },
+        "municipalityCandidates": [
+          "07520"
+        ],
+        "candidateGeometryIds": [
+          "0210752001001",
+          "0210752002001",
+          "0210752003001",
+          "0210752004001"
+        ]
+      },
+      {
+        "sourceUnit": {
+          "key": "22|52|0|2|",
+          "countyCode": "22",
+          "countyName": "DICKINSON",
+          "municipalityCode": "52",
+          "municipalityName": "IRON MOUNTAIN CITY",
+          "ward": "00",
+          "precinct": "002",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 1151
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "IRON MOUNTAIN"
+        },
+        "municipalityCandidates": [
+          "40960"
+        ],
+        "candidateGeometryIds": [
+          "0434096002002",
+          "0434096003002"
+        ]
+      },
+      {
+        "sourceUnit": {
+          "key": "24|54|0|1|",
+          "countyCode": "24",
+          "countyName": "EMMET",
+          "municipalityCode": "54",
+          "municipalityName": "PETOSKEY CITY",
+          "ward": "00",
+          "precinct": "001",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 686
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "PETOSKEY"
+        },
+        "municipalityCandidates": [
+          "63820"
+        ],
+        "candidateGeometryIds": [
+          "0476382001001",
+          "0476382002001",
+          "0476382003001",
+          "0476382004001"
+        ]
+      },
+      {
+        "sourceUnit": {
+          "key": "26|54|1|2|",
+          "countyCode": "26",
+          "countyName": "GLADWIN",
+          "municipalityCode": "54",
+          "municipalityName": "GLADWIN CITY",
+          "ward": "01",
+          "precinct": "002",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 311
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "GLADWIN"
+        },
+        "municipalityCandidates": [
+          "32320"
+        ],
+        "candidateGeometryIds": [
+          "0513232002002",
+          "0513232003002"
+        ]
+      }
+    ],
+    "unlinkedGeometryUnits": [
+      {
+        "sourceId": "0057498003002",
+        "parentGeoid": "26005",
+        "municipalityFips": "74980",
+        "ward": "03",
+        "precinct": "002"
+      },
+      {
+        "sourceId": "0210752001001",
+        "parentGeoid": "26021",
+        "municipalityFips": "07520",
+        "ward": "01",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0210752002001",
+        "parentGeoid": "26021",
+        "municipalityFips": "07520",
+        "ward": "02",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0210752003001",
+        "parentGeoid": "26021",
+        "municipalityFips": "07520",
+        "ward": "03",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0210752004001",
+        "parentGeoid": "26021",
+        "municipalityFips": "07520",
+        "ward": "04",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0434096002002",
+        "parentGeoid": "26043",
+        "municipalityFips": "40960",
+        "ward": "02",
+        "precinct": "002"
+      },
+      {
+        "sourceId": "0434096003002",
+        "parentGeoid": "26043",
+        "municipalityFips": "40960",
+        "ward": "03",
+        "precinct": "002"
+      },
+      {
+        "sourceId": "0454600003022",
+        "parentGeoid": "26045",
+        "municipalityFips": "46000",
+        "ward": "03",
+        "precinct": "022"
+      },
+      {
+        "sourceId": "0476382001001",
+        "parentGeoid": "26047",
+        "municipalityFips": "63820",
+        "ward": "01",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0476382002001",
+        "parentGeoid": "26047",
+        "municipalityFips": "63820",
+        "ward": "02",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0476382003001",
+        "parentGeoid": "26047",
+        "municipalityFips": "63820",
+        "ward": "03",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0476382004001",
+        "parentGeoid": "26047",
+        "municipalityFips": "63820",
+        "ward": "04",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0492900005062",
+        "parentGeoid": "26049",
+        "municipalityFips": "29000",
+        "ward": "05",
+        "precinct": "062"
+      },
+      {
+        "sourceId": "0513232002002",
+        "parentGeoid": "26051",
+        "municipalityFips": "32320",
+        "ward": "02",
+        "precinct": "002"
+      },
+      {
+        "sourceId": "0513232003002",
+        "parentGeoid": "26051",
+        "municipalityFips": "32320",
+        "ward": "03",
+        "precinct": "002"
+      },
+      {
+        "sourceId": "0513232004001",
+        "parentGeoid": "26051",
+        "municipalityFips": "32320",
+        "ward": "04",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0674086002001",
+        "parentGeoid": "26067",
+        "municipalityFips": "40860",
+        "ward": "02",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0674086003001",
+        "parentGeoid": "26067",
+        "municipalityFips": "40860",
+        "ward": "03",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0674086004001",
+        "parentGeoid": "26067",
+        "municipalityFips": "40860",
+        "ward": "04",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "1155502000003N",
+        "parentGeoid": "26115",
+        "municipalityFips": "55020",
+        "ward": "00",
+        "precinct": "003N"
+      },
+      {
+        "sourceId": "1373172002001",
+        "parentGeoid": "26137",
+        "municipalityFips": "31720",
+        "ward": "02",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "1373172003001",
+        "parentGeoid": "26137",
+        "municipalityFips": "31720",
+        "ward": "03",
+        "precinct": "001"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/2016-voting-precincts-wgs84.geojson.gz",
+      "byteCount": 7382064,
+      "sha256": "14ce9ebcedd5b5061ed7b858a3bd1bd9cc4a858c348fe2f338f3d1f7f8cdda62",
+      "format": "official ArcGIS GeoJSON gzip",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Complete official 2016 election-cycle geometry.",
+      "compression": "gzip",
+      "uncompressedByteCount": 26026590,
+      "uncompressedSha256": "804ec461c475ac57f9b28ed0271c8c52b8d69d5d1a6e8f8717217357e84b2a1b"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/layer-metadata.json",
+      "byteCount": 5826,
+      "sha256": "6c078419758bfbe1c02c3a9a5a013b448d0835634cc68b49c4db2dda646ceabf",
+      "format": "official ArcGIS layer metadata JSON",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official layer description and fields."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/item-metadata.json",
+      "byteCount": 6169,
+      "sha256": "2686e34e7d0fa662f8b9fe0ba3f652b9a83551f4b1463d1ac22eda6246a1a805",
+      "format": "official ArcGIS item metadata JSON",
+      "sourceUrl": "https://www.arcgis.com/sharing/rest/content/items/8ce0f3ce3ff74109ac02a26d34a0f4fc?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official item description, authority, and terms."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/service-metadata.json",
+      "byteCount": 5987,
+      "sha256": "b5b4f9799355729fbad0d1275922b847d70e4b3f1e189e618755374caff9f488",
+      "format": "official ArcGIS service metadata JSON",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official service inventory."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/query-count.json",
+      "byteCount": 14,
+      "sha256": "25da30c3e44b9101c07daf6fef8d3ee445ceb14e2a1a2bd1037249f3a706d7a3",
+      "format": "official ArcGIS count JSON",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official 4,810-feature count."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/collection-provenance.json",
+      "byteCount": 5674,
+      "sha256": "7d936e0d18d94ba56f4f257774a821c538e887878636456830c5671ac146a397",
+      "format": "collection provenance JSON",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Hash-pinned official request ledger."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-dtmb-boe-2016-voting-precincts/2016-biennial-precinct-report.pdf",
+      "byteCount": 1242561,
+      "sha256": "69e3c473fc80c6e84a4224e2aed1e8f1c9a679a7e5eb9e2db5b03d6f432a092d",
+      "format": "official Michigan SOS PDF",
+      "sourceUrl": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Election-Results-and-Statistics/Biennial-Precinct-Report/2016-Biennial-Precinct-Report.pdf?rev=e3ed6d2584724c5c8e245c403cc7a394&hash=D49781BF074C6D84506C7B9223663A6D",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official 2016 precinct count and cross-county context."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-sos-mvic/2016GEN.zip",
+      "byteCount": 1568484,
+      "sha256": "9a4371dc0cf75c6d0b0abf279dfb4ffaa326729e196e5d6f30cb1cb20677dbba",
+      "format": "official Michigan SOS tab-delimited ZIP",
+      "sourceUrl": "https://miboecfr.nictusa.com/cfr/presults/2016GEN.zip",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official 2016 General precinct result export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/raw/mi-sos-mvic/archived-official-download-page.html",
+      "byteCount": 17274,
+      "sha256": "e36f95f6565f04c7ac21d673849e2fb918c6d1c8778d6ea426d9441d772aba32",
+      "format": "archived official Michigan result-page HTML",
+      "sourceUrl": "https://web.archive.org/web/20240418004849id_/https://miboecfr.nictusa.com/cgi-bin/cfr/precinct_srch.cgi?elect_year_type=2016GEN&county_code=00&Submit=Search",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Retained official page exposing the 2016GEN.zip download."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/county-subdivisions.json",
+      "byteCount": 253663,
+      "sha256": "a341cc31a3327c2d219f4da58f788f9a95e2b182d7aa22459735a774aa4c2f90",
+      "format": "official Census TIGERweb JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/22/query",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official county-subdivision names and codes used only for municipality identity review."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/county-subdivisions-layer-metadata.json",
+      "byteCount": 7138,
+      "sha256": "27ee6fe0dee5f31259520f6ad80d8359f68fd68178885440f4a4d667a20f3331",
+      "format": "official Census TIGERweb layer metadata JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/22?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official field and layer metadata for the county-subdivision identity table."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/incorporated-places.json",
+      "byteCount": 75273,
+      "sha256": "70a4eab758edbd597f83f19f7a598c132d805fe9be2d9826a0820d1eb1c51904",
+      "format": "official Census TIGERweb JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/28/query",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official incorporated-place names and codes used only for municipality identity review."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/incorporated-places-layer-metadata.json",
+      "byteCount": 7244,
+      "sha256": "b2105e2c0f6519bbaa6319798f5dadf188c7247769ce13a4e674e6d4d061ddd9",
+      "format": "official Census TIGERweb layer metadata JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/28?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official field and layer metadata for the incorporated-place identity table."
+    }
+  ],
+  "blockers": [
+    "The official layer establishes the 2016 election cycle but does not prove an immutable November 8 snapshot.",
+    "21 geographic result units remain unresolved and 22 geometry units remain unlinked.",
+    "Several municipal ward/precinct conventions require an authoritative or independently reviewed mapping before row-level publication."
+  ],
+  "caveats": [
+    "Displayed candidate votes, when eventually authorized, come only from the official Michigan SOS precinct ZIP; no GIS or secondary-source vote field is used.",
+    "266 official statistical-adjustment or absent-voter-counting-board units are retained for reconciliation and never assigned to polygons.",
+    "2 official source rows use a different source county from their unique statewide geometry parent; both identities are retained and no vote allocation is performed.",
+    "The official layer establishes the 2016 election cycle but does not prove an immutable November 8 snapshot.",
+    "21 geographic result units remain unresolved and 22 geometry units remain unlinked.",
+    "Several municipal ward/precinct conventions require an authoritative or independently reviewed mapping before row-level publication."
+  ]
+}

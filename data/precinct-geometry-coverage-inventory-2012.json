@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-14T14:40:03.296Z",
+  "updatedAt": "2026-08-15T02:22:39.949Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 5,
+    "totalJurisdictions": 6,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 5
+      "reviewed": 6
     },
     "disposition": {
       "undecided": 0,
       "mapped": 3,
       "partial": 1,
       "official_geometry_unavailable": 0,
-      "blocked": 1
+      "blocked": 2
     },
     "publicEligibleJurisdictions": 3
   },
@@ -332,6 +332,68 @@
         "All displayed vote values come from the retained Maine Secretary of State workbook; MGGG election values are stripped.",
         "The July 2015 official GeoLibrary archive is retained for source lineage and the 2024 temporal bracket, not backcast as 2012 election geometry.",
         "Maine publishes a mixed local grain of towns, plantations, townships, voting districts, and combined units. Town totals are never duplicated across ward polygons or proportionally allocated."
+      ]
+    },
+    {
+      "state": "MI",
+      "stateName": "Michigan",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 9,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-15T02:22:39.949Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+        "https://miboecfr.nictusa.com/cfr/presults/2012GEN.zip"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "mi-2012-11-06-official-cycle-precinct-review-v2"
+        ],
+        "officialSourceLeads": [
+          "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/MI/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/MI/2012-11-06-general/normalized/mi-2012-official-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/MI/2012-11-06-general/crosswalk/mi-2012-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 4874,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 5238,
+        "colorableResultUnits": 4862,
+        "matchedResultUnits": 4862,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 371,
+        "sourceAliasResultUnits": 5
+      },
+      "blockers": [
+        "The retained live legacy service labels these records ElectionYear=2012 but does not prove an immutable November 6 snapshot.",
+        "The official GIS cohort has 4,874 features while the 2012 Biennial Precinct Report states 4,873 precincts.",
+        "Twelve official geometry units remain unlinked even though every geographic source result identity is retained.",
+        "Affirmative derivative redistribution terms for the legacy service have not been retained."
+      ],
+      "nextAction": "Obtain an immutable election-date geometry edition or authoritative correction plus affirmative reuse terms; keep the candidate outside the public registry.",
+      "notes": [
+        "All displayed-result candidates and totals in the retained package come only from the official Michigan SOS precinct ZIP.",
+        "Five duplicate or cross-county source identities are retained as aliases and never duplicate votes.",
+        "All 371 administrative units remain non-geographic and are never assigned a polygon.",
+        "This election retains its own boundary evidence and is not treated as a stable precinct trend geography."
       ]
     }
   ]

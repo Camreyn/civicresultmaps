@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2020-11-03-general",
+  "retrievedAt": "2026-08-02T16:00:00.000Z",
+  "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+  "sourceUrls": {
+    "layer": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6",
+    "sosCatalog": "https://www.michigan.gov/sos/elections/election-results-and-data",
+    "mvicResults": "https://mvic.sos.state.mi.us/votehistory/Index?electionDate=11-3-2020&type=C"
+  },
+  "expectedFeatureCount": 4755,
+  "collectedFeatureCount": 4755,
+  "geometryShapeGate": {
+    "blankPrecinctIds": 0,
+    "uniquePrecinctIds": 4752,
+    "duplicatePrecinctIds": [
+      {
+        "id": "WP-025-06720-00001",
+        "featureCount": 3
+      },
+      {
+        "id": "WP-049-27780-00004",
+        "featureCount": 2
+      }
+    ],
+    "status": "blocked_duplicate_precinct_ids"
+  },
+  "query": {
+    "outFields": [
+      "OBJECTID",
+      "PRECINCTID",
+      "ELECTIONYE",
+      "COUNTYFIPS",
+      "MCDFIPS",
+      "WARD",
+      "PRECINCT",
+      "NAME",
+      "STATEFP",
+      "VTDST",
+      "FUNCSTAT",
+      "VTDI",
+      "LSAD"
+    ],
+    "orderByFields": "OBJECTID",
+    "outCrs": "EPSG:4326",
+    "pages": [
+      {
+        "offset": 0,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CSTATEFP%2CVTDST%2CFUNCSTAT%2CVTDI%2CLSAD&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=0&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 1000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CSTATEFP%2CVTDST%2CFUNCSTAT%2CVTDI%2CLSAD&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=1000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 2000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CSTATEFP%2CVTDST%2CFUNCSTAT%2CVTDI%2CLSAD&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=2000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 3000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CSTATEFP%2CVTDST%2CFUNCSTAT%2CVTDI%2CLSAD&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=3000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 4000,
+        "featureCount": 755,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CSTATEFP%2CVTDST%2CFUNCSTAT%2CVTDI%2CLSAD&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=4000&resultRecordCount=1000&f=geojson"
+      }
+    ]
+  },
+  "accessGate": {
+    "status": "blocked",
+    "resultArtifactRetained": false,
+    "presidentCandidateRows": 0,
+    "reason": "The SOS catalog identifies the 2020 November General MVIC page, but MVIC returned a Cloudflare challenge in this environment; no official precinct-result artifact was retained, parsed, or inferred."
+  },
+  "artifacts": {
+    "layerMetadata": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/layer-metadata.json",
+      "byteCount": 6679,
+      "sha256": "96662838cd1126519a86391d74c352bb3a249314529958eaf91c7ba1309bef8a"
+    },
+    "sosCatalog": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/mi-sos-election-results-and-data.html",
+      "byteCount": 421270,
+      "sha256": "81274ebb792afb0ee9477807bf03a88253f68ade7a93d463fbe9ed487f7019ef"
+    },
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/2020-voting-precincts-wgs84.geojson.gz",
+      "byteCount": 9443583,
+      "sha256": "fe9d991d341b3696434ea24968d32c87af738180e24b602d0683229dbee837c3",
+      "compression": "gzip",
+      "uncompressedByteCount": 30318566,
+      "uncompressedSha256": "4038618ec302c9d3c3a6c3290e52bb54ab820f7cf168d6a1b4648935e88f5d02"
+    }
+  }
+}

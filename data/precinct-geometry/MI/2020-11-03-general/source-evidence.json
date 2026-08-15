@@ -1,0 +1,1618 @@
+{
+  "schemaVersion": 1,
+  "id": "mi-2020-official-precinct-geometry-and-results-review",
+  "state": "MI",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+  "retrievedAt": "2026-08-02T16:00:00.000Z",
+  "reviewedAt": "2026-08-15T02:22:39.949Z",
+  "sourceUrls": [
+    "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6",
+    "https://mvic.sos.state.mi.us/VoteHistory/GetPrecinctResultsFile?electionId=683"
+  ],
+  "boundaryContext": {
+    "boundaryVintage": "State of Michigan 2020 Voting Precincts election-cycle layer; exact November 3 snapshot unconfirmed",
+    "vintageStatus": "unknown",
+    "sourceFeatureCount": 4755,
+    "normalizedFeatureCount": 4752,
+    "duplicateSourceParts": 3,
+    "licenseOrTerms": "The official ArcGIS item describes the dataset as a public record with no restrictions on use, reproduction, or distribution and provides it as-is."
+  },
+  "resultIdentity": {
+    "sourceUnitCount": 4923,
+    "geographicSourceUnitCount": 4755,
+    "nonGeographicSourceUnitCount": 168,
+    "canonicalGeographicUnitCount": 4750,
+    "mappedGeographicUnitCount": 4699,
+    "unmatchedGeographicUnitCount": 51,
+    "sourceAliasUnitCount": 5,
+    "officialTotals": {
+      "democraticVotes": 2801469,
+      "republicanVotes": 2649234,
+      "otherVotes": 85314,
+      "totalVotes": 5536017
+    },
+    "geographicTotals": {
+      "democraticVotes": 2637833,
+      "republicanVotes": 2643706,
+      "otherVotes": 83689,
+      "totalVotes": 5365228
+    },
+    "nonGeographicTotals": {
+      "democraticVotes": 163636,
+      "republicanVotes": 5528,
+      "otherVotes": 1625,
+      "totalVotes": 170789
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": false,
+    "matchMethodCounts": {
+      "parent_exact_composite": 4688,
+      "parent_unique_municipality_precinct": 11,
+      "statewide_exact_composite": 5
+    },
+    "crossCountyAssignments": [
+      {
+        "resultUnitCode": "reporting:MI:2020-11-03-general:precinct:26035:county%3D18%3Bmunicipality%3D52%3Bward%3D00%3Bprecinct%3D001%3Blabel%3D~",
+        "sourceUnitId": "county=37;municipality=50;ward=00;precinct=001;label=~",
+        "sourceParentGeoid": "26073",
+        "geometryParentGeoid": "26035",
+        "sourceDisplayName": "CLARE CITY - Precinct 1"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2020-11-03-general:precinct:26049:county%3D25%3Bmunicipality%3D56%3Bward%3D00%3Bprecinct%3D002%3Blabel%3D~",
+        "sourceUnitId": "county=63;municipality=61;ward=00;precinct=002;label=~",
+        "sourceParentGeoid": "26125",
+        "geometryParentGeoid": "26049",
+        "sourceDisplayName": "FENTON CITY - Precinct 2"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2020-11-03-general:precinct:26099:county%3D50%3Bmunicipality%3D64%3Bward%3D00%3Bprecinct%3D001%3Blabel%3D~",
+        "sourceUnitId": "county=74;municipality=63;ward=00;precinct=001;label=~",
+        "sourceParentGeoid": "26147",
+        "geometryParentGeoid": "26099",
+        "sourceDisplayName": "RICHMOND CITY - Precinct 1"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2020-11-03-general:precinct:26115:county%3D58%3Bmunicipality%3D54%3Bward%3D00%3Bprecinct%3D001%3Blabel%3D~",
+        "sourceUnitId": "county=81;municipality=54;ward=00;precinct=001;label=W",
+        "sourceParentGeoid": "26161",
+        "geometryParentGeoid": "26115",
+        "sourceDisplayName": "MILAN CITY - Precinct 1 - Label W"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2020-11-03-general:precinct:26151:county%3D76%3Bmunicipality%3D52%3Bward%3D00%3Bprecinct%3D001%3Blabel%3D~",
+        "sourceUnitId": "county=44;municipality=54;ward=00;precinct=001;label=~",
+        "sourceParentGeoid": "26087",
+        "geometryParentGeoid": "26151",
+        "sourceDisplayName": "BROWN CITY - Precinct 1"
+      }
+    ],
+    "unmatchedResultUnits": [
+      {
+        "sourceUnit": {
+          "key": "8|52|0|1|",
+          "countyCode": "8",
+          "countyName": "BARRY",
+          "municipalityCode": "52",
+          "municipalityName": "HASTINGS CITY",
+          "ward": "00",
+          "precinct": "001",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 1051
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "HASTINGS"
+        },
+        "municipalityCandidates": [
+          "37120"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "11|36|0|2|",
+          "countyCode": "11",
+          "countyName": "BERRIEN",
+          "municipalityCode": "36",
+          "municipalityName": "SODUS TOWNSHIP",
+          "ward": "00",
+          "precinct": "002",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 1393
+        },
+        "identity": {
+          "type": "TOWNSHIP",
+          "name": "SODUS"
+        },
+        "municipalityCandidates": [
+          "74440"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "11|36|0|3|",
+          "countyCode": "11",
+          "countyName": "BERRIEN",
+          "municipalityCode": "36",
+          "municipalityName": "SODUS TOWNSHIP",
+          "ward": "00",
+          "precinct": "003",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 1140
+        },
+        "identity": {
+          "type": "TOWNSHIP",
+          "name": "SODUS"
+        },
+        "municipalityCandidates": [
+          "74440"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "11|36|0|4|",
+          "countyCode": "11",
+          "countyName": "BERRIEN",
+          "municipalityCode": "36",
+          "municipalityName": "SODUS TOWNSHIP",
+          "ward": "00",
+          "precinct": "004",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 2090
+        },
+        "identity": {
+          "type": "TOWNSHIP",
+          "name": "SODUS"
+        },
+        "municipalityCandidates": [
+          "74440"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "58|56|0|3|N",
+          "countyCode": "58",
+          "countyName": "MONROE",
+          "municipalityCode": "56",
+          "municipalityName": "MONROE CITY",
+          "ward": "00",
+          "precinct": "003",
+          "label": "N",
+          "candidateVotes": {},
+          "totalVotes": 789
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "MONROE"
+        },
+        "municipalityCandidates": [
+          "55020"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "58|56|0|3|S",
+          "countyCode": "58",
+          "countyName": "MONROE",
+          "municipalityCode": "56",
+          "municipalityName": "MONROE CITY",
+          "ward": "00",
+          "precinct": "003",
+          "label": "S",
+          "candidateVotes": {},
+          "totalVotes": 615
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "MONROE"
+        },
+        "municipalityCandidates": [
+          "55020"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "70|20|0|4|",
+          "countyCode": "70",
+          "countyName": "OTTAWA",
+          "municipalityCode": "20",
+          "municipalityName": "PARK TOWNSHIP",
+          "ward": "00",
+          "precinct": "004",
+          "label": "",
+          "candidateVotes": {},
+          "totalVotes": 1554
+        },
+        "identity": {
+          "type": "TOWNSHIP",
+          "name": "PARK"
+        },
+        "municipalityCandidates": [
+          "62460",
+          "62480"
+        ],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|1|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "001",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1861
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|1|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "001",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 840
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|2|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "002",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1561
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|3|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "003",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1165
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|3|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "003",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1871
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|4|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "004",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 2171
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|7|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "007",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1670
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|8|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "008",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1326
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|8|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "008",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1187
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|9|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "009",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1872
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|10|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "010",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1310
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|11|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "011",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1803
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|12|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "012",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1471
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|13|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "013",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1597
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|14|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "014",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1715
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|15|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "015",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1532
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|16|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "016",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1457
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|16|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "016",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1028
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|17|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "017",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1496
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|17|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "017",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1315
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|18|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "018",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1710
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|19|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "019",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1393
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|19|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "019",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1645
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|20|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "020",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1727
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|21|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "021",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1562
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|22|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "022",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1576
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|22|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "022",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1259
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|23|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "023",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1369
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|23|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "023",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1025
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|24|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "024",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1454
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|24|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "024",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1363
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|25|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "025",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 883
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|31|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "031",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1497
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|31|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "031",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1378
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|32|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "032",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1516
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|33|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "033",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1867
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|34|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "034",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1795
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|34|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "034",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1532
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|34|C",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "034",
+          "label": "C",
+          "candidateVotes": {},
+          "totalVotes": 1255
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|35|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "035",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1196
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|35|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "035",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 885
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|35|C",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "035",
+          "label": "C",
+          "candidateVotes": {},
+          "totalVotes": 822
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|36|A",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "036",
+          "label": "A",
+          "candidateVotes": {},
+          "totalVotes": 1096
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      },
+      {
+        "sourceUnit": {
+          "key": "82|80|0|36|B",
+          "countyCode": "82",
+          "countyName": "WAYNE",
+          "municipalityCode": "80",
+          "municipalityName": "LIVONIA CITY",
+          "ward": "00",
+          "precinct": "036",
+          "label": "B",
+          "candidateVotes": {},
+          "totalVotes": 1291
+        },
+        "identity": {
+          "type": "CITY",
+          "name": "LIVONIA"
+        },
+        "municipalityCandidates": [],
+        "candidateGeometryIds": []
+      }
+    ],
+    "ambiguousResultUnits": [],
+    "unlinkedGeometryUnits": [
+      {
+        "sourceId": "WP-015-37120-00001",
+        "parentGeoid": "26153",
+        "municipalityFips": "71200",
+        "ward": "00",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "WP-021-70980-00002",
+        "parentGeoid": "26021",
+        "municipalityFips": "70980",
+        "ward": "00",
+        "precinct": "002"
+      },
+      {
+        "sourceId": "WP-021-70980-00003",
+        "parentGeoid": "26021",
+        "municipalityFips": "70980",
+        "ward": "00",
+        "precinct": "003"
+      },
+      {
+        "sourceId": "WP-021-70980-00004",
+        "parentGeoid": "26021",
+        "municipalityFips": "70980",
+        "ward": "00",
+        "precinct": "004"
+      },
+      {
+        "sourceId": "WP-049-29000-05062",
+        "parentGeoid": "26049",
+        "municipalityFips": "29000",
+        "ward": "05",
+        "precinct": "062"
+      },
+      {
+        "sourceId": "WP-1155502000003N",
+        "parentGeoid": "26115",
+        "municipalityFips": "50200",
+        "ward": "02",
+        "precinct": "003N"
+      },
+      {
+        "sourceId": "WP-1155502000003S",
+        "parentGeoid": "26115",
+        "municipalityFips": "50200",
+        "ward": "02",
+        "precinct": "003S"
+      },
+      {
+        "sourceId": "WP-139-62460-00009",
+        "parentGeoid": "26139",
+        "municipalityFips": "62460",
+        "ward": "00",
+        "precinct": "009"
+      },
+      {
+        "sourceId": "WP-1615392000001W",
+        "parentGeoid": "26161",
+        "municipalityFips": "39200",
+        "ward": "92",
+        "precinct": "001W"
+      },
+      {
+        "sourceId": "WP-163-49000-00001A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "001A"
+      },
+      {
+        "sourceId": "WP-163-49000-00001B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "001B"
+      },
+      {
+        "sourceId": "WP-163-49000-00002A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "002A"
+      },
+      {
+        "sourceId": "WP-163-49000-00003A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "003A"
+      },
+      {
+        "sourceId": "WP-163-49000-00003B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "003B"
+      },
+      {
+        "sourceId": "WP-163-49000-00004A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "004A"
+      },
+      {
+        "sourceId": "WP-163-49000-00007A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "007A"
+      },
+      {
+        "sourceId": "WP-163-49000-00008A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "008A"
+      },
+      {
+        "sourceId": "WP-163-49000-00008B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "008B"
+      },
+      {
+        "sourceId": "WP-163-49000-00009A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "009A"
+      },
+      {
+        "sourceId": "WP-163-49000-00010A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "010A"
+      },
+      {
+        "sourceId": "WP-163-49000-00011A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "011A"
+      },
+      {
+        "sourceId": "WP-163-49000-00012A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "012A"
+      },
+      {
+        "sourceId": "WP-163-49000-00013A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "013A"
+      },
+      {
+        "sourceId": "WP-163-49000-00014A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "014A"
+      },
+      {
+        "sourceId": "WP-163-49000-00015A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "015A"
+      },
+      {
+        "sourceId": "WP-163-49000-00016A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "016A"
+      },
+      {
+        "sourceId": "WP-163-49000-00016B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "016B"
+      },
+      {
+        "sourceId": "WP-163-49000-00017A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "017A"
+      },
+      {
+        "sourceId": "WP-163-49000-00017B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "017B"
+      },
+      {
+        "sourceId": "WP-163-49000-00018A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "018A"
+      },
+      {
+        "sourceId": "WP-163-49000-00019A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "019A"
+      },
+      {
+        "sourceId": "WP-163-49000-00019B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "019B"
+      },
+      {
+        "sourceId": "WP-163-49000-00020A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "020A"
+      },
+      {
+        "sourceId": "WP-163-49000-00021A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "021A"
+      },
+      {
+        "sourceId": "WP-163-49000-00022A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "022A"
+      },
+      {
+        "sourceId": "WP-163-49000-00022B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "022B"
+      },
+      {
+        "sourceId": "WP-163-49000-00023A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "023A"
+      },
+      {
+        "sourceId": "WP-163-49000-00023B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "023B"
+      },
+      {
+        "sourceId": "WP-163-49000-00024A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "024A"
+      },
+      {
+        "sourceId": "WP-163-49000-00024B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "024B"
+      },
+      {
+        "sourceId": "WP-163-49000-00025A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "025A"
+      },
+      {
+        "sourceId": "WP-163-49000-00031A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "031A"
+      },
+      {
+        "sourceId": "WP-163-49000-00031B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "031B"
+      },
+      {
+        "sourceId": "WP-163-49000-00032A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "032A"
+      },
+      {
+        "sourceId": "WP-163-49000-00033A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "033A"
+      },
+      {
+        "sourceId": "WP-163-49000-00034A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "034A"
+      },
+      {
+        "sourceId": "WP-163-49000-00034B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "034B"
+      },
+      {
+        "sourceId": "WP-163-49000-00034C",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "034C"
+      },
+      {
+        "sourceId": "WP-163-49000-00035A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "035A"
+      },
+      {
+        "sourceId": "WP-163-49000-00035B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "035B"
+      },
+      {
+        "sourceId": "WP-163-49000-00035C",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "035C"
+      },
+      {
+        "sourceId": "WP-163-49000-00036A",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "036A"
+      },
+      {
+        "sourceId": "WP-163-49000-00036B",
+        "parentGeoid": "26163",
+        "municipalityFips": "90000",
+        "ward": "00",
+        "precinct": "036B"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/2020-voting-precincts-wgs84.geojson.gz",
+      "byteCount": 9443583,
+      "sha256": "fe9d991d341b3696434ea24968d32c87af738180e24b602d0683229dbee837c3",
+      "format": "official ArcGIS GeoJSON gzip",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Complete official 2020 election-cycle geometry.",
+      "compression": "gzip",
+      "uncompressedByteCount": 30318566,
+      "uncompressedSha256": "4038618ec302c9d3c3a6c3290e52bb54ab820f7cf168d6a1b4648935e88f5d02"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/layer-metadata.json",
+      "byteCount": 6679,
+      "sha256": "96662838cd1126519a86391d74c352bb3a249314529958eaf91c7ba1309bef8a",
+      "format": "official ArcGIS layer metadata JSON",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official layer description and fields."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/item-metadata.json",
+      "byteCount": 5229,
+      "sha256": "ef9fb9e8425d20fb6bd74ee7d37afcd75f63fdde348309a8db060e30d788f44b",
+      "format": "official ArcGIS item metadata JSON",
+      "sourceUrl": "https://www.arcgis.com/sharing/rest/content/items/49eb37d0a4294924bf8ef5ffe0eac47e?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official item description, authority, and terms."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/collection-provenance.json",
+      "byteCount": 4831,
+      "sha256": "bc362a97f472c6e9a90d041165195160adcada18cc39f64931c767469f202a89",
+      "format": "collection provenance JSON",
+      "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/6",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Hash-pinned official request ledger."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-dtmb-boe-2020-voting-precincts/2020-biennial-precinct-report.pdf",
+      "byteCount": 1335257,
+      "sha256": "93f58c49f5fe4c039e3c524319802f29f4b5bf3cf0c9296a3c9316aa48a3c062",
+      "format": "official Michigan SOS PDF",
+      "sourceUrl": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Election-Results-and-Statistics/Biennial-Precinct-Report/2020-Biennial-Precinct-Report.pdf?rev=fe750f0ab2894de28382f97ff49e8cbe&hash=A37A77B3FD849B79C118852DC7B06C78",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official 2020 precinct-count context."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/raw/mi-sos-mvic/2020GEN.zip",
+      "byteCount": 1728080,
+      "sha256": "7338b2419b0b7a9726cd2bdef0ee2853f72495991843bab351d7ac1f1b929c17",
+      "format": "official Michigan SOS tab-delimited ZIP",
+      "sourceUrl": "https://mvic.sos.state.mi.us/VoteHistory/GetPrecinctResultsFile?electionId=683",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official 2020 General precinct result export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/county-subdivisions.json",
+      "byteCount": 253663,
+      "sha256": "a341cc31a3327c2d219f4da58f788f9a95e2b182d7aa22459735a774aa4c2f90",
+      "format": "official Census TIGERweb JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/22/query",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official county-subdivision names and codes used only for municipality identity review."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/county-subdivisions-layer-metadata.json",
+      "byteCount": 7138,
+      "sha256": "27ee6fe0dee5f31259520f6ad80d8359f68fd68178885440f4a4d667a20f3331",
+      "format": "official Census TIGERweb layer metadata JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/22?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official field and layer metadata for the county-subdivision identity table."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/incorporated-places.json",
+      "byteCount": 75273,
+      "sha256": "70a4eab758edbd597f83f19f7a598c132d805fe9be2d9826a0820d1eb1c51904",
+      "format": "official Census TIGERweb JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/28/query",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official incorporated-place names and codes used only for municipality identity review."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/incorporated-places-layer-metadata.json",
+      "byteCount": 7244,
+      "sha256": "b2105e2c0f6519bbaa6319798f5dadf188c7247769ce13a4e674e6d4d061ddd9",
+      "format": "official Census TIGERweb layer metadata JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/28?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official field and layer metadata for the incorporated-place identity table."
+    }
+  ],
+  "blockers": [
+    "The official layer establishes the 2020 election cycle but does not prove an immutable November 3 snapshot.",
+    "51 geographic result units remain unresolved and 53 geometry units remain unlinked.",
+    "The official precinct ZIP does not equal the certified statewide summary and its AVCB/statistical rows are retained without proportional allocation."
+  ],
+  "caveats": [
+    "Displayed candidate votes, when eventually authorized, come only from the official Michigan SOS precinct ZIP; no GIS or secondary-source vote field is used.",
+    "168 official statistical-adjustment or absent-voter-counting-board units are retained for reconciliation and never assigned to polygons.",
+    "5 official source rows use a different source county from their unique statewide geometry parent; both identities are retained and no vote allocation is performed.",
+    "The official layer establishes the 2020 election cycle but does not prove an immutable November 3 snapshot.",
+    "51 geographic result units remain unresolved and 53 geometry units remain unlinked.",
+    "The official precinct ZIP does not equal the certified statewide summary and its AVCB/statistical rows are retained without proportional allocation."
+  ]
+}
