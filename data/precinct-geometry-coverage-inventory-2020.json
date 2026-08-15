@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T04:00:00.000Z",
+  "updatedAt": "2026-08-15T15:16:03.574Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
-    "publicEligibleJurisdictions": 6
+    "publicEligibleJurisdictions": 7
   },
   "states": [
     {
@@ -442,7 +442,7 @@
       "programStatus": "reviewed",
       "wave": 10,
       "disposition": "mapped",
-      "checkedAt": "2026-08-15T04:00:00.000Z",
+      "checkedAt": "2026-08-15T15:16:03.574Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -472,7 +472,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 2263,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 2399,
@@ -482,10 +482,8 @@
         "nonGeographicResultUnits": 138,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable parent-scoped delivery and the guarded production release have not been completed."
-      ],
-      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path while preserving all administrative and no-data geometry records.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "All 2,261 geographic official result rows map one-to-one to election-specific VEST geometry attributed to South Carolina RFA.",
         "All displayed values will come only from the official South Carolina Election Commission CSV; VEST vote fields, including allocated provisional/failsafe values, are stripped.",
