@@ -22,6 +22,15 @@ const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
     geographyLevel: "precinct",
     releaseCandidatePattern: /^nv-precinct-gis-three-election-v\d+$/,
   },
+  SC: {
+    geographyLevel: "precinct",
+    releaseCandidatePattern: /^sc-precinct-gis-three-election-v\d+$/,
+    reviewedMatchMethods: Object.freeze([
+      "exact_official_id",
+      "official_crosswalk",
+      "reviewed_name",
+    ]),
+  },
   TX: {
     geographyLevel: "precinct",
     releaseCandidatePattern: /^tx-precinct-gis-four-election-v\d+$/,
@@ -29,7 +38,13 @@ const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
 } satisfies Record<string, {
   geographyLevel: string;
   releaseCandidatePattern: RegExp;
+  reviewedMatchMethods?: readonly string[];
 }>);
+
+const DEFAULT_REVIEWED_MATCH_METHODS = Object.freeze([
+  "exact_official_id",
+  "official_crosswalk",
+]);
 
 type GuardedLocalGeographyState = keyof typeof GUARDED_LOCAL_GEOGRAPHY_RELEASES;
 
@@ -44,6 +59,13 @@ function guardedReleaseContract(state: string) {
 
 export function guardedLocalGeographyLevel(state: string) {
   return guardedReleaseContract(state)?.geographyLevel ?? null;
+}
+
+export function guardedLocalGeographyMatchMethods(state: string) {
+  const contract = guardedReleaseContract(state);
+  return contract && "reviewedMatchMethods" in contract
+    ? contract.reviewedMatchMethods
+    : DEFAULT_REVIEWED_MATCH_METHODS;
 }
 
 export function requiresPrecinctResultPublicationGate(input: {

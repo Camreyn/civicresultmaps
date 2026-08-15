@@ -347,7 +347,18 @@
     "precinct-gis:collect:mi": "node --experimental-strip-types scripts/build-mi-reviewed-precincts.mjs",
     "test:precinct-geometry:mi": "node --experimental-strip-types --test tests/api/mi-precinct-geometry.test.mjs",
     "precinct-gis:collect:sc": "node --experimental-strip-types scripts/build-sc-reviewed-precincts.mjs",
-    "test:precinct-geometry:sc": "node --experimental-strip-types --test tests/api/sc-precinct-geometry.test.mjs"
+    "precinct-gis:plan:sc": "node --experimental-strip-types scripts/setup-sc-precinct-gis-local.mjs",
+    "precinct-gis:setup:sc:local": "node --experimental-strip-types scripts/setup-sc-precinct-gis-local.mjs --apply",
+    "precinct-gis:validate:sc:local": "node --experimental-strip-types scripts/validate-sc-precinct-gis-local.mjs",
+    "precinct-gis:release-candidate:sc": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-sc-precinct-release-candidate.mjs",
+    "precinct-gis:release-candidate:sc:write": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-sc-precinct-release-candidate.mjs --write",
+    "precinct-gis:delivery-publish:sc": "node --experimental-strip-types scripts/publish-sc-precinct-delivery-assets.mjs",
+    "precinct-gis:production-preflight:sc": "node --experimental-strip-types scripts/report-sc-precinct-production-preflight.mjs",
+    "precinct-gis:production-backup:sc": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-sc-precinct-production.ps1",
+    "precinct-gis:production-release:sc": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-sc-precinct-release.mjs",
+    "precinct-gis:public-activation:sc": "node --experimental-strip-types scripts/prepare-sc-precinct-public-activation.mjs",
+    "precinct-gis:publication-status:sc": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-sc-precinct-geography-status.mjs",
+    "test:precinct-geometry:sc": "node --experimental-strip-types --test tests/api/sc-precinct-geometry.test.mjs tests/api/sc-precinct-gis-plan.test.mjs tests/api/sc-precinct-gis-local.test.mjs tests/api/sc-precinct-release-candidate.test.mjs tests/api/sc-precinct-blob-publication.test.mjs tests/api/sc-precinct-production-release.test.mjs tests/api/sc-precinct-public-activation.test.mjs tests/api/sc-precinct-publication-gate.test.mjs tests/api/sc-precinct-publication.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",

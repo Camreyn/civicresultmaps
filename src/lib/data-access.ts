@@ -1,6 +1,7 @@
 import { getReadSql, hasReadableDatabase, rethrowReadErrorIfStrict } from "@/db/read-sql";
 import { readPublicDataRevision } from "@/db/public-data-revision";
 import {
+  guardedLocalGeographyMatchMethods,
   matchesPrecinctGeometryPublicationMetadata,
   precinctGeometryPublicManifestSha256,
   requiresPrecinctGeometryPublicationGate,
@@ -316,6 +317,9 @@ export async function isPrecinctGeometryManifestPublished(
   const expectedNoDataFeatureCount = manifest.crosswalk.reviewedNoDataFeatures
     ?? expectedFeatureCount - expectedLinkedRelationshipCount;
   const expectedReportingUnitCount = manifest.crosswalk.resultUnits;
+  const reviewedMatchMethods = guardedLocalGeographyMatchMethods(
+    manifest.state,
+  );
   const publicManifestSha256 = precinctGeometryPublicManifestSha256(manifest);
   let rows: Array<{
     metadata: unknown;
@@ -354,10 +358,8 @@ export async function isPrecinctGeometryManifestPublished(
             and result_sources.metadata->'releaseCandidate'->>'sha256'
               = geography_versions.metadata->'releaseCandidate'->>'sha256'
             and reporting_unit_geometry_crosswalks.relationship_type = 'one_to_one'
-            and reporting_unit_geometry_crosswalks.match_method in (
-              'exact_official_id',
-              'official_crosswalk'
-            )
+            and reporting_unit_geometry_crosswalks.match_method
+              = any(${reviewedMatchMethods})
             and reporting_unit_geometry_crosswalks.review_status = 'reviewed'
             and reporting_unit_geometry_crosswalks.confidence = 'high'
             and reporting_unit_geometry_crosswalks.metadata->>'manifestId'
@@ -576,6 +578,7 @@ export async function listResults(input: {
     : { enabled: false } as const;
   const requiresPublicationGate = requiresPrecinctResultPublicationGate(input)
     && !minnesotaRehearsal.enabled;
+  const reviewedMatchMethods = guardedLocalGeographyMatchMethods(input.state);
   if (parentGeoid && !isValidLocalGeographyParentId({
     state: input.state,
     geographyLevel: input.level,
@@ -692,10 +695,7 @@ export async function listResults(input: {
                   and gate_version.metadata->>'manifestId'
                     = gate_crosswalk.metadata->>'manifestId'
                   and gate_crosswalk.relationship_type = 'one_to_one'
-                  and gate_crosswalk.match_method in (
-                    'exact_official_id',
-                    'official_crosswalk'
-                  )
+                  and gate_crosswalk.match_method = any(${reviewedMatchMethods})
                   and gate_crosswalk.review_status = 'reviewed'
                   and gate_crosswalk.confidence = 'high'
                   and gate_crosswalk.metadata->>'publicDeliveryAuthorized' = 'true'
@@ -796,10 +796,7 @@ export async function listResults(input: {
                 and gate_version.metadata->>'manifestId'
                   = gate_crosswalk.metadata->>'manifestId'
                 and gate_crosswalk.relationship_type = 'one_to_one'
-                and gate_crosswalk.match_method in (
-                  'exact_official_id',
-                  'official_crosswalk'
-                )
+                and gate_crosswalk.match_method = any(${reviewedMatchMethods})
                 and gate_crosswalk.review_status = 'reviewed'
                 and gate_crosswalk.confidence = 'high'
                 and gate_crosswalk.metadata->>'publicDeliveryAuthorized' = 'true'

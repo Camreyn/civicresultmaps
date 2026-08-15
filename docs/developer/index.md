@@ -24,6 +24,8 @@ For Maine's four-year local-reporting-unit collection, mixed-grain labeling rule
 
 For Michigan's official four-election precinct source packages, hash-pinned replay, allocation-free 2024 crosswalk, historical blockers, and cross-year comparison rules, read [`docs/developer/mi-precinct-gis-runbook.md`](mi-precinct-gis-runbook.md).
 
+For the guarded South Carolina 2016/2020/2024 precinct release, county-scoped immutable delivery, non-geographic reconciliation rules, database-gated cutover, and separately blocked 2012 package, read [`docs/developer/sc-precinct-gis-runbook.md`](sc-precinct-gis-runbook.md).
+
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
 ## Coordinator Protocol
