@@ -7625,3 +7625,32 @@ evidence against its verified top-level package.
   41 `vote_share_pattern` rows and 37 `average_down_ballot_difference` rows.
   These are review signals only, not evidence of fraud or misconduct. This
   source-package task does not promote staging or mutate production data.
+
+### 2026-08-15 - South Carolina guarded three-election release tooling
+
+- The guarded release plan now accepts only 2016, 2020, and 2024 and rejects
+  2012 before any database or delivery action. It loads 7,396 reporting units,
+  20,403 official candidate rows, 6,805 geometry features, and 7,396 reviewed
+  relationships. All 595 administrative units remain non-geographic, and the
+  four reviewed no-data features remain visible without invented results.
+- Local clone rehearsal completed with three blocked geography versions,
+  exact per-year result and geometry counts, public delivery disabled, and
+  zero invalid constraints. The deterministic local-development candidate
+  `sc-precinct-gis-three-election-v1` was sealed from that validation as
+  SHA-256 `f3ee8f4bb78ee154eab8e89c427951b01386ea18a19d0b0bef22ee95667a6bed`.
+  It contains 138 county-scoped GeoJSON objects followed by three indexes, with
+  no election values in geometry delivery. Production evidence must use a new
+  candidate resealed from the exact clean merged commit.
+- South Carolina is added to the shared fail-closed publication contract. The
+  API accepts its explicitly reviewed `reviewed_name` relationships only for
+  South Carolina; existing guarded states retain the narrower exact-ID or
+  official-crosswalk methods. Static activation changes only the registry and
+  the 2016, 2020, and 2024 coverage inventories while database status remains
+  blocked.
+- The production tooling includes read-only preflight, full restore-verified
+  backup, hash-pinned hidden load and receipt recovery, immutable Blob
+  publication, four-file static activation, exact deployment/rollback-tree
+  verification, atomic public publication, database-first rollback, and
+  read-only publication-receipt recovery. No production database, Blob,
+  Vercel, canonical registry, or public eligibility mutation occurs in this
+  tooling change.
