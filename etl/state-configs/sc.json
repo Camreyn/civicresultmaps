@@ -57,7 +57,18 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is used for South Carolina county map joins; precinct boundary geometry is not included in this package.",
+      "confidence": "County geometry is used for South Carolina county map joins. Election-specific precinct geometry and official result crosswalks are retained separately for 2016, 2020, and 2024; the 2012 candidate remains blocked.",
+      "status": "loaded"
+    },
+    {
+      "id": "sc-four-election-precinct-gis-review",
+      "category": "Official 2012, 2016, 2020, and 2024 presidential result exports with election-specific precinct geometry review",
+      "url": "https://electionhistory.scvotes.gov/",
+      "localFile": "data/precinct-geometry/SC",
+      "parser": "precinctGeometryManifestSet",
+      "authority": "South Carolina Election Commission results; South Carolina RFA-origin geometry retained through reviewed secondary packages",
+      "timestampBasis": "Official South Carolina Election Commission contest CSVs paired without vote allocation to hash-pinned election-specific geometry and reviewed August 15, 2026.",
+      "confidence": "The 2016 package maps 2,232 official geographic result rows, the 2020 package maps all 2,261, and the 2024 package maps all 2,308. VEST and NYT vote fields are stripped; displayed values can come only from the official state CSVs. The 2012 post-election archive remains blocked because election-date applicability, reuse terms, and a reviewed crosswalk are unresolved.",
       "status": "loaded"
     },
     {
@@ -111,7 +122,7 @@
   "expected": {
     "jurisdictions": 46,
     "resultRows": 46,
-    "sources": 8,
+    "sources": 9,
     "geometryFeatures": 46,
     "stateTotal": 2548140,
     "trump": 1483747,
@@ -148,7 +159,7 @@
       "7130"
     ],
     "coverageMode": "presidentVsUSHouse",
-    "warning": "South Carolina review rows use official South Carolina Elections Database precinct presidential rows and President-versus-U.S.-House comparison rows. U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before comparison, one nonzero presidential row lacks a nonzero House comparison and is kept as vote-share-only, and precinct boundary geometry is not included. Use these rows as advisory screening inputs, not confirmed findings."
+    "warning": "South Carolina review rows use official South Carolina Elections Database precinct presidential rows and President-versus-U.S.-House comparison rows. U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before comparison, and one nonzero presidential row lacks a nonzero House comparison and is kept as vote-share-only. Separately retained 2016, 2020, and 2024 precinct geometry is reviewed but remains unavailable until immutable delivery and production activation complete; 2012 remains blocked. Use these rows as advisory screening inputs, not confirmed findings."
   },
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",

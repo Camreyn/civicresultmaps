@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T02:22:39.949Z",
+  "updatedAt": "2026-08-15T04:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2016-11-08-general",
@@ -22,19 +22,19 @@
   },
   "sourceContext": {
     "sourceAcquisitionTiers": "data/source-acquisition-tiers.json",
-    "sourceAcquisitionCheckedAt": "2026-08-02",
+    "sourceAcquisitionCheckedAt": "2026-08-15",
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 7,
+    "totalJurisdictions": 8,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 7
+      "reviewed": 8
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 6,
+      "mapped": 7,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 1
@@ -432,6 +432,65 @@
         "Two duplicate or cross-county source identities are retained as aliases and never duplicate votes.",
         "All 266 administrative units remain non-geographic and are never assigned a polygon.",
         "This election retains its own boundary evidence and is not treated as a stable precinct trend geography."
+      ]
+    },
+    {
+      "state": "SC",
+      "stateName": "South Carolina",
+      "electionId": "2016-11-08-general",
+      "programStatus": "reviewed",
+      "wave": 10,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-15T04:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://sc.elstats.civera.com/api/download_contest/5292_table.csv?split_party=false"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "sc-2016-11-08-reviewed-precinct-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/NH5S2I/Y3OFQZ&version=78.0"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/SC/2016-11-08-general/source-evidence.json",
+          "data/precinct-geometry/SC/2016-11-08-general/normalized/sc-2016-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/SC/2016-11-08-general/crosswalk/sc-2016-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 2234,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 2551,
+        "colorableResultUnits": 2232,
+        "matchedResultUnits": 2232,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 319,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path while preserving all administrative and no-data records.",
+      "notes": [
+        "The two Laurens 6 source polygons are retained as one reviewed multipart precinct, and 2,232 official geographic rows map one-to-one without vote allocation.",
+        "The zero-vote Hall's Store source row has no reviewed geometry and remains an explicit no-geometry reconciliation row.",
+        "All displayed values will come only from the official South Carolina Election Commission CSV; VEST allocated vote fields are stripped.",
+        "The 318 countywide administrative rows totaling 513,066 votes remain non-geographic and are never allocated.",
+        "Two reviewed geometry features without official result rows remain explicit no-data shapes."
       ]
     }
   ]

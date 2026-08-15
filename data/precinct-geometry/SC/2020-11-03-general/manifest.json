@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "sc-2020-11-03-reviewed-precinct-geometry-v1",
+  "state": "SC",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "VEST 2020 election-specific precinct geometry sourced from the South Carolina Revenue and Fiscal Affairs Office, Harvard Dataverse version 27.0",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "South Carolina Election Commission results with VEST election-specific geometry attributed to the South Carolina Revenue and Fiscal Affairs Office",
+    "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4789402&version=27.0",
+    "retrievedAt": "2026-08-15T04:00:00.000Z",
+    "artifact": "data/precinct-geometry/SC/2020-11-03-general/source-evidence.json",
+    "sha256": "39f3e5c4b3fc83e407f757eb82a30660f47b71c0b6e255a071bf65e91e3975ca",
+    "byteCount": 6467,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "VEST geometry is Creative Commons Attribution 4.0 under the retained Harvard Dataverse version-27 terms; official South Carolina result values remain the sole displayed vote source."
+  },
+  "normalization": {
+    "script": "scripts/build-sc-reviewed-precincts.mjs",
+    "sourceCrs": "source-defined and normalized by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/SC/2020-11-03-general/normalized/sc-2020-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "ca92095373de44ce3e7e422dc05d7e98281b4046617978f63b8375cf5e0428fc",
+    "byteCount": 17757242,
+    "featureCount": 2263,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "sc-election-commission-2020-president-1974",
+    "artifact": "data/precinct-geometry/SC/2020-11-03-general/crosswalk/sc-2020-result-to-geometry-review.json",
+    "sha256": "45d65a05edfbf612a96efe275721fdf539285d4444ac7a66fdcb3d53c4ee2ca1",
+    "byteCount": 1641445,
+    "resultUnits": 2399,
+    "colorableResultUnits": 2261,
+    "matchedResultUnits": 2261,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 138,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2261,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 138,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 2399,
+    "reviewedNoDataFeatures": 2,
+    "methods": [
+      "reviewed_name"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "138 official no-geometry result units remain reconciliation-only and are never allocated to polygons.",
+      "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
+      "VEST vote fields include allocated countywide categories and are deliberately removed before normalized geometry is written.",
+      "2 reviewed geometry features have no official geographic result row and are retained as explicit no-data shapes."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from VEST, NYT, Census, or any geometry source is used as a displayed election result.",
+    "138 official no-geometry result units remain reconciliation-only and are never allocated to polygons.",
+    "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
+    "VEST vote fields include allocated countywide categories and are deliberately removed before normalized geometry is written.",
+    "2 reviewed geometry features have no official geographic result row and are retained as explicit no-data shapes.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

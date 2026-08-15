@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "id": "sc-2024-precinct-geometry-and-official-results-review",
+  "state": "SC",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "South Carolina Election Commission results with attributed New York Times election-specific official-boundary geometry",
+  "retrievedAt": "2026-08-15T04:00:00.000Z",
+  "reviewedAt": "2026-08-15T04:00:00.000Z",
+  "sourceUrls": [
+    "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+    "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/SC-precincts-with-results.geojson.gz"
+  ],
+  "boundaryContext": {
+    "boundaryVintage": "NYT 2024 election-specific South Carolina precinct package with every retained feature marked official_boundary=true",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction",
+    "sourceFeatureCount": 2308,
+    "normalizedFeatureCount": 2308,
+    "reviewedNoDataFeatureCount": 0,
+    "licenseOrTerms": "NYT geometry is retained under the NYT Content API Use and Data Agreement non-commercial attribution terms; official South Carolina result values remain the sole displayed vote source."
+  },
+  "resultIdentity": {
+    "sourceUnitCount": 2446,
+    "geographicSourceUnitCount": 2308,
+    "administrativeSourceUnitCount": 138,
+    "colorableSourceUnitCount": 2308,
+    "excludedSourceUnitCount": 138,
+    "officialTotals": {
+      "democraticVotes": 1028452,
+      "republicanVotes": 1483747,
+      "otherVotes": 35941,
+      "totalVotes": 2548140,
+      "ballotsCast": 2566404
+    },
+    "geographicTotals": {
+      "democraticVotes": 1025831,
+      "republicanVotes": 1480198,
+      "otherVotes": 35848,
+      "totalVotes": 2541877,
+      "ballotsCast": 2560102
+    },
+    "administrativeTotals": {
+      "democraticVotes": 2621,
+      "republicanVotes": 3549,
+      "otherVotes": 93,
+      "totalVotes": 6263,
+      "ballotsCast": 6302
+    },
+    "mappedTotals": {
+      "democraticVotes": 1025831,
+      "republicanVotes": 1480198,
+      "otherVotes": 35848,
+      "totalVotes": 2541877
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": true,
+    "method": "unique_parent_vote_signature",
+    "mappedResultUnits": 2308,
+    "zeroVoteNoGeometryUnits": 0,
+    "administrativeNoGeometryUnits": 138,
+    "unlinkedGeometryUnits": 0,
+    "unlinkedGeometryFeatureIds": [],
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false
+  },
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/SC/2024-11-05-general/raw/sc-election-commission/president-7131.csv",
+      "byteCount": 130631,
+      "sha256": "1ce20b1ad9d2f3d576c27248181abedf1d0ba1086a8bff0103d198862c56fd9a",
+      "format": "official South Carolina Election Commission CSV",
+      "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+      "authority": "South Carolina Election Commission",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official 2024 presidential result rows; sole vote-value source."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/SC/2024-11-05-general/raw/nyt/SC-precincts-with-results.geojson.gz",
+      "byteCount": 32809653,
+      "sha256": "e3604eaa175ca1e8dbe2202bf500360c744efc050ef5996e04dd6c4044417210",
+      "format": "NYT election-specific GeoJSON gzip",
+      "sourceUrl": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/SC-precincts-with-results.geojson.gz",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "All 2,308 retained South Carolina features are marked official_boundary=true. Embedded vote fields are used only to prove a unique join and are stripped from normalized geometry.",
+      "compression": "gzip",
+      "uncompressedByteCount": 94937561,
+      "uncompressedSha256": "24ddf138d5d70af65a2290750816a288f35483a91aa307ea0f9edd9457e5f87a"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/SC/2024-11-05-general/raw/nyt/SC-precincts-with-results.csv.gz",
+      "byteCount": 37198,
+      "sha256": "f1059e4c275c3df61461eb179fe0a6cef3a4712e66af4df137e53235d65a91f2",
+      "format": "NYT election-specific CSV gzip",
+      "sourceUrl": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/SC-precincts-with-results.csv.gz",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retained as a compact cross-check of the exact 2,308 geographic rows; it is never the displayed vote source.",
+      "compression": "gzip",
+      "uncompressedByteCount": 107847,
+      "uncompressedSha256": "18e77401e6b86375c79cdaa1ac0f83fa26b726db0a46d940e0d001bbfc075229"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/SC/2024-11-05-general/raw/nyt/README.md",
+      "byteCount": 49879,
+      "sha256": "987ea44ab04c77182d335670207dac88f7114f3ae02675ea5d7076e581ffccdf",
+      "format": "NYT source README",
+      "sourceUrl": "https://raw.githubusercontent.com/nytimes/presidential-precinct-map-2024/main/README.md",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Defines official_boundary and identifies South Carolina coverage."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/SC/2024-11-05-general/raw/nyt/LICENSE",
+      "byteCount": 4106,
+      "sha256": "77e8635500262b129a50772647773c2c66d812902aba6ac13bdb2bab14fd59c2",
+      "format": "NYT Content API Use and Data Agreement",
+      "sourceUrl": "https://raw.githubusercontent.com/nytimes/presidential-precinct-map-2024/main/LICENSE",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Non-commercial attribution terms retained byte-for-byte."
+    },
+    {
+      "localArtifactPath": "data/sc-counties.geojson",
+      "byteCount": 8079102,
+      "sha256": "6e9c938b9dc4c1b83a9bfce380f8656253c1e7ce73ee9423e1f79b3f81c69af3",
+      "format": "official Census TIGERweb county GeoJSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query",
+      "authority": "U.S. Census Bureau",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Used only to resolve the 46 county parent GEOIDs; never used as precinct geometry."
+    }
+  ],
+  "caveats": [
+    "138 official no-geometry result units remain reconciliation-only and are never allocated to polygons.",
+    "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
+    "The 2,308 geographic rows reconcile exactly by county and unique complete presidential vote signature; the 6,263 administrative votes remain outside geometry.",
+    "NYT non-commercial attribution terms must accompany any eventual delivery."
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

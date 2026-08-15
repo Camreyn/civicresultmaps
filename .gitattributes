@@ -98,6 +98,11 @@
 /data/precinct-geometry/MI/**/*.html -diff
 /data/precinct-geometry/MI/**/*.xml -diff
 
+# Preserve every hash-pinned South Carolina precinct source and derivative byte-for-byte.
+/data/precinct-geometry/SC/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/SC/**/*.zip -diff
+/data/precinct-geometry/SC/**/*.gz -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

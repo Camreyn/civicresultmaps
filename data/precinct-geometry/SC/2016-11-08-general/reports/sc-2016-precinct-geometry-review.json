@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "state": "SC",
+  "electionId": "2016-11-08-general",
+  "generatedAt": "2026-08-15T04:00:00.000Z",
+  "disposition": "reviewed_row_level_rendering_delivery_pending",
+  "summary": {
+    "year": 2016,
+    "rawFeatures": 2235,
+    "normalizedFeatures": 2234,
+    "officialResultUnits": 2551,
+    "geographicResultUnits": 2233,
+    "administrativeResultUnits": 318,
+    "colorableResultUnits": 2232,
+    "mappedResultUnits": 2232,
+    "unlinkedGeometryUnits": 2,
+    "officialVotes": 2103027,
+    "mappedVotes": 1589961,
+    "administrativeVotes": 513066
+  },
+  "officialTotals": {
+    "democraticVotes": 855373,
+    "republicanVotes": 1155389,
+    "otherVotes": 92265,
+    "totalVotes": 2103027,
+    "ballotsCast": 2123629
+  },
+  "geographicTotals": {
+    "democraticVotes": 607047,
+    "republicanVotes": 905664,
+    "otherVotes": 77250,
+    "totalVotes": 1589961,
+    "ballotsCast": 1605207
+  },
+  "administrativeTotals": {
+    "democraticVotes": 248326,
+    "republicanVotes": 249725,
+    "otherVotes": 15015,
+    "totalVotes": 513066,
+    "ballotsCast": 518422
+  },
+  "mappedTotals": {
+    "democraticVotes": 607047,
+    "republicanVotes": 905664,
+    "otherVotes": 77250,
+    "totalVotes": 1589961
+  },
+  "crosswalk": {
+    "resultUnits": 2551,
+    "colorableResultUnits": 2232,
+    "matchedResultUnits": 2232,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 319,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2232,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 319,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "noDataFeatureIds": [
+    "45003|sc:2016:45003:geometry-srs",
+    "45011|sc:2016:45011:geometry-srs"
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/SC/2016-11-08-general/normalized/sc-2016-reviewed-precinct-geometry.geojson.gz",
+      "byteCount": 15662362,
+      "sha256": "60273bd2195a2daf7fcdacf8aec00c101dfe21bfd593db44ceb074da49a3ef16",
+      "uncompressedByteCount": 121027027,
+      "uncompressedSha256": "f2137b8e917b18cc87ca1c688d42540e1e513b48fdba87ea973203ba653179a5"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/SC/2016-11-08-general/normalized/sc-2016-official-president-results.json.gz",
+      "byteCount": 124534,
+      "sha256": "b0068408c18d50157408886f463d23891e6c35125703382c40d78b6851263b5d",
+      "uncompressedByteCount": 3263920,
+      "uncompressedSha256": "5f91186628f3df3f08dbd42a90a2ed38e3476d6349a8c0744eea64b29dd19a0c"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/SC/2016-11-08-general/crosswalk/sc-2016-result-to-geometry-review.json",
+      "byteCount": 1748197,
+      "sha256": "0aa2858f5d5d075c7392df120d537ad1c634f06c03201c4eaa7b030ba129077c"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/SC/2016-11-08-general/source-evidence.json",
+      "byteCount": 6566,
+      "sha256": "8f844e28c9d10d07947de95e81bdfc78303be843289612ff4b24f9e5b55ba6cf"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/SC/2016-11-08-general/manifest.json",
+      "byteCount": 4386,
+      "sha256": "8a66de16908c768930f1d53ac75314b3bf02d163c2bc368fb7df5266b5bd54b0"
+    }
+  }
+}
