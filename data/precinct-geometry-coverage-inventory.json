@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T04:00:00.000Z",
+  "updatedAt": "2026-08-15T15:16:03.574Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 0
     },
-    "publicEligibleJurisdictions": 6
+    "publicEligibleJurisdictions": 7
   },
   "states": [
     {
@@ -446,7 +446,7 @@
       "programStatus": "reviewed",
       "wave": 10,
       "disposition": "mapped",
-      "checkedAt": "2026-08-15T04:00:00.000Z",
+      "checkedAt": "2026-08-15T15:16:03.574Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -476,7 +476,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 2308,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 2446,
@@ -486,10 +486,8 @@
         "nonGeographicResultUnits": 138,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable parent-scoped delivery and the guarded production release have not been completed."
-      ],
-      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path while preserving all administrative rows as no-geometry reconciliation records.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "All 2,308 geographic official result rows match exactly one official-boundary feature by county and a unique complete presidential vote signature.",
         "All displayed values will come only from the official South Carolina Election Commission CSV; NYT vote fields are stripped.",

@@ -205,7 +205,18 @@ test("South Carolina four-year precinct packages replay byte-identically", { tim
 
 test("South Carolina packages preserve official totals and fail closed where review is incomplete", () => {
   const registry = JSON.parse(readFileSync("data/precinct-geometry-manifests.json", "utf8"));
-  assert.equal(registry.manifests.some((manifest) => manifest.state === "SC"), false);
+  const southCarolinaManifests = registry.manifests
+    .filter((manifest) => manifest.state === "SC")
+    .sort((left, right) => left.election.year - right.election.year);
+  assert.deepEqual(
+    southCarolinaManifests.map((manifest) => manifest.election.year),
+    [2016, 2020, 2024],
+  );
+  for (const manifest of southCarolinaManifests) {
+    assert.equal(manifest.validation.status, "reviewed");
+    assert.equal(manifest.validation.rowLevelRenderingSafe, true);
+    assert.equal(manifest.delivery?.format, "parent_scoped_geojson");
+  }
   const inventoryPaths = new Map([
     [2012, "data/precinct-geometry-coverage-inventory-2012.json"],
     [2016, "data/precinct-geometry-coverage-inventory-2016.json"],
@@ -277,7 +288,7 @@ test("South Carolina packages preserve official totals and fail closed where rev
     assert.ok(inventoryRow);
     assert.deepEqual(inventoryRow.geometry.manifestIds, [spec.manifestId]);
     assert.equal(inventoryRow.geometry.featureCount, spec.features);
-    assert.equal(inventoryRow.geometry.publicEligibleManifestCount, 0);
+    assert.equal(inventoryRow.geometry.publicEligibleManifestCount, spec.reviewed ? 1 : 0);
     assert.equal(inventoryRow.crosswalk.resultUnits, spec.sourceUnits);
     assert.equal(inventoryRow.crosswalk.matchedResultUnits, spec.mapped);
     assert.equal(inventoryRow.disposition, spec.reviewed ? "mapped" : "blocked");
