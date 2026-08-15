@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "mi-2016-11-08-official-cycle-precinct-review-v2",
+  "state": "MI",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "State of Michigan 2016 Voting Precincts election-cycle layer; exact November 8 snapshot unconfirmed",
+    "vintageStatus": "unknown",
+    "derivationMethod": "official_service"
+  },
+  "source": {
+    "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+    "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/1",
+    "retrievedAt": "2026-08-03T07:00:00.000Z",
+    "artifact": "data/precinct-geometry/MI/2016-11-08-general/source-evidence.json",
+    "sha256": "9283476c46fe631a577a3448d42e0acf7260cefc8a1ba2fc6783f4ae44089584",
+    "byteCount": 29417,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "The official ArcGIS item describes the dataset as a public record with no restrictions on use, reproduction, or distribution and provides it as-is."
+  },
+  "normalization": {
+    "script": "scripts/build-mi-reviewed-precincts.mjs",
+    "sourceCrs": "EPSG:3857 (service WKID 102100; latest WKID 3857)",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/MI/2016-11-08-general/normalized/mi-2016-official-precinct-geometry.geojson.gz",
+    "sha256": "35c5b4ac95cc068840624962934f09a507855e91c1f2792fec9580d43d3db587",
+    "byteCount": 7410255,
+    "featureCount": 4810,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "resultSourceId": "mi-2016-official-precinct-results",
+    "artifact": "data/precinct-geometry/MI/2016-11-08-general/crosswalk/mi-2016-result-to-geometry-review.json",
+    "sha256": "70cc1ec4793c2c4c46f901df0bad7149f92cbdfe82c6d74d257885eb92540e51",
+    "byteCount": 4292771,
+    "resultUnits": 5077,
+    "colorableResultUnits": 4809,
+    "matchedResultUnits": 4788,
+    "unmatchedResultUnits": 21,
+    "nonGeographicResultUnits": 266,
+    "sourceAliasResultUnits": 2,
+    "relationships": {
+      "oneToOne": 0,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 21,
+      "nonGeographic": 266,
+      "sourceAlias": 0,
+      "pendingReview": 4790
+    },
+    "methods": [
+      "exact_official_id",
+      "normalized_name_candidate"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "errors": [
+      "The official layer establishes the 2016 election cycle but does not prove an immutable November 8 snapshot.",
+      "21 geographic result units remain unresolved and 22 geometry units remain unlinked.",
+      "Several municipal ward/precinct conventions require an authoritative or independently reviewed mapping before row-level publication."
+    ],
+    "warnings": [
+      "4790 geographic official source units map to 4788 official geometry units without proportional allocation.",
+      "2 duplicate/cross-county source identities are retained as aliases and never duplicate votes.",
+      "266 non-geographic official units remain reconciliation-only."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Displayed candidate votes, when eventually authorized, come only from the official Michigan SOS precinct ZIP; no GIS or secondary-source vote field is used.",
+    "266 official statistical-adjustment or absent-voter-counting-board units are retained for reconciliation and never assigned to polygons.",
+    "2 official source rows use a different source county from their unique statewide geometry parent; both identities are retained and no vote allocation is performed.",
+    "The official layer establishes the 2016 election cycle but does not prove an immutable November 8 snapshot.",
+    "21 geographic result units remain unresolved and 22 geometry units remain unlinked.",
+    "Several municipal ward/precinct conventions require an authoritative or independently reviewed mapping before row-level publication."
+  ]
+}

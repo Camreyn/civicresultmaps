@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2024-11-05-general",
+  "generatedAt": "2026-08-15T02:22:39.949Z",
+  "disposition": "reviewed_row_level_rendering_delivery_pending",
+  "source": {
+    "geometryFeatures": 4340,
+    "normalizedFeatures": 4340,
+    "officialResultUnits": 4434,
+    "officialResultVotes": 5664186
+  },
+  "crosswalk": {
+    "resultUnits": 4434,
+    "colorableResultUnits": 4340,
+    "matchedResultUnits": 4340,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 87,
+    "sourceAliasResultUnits": 7,
+    "unlinkedGeometryUnits": 0,
+    "matchMethodCounts": {
+      "parent_exact_composite": 3866,
+      "statewide_exact_composite": 8,
+      "parent_unique_municipality_precinct": 473
+    },
+    "reconciliation": "passed"
+  },
+  "totals": {
+    "official": {
+      "democraticVotes": 2736533,
+      "republicanVotes": 2816636,
+      "otherVotes": 111017,
+      "totalVotes": 5664186
+    },
+    "geographic": {
+      "democraticVotes": 2605381,
+      "republicanVotes": 2808169,
+      "otherVotes": 108176,
+      "totalVotes": 5521726
+    },
+    "nonGeographic": {
+      "democraticVotes": 131152,
+      "republicanVotes": 8467,
+      "otherVotes": 2841,
+      "totalVotes": 142460
+    }
+  },
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/normalized/mi-2024-official-precinct-geometry.geojson.gz",
+      "byteCount": 14431149,
+      "sha256": "1106498813a0b431c0bd52b5ff8403c584cbbac1952e45f88a21c8e23f03eb26",
+      "uncompressedByteCount": 46063469,
+      "uncompressedSha256": "81e326bb9be9764c811998ddd115cc6189b89c167b2453970758c2d95763d916"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/normalized/mi-2024-official-precinct-results.json.gz",
+      "byteCount": 435016,
+      "sha256": "8a95d76dff9ab1e488e4fe113cdae184a61001164b5025c70493d4ef9debce04",
+      "uncompressedByteCount": 33793934,
+      "uncompressedSha256": "63e59f020de4209be55c28dbcc03f0fa0dbeb149e00723100e72d89f15a803b7"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/crosswalk/mi-2024-result-to-geometry-review.json",
+      "byteCount": 3797067,
+      "sha256": "2e3b6f35caa1188b0dd1bfbc061c7922e6cfda64081f8c2386802e7ae6b613a7"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/source-evidence.json",
+      "byteCount": 14066,
+      "sha256": "6f1854a10286d6ffe0710611601f66bd80529f9ca80307cb35eaa3ef54e3c30c"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/manifest.json",
+      "byteCount": 3873,
+      "sha256": "de4378eb7e4256fd2fb55cc3ed0f3c8859346d8f88accaa6c148f1acccc1af96"
+    }
+  }
+}

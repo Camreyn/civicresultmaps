@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "id": "mi-2012-official-precinct-geometry-and-results-review",
+  "state": "MI",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+  "retrievedAt": "2026-08-04T12:21:30.000Z",
+  "reviewedAt": "2026-08-15T02:22:39.949Z",
+  "sourceUrls": [
+    "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+    "https://miboecfr.nictusa.com/cfr/presults/2012GEN.zip"
+  ],
+  "boundaryContext": {
+    "boundaryVintage": "Official legacy Michigan precinctmapping cohort labeled ElectionYear=2012; exact November 6 snapshot unconfirmed",
+    "vintageStatus": "unknown",
+    "sourceFeatureCount": 4874,
+    "normalizedFeatureCount": 4874,
+    "duplicateSourceParts": 0,
+    "licenseOrTerms": "Official source artifacts are retained for review. Public delivery is not approved because exact election-date custody and affirmative derivative redistribution terms remain unresolved."
+  },
+  "resultIdentity": {
+    "sourceUnitCount": 5238,
+    "geographicSourceUnitCount": 4867,
+    "nonGeographicSourceUnitCount": 371,
+    "canonicalGeographicUnitCount": 4862,
+    "mappedGeographicUnitCount": 4862,
+    "unmatchedGeographicUnitCount": 0,
+    "sourceAliasUnitCount": 5,
+    "officialTotals": {
+      "democraticVotes": 2564569,
+      "republicanVotes": 2115256,
+      "otherVotes": 51136,
+      "totalVotes": 4730961
+    },
+    "geographicTotals": {
+      "democraticVotes": 2350155,
+      "republicanVotes": 2004117,
+      "otherVotes": 46696,
+      "totalVotes": 4400968
+    },
+    "nonGeographicTotals": {
+      "democraticVotes": 214414,
+      "republicanVotes": 111139,
+      "otherVotes": 4440,
+      "totalVotes": 329993
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": false,
+    "matchMethodCounts": {
+      "parent_exact_composite": 4862,
+      "statewide_unique_municipality_precinct": 4,
+      "statewide_exact_composite": 1
+    },
+    "crossCountyAssignments": [
+      {
+        "resultUnitCode": "reporting:MI:2012-11-06-general:precinct:26111:county%3D56%3Bmunicipality%3D54%3Bward%3D01%3Bprecinct%3D001%3Blabel%3D~",
+        "sourceUnitId": "county=9;municipality=58;ward=01;precinct=001;label=~",
+        "sourceParentGeoid": "26017",
+        "geometryParentGeoid": "26111",
+        "sourceDisplayName": "MIDLAND CITY - Ward 1 - Precinct 1"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2012-11-06-general:precinct:26139:county%3D70%3Bmunicipality%3D58%3Bward%3D02%3Bprecinct%3D004%3Blabel%3D~",
+        "sourceUnitId": "county=3;municipality=56;ward=09;precinct=004;label=~",
+        "sourceParentGeoid": "26005",
+        "geometryParentGeoid": "26139",
+        "sourceDisplayName": "HOLLAND CITY - Ward 9 - Precinct 4"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2012-11-06-general:precinct:26139:county%3D70%3Bmunicipality%3D58%3Bward%3D02%3Bprecinct%3D005%3Blabel%3D~",
+        "sourceUnitId": "county=3;municipality=56;ward=11;precinct=005;label=~",
+        "sourceParentGeoid": "26005",
+        "geometryParentGeoid": "26139",
+        "sourceDisplayName": "HOLLAND CITY - Ward 11 - Precinct 5"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2012-11-06-general:precinct:26139:county%3D70%3Bmunicipality%3D58%3Bward%3D02%3Bprecinct%3D005%3Blabel%3D~",
+        "sourceUnitId": "county=3;municipality=56;ward=12;precinct=005;label=~",
+        "sourceParentGeoid": "26005",
+        "geometryParentGeoid": "26139",
+        "sourceDisplayName": "HOLLAND CITY - Ward 12 - Precinct 5"
+      },
+      {
+        "resultUnitCode": "reporting:MI:2012-11-06-general:precinct:26139:county%3D70%3Bmunicipality%3D58%3Bward%3D02%3Bprecinct%3D005%3Blabel%3D~",
+        "sourceUnitId": "county=3;municipality=56;ward=13;precinct=005;label=~",
+        "sourceParentGeoid": "26005",
+        "geometryParentGeoid": "26139",
+        "sourceDisplayName": "HOLLAND CITY - Ward 13 - Precinct 5"
+      }
+    ],
+    "unmatchedResultUnits": [],
+    "ambiguousResultUnits": [],
+    "unlinkedGeometryUnits": [
+      {
+        "sourceId": "0053864004009",
+        "parentGeoid": "26005",
+        "municipalityFips": "38640",
+        "ward": "04",
+        "precinct": "009"
+      },
+      {
+        "sourceId": "0053864005011",
+        "parentGeoid": "26005",
+        "municipalityFips": "38640",
+        "ward": "05",
+        "precinct": "011"
+      },
+      {
+        "sourceId": "0053864005012",
+        "parentGeoid": "26005",
+        "municipalityFips": "38640",
+        "ward": "05",
+        "precinct": "012"
+      },
+      {
+        "sourceId": "0053864005013",
+        "parentGeoid": "26005",
+        "municipalityFips": "38640",
+        "ward": "05",
+        "precinct": "013"
+      },
+      {
+        "sourceId": "0117612000002",
+        "parentGeoid": "26011",
+        "municipalityFips": "76120",
+        "ward": "00",
+        "precinct": "002"
+      },
+      {
+        "sourceId": "0117612000003",
+        "parentGeoid": "26011",
+        "municipalityFips": "76120",
+        "ward": "00",
+        "precinct": "003"
+      },
+      {
+        "sourceId": "0175378001006",
+        "parentGeoid": "26017",
+        "municipalityFips": "53780",
+        "ward": "01",
+        "precinct": "006"
+      },
+      {
+        "sourceId": "0215776000001",
+        "parentGeoid": "26021",
+        "municipalityFips": "57760",
+        "ward": "00",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "0492900005062",
+        "parentGeoid": "26049",
+        "municipalityFips": "29000",
+        "ward": "05",
+        "precinct": "062"
+      },
+      {
+        "sourceId": "0731592000001",
+        "parentGeoid": "26073",
+        "municipalityFips": "15920",
+        "ward": "00",
+        "precinct": "001"
+      },
+      {
+        "sourceId": "1632200004109",
+        "parentGeoid": "26163",
+        "municipalityFips": "22000",
+        "ward": "04",
+        "precinct": "109"
+      },
+      {
+        "sourceId": "1632200006148",
+        "parentGeoid": "26163",
+        "municipalityFips": "22000",
+        "ward": "06",
+        "precinct": "148"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/2012-precinct-candidate-wgs84.geojson.gz",
+      "byteCount": 10071954,
+      "sha256": "61962297587d38168fe1cc790a2f826d62c0e3e6d1dced4d1dc298b783105599",
+      "format": "official ArcGIS GeoJSON gzip",
+      "sourceUrl": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Complete official service cohort where ElectionYear=2012.",
+      "compression": "gzip",
+      "uncompressedByteCount": 33244850,
+      "uncompressedSha256": "91100a61de127d99f29837577e5aacbf71dda8c6b7f307adef0ddd4264353a80"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/layer-metadata.json",
+      "byteCount": 6305,
+      "sha256": "b21f297a80ba9ae6d1ab37c3c7f0dc139d85a7f1f99cc7df3dfcb0a21940e59f",
+      "format": "official ArcGIS layer metadata JSON",
+      "sourceUrl": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official legacy layer field and capability metadata."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/service-metadata.json",
+      "byteCount": 4360,
+      "sha256": "405fe6cedef715f4dcc0f8a0ac6b2256fe1aab81ae9884d1323d572990d1c71b",
+      "format": "official ArcGIS service metadata JSON",
+      "sourceUrl": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official mixed-year service inventory."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/service-fgdc-metadata.xml",
+      "byteCount": 15819,
+      "sha256": "91e60c5d8d9e29947380e40b2d0d795505235fe16bc5400aeadcb6f4c1fed8e1",
+      "format": "official ArcGIS FGDC metadata XML",
+      "sourceUrl": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official service lineage metadata."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/query-count-2012.json",
+      "byteCount": 14,
+      "sha256": "91943ea9490de1db527f83a5d9eb1611a8946db4d1d99d0768ec1f461d3dc953",
+      "format": "official ArcGIS count JSON",
+      "sourceUrl": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official count for the ElectionYear=2012 cohort."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/query-year-counts.json",
+      "byteCount": 511,
+      "sha256": "330a40a7de0fd263ed7fde916fdc489543bf0bb16a44eac40a5d8e3eecfad1e0",
+      "format": "official ArcGIS grouped count JSON",
+      "sourceUrl": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official mixed-year cohort counts."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/source-ledger.json",
+      "byteCount": 15778,
+      "sha256": "4b37a3c7f8faef828314829f4b2a2d6c9dec2454c4cf96326793244f74b0980a",
+      "format": "collection provenance JSON",
+      "sourceUrl": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Hash-pinned official request and source ledger."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/2012-biennial-precinct-report.pdf",
+      "byteCount": 184925,
+      "sha256": "656ad93100b799d5697fd8720ec1db858d736a941c4e5f11b636f0769fb908a1",
+      "format": "official Michigan SOS PDF",
+      "sourceUrl": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Election-Results-and-Statistics/Biennial-Precinct-Report/2012-Biennial-Precinct-Report.pdf?rev=d7ad302b0ccc41ebaf75dd7848b8a8b3&hash=2EFD4A5CC1EF1AEACB0447F4D293C5F4",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official 2012 Biennial Precinct Report."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-sos-mvic/2012GEN.zip",
+      "byteCount": 2095731,
+      "sha256": "229318cfda2cfda0151fa0816d3336ca59a74facb1bce66a347e9ef37ab32224",
+      "format": "official Michigan SOS tab-delimited ZIP",
+      "sourceUrl": "https://miboecfr.nictusa.com/cfr/presults/2012GEN.zip",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official 2012 General precinct result export."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-sos-mvic/archived-official-download-page.html",
+      "byteCount": 8861,
+      "sha256": "ff6f7e7c36955ba18515529be813222c99b7a0f4314807fc9f8ae634c452f498",
+      "format": "archived official Michigan result-page HTML",
+      "sourceUrl": "https://miboecfr.nictusa.com/cgi-bin/cfr/precinct_srch.cgi?elect_year_type=2012GEN&county_code=82&Submit=Search",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Retained official page exposing the 2012GEN.zip download."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/county-subdivisions.json",
+      "byteCount": 253663,
+      "sha256": "a341cc31a3327c2d219f4da58f788f9a95e2b182d7aa22459735a774aa4c2f90",
+      "format": "official Census TIGERweb JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/22/query",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official county-subdivision names and codes used only for municipality identity review."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/county-subdivisions-layer-metadata.json",
+      "byteCount": 7138,
+      "sha256": "27ee6fe0dee5f31259520f6ad80d8359f68fd68178885440f4a4d667a20f3331",
+      "format": "official Census TIGERweb layer metadata JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/22?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official field and layer metadata for the county-subdivision identity table."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/incorporated-places.json",
+      "byteCount": 75273,
+      "sha256": "70a4eab758edbd597f83f19f7a598c132d805fe9be2d9826a0820d1eb1c51904",
+      "format": "official Census TIGERweb JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/28/query",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official incorporated-place names and codes used only for municipality identity review."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/MI/raw/census-2020-geographic-codes/incorporated-places-layer-metadata.json",
+      "byteCount": 7244,
+      "sha256": "b2105e2c0f6519bbaa6319798f5dadf188c7247769ce13a4e674e6d4d061ddd9",
+      "format": "official Census TIGERweb layer metadata JSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/28?f=pjson",
+      "derivation": "Retained byte-for-byte from the cited official source, or deterministically combined from the official paged requests recorded by the adjacent collection provenance artifact.",
+      "note": "Official field and layer metadata for the incorporated-place identity table."
+    }
+  ],
+  "blockers": [
+    "The retained live legacy service labels these records ElectionYear=2012 but does not prove an immutable November 6 snapshot.",
+    "The official GIS cohort has 4,874 features while the 2012 Biennial Precinct Report states 4,873 precincts.",
+    "0 geographic result unit remains unresolved and 12 geometry units remain unlinked.",
+    "Affirmative derivative redistribution terms for the legacy service have not been retained."
+  ],
+  "caveats": [
+    "Displayed candidate votes, when eventually authorized, come only from the official Michigan SOS precinct ZIP; no GIS or secondary-source vote field is used.",
+    "371 official statistical-adjustment or absent-voter-counting-board units are retained for reconciliation and never assigned to polygons.",
+    "5 official source rows use a different source county from their unique statewide geometry parent; both identities are retained and no vote allocation is performed.",
+    "The retained live legacy service labels these records ElectionYear=2012 but does not prove an immutable November 6 snapshot.",
+    "The official GIS cohort has 4,874 features while the 2012 Biennial Precinct Report states 4,873 precincts.",
+    "0 geographic result unit remains unresolved and 12 geometry units remain unlinked.",
+    "Affirmative derivative redistribution terms for the legacy service have not been retained."
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2012-11-06-general",
+  "retrievedAt": "2026-08-04T12:21:30.000Z",
+  "artifacts": [
+    {
+      "id": "mi-boe-legacy-precinctmapping-service-metadata",
+      "authority": "Michigan Department of Technology, Management and Budget, Center for Shared Solutions; Michigan Bureau of Elections",
+      "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer?f=pjson",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/service-metadata.json",
+      "byteCount": 4360,
+      "sha256": "405fe6cedef715f4dcc0f8a0ac6b2256fe1aab81ae9884d1323d572990d1c71b",
+      "format": "official ArcGIS MapServer metadata JSON",
+      "year": 2026,
+      "sourceYear": 2026,
+      "sourceVintage": "current live official response retained in 2026",
+      "electionYear": 2012,
+      "reportingGrain": "current legacy mixed-year precinct service metadata",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs JSON service/layer inventory assertions",
+      "normalizationPath": "source context only; no votes or geometry delivered",
+      "expectedCountsOrTotals": {
+        "layers": 6,
+        "precinctLayerId": 0
+      },
+      "caveat": "The live service metadata is current custody context, not an immutable 2012 election-day snapshot.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    },
+    {
+      "id": "mi-boe-legacy-precinctmapping-service-fgdc-metadata",
+      "authority": "Michigan Department of Technology, Management and Budget, Center for Shared Solutions; Michigan Bureau of Elections",
+      "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/info/metadata",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/service-fgdc-metadata.xml",
+      "byteCount": 15819,
+      "sha256": "91e60c5d8d9e29947380e40b2d0d795505235fe16bc5400aeadcb6f4c1fed8e1",
+      "format": "official ArcGIS service metadata XML",
+      "year": 2025,
+      "sourceYear": 2025,
+      "sourceVintage": "current service metadata document recording CreaDate 2025-02-06",
+      "electionYear": 2012,
+      "reportingGrain": "service-level lineage and current metadata context",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs byte pin and metadata-date/project assertions",
+      "normalizationPath": "source context only; no votes or geometry delivered",
+      "expectedCountsOrTotals": {
+        "metadataDocumentCreationDate": "2025-02-06",
+        "projectIdentifier": "C13976",
+        "projectDate": "2014-12-16"
+      },
+      "caveat": "The metadata document records a 2025 creation date; that is current custody context and does not date the 2012 cohort to November 6.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    },
+    {
+      "id": "mi-boe-legacy-precinctmapping-layer-metadata",
+      "authority": "Michigan Department of Technology, Management and Budget, Center for Shared Solutions; Michigan Bureau of Elections",
+      "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0?f=pjson",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/layer-metadata.json",
+      "byteCount": 6305,
+      "sha256": "b21f297a80ba9ae6d1ab37c3c7f0dc139d85a7f1f99cc7df3dfcb0a21940e59f",
+      "format": "official ArcGIS feature-layer metadata JSON",
+      "year": 2026,
+      "sourceYear": 2026,
+      "sourceVintage": "current live official response retained in 2026",
+      "electionYear": 2012,
+      "reportingGrain": "current legacy statewide precinct polygon layer metadata",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs JSON field/capability assertions",
+      "normalizationPath": "source context only; no votes or geometry delivered",
+      "expectedCountsOrTotals": {
+        "maxRecordCount": 2000,
+        "identityField": "VP",
+        "electionYearField": "ElectionYear"
+      },
+      "caveat": "The live, non-versioned layer exposes no historic-moment proof or immutable item version for November 6, 2012.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    },
+    {
+      "id": "mi-boe-legacy-precinctmapping-2012-count",
+      "authority": "Michigan Department of Technology, Management and Budget, Center for Shared Solutions; Michigan Bureau of Elections",
+      "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=ElectionYear%3D2012&returnCountOnly=true&f=json",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/query-count-2012.json",
+      "byteCount": 14,
+      "sha256": "91943ea9490de1db527f83a5d9eb1611a8946db4d1d99d0768ec1f461d3dc953",
+      "format": "official ArcGIS count query JSON",
+      "year": 2026,
+      "sourceYear": 2026,
+      "sourceVintage": "current live official response retained in 2026",
+      "electionYear": 2012,
+      "reportingGrain": "current records labeled ElectionYear=2012",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs exact count assertion",
+      "normalizationPath": "source context only; no votes or geometry delivered",
+      "expectedCountsOrTotals": {
+        "sourceFeatures": 4874
+      },
+      "caveat": "ElectionYear=2012 is a source cycle label, not an effective-date or result-crosswalk claim.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    },
+    {
+      "id": "mi-boe-legacy-precinctmapping-year-counts",
+      "authority": "Michigan Department of Technology, Management and Budget, Center for Shared Solutions; Michigan Bureau of Elections",
+      "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=1%3D1&outStatistics=%5B%7B%22statisticType%22%3A%22count%22%2C%22onStatisticField%22%3A%22OBJECTID%22%2C%22outStatisticFieldName%22%3A%22feature_count%22%7D%5D&groupByFieldsForStatistics=ElectionYear&orderByFields=ElectionYear&returnGeometry=false&f=json",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/query-year-counts.json",
+      "byteCount": 511,
+      "sha256": "330a40a7de0fd263ed7fde916fdc489543bf0bb16a44eac40a5d8e3eecfad1e0",
+      "format": "official ArcGIS grouped-statistics query JSON",
+      "year": 2026,
+      "sourceYear": 2026,
+      "sourceVintage": "current live official response retained in 2026",
+      "electionYear": 2012,
+      "reportingGrain": "current mixed-year layer cohort inventory",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs exact grouped year/count assertion",
+      "normalizationPath": "source context only; no votes or geometry delivered",
+      "expectedCountsOrTotals": {
+        "totalFeatures": 14545,
+        "nullYear": 1,
+        "year2012": 4874,
+        "year2014": 4838,
+        "year2015": 4832
+      },
+      "caveat": "Multiple cohorts in a current non-versioned service reinforce that the 2012 label is not an immutable election-day snapshot.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    },
+    {
+      "id": "mi-boe-legacy-precinctmapping-2012-candidate-geometry",
+      "authority": "Michigan Department of Technology, Management and Budget, Center for Shared Solutions; Michigan Bureau of Elections",
+      "sourceUrls": [
+        "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=ElectionYear+%3D+2012&outFields=OBJECTID%2CVP%2CCountyFips%2CJurisdictionFips%2CWard%2CPrecinct%2CPrecinctLabel%2CElectionYear%2CTotalPopulation%2CVotingAgePopulation%2CCreateDate%2CConfirmationDate&returnGeometry=true&outSR=4326&orderByFields=OBJECTID+ASC&resultOffset=0&resultRecordCount=2000&f=geojson",
+        "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=ElectionYear+%3D+2012&outFields=OBJECTID%2CVP%2CCountyFips%2CJurisdictionFips%2CWard%2CPrecinct%2CPrecinctLabel%2CElectionYear%2CTotalPopulation%2CVotingAgePopulation%2CCreateDate%2CConfirmationDate&returnGeometry=true&outSR=4326&orderByFields=OBJECTID+ASC&resultOffset=2000&resultRecordCount=2000&f=geojson",
+        "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=ElectionYear+%3D+2012&outFields=OBJECTID%2CVP%2CCountyFips%2CJurisdictionFips%2CWard%2CPrecinct%2CPrecinctLabel%2CElectionYear%2CTotalPopulation%2CVotingAgePopulation%2CCreateDate%2CConfirmationDate&returnGeometry=true&outSR=4326&orderByFields=OBJECTID+ASC&resultOffset=4000&resultRecordCount=2000&f=geojson"
+      ],
+      "derivation": "Deterministic combination of three complete official MapServer query pages ordered by OBJECTID, serialized as canonical GeoJSON, then gzipped with level 9 and mtime 0.",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/2012-precinct-candidate-wgs84.geojson.gz",
+      "byteCount": 10071954,
+      "sha256": "61962297587d38168fe1cc790a2f826d62c0e3e6d1dced4d1dc298b783105599",
+      "compression": "gzip",
+      "uncompressedByteCount": 33244850,
+      "uncompressedSha256": "91100a61de127d99f29837577e5aacbf71dda8c6b7f307adef0ddd4264353a80",
+      "format": "deterministically combined official ArcGIS GeoJSON query pages, gzip",
+      "year": 2026,
+      "sourceYear": 2026,
+      "sourceVintage": "current live official response retained in 2026",
+      "electionYear": 2012,
+      "reportingGrain": "current statewide polygon records labeled ElectionYear=2012",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs complete paginated GeoJSON collection and independent source-profile assertions",
+      "normalizationPath": "vote-free diagnostic normalization only; no public delivery",
+      "expectedCountsOrTotals": {
+        "sourceFeatures": 4874,
+        "counties": 83,
+        "uniqueVP": 4874,
+        "polygons": 4538,
+        "multipolygons": 336
+      },
+      "pageTransportPins": [
+        {
+          "offset": 0,
+          "featureCount": 2000,
+          "byteCount": 12714763,
+          "sha256": "eafe87173ba16a73cbef5a0e7aa5d765dba16e9bb848ccd6b1d5da880c6d5769",
+          "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=ElectionYear+%3D+2012&outFields=OBJECTID%2CVP%2CCountyFips%2CJurisdictionFips%2CWard%2CPrecinct%2CPrecinctLabel%2CElectionYear%2CTotalPopulation%2CVotingAgePopulation%2CCreateDate%2CConfirmationDate&returnGeometry=true&outSR=4326&orderByFields=OBJECTID+ASC&resultOffset=0&resultRecordCount=2000&f=geojson"
+        },
+        {
+          "offset": 2000,
+          "featureCount": 2000,
+          "byteCount": 17004224,
+          "sha256": "b4e388125d7887c28e091200eae2434c3921a11892fa7909df13581fa1b9ae12",
+          "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=ElectionYear+%3D+2012&outFields=OBJECTID%2CVP%2CCountyFips%2CJurisdictionFips%2CWard%2CPrecinct%2CPrecinctLabel%2CElectionYear%2CTotalPopulation%2CVotingAgePopulation%2CCreateDate%2CConfirmationDate&returnGeometry=true&outSR=4326&orderByFields=OBJECTID+ASC&resultOffset=2000&resultRecordCount=2000&f=geojson"
+        },
+        {
+          "offset": 4000,
+          "featureCount": 874,
+          "byteCount": 4916917,
+          "sha256": "f1175c2a31e57ae1b887a4280c09807442512ab7f1fe9a16d430698b8fb3d46d",
+          "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0/query?where=ElectionYear+%3D+2012&outFields=OBJECTID%2CVP%2CCountyFips%2CJurisdictionFips%2CWard%2CPrecinct%2CPrecinctLabel%2CElectionYear%2CTotalPopulation%2CVotingAgePopulation%2CCreateDate%2CConfirmationDate&returnGeometry=true&outSR=4326&orderByFields=OBJECTID+ASC&resultOffset=4000&resultRecordCount=2000&f=geojson"
+        }
+      ],
+      "caveat": "Candidate geometry is retained without votes. Its 2012 cycle label does not prove exact November 6 applicability or a result relationship.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    },
+    {
+      "id": "mi-sos-election-results-and-data-catalog",
+      "authority": "Michigan Department of State, Bureau of Elections",
+      "url": "https://www.michigan.gov/sos/elections/election-results-and-data",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/mi-sos-election-results-and-data.html",
+      "byteCount": 421270,
+      "sha256": "81274ebb792afb0ee9477807bf03a88253f68ade7a93d463fbe9ed487f7019ef",
+      "format": "official election-results catalog HTML",
+      "year": 2026,
+      "sourceYear": 2026,
+      "sourceVintage": "current live official response retained in 2026",
+      "electionYear": 2012,
+      "reportingGrain": "official historical election-result publication index",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs exact 2012 November General MVIC-link assertion",
+      "normalizationPath": "source context only; no votes or geometry delivered",
+      "expectedCountsOrTotals": {
+        "exact2012GeneralLinks": 1
+      },
+      "caveat": "The catalog proves the official 2012 General result page URL, but it is not itself a precinct result export.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    },
+    {
+      "id": "mi-sos-2012-biennial-precinct-report",
+      "authority": "Michigan Department of State, Bureau of Elections",
+      "url": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Election-Results-and-Statistics/Biennial-Precinct-Report/2012-Biennial-Precinct-Report.pdf?hash=2EFD4A5CC1EF1AEACB0447F4D293C5F4&rev=d7ad302b0ccc41ebaf75dd7848b8a8b3",
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/raw/mi-dtmb-boe-2012-precinct-candidate/2012-biennial-precinct-report.pdf",
+      "byteCount": 184925,
+      "sha256": "656ad93100b799d5697fd8720ec1db858d736a941c4e5f11b636f0769fb908a1",
+      "format": "official biennial precinct report PDF",
+      "year": 2012,
+      "sourceYear": 2012,
+      "sourceVintage": "official 2012 structural report",
+      "electionYear": 2012,
+      "reportingGrain": "county and statewide precinct/registration structure",
+      "parser": "scripts/collect-mi-2012-precinct-geometry-diagnostic.mjs with pdf-parse page, county, and statewide-total assertions",
+      "normalizationPath": "source context only; no votes or geometry delivered",
+      "expectedCountsOrTotals": {
+        "pages": 81,
+        "counties": 83,
+        "precincts": 4873,
+        "registeredVoters": 7309761
+      },
+      "caveat": "The report provides structural precinct and registration counts, not presidential vote rows or GIS feature identities.",
+      "confidence": "high for retained bytes and stated source facts; low for exact November 6 geometry applicability and absent result-to-feature relationship"
+    }
+  ]
+}

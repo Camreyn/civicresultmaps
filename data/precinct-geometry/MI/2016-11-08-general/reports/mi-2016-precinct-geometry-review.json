@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2016-11-08-general",
+  "generatedAt": "2026-08-15T02:22:39.949Z",
+  "disposition": "blocked_partial_official_crosswalk",
+  "source": {
+    "geometryFeatures": 4810,
+    "normalizedFeatures": 4810,
+    "officialResultUnits": 5077,
+    "officialResultVotes": 4799284
+  },
+  "crosswalk": {
+    "resultUnits": 5077,
+    "colorableResultUnits": 4809,
+    "matchedResultUnits": 4788,
+    "unmatchedResultUnits": 21,
+    "nonGeographicResultUnits": 266,
+    "sourceAliasResultUnits": 2,
+    "unlinkedGeometryUnits": 22,
+    "matchMethodCounts": {
+      "parent_exact_composite": 4245,
+      "parent_unique_municipality_precinct": 543,
+      "statewide_exact_composite": 2
+    },
+    "reconciliation": "failed"
+  },
+  "totals": {
+    "official": {
+      "democraticVotes": 2268839,
+      "republicanVotes": 2279543,
+      "otherVotes": 250902,
+      "totalVotes": 4799284
+    },
+    "geographic": {
+      "democraticVotes": 2210069,
+      "republicanVotes": 2270022,
+      "otherVotes": 243462,
+      "totalVotes": 4723553
+    },
+    "nonGeographic": {
+      "democraticVotes": 58770,
+      "republicanVotes": 9521,
+      "otherVotes": 7440,
+      "totalVotes": 75731
+    }
+  },
+  "blockers": [
+    "The official layer establishes the 2016 election cycle but does not prove an immutable November 8 snapshot.",
+    "21 geographic result units remain unresolved and 22 geometry units remain unlinked.",
+    "Several municipal ward/precinct conventions require an authoritative or independently reviewed mapping before row-level publication."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/normalized/mi-2016-official-precinct-geometry.geojson.gz",
+      "byteCount": 7410255,
+      "sha256": "35c5b4ac95cc068840624962934f09a507855e91c1f2792fec9580d43d3db587",
+      "uncompressedByteCount": 26611260,
+      "uncompressedSha256": "7eb7b104b5901132c1c540c81a5e0d3a3640356bd91ad167884b41f498282b96"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/normalized/mi-2016-official-precinct-results.json.gz",
+      "byteCount": 504978,
+      "sha256": "2a3110e03d9bc17861d44464c1036e4816f588bee059deb70e7dde9c23e8e5bd",
+      "uncompressedByteCount": 41002420,
+      "uncompressedSha256": "77f4bf6c1dc2a42a693686c10898f5171326bb0cd599045625dace66a4a3d9c5"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/crosswalk/mi-2016-result-to-geometry-review.json",
+      "byteCount": 4292771,
+      "sha256": "70cc1ec4793c2c4c46f901df0bad7149f92cbdfe82c6d74d257885eb92540e51"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/source-evidence.json",
+      "byteCount": 29417,
+      "sha256": "9283476c46fe631a577a3448d42e0acf7260cefc8a1ba2fc6783f4ae44089584"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/MI/2016-11-08-general/manifest.json",
+      "byteCount": 4309,
+      "sha256": "79403706f402875cf08a8da0560a9a05859e3de01b1dfbeb639bb1463d2cb7ea"
+    }
+  }
+}

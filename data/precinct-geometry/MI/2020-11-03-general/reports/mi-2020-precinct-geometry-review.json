@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2020-11-03-general",
+  "generatedAt": "2026-08-15T02:22:39.949Z",
+  "disposition": "blocked_partial_official_crosswalk",
+  "source": {
+    "geometryFeatures": 4755,
+    "normalizedFeatures": 4752,
+    "officialResultUnits": 4923,
+    "officialResultVotes": 5536017
+  },
+  "crosswalk": {
+    "resultUnits": 4923,
+    "colorableResultUnits": 4750,
+    "matchedResultUnits": 4699,
+    "unmatchedResultUnits": 51,
+    "nonGeographicResultUnits": 168,
+    "sourceAliasResultUnits": 5,
+    "unlinkedGeometryUnits": 53,
+    "matchMethodCounts": {
+      "parent_exact_composite": 4688,
+      "parent_unique_municipality_precinct": 11,
+      "statewide_exact_composite": 5
+    },
+    "reconciliation": "failed"
+  },
+  "totals": {
+    "official": {
+      "democraticVotes": 2801469,
+      "republicanVotes": 2649234,
+      "otherVotes": 85314,
+      "totalVotes": 5536017
+    },
+    "geographic": {
+      "democraticVotes": 2637833,
+      "republicanVotes": 2643706,
+      "otherVotes": 83689,
+      "totalVotes": 5365228
+    },
+    "nonGeographic": {
+      "democraticVotes": 163636,
+      "republicanVotes": 5528,
+      "otherVotes": 1625,
+      "totalVotes": 170789
+    }
+  },
+  "blockers": [
+    "The official layer establishes the 2020 election cycle but does not prove an immutable November 3 snapshot.",
+    "51 geographic result units remain unresolved and 53 geometry units remain unlinked.",
+    "The official precinct ZIP does not equal the certified statewide summary and its AVCB/statistical rows are retained without proportional allocation."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/normalized/mi-2020-official-precinct-geometry.geojson.gz",
+      "byteCount": 9332822,
+      "sha256": "bf59d976f120cd6cbed503fb90e8df44c70aed6a41ef9a7f5c96a8d280e773d4",
+      "uncompressedByteCount": 30547376,
+      "uncompressedSha256": "8c57d03b48df6c420b0c77df8442ea67165fb2604973a774bf1603d12e4e1b26"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/normalized/mi-2020-official-precinct-results.json.gz",
+      "byteCount": 426867,
+      "sha256": "33913937550cc3bf0e0dc5fc2180e10badd79b5e36c881232e23bc9f89c10ed3",
+      "uncompressedByteCount": 34262761,
+      "uncompressedSha256": "673e03e8b4c32f2005144b5e96a4a434c58a9020f976f0d002231a5ce4ab0f0c"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/crosswalk/mi-2020-result-to-geometry-review.json",
+      "byteCount": 4232130,
+      "sha256": "6225e1465b0b75045e4d1c948aa3732c13bfd32e711fa9ad5d8835706bbc6c83"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/source-evidence.json",
+      "byteCount": 49211,
+      "sha256": "fbd7fc25ae7f4f93059e95f49c8d870f0635809472c92a2738e3f1fbdfeda201"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/MI/2020-11-03-general/manifest.json",
+      "byteCount": 4341,
+      "sha256": "09433baf7075da95a2e296936f6ba637517ef7f1d4fcbb0c02eebe8f0bea454f"
+    }
+  }
+}

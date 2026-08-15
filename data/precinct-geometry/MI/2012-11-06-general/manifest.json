@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "mi-2012-11-06-official-cycle-precinct-review-v2",
+  "state": "MI",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "Official legacy Michigan precinctmapping cohort labeled ElectionYear=2012; exact November 6 snapshot unconfirmed",
+    "vintageStatus": "unknown",
+    "derivationMethod": "official_service"
+  },
+  "source": {
+    "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+    "url": "https://gisp.mcgi.state.mi.us/maps/rest/services/BOE/precinctmapping/MapServer/0",
+    "retrievedAt": "2026-08-04T12:21:30.000Z",
+    "artifact": "data/precinct-geometry/MI/2012-11-06-general/source-evidence.json",
+    "sha256": "caa2e6cee5a741b9dbc4eb895e58d04e795d3532264d38a1780d4af2082e3561",
+    "byteCount": 17650,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official source artifacts are retained for review. Public delivery is not approved because exact election-date custody and affirmative derivative redistribution terms remain unresolved."
+  },
+  "normalization": {
+    "script": "scripts/build-mi-reviewed-precincts.mjs",
+    "sourceCrs": "EPSG:3785 (legacy ArcGIS WKID 102113)",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/MI/2012-11-06-general/normalized/mi-2012-official-precinct-geometry.geojson.gz",
+    "sha256": "f8e974e71894aaa7357b734ad88b75c530017938ac488d7d8b6b86be8b3d83d2",
+    "byteCount": 10026385,
+    "featureCount": 4874,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "resultSourceId": "mi-2012-official-precinct-results",
+    "artifact": "data/precinct-geometry/MI/2012-11-06-general/crosswalk/mi-2012-result-to-geometry-review.json",
+    "sha256": "465e738b50be0314ce8e8a0f675c3dc4b5c0ce7720caa457aa327ae1eb161cd6",
+    "byteCount": 4478035,
+    "resultUnits": 5238,
+    "colorableResultUnits": 4862,
+    "matchedResultUnits": 4862,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 371,
+    "sourceAliasResultUnits": 5,
+    "relationships": {
+      "oneToOne": 0,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 371,
+      "sourceAlias": 0,
+      "pendingReview": 4867
+    },
+    "methods": [
+      "exact_official_id",
+      "normalized_name_candidate"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "errors": [
+      "The retained live legacy service labels these records ElectionYear=2012 but does not prove an immutable November 6 snapshot.",
+      "The official GIS cohort has 4,874 features while the 2012 Biennial Precinct Report states 4,873 precincts.",
+      "0 geographic result unit remains unresolved and 12 geometry units remain unlinked.",
+      "Affirmative derivative redistribution terms for the legacy service have not been retained."
+    ],
+    "warnings": [
+      "4867 geographic official source units map to 4862 official geometry units without proportional allocation.",
+      "5 duplicate/cross-county source identities are retained as aliases and never duplicate votes.",
+      "371 non-geographic official units remain reconciliation-only."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "Displayed candidate votes, when eventually authorized, come only from the official Michigan SOS precinct ZIP; no GIS or secondary-source vote field is used.",
+    "371 official statistical-adjustment or absent-voter-counting-board units are retained for reconciliation and never assigned to polygons.",
+    "5 official source rows use a different source county from their unique statewide geometry parent; both identities are retained and no vote allocation is performed.",
+    "The retained live legacy service labels these records ElectionYear=2012 but does not prove an immutable November 6 snapshot.",
+    "The official GIS cohort has 4,874 features while the 2012 Biennial Precinct Report states 4,873 precincts.",
+    "0 geographic result unit remains unresolved and 12 geometry units remain unlinked.",
+    "Affirmative derivative redistribution terms for the legacy service have not been retained."
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2024-11-05-general",
+  "authority": "Michigan Department of State, Bureau of Elections; Michigan Department of Technology, Management and Budget, Center for Shared Solutions",
+  "retrievedAt": "2026-08-02T03:57:27.475Z",
+  "sourceUrls": {
+    "layer": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/9",
+    "item": "https://www.arcgis.com/sharing/rest/content/items/02d40893317d46569017beeb14f9c63e",
+    "metadata": "https://www.arcgis.com/sharing/rest/content/items/02d40893317d46569017beeb14f9c63e/info/metadata/metadata.xml"
+  },
+  "query": {
+    "where": "1=1",
+    "outFields": [
+      "OBJECTID",
+      "PRECINCTID",
+      "ELECTIONYE",
+      "COUNTYFIPS",
+      "MCDFIPS",
+      "WARD",
+      "PRECINCT",
+      "NAME",
+      "VTDST",
+      "Precinct_Long_Name",
+      "Precinct_Short_Name",
+      "Tabulator_Voter_Assist",
+      "Jurisdiction_Name",
+      "Registered_Voters",
+      "Active_Voters"
+    ],
+    "outCrs": "EPSG:4326",
+    "orderByFields": "OBJECTID",
+    "pageSize": 1000,
+    "pages": [
+      {
+        "offset": 0,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/9/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CVTDST%2CPrecinct_Long_Name%2CPrecinct_Short_Name%2CTabulator_Voter_Assist%2CJurisdiction_Name%2CRegistered_Voters%2CActive_Voters&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=0&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 1000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/9/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CVTDST%2CPrecinct_Long_Name%2CPrecinct_Short_Name%2CTabulator_Voter_Assist%2CJurisdiction_Name%2CRegistered_Voters%2CActive_Voters&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=1000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 2000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/9/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CVTDST%2CPrecinct_Long_Name%2CPrecinct_Short_Name%2CTabulator_Voter_Assist%2CJurisdiction_Name%2CRegistered_Voters%2CActive_Voters&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=2000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 3000,
+        "featureCount": 1000,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/9/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CVTDST%2CPrecinct_Long_Name%2CPrecinct_Short_Name%2CTabulator_Voter_Assist%2CJurisdiction_Name%2CRegistered_Voters%2CActive_Voters&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=3000&resultRecordCount=1000&f=geojson"
+      },
+      {
+        "offset": 4000,
+        "featureCount": 340,
+        "url": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer/9/query?where=1%3D1&outFields=OBJECTID%2CPRECINCTID%2CELECTIONYE%2CCOUNTYFIPS%2CMCDFIPS%2CWARD%2CPRECINCT%2CNAME%2CVTDST%2CPrecinct_Long_Name%2CPrecinct_Short_Name%2CTabulator_Voter_Assist%2CJurisdiction_Name%2CRegistered_Voters%2CActive_Voters&returnGeometry=true&outSR=4326&orderByFields=OBJECTID&resultOffset=4000&resultRecordCount=1000&f=geojson"
+      }
+    ]
+  },
+  "expectedFeatureCount": 4340,
+  "collectedFeatureCount": 4340,
+  "artifacts": {
+    "layerMetadata": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/raw/mi-dtmb-boe-2024-voting-precincts/layer-metadata.json",
+      "byteCount": 7992,
+      "sha256": "fae33e7544338a750f30ae0e196bfeb6acf39324e2ee78717433f9eb3a0a0120"
+    },
+    "itemMetadata": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/raw/mi-dtmb-boe-2024-voting-precincts/item-metadata.json",
+      "byteCount": 5400,
+      "sha256": "a08ed544c530df239b7edf35ab9b49542d760037d4136b754f3aaf657eef936c"
+    },
+    "metadataXml": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/raw/mi-dtmb-boe-2024-voting-precincts/metadata.xml",
+      "byteCount": 19908,
+      "sha256": "1a9f35e048693b5eadab2cbfe4abb83570f040b6c564aafff88cc00e2248c263"
+    },
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/MI/2024-11-05-general/raw/mi-dtmb-boe-2024-voting-precincts/2024-voting-precincts-wgs84.geojson.gz",
+      "byteCount": 15220121,
+      "sha256": "14d4a4bffc54f1588111326d360024cbe136599c03c443bfe56f9dd8bc14d7f7",
+      "compression": "gzip",
+      "uncompressedByteCount": 46599506,
+      "uncompressedSha256": "d04086a26138f839d14cae7909af04ed6f1cd2c380f3efa64b81b8edd4843248"
+    }
+  }
+}

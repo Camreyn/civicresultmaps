@@ -343,7 +343,9 @@
     "precinct-gis:production-release:ak": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-ak-precinct-release.mjs",
     "precinct-gis:public-activation:ak": "node --experimental-strip-types scripts/prepare-ak-precinct-public-activation.mjs",
     "precinct-gis:publication-status:ak": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-ak-precinct-geography-status.mjs",
-    "test:precinct-geometry:ak": "node --experimental-strip-types --test tests/api/ak-source-coverage.test.mjs tests/api/ak-precinct-geometry.test.mjs tests/api/ak-local-geography-parent.test.mjs tests/api/ak-precinct-gis-plan.test.mjs tests/api/ak-precinct-gis-local.test.mjs tests/api/ak-precinct-release-candidate.test.mjs tests/api/ak-precinct-blob-publication.test.mjs tests/api/ak-precinct-production-release.test.mjs tests/api/ak-precinct-public-activation.test.mjs tests/api/ak-precinct-publication-gate.test.mjs tests/api/ak-precinct-publication.test.mjs"
+    "test:precinct-geometry:ak": "node --experimental-strip-types --test tests/api/ak-source-coverage.test.mjs tests/api/ak-precinct-geometry.test.mjs tests/api/ak-local-geography-parent.test.mjs tests/api/ak-precinct-gis-plan.test.mjs tests/api/ak-precinct-gis-local.test.mjs tests/api/ak-precinct-release-candidate.test.mjs tests/api/ak-precinct-blob-publication.test.mjs tests/api/ak-precinct-production-release.test.mjs tests/api/ak-precinct-public-activation.test.mjs tests/api/ak-precinct-publication-gate.test.mjs tests/api/ak-precinct-publication.test.mjs",
+    "precinct-gis:collect:mi": "node --experimental-strip-types scripts/build-mi-reviewed-precincts.mjs",
+    "test:precinct-geometry:mi": "node --experimental-strip-types --test tests/api/mi-precinct-geometry.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",

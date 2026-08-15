@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "state": "MI",
+  "electionId": "2012-11-06-general",
+  "generatedAt": "2026-08-15T02:22:39.949Z",
+  "disposition": "blocked_partial_official_crosswalk",
+  "source": {
+    "geometryFeatures": 4874,
+    "normalizedFeatures": 4874,
+    "officialResultUnits": 5238,
+    "officialResultVotes": 4730961
+  },
+  "crosswalk": {
+    "resultUnits": 5238,
+    "colorableResultUnits": 4862,
+    "matchedResultUnits": 4862,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 371,
+    "sourceAliasResultUnits": 5,
+    "unlinkedGeometryUnits": 12,
+    "matchMethodCounts": {
+      "parent_exact_composite": 4862,
+      "statewide_unique_municipality_precinct": 4,
+      "statewide_exact_composite": 1
+    },
+    "reconciliation": "failed"
+  },
+  "totals": {
+    "official": {
+      "democraticVotes": 2564569,
+      "republicanVotes": 2115256,
+      "otherVotes": 51136,
+      "totalVotes": 4730961
+    },
+    "geographic": {
+      "democraticVotes": 2350155,
+      "republicanVotes": 2004117,
+      "otherVotes": 46696,
+      "totalVotes": 4400968
+    },
+    "nonGeographic": {
+      "democraticVotes": 214414,
+      "republicanVotes": 111139,
+      "otherVotes": 4440,
+      "totalVotes": 329993
+    }
+  },
+  "blockers": [
+    "The retained live legacy service labels these records ElectionYear=2012 but does not prove an immutable November 6 snapshot.",
+    "The official GIS cohort has 4,874 features while the 2012 Biennial Precinct Report states 4,873 precincts.",
+    "0 geographic result unit remains unresolved and 12 geometry units remain unlinked.",
+    "Affirmative derivative redistribution terms for the legacy service have not been retained."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/normalized/mi-2012-official-precinct-geometry.geojson.gz",
+      "byteCount": 10026385,
+      "sha256": "f8e974e71894aaa7357b734ad88b75c530017938ac488d7d8b6b86be8b3d83d2",
+      "uncompressedByteCount": 33160963,
+      "uncompressedSha256": "dedb54d5938443e7f7af16506583558c4e5252cc75055da6cc863de34442335a"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/normalized/mi-2012-official-precinct-results.json.gz",
+      "byteCount": 386304,
+      "sha256": "ab6e67bdd8ebd8f5d97f46f119c3983a39dbba4309463c474968d36bf20cfd34",
+      "uncompressedByteCount": 29879065,
+      "uncompressedSha256": "b9cef2fbcc4475eed99a76d8ec48454d07a4d9fc71544117408c44849f312d67"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/crosswalk/mi-2012-result-to-geometry-review.json",
+      "byteCount": 4478035,
+      "sha256": "465e738b50be0314ce8e8a0f675c3dc4b5c0ce7720caa457aa327ae1eb161cd6"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/source-evidence.json",
+      "byteCount": 17650,
+      "sha256": "caa2e6cee5a741b9dbc4eb895e58d04e795d3532264d38a1780d4af2082e3561"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/MI/2012-11-06-general/manifest.json",
+      "byteCount": 4523,
+      "sha256": "bad95e2491284e0a69b6bbcf68d17a462cf341f564f215cd8b4fc8d3f8777daa"
+    }
+  }
+}

@@ -90,6 +90,14 @@
 /data/precinct-geometry/AK/**/*.html -diff
 /data/precinct-geometry/AK/**/*.txt -diff
 
+# Preserve every hash-pinned Michigan precinct source and derivative byte-for-byte.
+/data/precinct-geometry/MI/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/MI/**/*.zip -diff
+/data/precinct-geometry/MI/**/*.gz -diff
+/data/precinct-geometry/MI/**/*.pdf -diff
+/data/precinct-geometry/MI/**/*.html -diff
+/data/precinct-geometry/MI/**/*.xml -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

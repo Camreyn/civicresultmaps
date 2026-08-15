@@ -385,7 +385,7 @@
       "state": "MI",
       "name": "Michigan",
       "priority": 2,
-      "nativeReadiness": "complete_county_map_precinct_review_county_turnout_secondary_historical_admin_inventory",
+      "nativeReadiness": "complete_county_map_precinct_review_county_turnout_secondary_historical_admin_inventory_plus_separate_official_four_year_precinct_gis_review",
       "authority": "Michigan Secretary of State",
       "configFile": "etl/state-configs/mi.json",
       "legacyReferenceBundle": "data/mi-app-data.js",
@@ -420,6 +420,13 @@
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
         },
+        "precinctGeometryReview": {
+          "sourceTitle": "Michigan official four-election precinct results and election-cycle geometry review",
+          "sourceUrl": "https://gisagocss.state.mi.us/arcgis/rest/services/OpenData/boundaries/MapServer",
+          "localFile": "data/precinct-geometry/MI",
+          "level": "precinct",
+          "parserHint": "Run npm run precinct-gis:collect:mi to verify hash-pinned official result ZIPs, election-cycle GIS, non-geographic rows, source aliases, and deterministic crosswalk packages. Only 2024 is row-level reviewed; all delivery remains blocked pending guarded release."
+        },
         "historicalBaseline": {
           "sourceTitle": "Wikipedia Michigan county presidential tables with Michigan SOS result-page citations where available",
           "sourceUrl": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Michigan",
@@ -449,12 +456,13 @@
         "reviewMode": "president_vs_senate_dropoff",
         "turnoutMode": "county_turnout_joined_to_registration_pdf",
         "historicalBaselineMode": "secondary_wikipedia_county_context",
+        "precinctGeometryReviewMode": "official_2012_2016_2020_2024_sources_2024_complete_historical_fail_closed",
         "adminInventoryStatus": "source_paths_documented_not_row_level_loaded"
       },
       "caveats": [
         "MVIC live download endpoints are browser-protected; local official export artifacts are already stored in the repo.",
         "Turnout is county-level, not precinct-level.",
-        "Precinct boundary GeoJSON is not present in this package.",
+        "Official election-cycle precinct geometry is retained separately from the ordinary native staging package; 2024 has a complete reviewed crosswalk but no immutable public delivery yet, while 2012, 2016, and 2020 remain blocked.",
         "Historical baseline rows are contextual secondary county tables, not official replacement certified totals; official MVIC/mielections historical endpoints were not script-readable from this environment.",
         "Administration source inventory is documented, but normalized audit/recount/CVR/incident/correction rows are not loaded."
       ]

@@ -1,0 +1,286 @@
+{
+ "currentVersion": 11.3,
+ "cimVersion": "3.3.0",
+ "id": 0,
+ "name": "Precincts",
+ "type": "Feature Layer",
+ "description": "Bureau of Elections Precinct Boundaries",
+ "geometryType": "esriGeometryPolygon",
+ "sourceSpatialReference": {
+  "wkid": 102113,
+  "latestWkid": 3785,
+  "xyTolerance": 0.0010000001639127731,
+  "zTolerance": 0.001,
+  "mTolerance": 0.001,
+  "falseX": -20037700,
+  "falseY": -30241100,
+  "xyUnits": 9999.93579202704,
+  "falseZ": 0,
+  "zUnits": 1,
+  "falseM": 0,
+  "mUnits": 1
+ },
+ "copyrightText": "",
+ "parentLayer": null,
+ "subLayers": [],
+ "minScale": 750000,
+ "maxScale": 0,
+ "referenceScale": 0.0,
+ "drawingInfo": {
+  "renderer": {
+   "type": "simple",
+   "symbol": {
+    "type": "esriSFS",
+    "style": "esriSFSSolid",
+    "color": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "outline": {
+     "type": "esriSLS",
+     "style": "esriSLSSolid",
+     "color": [
+      230,
+      0,
+      0,
+      255
+     ],
+     "width": 3
+    }
+   }
+  },
+  "scaleSymbols": true,
+  "transparency": 25,
+  "labelingInfo": null
+ },
+ "defaultVisibility": true,
+ "extent": {
+  "xmin": -1.0065330135134537E7,
+  "ymin": 5115568.7172,
+  "xmax": -9141887.7703,
+  "ymax": 6157926.1739,
+  "spatialReference": {
+   "wkid": 102113,
+   "latestWkid": 3785,
+   "xyTolerance": 0.001,
+   "zTolerance": 2,
+   "mTolerance": 2,
+   "falseX": -20037700,
+   "falseY": -30241100,
+   "xyUnits": 1.4892314192838538E8,
+   "falseZ": 0,
+   "zUnits": 1,
+   "falseM": -100000,
+   "mUnits": 10000
+  }
+ },
+ "hasAttachments": false,
+ "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+ "displayField": "VP",
+ "typeIdField": null,
+ "subtypeFieldName": null,
+ "subtypeField": null,
+ "defaultSubtypeCode": null,
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null
+  },
+  {
+   "name": "Shape",
+   "type": "esriFieldTypeGeometry",
+   "alias": "Shape",
+   "domain": null
+  },
+  {
+   "name": "Shape.STArea()",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape.STArea()",
+   "domain": null
+  },
+  {
+   "name": "Shape.STLength()",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape.STLength()",
+   "domain": null
+  },
+  {
+   "name": "VP",
+   "type": "esriFieldTypeString",
+   "alias": "VP",
+   "length": 20,
+   "domain": null
+  },
+  {
+   "name": "CountyFips",
+   "type": "esriFieldTypeString",
+   "alias": "CountyFips",
+   "length": 3,
+   "domain": null
+  },
+  {
+   "name": "JurisdictionFips",
+   "type": "esriFieldTypeString",
+   "alias": "JurisdictionFips",
+   "length": 5,
+   "domain": null
+  },
+  {
+   "name": "Ward",
+   "type": "esriFieldTypeString",
+   "alias": "Ward",
+   "length": 2,
+   "domain": null
+  },
+  {
+   "name": "Precinct",
+   "type": "esriFieldTypeString",
+   "alias": "Precinct",
+   "length": 3,
+   "domain": null
+  },
+  {
+   "name": "PrecinctLabel",
+   "type": "esriFieldTypeString",
+   "alias": "PrecinctLabel",
+   "length": 10,
+   "domain": null
+  },
+  {
+   "name": "ElectionYear",
+   "type": "esriFieldTypeInteger",
+   "alias": "ElectionYear",
+   "domain": null
+  },
+  {
+   "name": "TotalPopulation",
+   "type": "esriFieldTypeInteger",
+   "alias": "TotalPopulation",
+   "domain": null
+  },
+  {
+   "name": "VotingAgePopulation",
+   "type": "esriFieldTypeInteger",
+   "alias": "VotingAgePopulation",
+   "domain": null
+  },
+  {
+   "name": "CreateDate",
+   "type": "esriFieldTypeDate",
+   "alias": "CreateDate",
+   "length": 8,
+   "domain": null
+  },
+  {
+   "name": "ConfirmationDate",
+   "type": "esriFieldTypeDate",
+   "alias": "ConfirmationDate",
+   "length": 8,
+   "domain": null
+  }
+ ],
+ "geometryField": {
+  "name": "Shape",
+  "type": "esriFieldTypeGeometry",
+  "alias": "Shape"
+ },
+ "indexes": [
+  {
+   "name": "R51_pk",
+   "fields": "OBJECTID",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  },
+  {
+   "name": "vpIndx",
+   "fields": "ElectionYear,VP,CountyFips,JurisdictionFips,Ward,Precinct,PrecinctLabel",
+   "isAscending": true,
+   "isUnique": false,
+   "description": ""
+  },
+  {
+   "name": "S46_idx",
+   "fields": "Shape",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  }
+ ],
+ "subtypes": [],
+ "relationships": [],
+ "canModifyLayer": true,
+ "canScaleSymbols": false,
+ "hasLabels": true,
+ "capabilities": "Map,Query,Data",
+ "maxRecordCount": 2000,
+ "supportsStatistics": true,
+ "supportsExceedsLimitStatistics": true,
+ "supportsAdvancedQueries": true,
+ "supportedQueryFormats": "JSON, geoJSON, PBF",
+ "isDataVersioned": false,
+ "ownershipBasedAccessControlForFeatures": {"allowOthersToQuery": true},
+ "useStandardizedQueries": true,
+ "supportedSpatialRelationships": [
+  "esriSpatialRelIntersects",
+  "esriSpatialRelContains",
+  "esriSpatialRelCrosses",
+  "esriSpatialRelEnvelopeIntersects",
+  "esriSpatialRelIndexIntersects",
+  "esriSpatialRelOverlaps",
+  "esriSpatialRelTouches",
+  "esriSpatialRelWithin",
+  "esriSpatialRelRelation"
+ ],
+ "advancedQueryCapabilities": {
+  "useStandardizedQueries": true,
+  "supportsStatistics": true,
+  "supportsPercentileStatistics": true,
+  "supportsHavingClause": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsCountDistinct": true,
+  "supportsAdvancedQueryRelated": true,
+  "supportsQueryRelatedPagination": true,
+  "supportsPagination": true,
+  "supportsLod": false,
+  "supportsQueryWithLodSR": false,
+  "supportsTrueCurve": true,
+  "supportsQueryWithDatumTransformation": true,
+  "supportsReturningQueryExtent": true,
+  "supportsQueryWithDistance": true,
+  "supportsSqlExpression": true,
+  "supportsTimeRelation": true,
+  "supportsSqlFormat": false,
+  "supportsQueryAnalytic": true,
+  "supportsCurrentUserQueries": true
+ },
+ "supportsDatumTransformation": true,
+ "advancedQueryAnalyticCapabilities": {
+  "supportsLinearRegression": true,
+  "supportsAsync": false,
+  "supportsPercentileAnalytic": true
+ },
+ "dateFieldsTimeReference": null,
+ "preferredTimeReference": null,
+ "datesInUnknownTimezone": false,
+ "hasGeometryProperties": true,
+ "geometryProperties": {
+  "shapeAreaFieldName": "Shape.STArea()",
+  "shapeLengthFieldName": "Shape.STLength()",
+  "units": "esriMeters",
+  "mapUnits": {"uwkid": 9001}
+ },
+ "hasMetadata": true,
+ "isDataArchived": false,
+ "archivingInfo": {
+  "supportsQueryWithHistoricMoment": false,
+  "startArchivingMoment": -1
+ },
+ "supportsCoordinatesQuantization": true,
+ "supportsDynamicLegends": true
+}
