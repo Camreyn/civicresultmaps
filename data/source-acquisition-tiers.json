@@ -2246,13 +2246,18 @@
         "Election History table export",
         "official 2020 historical President CSV download",
         "normalized historical baseline CSV",
-        "historical contest CSV"
+        "historical contest CSV",
+        "reviewed election-specific precinct GeoJSON/Shapefile packages"
       ],
       "sourceUrls": [
         "https://electionhistory.scvotes.gov/",
         "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
         "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false",
-        "https://sc.elstats.civera.com/api/download_contest/5292_table.csv?split_party=false"
+        "https://sc.elstats.civera.com/api/download_contest/5292_table.csv?split_party=false",
+        "https://sc.elstats.civera.com/api/download_contest/9112_table.csv?split_party=false",
+        "https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/NH5S2I/Y3OFQZ&version=78.0",
+        "https://dataverse.harvard.edu/file.xhtml?fileId=4789402&version=27.0",
+        "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/SC-precincts-with-results.geojson.gz"
       ],
       "exampleUrls": [
         "https://electionhistory.scvotes.gov/contest/7131",
@@ -2268,19 +2273,22 @@
         "EAC turnout fallback retained as a benchmark",
         "official 2020 county presidential historical baseline rows from the SC Elections Database contest CSV",
         "official 2016 county presidential historical baseline rows",
-        "official 2020 county presidential historical baseline rows"
+        "official 2020 county presidential historical baseline rows",
+        "reviewed 2016, 2020, and 2024 precinct geometry and official-result crosswalks without vote allocation",
+        "blocked 2012 RFA-origin candidate geometry and official precinct-result evidence"
       ],
       "missingFields": [
-        "map-ready precinct boundary geometry",
+        "immutable parent-scoped delivery and guarded production activation for the reviewed 2016, 2020, and 2024 geometry",
+        "election-date, affirmative-reuse, and official crosswalk proof for 2012 geometry",
         "statewide same-office comparison contest",
         "active-registered-voter denominator artifact at the same grain as precinct results",
         "official 2012 county or county-equivalent presidential baseline normalized into ETL"
       ],
-      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads; historical 2016 and 2020 county baselines normalized from official Election History contest CSVs; county turnout now uses normalized SC VREMS voter-history rows",
-      "manualReviewBurden": "low",
-      "confidence": "loaded",
-      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening. SC VREMS turnout denominators are printed registration-list counts that include active voters plus some inactive voters for the selected election, so turnout rows are warning-required.",
-      "nextAction": "Collect or normalize official 2012 county historical baseline, precinct boundary geometry, and normalized audit/CVR/incident/recount/litigation rows."
+      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads; historical 2016 and 2020 county baselines normalized from official Election History contest CSVs; county turnout uses normalized SC VREMS voter-history rows; scripts/build-sc-reviewed-precincts.mjs deterministically rebuilds all four precinct source packages",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening. SC VREMS turnout denominators are printed registration-list counts that include active voters plus some inactive voters for the selected election. VEST and NYT supply attributed geometry only; their vote fields are stripped and the South Carolina Election Commission CSVs remain the sole result authority. The 2012 archive is post-election and has no retained affirmative derivative terms or reviewed crosswalk.",
+      "nextAction": "Build immutable county-scoped delivery and guarded release tooling for reviewed 2016, 2020, and 2024 packages; obtain election-date geometry/reuse/crosswalk evidence for 2012; and normalize audit/CVR/incident/recount/litigation rows."
     },
     {
       "state": "SD",

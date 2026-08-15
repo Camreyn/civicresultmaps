@@ -7581,3 +7581,47 @@ evidence against its verified top-level package.
   `average_down_ballot_difference` rows. These are review signals only, not
   evidence of fraud or misconduct. This source-package task did not promote
   staging or query production API/database indicator counts.
+
+### 2026-08-14 - South Carolina four-election precinct source review
+
+- South Carolina now retains the exact official Election Commission
+  presidential contest CSV for 2012, 2016, 2020, and 2024. A deterministic
+  builder verifies every raw artifact before parsing or writing and emits
+  vote-free normalized geometry, official normalized result rows, explicit
+  relationship records, source evidence, a review report, and a fail-closed
+  manifest for each election. Earlier ledger-only RFA/Census diagnostics are
+  superseded by these materialized packages.
+- The reviewed 2016 package collapses only the two source polygons for Laurens
+  6 into one multipart feature and maps 2,232 official geographic result rows
+  one-to-one. Hall's Store is an official zero-vote row with no reviewed
+  feature and remains a no-geometry reconciliation row. The 318 countywide
+  administrative rows and 513,066 votes are never allocated; two unlinked
+  geometry features remain explicit reviewed no-data shapes.
+- The reviewed 2020 package maps all 2,261 geographic result rows to the
+  election-specific VEST geometry attributed to South Carolina RFA. The 138
+  administrative rows and 9,109 votes remain non-geographic, and two unlinked
+  features remain explicit no-data shapes. VEST documentation says its source
+  vote fields include allocated countywide provisional/failsafe values, so
+  every such field is stripped and no VEST vote is eligible for display.
+- The reviewed 2024 package maps all 2,308 official geographic rows to 2,308
+  NYT features marked `official_boundary=true` by county and a unique complete
+  presidential vote signature. The geographic total is 2,541,877. The 138
+  administrative rows account for the exact remaining 6,263 official votes
+  and are never assigned to polygons. NYT non-commercial attribution terms are
+  retained and must accompany any future delivery.
+- The 2012 package retains 2,477 official result rows, 1,964,118 presidential
+  votes, and 2,155 RFA-origin candidate features from a July 2013 archive, but
+  approves zero result relationships. Exact November 2012 applicability,
+  affirmative derivative terms, and an official or independently reviewable
+  result crosswalk remain unresolved; 2012 stays outside the public registry.
+- All four coverage ledgers now record South Carolina. The 2016, 2020, and
+  2024 crosswalks are reviewed, but public eligibility remains zero because
+  immutable county-scoped delivery and guarded database/deployment activation
+  are separate future changes. Each election retains its own boundary vintage;
+  the packages do not imply that precinct shapes are stable across elections.
+- The normal 2024 South Carolina ETL still validates with 46 result rows,
+  2,401 native review rows, 46 turnout rows, and nine configured sources. The
+  advisory report calculates 78 screening rows across 45 flagged counties:
+  41 `vote_share_pattern` rows and 37 `average_down_ballot_difference` rows.
+  These are review signals only, not evidence of fraud or misconduct. This
+  source-package task does not promote staging or mutate production data.

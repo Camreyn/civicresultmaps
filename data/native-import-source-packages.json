@@ -891,7 +891,7 @@
       "state": "SC",
       "name": "South Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_precinct_review_state_turnout_2016_2020_historical_partial_reconciliation",
+      "nativeReadiness": "complete_county_map_precinct_review_state_turnout_2016_2020_historical_reviewed_precinct_gis_2016_2020_2024_2012_blocked",
       "authority": "South Carolina Election Commission",
       "configFile": "etl/state-configs/sc.json",
       "legacyReferenceBundle": "data/sc-app-data.js",
@@ -925,6 +925,20 @@
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
         },
+        "precinctGeometryReview": {
+          "sourceTitle": "South Carolina four-election official-result and precinct-geometry review packages",
+          "sourceUrl": "https://electionhistory.scvotes.gov/",
+          "localFile": "data/precinct-geometry/SC",
+          "parserHint": "Run scripts/build-sc-reviewed-precincts.mjs. It uses official state contest CSVs as the sole vote source, strips every secondary geometry vote field, and writes reviewed 2016/2020/2024 crosswalks plus a blocked 2012 candidate.",
+          "reviewedYears": [
+            2016,
+            2020,
+            2024
+          ],
+          "blockedYears": [
+            2012
+          ]
+        },
         "historicalBaseline": {
           "sourceTitle": "South Carolina Elections Database official 2016 and 2020 presidential contest CSVs normalized to county baselines",
           "sourceUrl": "https://electionhistory.scvotes.gov/",
@@ -954,13 +968,16 @@
         "reviewMode": "president_vs_us_house_dropoff_district_based",
         "turnoutMode": "sc_vrems_county_voter_history_warning_required",
         "historicalBaselineMode": "official_sc_elections_database_2016_2020_county_baseline_context",
-        "historicalMode": "official_election_history_county_csv_2016_2020_2012_missing"
+        "historicalMode": "official_election_history_county_csv_2016_2020_2012_missing",
+        "precinctGeometryMode": "reviewed_secondary_geometry_official_result_values_2016_2020_2024_2012_blocked"
       },
       "caveats": [
         "U.S. House is district-based rather than a single statewide comparison race; review rows remain advisory.",
         "The parser aggregates duplicate county/precinct keys created by congressional-district splits before calculating dropoff.",
         "SC VREMS registration denominators are printed registration-list counts and include active voters plus some inactive voters, so turnout rows are warning-required.",
-        "Precinct boundary GeoJSON is not included; only county geometry and a VREMS precinct/polling-place reference path are identified.",
+        "Reviewed precinct geometry and official-result crosswalks exist for 2016, 2020, and 2024 but remain outside production until immutable delivery and guarded activation are complete.",
+        "VEST and NYT supply attributed geometry only; their vote fields are stripped and all displayable values come from official South Carolina Election Commission exports.",
+        "The 2012 RFA-origin archive remains blocked because its post-election vintage, derivative terms, and result crosswalk are unresolved.",
         "Official 2016 and 2020 county historical baselines are normalized from South Carolina Elections Database presidential contest CSVs and resolve to Census county FIPS tags.",
         "Official 2012 county historical baseline has not been normalized yet."
       ]

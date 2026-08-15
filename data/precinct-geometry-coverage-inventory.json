@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T02:22:39.949Z",
+  "updatedAt": "2026-08-15T04:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -22,19 +22,19 @@
   },
   "sourceContext": {
     "sourceAcquisitionTiers": "data/source-acquisition-tiers.json",
-    "sourceAcquisitionCheckedAt": "2026-08-02",
+    "sourceAcquisitionCheckedAt": "2026-08-15",
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 7,
+    "totalJurisdictions": 8,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 7
+      "reviewed": 8
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 7,
+      "mapped": 8,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
@@ -436,6 +436,65 @@
         "Seven duplicate or cross-county source identities are retained as aliases and never duplicate votes.",
         "All 87 administrative units remain non-geographic and are never assigned a polygon.",
         "All displayed vote values will come only from the official Michigan SOS precinct ZIP.",
+        "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
+      ]
+    },
+    {
+      "state": "SC",
+      "stateName": "South Carolina",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 10,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-15T04:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "sc-2024-11-05-reviewed-precinct-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/SC-precincts-with-results.geojson.gz"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/SC/2024-11-05-general/source-evidence.json",
+          "data/precinct-geometry/SC/2024-11-05-general/normalized/sc-2024-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/SC/2024-11-05-general/crosswalk/sc-2024-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 2308,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 2446,
+        "colorableResultUnits": 2308,
+        "matchedResultUnits": 2308,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 138,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path while preserving all administrative rows as no-geometry reconciliation records.",
+      "notes": [
+        "All 2,308 geographic official result rows match exactly one official-boundary feature by county and a unique complete presidential vote signature.",
+        "All displayed values will come only from the official South Carolina Election Commission CSV; NYT vote fields are stripped.",
+        "The 138 countywide administrative rows totaling 6,263 votes remain non-geographic and are never allocated.",
+        "NYT non-commercial attribution terms must accompany eventual delivery.",
         "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
       ]
     }

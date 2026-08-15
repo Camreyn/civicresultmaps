@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "sc-2024-11-05-reviewed-precinct-geometry-v1",
+  "state": "SC",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "NYT 2024 election-specific South Carolina precinct package with every retained feature marked official_boundary=true",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "South Carolina Election Commission results with attributed New York Times election-specific official-boundary geometry",
+    "url": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/SC-precincts-with-results.geojson.gz",
+    "retrievedAt": "2026-08-15T04:00:00.000Z",
+    "artifact": "data/precinct-geometry/SC/2024-11-05-general/source-evidence.json",
+    "sha256": "93fb1d14e42f31f0c8ee1980e19d2a93fbf52a73e6b5a039d0cda6235008e1ee",
+    "byteCount": 7222,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "NYT geometry is retained under the NYT Content API Use and Data Agreement non-commercial attribution terms; official South Carolina result values remain the sole displayed vote source."
+  },
+  "normalization": {
+    "script": "scripts/build-sc-reviewed-precincts.mjs",
+    "sourceCrs": "EPSG:4326 GeoJSON",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/SC/2024-11-05-general/normalized/sc-2024-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "cbdb84a53dbdb1fa55d0a492785c08b6ed7b23ec0f6fba8a597d33cabfbcbe94",
+    "byteCount": 35604614,
+    "featureCount": 2308,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "sc-election-commission-2024-president-7131",
+    "artifact": "data/precinct-geometry/SC/2024-11-05-general/crosswalk/sc-2024-result-to-geometry-review.json",
+    "sha256": "beda18befc6ddec9a1cc741910bfdd7364519634ba7126f5a47c153fd5dc8cbd",
+    "byteCount": 1778403,
+    "resultUnits": 2446,
+    "colorableResultUnits": 2308,
+    "matchedResultUnits": 2308,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 138,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2308,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 138,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 2446,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "reviewed_name"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "138 official no-geometry result units remain reconciliation-only and are never allocated to polygons.",
+      "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
+      "The 2,308 geographic rows reconcile exactly by county and unique complete presidential vote signature; the 6,263 administrative votes remain outside geometry.",
+      "NYT non-commercial attribution terms must accompany any eventual delivery."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from VEST, NYT, Census, or any geometry source is used as a displayed election result.",
+    "138 official no-geometry result units remain reconciliation-only and are never allocated to polygons.",
+    "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
+    "The 2,308 geographic rows reconcile exactly by county and unique complete presidential vote signature; the 6,263 administrative votes remain outside geometry.",
+    "NYT non-commercial attribution terms must accompany any eventual delivery.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

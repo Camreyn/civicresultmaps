@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T02:22:39.949Z",
+  "updatedAt": "2026-08-15T04:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -22,22 +22,22 @@
   },
   "sourceContext": {
     "sourceAcquisitionTiers": "data/source-acquisition-tiers.json",
-    "sourceAcquisitionCheckedAt": "2026-08-02",
+    "sourceAcquisitionCheckedAt": "2026-08-15",
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 6,
+    "totalJurisdictions": 7,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 6
+      "reviewed": 7
     },
     "disposition": {
       "undecided": 0,
       "mapped": 3,
       "partial": 1,
       "official_geometry_unavailable": 0,
-      "blocked": 2
+      "blocked": 3
     },
     "publicEligibleJurisdictions": 3
   },
@@ -394,6 +394,67 @@
         "Five duplicate or cross-county source identities are retained as aliases and never duplicate votes.",
         "All 371 administrative units remain non-geographic and are never assigned a polygon.",
         "This election retains its own boundary evidence and is not treated as a stable precinct trend geography."
+      ]
+    },
+    {
+      "state": "SC",
+      "stateName": "South Carolina",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 10,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-15T04:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_5_digital_inconsistent"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://sc.elstats.civera.com/api/download_contest/9112_table.csv?split_party=false"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "sc-2012-11-06-rfa-archive-precinct-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://github.com/aaron-strauss/precinct-shapefiles"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/SC/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/SC/2012-11-06-general/normalized/sc-2012-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/SC/2012-11-06-general/crosswalk/sc-2012-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 2155,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 2477,
+        "colorableResultUnits": 2140,
+        "matchedResultUnits": 0,
+        "unmatchedResultUnits": 2140,
+        "nonGeographicResultUnits": 337,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "The statewide RFA-origin archive was created July 29, 2013 and does not prove the November 6, 2012 precinct configuration.",
+        "No official or reviewed crosswalk connects the 2,140 geographic official result rows to the 2,155 archived features.",
+        "Affirmative derivative-redistribution terms were not retained for the archived geometry."
+      ],
+      "nextAction": "Obtain an immutable November 2012 RFA geometry edition or custodian confirmation, affirmative reuse terms, and an official or independently reviewable result crosswalk; keep this package outside the public registry.",
+      "notes": [
+        "All 2,477 official result rows and 1,964,118 presidential votes are hash-pinned from the South Carolina Election Commission export.",
+        "All 337 administrative rows remain non-geographic and are never assigned to polygons.",
+        "The 2,155 archived RFA-origin features are retained only as diagnostic candidates; zero result relationships are approved.",
+        "No proportional allocation or name-only publication is permitted."
       ]
     }
   ]

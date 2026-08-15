@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "sc-2012-11-06-rfa-archive-precinct-candidate-v1",
+  "state": "SC",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "RFA-origin statewide precinct shapefile created July 29, 2013; November 6, 2012 applicability is unconfirmed",
+    "vintageStatus": "unknown",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "South Carolina Election Commission results; RFA-origin geometry retained through the Aaron Strauss precinct-shapefiles archive",
+    "url": "https://github.com/aaron-strauss/precinct-shapefiles",
+    "retrievedAt": "2026-08-15T04:00:00.000Z",
+    "artifact": "data/precinct-geometry/SC/2012-11-06-general/source-evidence.json",
+    "sha256": "caeca08162afbc4e93341abe0d25d06846870543309588ac12bbdb32c3b53f0e",
+    "byteCount": 100262,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "The archived file attributes the geometry to the South Carolina Office of Research and Statistics, but no affirmative derivative-redistribution terms were retained."
+  },
+  "normalization": {
+    "script": "scripts/build-sc-reviewed-precincts.mjs",
+    "sourceCrs": "source-defined and normalized by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/SC/2012-11-06-general/normalized/sc-2012-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "98baa91f180a5a60102353e5d7c8d1ecb6b26d83c6e9c1d15e68f7fbb355a5e3",
+    "byteCount": 9972269,
+    "featureCount": 2155,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "resultSourceId": "sc-election-commission-2012-president-9112",
+    "artifact": "data/precinct-geometry/SC/2012-11-06-general/crosswalk/sc-2012-result-to-geometry-review.json",
+    "sha256": "b45e473c8b90b11e95e9dcbc5124377d40040cac1bfae6a3e50194f4d7d7fdb2",
+    "byteCount": 1658773,
+    "resultUnits": 2477,
+    "colorableResultUnits": 2140,
+    "matchedResultUnits": 0,
+    "unmatchedResultUnits": 2140,
+    "nonGeographicResultUnits": 337,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 0,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 337,
+      "sourceAlias": 0,
+      "pendingReview": 2140
+    },
+    "methods": [
+      "normalized_name_candidate",
+      "exact_official_id"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "resultTotalsReconciled": false,
+    "errors": [
+      "The retained statewide geometry was created July 29, 2013 and does not prove the November 6, 2012 precinct configuration.",
+      "No official or reviewed result-to-feature crosswalk links the 2,140 geographic result rows to the 2,155 archived features.",
+      "The retained archive does not provide affirmative derivative-redistribution terms for the RFA-origin geometry.",
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "337 official no-geometry result units remain reconciliation-only and are never allocated to polygons.",
+      "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
+      "The archived 2013 geometry is retained only as a diagnostic candidate and no row-level rendering is approved."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from VEST, NYT, Census, or any geometry source is used as a displayed election result.",
+    "337 official no-geometry result units remain reconciliation-only and are never allocated to polygons.",
+    "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
+    "The archived 2013 geometry is retained only as a diagnostic candidate and no row-level rendering is approved.",
+    "The retained statewide geometry was created July 29, 2013 and does not prove the November 6, 2012 precinct configuration.",
+    "No official or reviewed result-to-feature crosswalk links the 2,140 geographic result rows to the 2,155 archived features.",
+    "The retained archive does not provide affirmative derivative-redistribution terms for the RFA-origin geometry.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}
