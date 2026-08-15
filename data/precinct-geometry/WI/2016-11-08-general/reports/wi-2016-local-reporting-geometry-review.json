@@ -1,0 +1,1295 @@
+{
+  "schemaVersion": 1,
+  "state": "WI",
+  "electionId": "2016-11-08-general",
+  "generatedAt": "2026-08-15T18:00:00.000Z",
+  "disposition": "reviewed_row_level_rendering_delivery_pending",
+  "summary": {
+    "year": 2016,
+    "sourceResultUnits": 3636,
+    "sourceGeometryFeatures": 6872,
+    "normalizedFeatures": 3648,
+    "mappedResultUnits": 3626,
+    "excludedResultUnits": 10,
+    "noDataFeatures": 22,
+    "officialVotes": 2976150,
+    "mappedVotes": 2976150
+  },
+  "officialTotals": {
+    "democraticVotes": 1382536,
+    "republicanVotes": 1405284,
+    "otherVotes": 188330,
+    "totalVotes": 2976150
+  },
+  "mappedTotals": {
+    "democraticVotes": 1382536,
+    "republicanVotes": 1405284,
+    "otherVotes": 188330,
+    "totalVotes": 2976150
+  },
+  "crosswalk": {
+    "resultUnits": 3636,
+    "colorableResultUnits": 3626,
+    "matchedResultUnits": 3626,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 10,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 3626,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 10,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "exclusions": [
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55007:city-of-ashland-ward-12",
+      "sourceUnitId": "city-of-ashland-ward-12",
+      "sourceDisplayName": "CITY OF ASHLAND Ward 12",
+      "parentGeoid": "55007",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55027:town-of-oak-grove-wards-3-6",
+      "sourceUnitId": "town-of-oak-grove-wards-3-6",
+      "sourceDisplayName": "TOWN OF OAK GROVE Wards 3-6",
+      "parentGeoid": "55027",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55027:town-of-westford-ward-4",
+      "sourceUnitId": "town-of-westford-ward-4",
+      "sourceDisplayName": "TOWN OF WESTFORD Ward 4",
+      "parentGeoid": "55027",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55039:town-of-fond-du-lac-ward-1a",
+      "sourceUnitId": "town-of-fond-du-lac-ward-1a",
+      "sourceDisplayName": "TOWN OF FOND DU LAC Ward 1A",
+      "parentGeoid": "55039",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55063:city-of-la-crosse-ward-34",
+      "sourceUnitId": "city-of-la-crosse-ward-34",
+      "sourceDisplayName": "CITY OF LA CROSSE Ward 34",
+      "parentGeoid": "55063",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55087:city-of-kaukauna-ward-12",
+      "sourceUnitId": "city-of-kaukauna-ward-12",
+      "sourceDisplayName": "CITY OF KAUKAUNA Ward 12",
+      "parentGeoid": "55087",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55101:village-of-caledonia-ward-3s",
+      "sourceUnitId": "village-of-caledonia-ward-3s",
+      "sourceDisplayName": "VILLAGE OF CALEDONIA Ward 3S",
+      "parentGeoid": "55101",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55117:city-of-sheboygan-ward-30",
+      "sourceUnitId": "city-of-sheboygan-ward-30",
+      "sourceDisplayName": "CITY OF SHEBOYGAN Ward 30",
+      "parentGeoid": "55117",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55117:city-of-sheboygan-ward-31",
+      "sourceUnitId": "city-of-sheboygan-ward-31",
+      "sourceDisplayName": "CITY OF SHEBOYGAN Ward 31",
+      "parentGeoid": "55117",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2016-11-08-general:administrative_reporting_unit:55117:city-of-sheboygan-ward-32",
+      "sourceUnitId": "city-of-sheboygan-ward-32",
+      "sourceDisplayName": "CITY OF SHEBOYGAN Ward 32",
+      "parentGeoid": "55117",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Donald J. Trump/Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Hillary Clinton/Tim Kaine",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Darrell L. Castle/Scott N. Bradley",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gary Johnson/Bill Weld",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jill Stein/Ajamu Baraka",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Monica Moorehead/Lamont Lilly",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Rocky Roque De La Fuente/Michael Steinberg",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Cherunda Fox/Roger Kushner (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Evan McMullin/Nathan Johnson (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Michael A. Maturen/Juan Munoz (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Marshall Schoenke/James Creighton Mitchell Jr. (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Chris Keniston/Deacon Taylor (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Laurence Kotlikoff/Edward E. Leamer (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Tom Hoefling/Steve Schulin (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Joseph Maldonado (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Emidio Soltysik/Angela Nicole Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    }
+  ],
+  "diagnostics": {
+    "unresolvedResultRows": [
+      {
+        "countyName": "BAYFIELD",
+        "reportingUnitLabel": "CITY OF ASHLAND Ward 12",
+        "total": 0
+      },
+      {
+        "countyName": "DODGE",
+        "reportingUnitLabel": "TOWN OF OAK GROVE Wards 3-6",
+        "total": 0
+      },
+      {
+        "countyName": "DODGE",
+        "reportingUnitLabel": "TOWN OF WESTFORD Ward 4",
+        "total": 0
+      },
+      {
+        "countyName": "FOND DU LAC",
+        "reportingUnitLabel": "TOWN OF FOND DU LAC Ward 1A",
+        "total": 0
+      },
+      {
+        "countyName": "LA CROSSE",
+        "reportingUnitLabel": "CITY OF LA CROSSE Ward 34",
+        "total": 0
+      },
+      {
+        "countyName": "OUTAGAMIE",
+        "reportingUnitLabel": "CITY OF KAUKAUNA Ward 12",
+        "total": 0
+      },
+      {
+        "countyName": "RACINE",
+        "reportingUnitLabel": "VILLAGE OF CALEDONIA Ward 3S",
+        "total": 0
+      },
+      {
+        "countyName": "SHEBOYGAN",
+        "reportingUnitLabel": "CITY OF SHEBOYGAN Ward 30",
+        "total": 0
+      },
+      {
+        "countyName": "SHEBOYGAN",
+        "reportingUnitLabel": "CITY OF SHEBOYGAN Ward 31",
+        "total": 0
+      },
+      {
+        "countyName": "SHEBOYGAN",
+        "reportingUnitLabel": "CITY OF SHEBOYGAN Ward 32",
+        "total": 0
+      }
+    ],
+    "partialGroups": [
+      {
+        "key": "BAYFIELD|C|ASHLAND",
+        "sourceWardIds": [
+          "1"
+        ],
+        "unresolvedResultRows": [
+          "CITY OF ASHLAND Ward 12"
+        ]
+      },
+      {
+        "key": "DODGE|T|OAK GROVE",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "4",
+          "5",
+          "6"
+        ],
+        "unresolvedResultRows": [
+          "TOWN OF OAK GROVE Wards 3-6"
+        ]
+      },
+      {
+        "key": "DODGE|T|WESTFORD",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3"
+        ],
+        "unresolvedResultRows": [
+          "TOWN OF WESTFORD Ward 4"
+        ]
+      },
+      {
+        "key": "FOND DU LAC|T|FOND DU LAC",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "unresolvedResultRows": [
+          "TOWN OF FOND DU LAC Ward 1A"
+        ]
+      },
+      {
+        "key": "LA CROSSE|C|LA CROSSE",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33"
+        ],
+        "unresolvedResultRows": [
+          "CITY OF LA CROSSE Ward 34"
+        ]
+      },
+      {
+        "key": "OUTAGAMIE|C|KAUKAUNA",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        "unresolvedResultRows": [
+          "CITY OF KAUKAUNA Ward 12"
+        ]
+      },
+      {
+        "key": "RACINE|V|CALEDONIA",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3",
+          "3B",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20"
+        ],
+        "unresolvedResultRows": [
+          "VILLAGE OF CALEDONIA Ward 3S"
+        ]
+      },
+      {
+        "key": "SHEBOYGAN|C|SHEBOYGAN",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29"
+        ],
+        "unresolvedResultRows": [
+          "CITY OF SHEBOYGAN Ward 30",
+          "CITY OF SHEBOYGAN Ward 31",
+          "CITY OF SHEBOYGAN Ward 32"
+        ]
+      }
+    ]
+  },
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/normalized/wi-2016-reviewed-local-reporting-geometry.geojson.gz",
+      "byteCount": 22324555,
+      "sha256": "cce73026a46ef5dcae5137f0d23a6b5b254422a3faaa1c51774ee1ba2305f320",
+      "uncompressedByteCount": 151305331,
+      "uncompressedSha256": "c8c83c00d5125d401f1a44122d76bf0e1d5547fb28726a3dc8a4215eee9569ff"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/normalized/wi-2016-official-president-results.json.gz",
+      "byteCount": 228635,
+      "sha256": "2ae9f2c8d3875a007f4947e1126b049ef96c831c54c6afb48f4bcf8d8a7f8787",
+      "uncompressedByteCount": 9224087,
+      "uncompressedSha256": "f0213a2e7b4095666d56f1cb2193cd2812b0977c02295e000485fc24fc4107d0"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/crosswalk/wi-2016-result-to-geometry-review.json",
+      "byteCount": 2773352,
+      "sha256": "75c4fc759bfb9decf077662c278baddc161c26265108ab79b51e3ca96c576974"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/source-evidence.json",
+      "byteCount": 4893,
+      "sha256": "d2fb308dd0a05024de87ff439cdee5776130d62e3ef1b345be1571fda6453366"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/manifest.json",
+      "byteCount": 4610,
+      "sha256": "c9c505414ef135453a99d7d71554a9fb173c72e61cae8f49094b2934c7730336"
+    }
+  }
+}

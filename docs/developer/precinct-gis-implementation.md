@@ -7688,3 +7688,54 @@ evidence against its verified top-level package.
   browser checks confirmed the 2016/2020/2024 maps, OpenStreetMap base layer,
   and year-pinned 2020 export/API examples. The 2012 manifest, results, and
   geometry endpoints remain unavailable as designed.
+
+### 2026-08-15 - Wisconsin four-election local-reporting geometry review
+
+- Wisconsin is modeled as `local_reporting_unit`, not generically relabeled as
+  precinct or ward. WEC/GAB result rows frequently combine several municipal
+  wards into one reporting unit, so each reviewed output feature represents
+  the complete official reporting row and may be a multipart geometry.
+- A deterministic builder hash-verifies every retained input before parsing or
+  writing. It emits vote-free normalized geometry, official normalized result
+  rows, explicit relationship records, source evidence, a review report, and
+  a fail-closed manifest for each election. No official result is divided,
+  proportionally allocated, or copied to multiple polygons.
+- The 2016 package retains 3,636 official WEC recount result units and maps
+  3,626 of them to 3,648 reviewed local-reporting features. Ten official
+  zero-vote rows remain no-geometry reconciliation records, and 22 source
+  features remain reviewed no-data shapes. All 2,976,150 official presidential
+  votes are preserved. VEST supplies attributed election-specific geometry
+  only; every VEST election field is removed from normalized output.
+- The 2020 package retains 3,698 official WEC recount result units and maps
+  3,696 of them to 3,705 reviewed features. Two official zero-vote rows remain
+  no-geometry reconciliation records, and nine source features remain reviewed
+  no-data shapes. All 3,298,041 official presidential votes are preserved.
+  VEST is again geometry-only and its documented disaggregated result values
+  are never eligible for display.
+- The 2024 package retains 3,603 official WEC result units and maps all 3,503
+  units with votes to 3,503 NYT features marked `official_boundary=true`.
+  The remaining 100 official rows report zero votes and have no reviewed
+  geometry. All 3,422,918 official WEC presidential votes are preserved. NYT
+  election values are used only as a join check and are stripped; its retained
+  non-commercial attribution terms must accompany any future delivery. The
+  official LTSB January 2025 ward layer is retained only as contrary-source
+  evidence because its own metadata says reporting-unit votes were
+  population-disaggregated and ward totals may differ from WEC totals.
+- The 2012 package hash-pins 3,525 official GAB/WEC result rows totaling
+  3,047,999 votes but approves zero geometry relationships. The public LTSB
+  layer uses 2011 wards and describes population-disaggregated 2012 election
+  values rather than a preserved vote-preserving reporting-unit crosswalk.
+  Its election fields are excluded from derivatives, and 2012 remains outside
+  delivery and the public registry pending authoritative crosswalk evidence.
+- All four coverage ledgers now record Wisconsin. Public eligibility remains
+  zero for every year because immutable county-scoped delivery and guarded
+  database/deployment activation are separate future changes; only 2016,
+  2020, and 2024 are eligible for that next release-tooling phase. Each year
+  retains its own boundary vintage and is not treated as a stable trend layer.
+- The normal Wisconsin ETL validates with 72 county result rows, 3,503 native
+  review rows, 1,851 turnout rows, and 14 configured sources. The advisory
+  report calculates 187 screening rows across 70 flagged jurisdictions and
+  126 flagged areas: 103 `vote_share_pattern` rows and 84
+  `average_down_ballot_difference` rows. These are review signals only, not
+  evidence of fraud or misconduct. This source-package task does not promote
+  staging or mutate production data.

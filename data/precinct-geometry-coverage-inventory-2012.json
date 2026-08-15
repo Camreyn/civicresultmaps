@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T04:00:00.000Z",
+  "updatedAt": "2026-08-15T18:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 7,
+    "totalJurisdictions": 8,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 7
+      "reviewed": 8
     },
     "disposition": {
       "undecided": 0,
       "mapped": 3,
       "partial": 1,
       "official_geometry_unavailable": 0,
-      "blocked": 3
+      "blocked": 4
     },
     "publicEligibleJurisdictions": 3
   },
@@ -454,6 +454,65 @@
         "All 2,477 official result rows and 1,964,118 presidential votes are hash-pinned from the South Carolina Election Commission export.",
         "All 337 administrative rows remain non-geographic and are never assigned to polygons.",
         "The 2,155 archived RFA-origin features are retained only as diagnostic candidates; zero result relationships are approved.",
+        "No proportional allocation or name-only publication is permitted."
+      ]
+    },
+    {
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 11,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-15T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_5_digital_inconsistent"
+      ],
+      "resultReportingGrains": [
+        "local_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://whs.access.preservica.com/download/file/IO_42c8a6e0-0621-4aa7-bb4e-9dd5c8669f70"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "wi-2012-11-06-local-reporting-geometry-blocked-v2"
+        ],
+        "officialSourceLeads": [
+          "https://www.arcgis.com/home/item.html?id=444f867b16e24bb2a085b17db40a0af2"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/WI/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/WI/2012-11-06-general/normalized/wi-2012-reviewed-local-reporting-geometry.geojson.gz",
+          "data/precinct-geometry/WI/2012-11-06-general/crosswalk/wi-2012-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "local_reporting_unit"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 0,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 3525,
+        "colorableResultUnits": 3525,
+        "matchedResultUnits": 0,
+        "unmatchedResultUnits": 3525,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "The official LTSB layer uses 2011 wards and population-disaggregated 2012 election values, not a preserved reporting-unit-to-boundary crosswalk.",
+        "No reviewed relationship connects the 3,525 official GAB/WEC reporting units to election-effective polygons without allocating votes."
+      ],
+      "nextAction": "Obtain an authoritative November 2012 reporting-unit-to-ward crosswalk or election-effective reporting-unit boundary package; keep this election outside delivery and the public registry.",
+      "notes": [
+        "All 3,525 official result rows and 3,047,999 presidential votes are hash-pinned from the GAB/WEC workbook retained by the Wisconsin Historical Society.",
+        "The official LTSB layer is retained only to document ward identities and the population-disaggregation problem; all election-value fields are excluded from derivatives.",
+        "Zero result relationships are approved and no vote is assigned to geometry.",
         "No proportional allocation or name-only publication is permitted."
       ]
     }

@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2020-11-03-reviewed-local-reporting-geometry-v1",
+  "state": "WI",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "local_reporting_unit",
+    "parentLevel": "county",
+    "boundaryVintage": "VEST 2020 election-specific reconstruction using Wisconsin LTSB Fall 2020 wards and reviewed later-ward corrections",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Wisconsin Elections Commission and Voting and Election Science Team",
+    "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4773528&version=21.0",
+    "retrievedAt": "2026-08-15T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/WI/2020-11-03-general/source-evidence.json",
+    "sha256": "4c005d6aed82bc9bef57a3c3bab1131a5e5dfde79c453ff712d0fceb59cfa059",
+    "byteCount": 4820,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "VEST geometry is retained under CC BY 4.0 with attribution; official WEC/GAB values are the sole vote source."
+  },
+  "normalization": {
+    "script": "scripts/build-wi-reviewed-local-geometry.mjs",
+    "sourceCrs": "source-defined and normalized by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/WI/2020-11-03-general/normalized/wi-2020-reviewed-local-reporting-geometry.geojson.gz",
+    "sha256": "5007f95ba2916f9ed15f4cf621c2307ae98f9bfd1021146c508188b11f5921ca",
+    "byteCount": 23636300,
+    "featureCount": 3705,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "wi-wec-2020-president-after-recount-ward-by-ward",
+    "artifact": "data/precinct-geometry/WI/2020-11-03-general/crosswalk/wi-2020-result-to-geometry-review.json",
+    "sha256": "5d32babe6bb5a401a80224321312865681fafb0e3d13eb6cd45be2d2e48c39f8",
+    "byteCount": 2821641,
+    "resultUnits": 3698,
+    "colorableResultUnits": 3696,
+    "matchedResultUnits": 3696,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 2,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 3696,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 2,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 3698,
+    "reviewedNoDataFeatures": 9,
+    "methods": [
+      "reviewed_name",
+      "spatial_review"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+      "2 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+      "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+      "VEST reconciled LTSB Fall 2020 and later ward information and disaggregated source votes; all 2020 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+      "9 source boundary components have no official result relationship and are retained only as explicit no-data shapes."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from VEST, NYT, or LTSB allocated election fields is used as a displayed election result.",
+    "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+    "2 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+    "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+    "VEST reconciled LTSB Fall 2020 and later ward information and disaggregated source votes; all 2020 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+    "9 source boundary components have no official result relationship and are retained only as explicit no-data shapes.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

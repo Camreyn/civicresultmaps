@@ -2662,7 +2662,7 @@
       "stateName": "Wisconsin",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_historical_audit",
+      "dataFamily": "results_review_turnout_historical_audit_geometry",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "ward",
       "exportFormats": [
@@ -2680,19 +2680,23 @@
         "Verified Voting equipment context",
         "2012/2016/2020 county historical presidential baselines",
         "WEC post-election audit selected reporting units",
-        "WEC post-election audit statewide findings"
+        "WEC post-election audit statewide findings",
+        "reviewed election-specific local-reporting geometry and official-result crosswalks for 2016, 2020, and 2024",
+        "blocked 2012 official-result and LTSB ward evidence package"
       ],
       "missingFields": [
         "ward-level registration denominator",
         "per-reporting-unit audit discrepancy outcomes",
         "county CVR availability verification",
-        "normalized incident/correction/recount/litigation rows"
+        "normalized incident/correction/recount/litigation rows",
+        "authoritative 2012 reporting-unit-to-election-boundary crosswalk",
+        "immutable parent-scoped geometry delivery and guarded production activation"
       ],
-      "parserStatus": "native ward review package loaded with historical baseline and partial audit context",
-      "manualReviewBurden": "low",
-      "confidence": "loaded",
-      "caveats": "Turnout rows use EAC local-jurisdiction fallback because WEC ward workbook lacks denominator fields. Historical rows are contextual county baselines from secondary tables with source footnotes. WEC audit context includes selected reporting units and statewide findings, but the published report does not include per-reporting-unit discrepancy outcomes.",
-      "nextAction": "Find ward-level registered-voter denominator if available; request local audit submission materials if per-reporting-unit outcomes are needed; then complete CVR availability and incident/correction source inventories."
+      "parserStatus": "native ward review package loaded; deterministic reviewed local-reporting geometry builder covers 2016, 2020, and 2024 and preserves a blocked 2012 package",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_reviewed_geometry_candidates",
+      "caveats": "Turnout rows use EAC local-jurisdiction fallback because WEC ward workbook lacks denominator fields. Historical rows are contextual county baselines from secondary tables with source footnotes. WEC/GAB workbooks are the sole source of displayed vote values. VEST 2016/2020 and NYT 2024 supply attributed geometry only; their election-value fields are discarded. The official LTSB January 2025 ward layer is retained only as a blocked diagnostic because its metadata says election values were population-disaggregated and ward totals may differ from WEC totals. No official result row is split or proportionally allocated. The 2012 LTSB context is population-disaggregated and cannot prove a vote-preserving reporting-unit crosswalk, so 2012 remains blocked. WEC audit context includes selected reporting units and statewide findings, but the published report does not include per-reporting-unit discrepancy outcomes.",
+      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path for 2016, 2020, and 2024. Obtain an authoritative 2012 reporting-unit crosswalk or election-effective boundary package before considering 2012 delivery; separately continue denominator and administration-context collection."
     },
     {
       "state": "WV",

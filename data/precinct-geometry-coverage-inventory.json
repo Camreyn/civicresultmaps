@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T15:16:03.574Z",
+  "updatedAt": "2026-08-15T18:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 8,
+    "totalJurisdictions": 9,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 8
+      "reviewed": 9
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 8,
+      "mapped": 9,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 0
@@ -494,6 +494,65 @@
         "The 138 countywide administrative rows totaling 6,263 votes remain non-geographic and are never allocated.",
         "NYT non-commercial attribution terms must accompany eventual delivery.",
         "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
+      ]
+    },
+    {
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 11,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-15T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_3_secondary_geometry"
+      ],
+      "resultReportingGrains": [
+        "local_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://elections.wi.gov/election-result/2024-fall-general-election-results"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "wi-2024-11-05-reviewed-local-reporting-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/WI-precincts-with-results.geojson.gz"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/WI/2024-11-05-general/source-evidence.json",
+          "data/precinct-geometry/WI/2024-11-05-general/normalized/wi-2024-reviewed-local-reporting-geometry.geojson.gz",
+          "data/precinct-geometry/WI/2024-11-05-general/crosswalk/wi-2024-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "local_reporting_unit"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 3503,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 3603,
+        "colorableResultUnits": 3503,
+        "matchedResultUnits": 3503,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 100,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path while retaining all zero-vote no-geometry rows.",
+      "notes": [
+        "All 3,503 mapped local reporting units preserve complete official WEC rows and all 3,422,918 official presidential votes.",
+        "The 100 official zero-vote reporting units without reviewed geometry remain explicit no-geometry reconciliation rows.",
+        "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+        "NYT election values are used only to verify the join and are removed from normalized geometry; NYT non-commercial attribution terms must accompany eventual delivery.",
+        "This election retains its own boundary vintage and is not treated as a stable local-unit trend geography."
       ]
     }
   ]

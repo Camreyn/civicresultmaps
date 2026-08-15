@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2024-official-results-and-local-geometry-review",
+  "state": "WI",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Wisconsin Elections Commission and The New York Times",
+  "retrievedAt": "2026-08-15T18:00:00.000Z",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2024-11-05-general/raw/wec-2024-general/ward-by-ward-federal-state.xlsx",
+      "byteCount": 1411774,
+      "sha256": "d23ebca4e718274c3890bfc4db9454573ecb6e2048a58b18b70a57d4c6094c67",
+      "format": "official WEC ward-by-ward XLSX",
+      "sourceUrl": "https://elections.wi.gov/election-result/2024-fall-general-election-results",
+      "authority": "Wisconsin Elections Commission",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official 3,603-row presidential reporting-unit universe; sole vote-value source."
+    },
+    {
+      "localArtifactPath": "data/wi-2024-ward-geometry-item-metadata.json",
+      "byteCount": 17582,
+      "sha256": "f9a973d3bd52a0baccc66df66b5242c5a8cdb2a070da4c3bbefff16c3c8839ee",
+      "format": "official LTSB 2025-ward diagnostic metadata",
+      "sourceUrl": "https://www.arcgis.com/sharing/rest/content/items/878d8826218f42509e07437a82ef6b6e?f=json",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Documents why the otherwise official 2025-ward layer is not used: election values were population-disaggregated and ward totals may differ from WEC totals."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2024-11-05-general/raw/nyt/WI-precincts-with-results.geojson.gz",
+      "byteCount": 24335312,
+      "sha256": "75d3a16ce02cd15134b13acb5211d46140ce9437474b84df3ab39d0d1062fac3",
+      "format": "NYT election-specific GeoJSON gzip",
+      "sourceUrl": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/WI-precincts-with-results.geojson.gz",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "All 3,503 retained features are marked official_boundary=true. Embedded votes are used only to verify the join, then discarded.",
+      "compression": "gzip",
+      "uncompressedByteCount": 86152258,
+      "uncompressedSha256": "2da8ac27e07172afcbcbbe4954336281d7c36038363c62f96354125edd9c1065"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2024-11-05-general/raw/nyt/WI-precincts-with-results.csv.gz",
+      "byteCount": 55144,
+      "sha256": "14f05661d25f09bfcf0dedba2a411a90caa96ab66a4720a1e92e09e4bc649385",
+      "format": "NYT compact cross-check CSV gzip",
+      "sourceUrl": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/WI-precincts-with-results.csv.gz",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retained for reproducibility; never a displayed vote source.",
+      "compression": "gzip",
+      "uncompressedByteCount": 211352,
+      "uncompressedSha256": "f3a97f0b1e66c5b31fa7a3b9ff6ef5145d11d2276d615de5405331e8a7d8acd0"
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2024-11-05-general/raw/nyt/README.md",
+      "byteCount": 49879,
+      "sha256": "987ea44ab04c77182d335670207dac88f7114f3ae02675ea5d7076e581ffccdf",
+      "format": "NYT source README",
+      "sourceUrl": "https://raw.githubusercontent.com/nytimes/presidential-precinct-map-2024/main/README.md",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Defines official_boundary and Wisconsin coverage."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2024-11-05-general/raw/nyt/LICENSE",
+      "byteCount": 4106,
+      "sha256": "77e8635500262b129a50772647773c2c66d812902aba6ac13bdb2bab14fd59c2",
+      "format": "NYT Content API Use and Data Agreement",
+      "sourceUrl": "https://raw.githubusercontent.com/nytimes/presidential-precinct-map-2024/main/LICENSE",
+      "authority": "The New York Times",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Non-commercial attribution terms retained byte-for-byte."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "wi-wec-2024-ward-by-ward-federal-state-xlsx",
+    "sourceUnitCount": 3603,
+    "colorableSourceUnitCount": 3503,
+    "excludedZeroVoteUnits": 100,
+    "officialTotals": {
+      "democraticVotes": 1668229,
+      "republicanVotes": 1697626,
+      "otherVotes": 57063,
+      "totalVotes": 3422918
+    },
+    "mappedTotals": {
+      "democraticVotes": 1668229,
+      "republicanVotes": 1697626,
+      "otherVotes": 57063,
+      "totalVotes": 3422918
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": true,
+    "mappedResultUnits": 3503,
+    "unlinkedGeometryFeatures": 0,
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false,
+    "relationshipSummary": null
+  },
+  "caveats": [
+    "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+    "100 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+    "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+    "The NYT geometry is marked official_boundary=true and matches WEC by county, complete reporting label, and exact Harris/Trump values. NYT non-commercial attribution terms must accompany delivery."
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

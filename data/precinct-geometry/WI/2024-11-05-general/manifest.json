@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2024-11-05-reviewed-local-reporting-geometry-v1",
+  "state": "WI",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "local_reporting_unit",
+    "parentLevel": "county",
+    "boundaryVintage": "NYT 2024 Wisconsin election-specific package; every retained feature is marked official_boundary=true",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Wisconsin Elections Commission and The New York Times",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/878d8826218f42509e07437a82ef6b6e?f=json",
+    "retrievedAt": "2026-08-15T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/WI/2024-11-05-general/source-evidence.json",
+    "sha256": "88d5258b80524eccf9e0c8945e03425d65c54cc16c03091bb130767ae070dafd",
+    "byteCount": 5787,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "NYT geometry is retained under the NYT Content API Use and Data Agreement non-commercial attribution terms; official WEC values are the sole vote source."
+  },
+  "normalization": {
+    "script": "scripts/build-wi-reviewed-local-geometry.mjs",
+    "sourceCrs": "EPSG:4326 GeoJSON",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/WI/2024-11-05-general/normalized/wi-2024-reviewed-local-reporting-geometry.geojson.gz",
+    "sha256": "c3df5017d970bc3a266b846665dd543ae3a671bfa67785f697bba70312d5d378",
+    "byteCount": 27082198,
+    "featureCount": 3503,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "wi-wec-2024-ward-by-ward-federal-state-xlsx",
+    "artifact": "data/precinct-geometry/WI/2024-11-05-general/crosswalk/wi-2024-result-to-geometry-review.json",
+    "sha256": "c2c2fa121e65723bac863e8344c4bfc0d6fdadbe44ce79c4779f0e53d3fdb424",
+    "byteCount": 3012501,
+    "resultUnits": 3603,
+    "colorableResultUnits": 3503,
+    "matchedResultUnits": 3503,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 100,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 3503,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 100,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 3603,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "reviewed_name",
+      "spatial_review"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+      "100 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+      "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+      "The NYT geometry is marked official_boundary=true and matches WEC by county, complete reporting label, and exact Harris/Trump values. NYT non-commercial attribution terms must accompany delivery."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from VEST, NYT, or LTSB allocated election fields is used as a displayed election result.",
+    "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+    "100 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+    "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+    "The NYT geometry is marked official_boundary=true and matches WEC by county, complete reporting label, and exact Harris/Trump values. NYT non-commercial attribution terms must accompany delivery.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

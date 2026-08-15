@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2020-official-results-and-local-geometry-review",
+  "state": "WI",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Wisconsin Elections Commission and Voting and Election Science Team",
+  "retrievedAt": "2026-08-15T18:00:00.000Z",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/raw/wec-2020-general/wec-2020-president-after-recount-by-state-representative-district.xlsx",
+      "byteCount": 334263,
+      "sha256": "c47ec7ae49bb9f14d190e136fd3ff7c7622178a28a701950391e6fc058535431",
+      "format": "official WEC recount XLSX",
+      "sourceUrl": "https://elections.wi.gov/election-result/2020-fall-general-election-results",
+      "authority": "Wisconsin Elections Commission",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official 3,698-row presidential recount reporting-unit universe; sole vote-value source."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/raw/vest/wi_2020.zip",
+      "byteCount": 21751416,
+      "sha256": "7a8b887402598355087e39ce289b4384de5d4c5a5e2079231ed1992dbb2edb91",
+      "format": "VEST election-specific ESRI Shapefile ZIP",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4773528&version=21.0",
+      "authority": "Voting and Election Science Team; source boundaries attributed to Wisconsin LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Geometry only. Every VEST election field is discarded before normalized geometry is written."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/raw/vest/documentation.txt",
+      "byteCount": 146959,
+      "sha256": "fb784900056495c3dbf846dffb3410a71f72d2f8e06350ff66b5962aa3c1d1cc",
+      "format": "VEST documentation",
+      "sourceUrl": "https://election.lab.ufl.edu/data-downloads/resultsdata/2020/precinct/documentation.txt",
+      "authority": "Voting and Election Science Team",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Documents source geometry and reporting-unit disaggregation. Allocated values are never used."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/raw/vest/dataverse-license-evidence.json",
+      "byteCount": 836,
+      "sha256": "0c1ed4e37407c64610e68a9168f5e57416a36ad54b7d3594d219f02d5e90761e",
+      "format": "version-pinned license evidence",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4773528&version=21.0",
+      "authority": "Harvard Dataverse",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Binds the retained state ZIP to dataset version 21.0 and CC BY 4.0 terms."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "wi-wec-2020-president-after-recount-ward-by-ward",
+    "sourceUnitCount": 3698,
+    "colorableSourceUnitCount": 3696,
+    "excludedZeroVoteUnits": 2,
+    "officialTotals": {
+      "democraticVotes": 1630866,
+      "republicanVotes": 1610184,
+      "otherVotes": 56991,
+      "totalVotes": 3298041
+    },
+    "mappedTotals": {
+      "democraticVotes": 1630866,
+      "republicanVotes": 1610184,
+      "otherVotes": 56991,
+      "totalVotes": 3298041
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": true,
+    "mappedResultUnits": 3696,
+    "unlinkedGeometryFeatures": 9,
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false,
+    "relationshipSummary": {
+      "resultRows": 3698,
+      "sourceFeatures": 7090,
+      "resultMunicipalities": 1910,
+      "sourceMunicipalities": 1911,
+      "resolvedResultRows": 3696,
+      "unresolvedResultRows": 2,
+      "assignedSourceFeatures": 7081,
+      "unassignedSourceFeatures": 9,
+      "missingSourceGroups": 0,
+      "noExactCoverGroups": 0,
+      "ambiguousGroups": 0,
+      "partialGroups": 2
+    }
+  },
+  "caveats": [
+    "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+    "2 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+    "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+    "VEST reconciled LTSB Fall 2020 and later ward information and disaggregated source votes; all 2020 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+    "9 source boundary components have no official result relationship and are retained only as explicit no-data shapes."
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2012-official-results-and-local-geometry-review",
+  "state": "WI",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Wisconsin Government Accountability Board / Wisconsin Historical Society and Wisconsin Legislature / LTSB",
+  "retrievedAt": "2026-08-15T18:00:00.000Z",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/wec-2012-general/2012-11-06-ward-by-ward.xls",
+      "byteCount": 5535744,
+      "sha256": "67f81be6f8b574d2c08e712ea4b4994e2d7e25e3155ea7dbfe61cf0d70314789",
+      "format": "official GAB/WEC ward-by-ward XLS",
+      "sourceUrl": "https://whs.access.preservica.com/download/file/IO_42c8a6e0-0621-4aa7-bb4e-9dd5c8669f70",
+      "authority": "Wisconsin Government Accountability Board / Wisconsin Elections Commission records retained by the Wisconsin Historical Society",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official 3,525-row presidential reporting-unit result universe; sole vote-value source."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/item-metadata.json",
+      "byteCount": 14448,
+      "sha256": "37a06dfa290faa87123a6ba298e9b6cba1a01f87f3a906eddf9e84125ece500a",
+      "format": "official ArcGIS item metadata",
+      "sourceUrl": "https://www.arcgis.com/sharing/rest/content/items/444f867b16e24bb2a085b17db40a0af2?f=pjson",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Identifies the 2011 ward layer and population-disaggregated 2012 election context."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/item-data.json",
+      "byteCount": 28863,
+      "sha256": "d822dbc449dba3af6283ccf8b39315415d297357d619def41543db740a16db08",
+      "format": "official ArcGIS item data",
+      "sourceUrl": "https://www.arcgis.com/sharing/rest/content/items/444f867b16e24bb2a085b17db40a0af2/data?f=json",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retains the item-level service definition and source-layer binding."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/service-metadata.json",
+      "byteCount": 4334,
+      "sha256": "9b60ad16b93471fd8f8aeaafa3370291c94f094dbf665f9bd9929731dad67662",
+      "format": "official ArcGIS service metadata",
+      "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2012_to_2020_Election_Data_with_2020_Wards/FeatureServer?f=pjson",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retains the official service description and layer inventory."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/layer-metadata.json",
+      "byteCount": 87338,
+      "sha256": "956eef06f8c708653b110326b4c4f8f7a48e4e41067c26b370c2aa80e6682ee1",
+      "format": "official ArcGIS layer metadata",
+      "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2012_to_2020_Election_Data_with_2020_Wards/FeatureServer/0?f=pjson",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retains the official field definitions and the documented population-disaggregation context."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/2012-identity-and-context-values-0.json",
+      "byteCount": 563603,
+      "sha256": "e89e81e46c5418e31909838e617ff7f66034778c2905ff88f57a31db38a5583e",
+      "format": "official ArcGIS attribute page",
+      "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2012_to_2020_Election_Data_with_2020_Wards/FeatureServer",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retained only to audit ward identities and the documented allocation context; every election-value field is excluded from derivatives."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/2012-identity-and-context-values-2000.json",
+      "byteCount": 569509,
+      "sha256": "332d89a5c30964f9b68d543d8eae1776aa04f6f7ceaf4bf0652dc968195e11bf",
+      "format": "official ArcGIS attribute page",
+      "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2012_to_2020_Election_Data_with_2020_Wards/FeatureServer",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retained only to audit ward identities and the documented allocation context; every election-value field is excluded from derivatives."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/2012-identity-and-context-values-4000.json",
+      "byteCount": 566860,
+      "sha256": "fe7b3538ad99e4302423e6420d432437d3b276ebf78c93ef9635eacb23aa8bc9",
+      "format": "official ArcGIS attribute page",
+      "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2012_to_2020_Election_Data_with_2020_Wards/FeatureServer",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retained only to audit ward identities and the documented allocation context; every election-value field is excluded from derivatives."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2012-11-06-general/raw/ltsb-2011-wards/2012-identity-and-context-values-6000.json",
+      "byteCount": 181537,
+      "sha256": "0303d1a074801bf50d17e880bef7098af75c8aa872661106d6acdf5ff18e5d2a",
+      "format": "official ArcGIS attribute page",
+      "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2012_to_2020_Election_Data_with_2020_Wards/FeatureServer",
+      "authority": "Wisconsin Legislature / LTSB",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retained only to audit ward identities and the documented allocation context; every election-value field is excluded from derivatives."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "wi-gab-2012-president-ward-by-ward",
+    "sourceUnitCount": 3525,
+    "colorableSourceUnitCount": 0,
+    "excludedZeroVoteUnits": 62,
+    "officialTotals": {
+      "democraticVotes": 1612596,
+      "republicanVotes": 1396166,
+      "otherVotes": 39237,
+      "totalVotes": 3047999
+    },
+    "mappedTotals": {
+      "democraticVotes": 0,
+      "republicanVotes": 0,
+      "otherVotes": 0,
+      "totalVotes": 0
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": false,
+    "mappedResultUnits": 0,
+    "unlinkedGeometryFeatures": 0,
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false,
+    "relationshipSummary": null
+  },
+  "caveats": [
+    "The official 3,525-row result universe is retained, but the 2011 LTSB ward layer contains population-disaggregated election context rather than a vote-preserving result-to-boundary crosswalk.",
+    "No 2012 geometry or allocated LTSB vote value is emitted into normalized delivery candidates."
+  ],
+  "blockers": [
+    "No reviewed election-date-safe relationship links the 3,525 official result units to the 2011 LTSB ward layer.",
+    "The LTSB election fields are population-disaggregated context and are prohibited as displayed results.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

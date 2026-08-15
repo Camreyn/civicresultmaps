@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2016-11-08-reviewed-local-reporting-geometry-v1",
+  "state": "WI",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "local_reporting_unit",
+    "parentLevel": "county",
+    "boundaryVintage": "VEST 2016 election-specific reconstruction from Wisconsin LTSB boundaries and Wisconsin Department of Administration municipal change records",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Wisconsin Elections Commission and Voting and Election Science Team",
+    "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4468121&version=88.0",
+    "retrievedAt": "2026-08-15T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/WI/2016-11-08-general/source-evidence.json",
+    "sha256": "d2fb308dd0a05024de87ff439cdee5776130d62e3ef1b345be1571fda6453366",
+    "byteCount": 4893,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "VEST geometry is retained under CC BY 4.0 with attribution; official WEC/GAB values are the sole vote source."
+  },
+  "normalization": {
+    "script": "scripts/build-wi-reviewed-local-geometry.mjs",
+    "sourceCrs": "source-defined and normalized by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/WI/2016-11-08-general/normalized/wi-2016-reviewed-local-reporting-geometry.geojson.gz",
+    "sha256": "cce73026a46ef5dcae5137f0d23a6b5b254422a3faaa1c51774ee1ba2305f320",
+    "byteCount": 22324555,
+    "featureCount": 3648,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "wi-wec-2016-president-recount-ward-by-ward",
+    "artifact": "data/precinct-geometry/WI/2016-11-08-general/crosswalk/wi-2016-result-to-geometry-review.json",
+    "sha256": "75c4fc759bfb9decf077662c278baddc161c26265108ab79b51e3ca96c576974",
+    "byteCount": 2773352,
+    "resultUnits": 3636,
+    "colorableResultUnits": 3626,
+    "matchedResultUnits": 3626,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 10,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 3626,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 10,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 3636,
+    "reviewedNoDataFeatures": 22,
+    "methods": [
+      "reviewed_name",
+      "spatial_review"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+      "10 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+      "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+      "VEST reconstructed the November boundary edition from LTSB and Wisconsin Department of Administration records and disaggregated source votes; all 2016 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+      "22 source boundary components have no official result relationship and are retained only as explicit no-data shapes."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from VEST, NYT, or LTSB allocated election fields is used as a displayed election result.",
+    "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+    "10 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+    "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+    "VEST reconstructed the November boundary edition from LTSB and Wisconsin Department of Administration records and disaggregated source votes; all 2016 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+    "22 source boundary components have no official result relationship and are retained only as explicit no-data shapes.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

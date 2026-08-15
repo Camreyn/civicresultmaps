@@ -133,8 +133,19 @@
       "localFile": "data/wi-2024-ward-geometry-summary.json",
       "parser": "wisconsinWardGeometryArcgis",
       "authority": "Wisconsin Legislature / LTSB ArcGIS",
-      "timestampBasis": "November 2024 election data with January 2025 wards feature service collected June 25, 2026.",
-      "confidence": "Visualization candidate only. Join validation reconciles jurisdiction totals, but row-level ward allocation differs in documented residual jurisdictions, so production ward rendering remains disabled pending a 2024-to-2025 ward crosswalk.",
+      "timestampBasis": "Official ArcGIS item metadata identifies January 2025 wards and population-disaggregated November 2024 election values.",
+      "confidence": "Blocked diagnostic only. The official source says reporting-unit values were disaggregated to wards and census blocks by population and warns ward totals may differ from WEC totals, so production ward rendering remains disabled; the reviewed NYT/WEC package is tracked separately.",
+      "status": "candidate"
+    },
+    {
+      "id": "wi-four-election-reviewed-local-reporting-geometry",
+      "category": "Reviewed election-specific local reporting geometry packages",
+      "url": "https://elections.wi.gov/elections/election-results",
+      "localFile": "data/precinct-geometry/WI",
+      "parser": "wisconsinReviewedLocalReportingGeometry",
+      "authority": "Wisconsin Elections Commission / Government Accountability Board, with attributed VEST and New York Times geometry",
+      "timestampBasis": "Separate election-specific source packages for November 6, 2012; November 8, 2016; November 3, 2020; and November 5, 2024.",
+      "confidence": "Official WEC/GAB workbooks are the sole vote source. Reviewed row-preserving geometry joins are complete for 2016, 2020, and 2024; 2012 remains blocked because the public LTSB layer contains population-disaggregated election context rather than an authoritative reporting-unit crosswalk.",
       "status": "candidate"
     },
     {
@@ -213,7 +224,7 @@
   "expected": {
     "jurisdictions": 72,
     "resultRows": 72,
-    "sources": 13,
+    "sources": 14,
     "stateTotal": 3422918,
     "trump": 1697626,
     "harris": 1668229,
