@@ -125,6 +125,8 @@
     "etl:requests:wi:remaining": "node scripts/create-wi-records-request-packets.mjs",
     "etl:collect:wi:ward-geometry": "node scripts/collect-wi-ward-geometry.mjs",
     "etl:validate:wi:ward-geometry": "node scripts/validate-wi-ward-geometry-joins.mjs",
+    "precinct-gis:build:wi": "node --experimental-strip-types scripts/build-wi-reviewed-local-geometry.mjs",
+    "test:precinct-geometry:wi": "node --experimental-strip-types --test tests/api/wi-reviewed-local-geometry.test.mjs",
     "etl:collect:wi:hard-missing": "node scripts/collect-wi-hard-missing-source-evidence.mjs",
     "etl:status:swing-parity": "node scripts/report-swing-state-parity.mjs",
     "validate:electronic-integrity": "node scripts/validate-electronic-integrity-artifacts.mjs",

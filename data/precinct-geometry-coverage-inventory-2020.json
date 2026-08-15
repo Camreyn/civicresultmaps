@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T15:16:03.574Z",
+  "updatedAt": "2026-08-15T18:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 8,
+    "totalJurisdictions": 9,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 8
+      "reviewed": 9
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 7,
+      "mapped": 8,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 1
@@ -490,6 +490,65 @@
         "The 138 countywide administrative rows totaling 9,109 votes remain non-geographic and are never allocated.",
         "Two reviewed geometry features without official result rows remain explicit no-data shapes.",
         "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
+      ]
+    },
+    {
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "electionId": "2020-11-03-general",
+      "programStatus": "reviewed",
+      "wave": 11,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-15T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_3_secondary_geometry"
+      ],
+      "resultReportingGrains": [
+        "local_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://elections.wi.gov/election-result/2020-fall-general-election-results"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "wi-2020-11-03-reviewed-local-reporting-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://dataverse.harvard.edu/file.xhtml?fileId=4773528&version=21.0"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/WI/2020-11-03-general/source-evidence.json",
+          "data/precinct-geometry/WI/2020-11-03-general/normalized/wi-2020-reviewed-local-reporting-geometry.geojson.gz",
+          "data/precinct-geometry/WI/2020-11-03-general/crosswalk/wi-2020-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "local_reporting_unit"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 3705,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 3698,
+        "colorableResultUnits": 3696,
+        "matchedResultUnits": 3696,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 2,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path while retaining all no-data and zero-vote units.",
+      "notes": [
+        "All 3,696 mapped local reporting units preserve complete official WEC recount rows and all 3,298,041 official presidential votes.",
+        "Two official zero-vote reporting units without reviewed geometry remain explicit no-geometry reconciliation rows; nine reviewed source features remain explicit no-data shapes.",
+        "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+        "VEST supplies attributed election-specific geometry only; every VEST election field is removed before normalized geometry is written.",
+        "This election retains its own boundary vintage and is not treated as a stable local-unit trend geography."
       ]
     }
   ]

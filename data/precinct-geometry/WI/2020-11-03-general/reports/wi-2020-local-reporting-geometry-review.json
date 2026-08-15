@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "state": "WI",
+  "electionId": "2020-11-03-general",
+  "generatedAt": "2026-08-15T18:00:00.000Z",
+  "disposition": "reviewed_row_level_rendering_delivery_pending",
+  "summary": {
+    "year": 2020,
+    "sourceResultUnits": 3698,
+    "sourceGeometryFeatures": 7090,
+    "normalizedFeatures": 3705,
+    "mappedResultUnits": 3696,
+    "excludedResultUnits": 2,
+    "noDataFeatures": 9,
+    "officialVotes": 3298041,
+    "mappedVotes": 3298041
+  },
+  "officialTotals": {
+    "democraticVotes": 1630866,
+    "republicanVotes": 1610184,
+    "otherVotes": 56991,
+    "totalVotes": 3298041
+  },
+  "mappedTotals": {
+    "democraticVotes": 1630866,
+    "republicanVotes": 1610184,
+    "otherVotes": 56991,
+    "totalVotes": 3298041
+  },
+  "crosswalk": {
+    "resultUnits": 3698,
+    "colorableResultUnits": 3696,
+    "matchedResultUnits": 3696,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 2,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 3696,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 2,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "exclusions": [
+    {
+      "resultUnitCode": "reporting:WI:2020-11-03-general:administrative_reporting_unit:55087:city-of-appleton-ward-60",
+      "sourceUnitId": "city-of-appleton-ward-60",
+      "sourceDisplayName": "City of APPLETON Ward 60",
+      "parentGeoid": "55087",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Joseph R. Biden / Kamala D. Harris",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Donald J. Trump / Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Don Blankenship / William Mohr",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jo Jorgensen / Jeremy Spike Cohen",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Brian Carroll / Amar Patel",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Kasey Wells (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jade Simmons/Claudeliah J. Roze (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "President R19 Boddie (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Howie Hawkins / Angela Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gloria La Riva/Sunil Freeman (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Kanye West / Michelle Tidball (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Mark Charles/Adrian Wallace (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    },
+    {
+      "resultUnitCode": "reporting:WI:2020-11-03-general:administrative_reporting_unit:55103:city-of-richland-center-ward-14",
+      "sourceUnitId": "city-of-richland-center-ward-14",
+      "sourceDisplayName": "City of RICHLAND CENTER Ward 14",
+      "parentGeoid": "55103",
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0,
+      "candidateVotes": [
+        {
+          "name": "Joseph R. Biden / Kamala D. Harris",
+          "party": "DEM",
+          "votes": 0
+        },
+        {
+          "name": "Donald J. Trump / Michael R. Pence",
+          "party": "REP",
+          "votes": 0
+        },
+        {
+          "name": "Don Blankenship / William Mohr",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jo Jorgensen / Jeremy Spike Cohen",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Brian Carroll / Amar Patel",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Kasey Wells (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Jade Simmons/Claudeliah J. Roze (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "President R19 Boddie (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Howie Hawkins / Angela Walker (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Gloria La Riva/Sunil Freeman (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Kanye West / Michelle Tidball (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "Mark Charles/Adrian Wallace (write-in)",
+          "party": "OTHER",
+          "votes": 0
+        },
+        {
+          "name": "SCATTERING",
+          "party": "OTHER",
+          "votes": 0
+        }
+      ],
+      "reason": "official zero-vote unit without reviewed geometry"
+    }
+  ],
+  "diagnostics": {
+    "unresolvedResultRows": [
+      {
+        "countyName": "OUTAGAMIE",
+        "reportingUnitLabel": "City of APPLETON Ward 60",
+        "total": 0
+      },
+      {
+        "countyName": "RICHLAND",
+        "reportingUnitLabel": "City of RICHLAND CENTER Ward 14",
+        "total": 0
+      }
+    ],
+    "partialGroups": [
+      {
+        "key": "OUTAGAMIE|C|APPLETON",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "27",
+          "28",
+          "29",
+          "30",
+          "33",
+          "34",
+          "35",
+          "36",
+          "37",
+          "38",
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "48",
+          "49",
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56",
+          "57",
+          "58",
+          "59",
+          "61"
+        ],
+        "unresolvedResultRows": [
+          "City of APPLETON Ward 60"
+        ]
+      },
+      {
+        "key": "RICHLAND|C|RICHLAND CENTER",
+        "sourceWardIds": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13"
+        ],
+        "unresolvedResultRows": [
+          "City of RICHLAND CENTER Ward 14"
+        ]
+      }
+    ]
+  },
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/normalized/wi-2020-reviewed-local-reporting-geometry.geojson.gz",
+      "byteCount": 23636300,
+      "sha256": "5007f95ba2916f9ed15f4cf621c2307ae98f9bfd1021146c508188b11f5921ca",
+      "uncompressedByteCount": 151360698,
+      "uncompressedSha256": "0ca91d044e37418891e64e53484b1ed110d5c5f0525258bb1508bdfb8cd8ddf0"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/normalized/wi-2020-official-president-results.json.gz",
+      "byteCount": 193779,
+      "sha256": "336bf3f7d65ab1b2b5600f73e65a22c2f0dfab98bffc512671a983b14dd7a4bb",
+      "uncompressedByteCount": 7398257,
+      "uncompressedSha256": "b4f6dd1cddcde956d942aca2ef7b1213af167845f12e11e0d387cd754b0c5aa1"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/crosswalk/wi-2020-result-to-geometry-review.json",
+      "byteCount": 2821641,
+      "sha256": "5d32babe6bb5a401a80224321312865681fafb0e3d13eb6cd45be2d2e48c39f8"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/source-evidence.json",
+      "byteCount": 4820,
+      "sha256": "4c005d6aed82bc9bef57a3c3bab1131a5e5dfde79c453ff712d0fceb59cfa059"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/WI/2020-11-03-general/manifest.json",
+      "byteCount": 4479,
+      "sha256": "3f2d139f14ec78fa7238a24e172e961f3f6f96188a4c9de53ebaf13c11835bd5"
+    }
+  }
+}

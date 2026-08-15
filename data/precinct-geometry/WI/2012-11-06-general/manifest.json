@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2012-11-06-local-reporting-geometry-blocked-v2",
+  "state": "WI",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "local_reporting_unit",
+    "parentLevel": "county",
+    "boundaryVintage": "Official 2011 LTSB wards with population-disaggregated 2012 context; November 6, 2012 result-unit equivalence is unproven",
+    "vintageStatus": "unknown",
+    "derivationMethod": "availability_diagnostic"
+  },
+  "source": {
+    "authority": "Wisconsin Government Accountability Board / Wisconsin Historical Society and Wisconsin Legislature / LTSB",
+    "url": "https://whs.access.preservica.com/download/file/IO_42c8a6e0-0621-4aa7-bb4e-9dd5c8669f70",
+    "retrievedAt": "2026-08-15T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/WI/2012-11-06-general/source-evidence.json",
+    "sha256": "652b28c26545847780e01d691b2b326d8547890fe92accb2d369856c1279507d",
+    "byteCount": 7999,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Wisconsin public records are retained for audit; LTSB terms apply and public geometry delivery remains blocked."
+  },
+  "normalization": {
+    "script": "scripts/build-wi-reviewed-local-geometry.mjs",
+    "sourceCrs": "not applicable; no approved geometry emitted",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/WI/2012-11-06-general/normalized/wi-2012-reviewed-local-reporting-geometry.geojson.gz",
+    "sha256": "b9aeeaff32ef7ec14d605980f515ee42ffd33e618ec35ff94cdd26cfabfd5ba5",
+    "byteCount": 156,
+    "featureCount": 0,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "resultSourceId": "wi-gab-2012-president-ward-by-ward",
+    "artifact": "data/precinct-geometry/WI/2012-11-06-general/crosswalk/wi-2012-result-to-geometry-review.json",
+    "sha256": "de70ec436100b62b81ac14b4e488fe48bca3c040e8fe510ab4e0cfae3d9e754a",
+    "byteCount": 2404174,
+    "resultUnits": 3525,
+    "colorableResultUnits": 3525,
+    "matchedResultUnits": 0,
+    "unmatchedResultUnits": 3525,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 0,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 3525
+    },
+    "methods": [
+      "normalized_name_candidate"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": false,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "resultTotalsReconciled": false,
+    "errors": [
+      "No reviewed election-date-safe relationship links the 3,525 official result units to the 2011 LTSB ward layer.",
+      "The LTSB election fields are population-disaggregated context and are prohibited as displayed results.",
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "The official 3,525-row result universe is retained, but the 2011 LTSB ward layer contains population-disaggregated election context rather than a vote-preserving result-to-boundary crosswalk.",
+      "No 2012 geometry or allocated LTSB vote value is emitted into normalized delivery candidates."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from VEST, NYT, or LTSB allocated election fields is used as a displayed election result.",
+    "The official 3,525-row result universe is retained, but the 2011 LTSB ward layer contains population-disaggregated election context rather than a vote-preserving result-to-boundary crosswalk.",
+    "No 2012 geometry or allocated LTSB vote value is emitted into normalized delivery candidates.",
+    "No reviewed election-date-safe relationship links the 3,525 official result units to the 2011 LTSB ward layer.",
+    "The LTSB election fields are population-disaggregated context and are prohibited as displayed results.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

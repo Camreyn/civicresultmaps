@@ -103,6 +103,13 @@
 /data/precinct-geometry/SC/**/*.zip -diff
 /data/precinct-geometry/SC/**/*.gz -diff
 
+# Preserve every hash-pinned Wisconsin local-reporting source and derivative byte-for-byte.
+/data/precinct-geometry/WI/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/WI/**/*.zip -diff
+/data/precinct-geometry/WI/**/*.gz -diff
+/data/precinct-geometry/WI/**/*.xls -diff
+/data/precinct-geometry/WI/**/*.xlsx -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

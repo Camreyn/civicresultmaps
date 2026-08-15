@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "id": "wi-2016-official-results-and-local-geometry-review",
+  "state": "WI",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Wisconsin Elections Commission and Voting and Election Science Team",
+  "retrievedAt": "2026-08-15T18:00:00.000Z",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/raw/wec-2016-general/president-recount-ward-by-ward-with-districts.xlsx",
+      "byteCount": 402320,
+      "sha256": "fe0dd28c260b0ce99b08af0497695b9908a88c09ab5d8436787a32c2c8e5c3de",
+      "format": "official WEC recount XLSX",
+      "sourceUrl": "https://elections.wi.gov/media/7123/download",
+      "authority": "Wisconsin Elections Commission",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official 3,636-row presidential recount reporting-unit universe; sole vote-value source."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/raw/vest/wi_2016.zip",
+      "byteCount": 21941198,
+      "sha256": "744f8dd31af1bcc2e3ed20796b3b63b0646df444e9b4aed23d966c3078e33b4f",
+      "format": "VEST election-specific ESRI Shapefile ZIP",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4468121&version=88.0",
+      "authority": "Voting and Election Science Team; source boundaries attributed to Wisconsin LTSB and Wisconsin Department of Administration records",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Geometry only. Every VEST election field is discarded before normalized geometry is written."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/raw/vest/documentation.txt",
+      "byteCount": 156582,
+      "sha256": "1feba4a879741eec2d3138da1e71e0d5da735ec8c9b5ba5718ef0a3b4251ae0d",
+      "format": "VEST documentation",
+      "sourceUrl": "https://election.lab.ufl.edu/data-downloads/resultsdata/2016/precinct/documentation.txt",
+      "authority": "Voting and Election Science Team",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Documents boundary edits, reporting-unit disaggregation, and source provenance. Allocated values are never used."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/WI/2016-11-08-general/raw/vest/dataverse-license-evidence.json",
+      "byteCount": 866,
+      "sha256": "c666ed6c73cb7ba8500d8140fa69d5c3ce76f968b7576ac28e4bd54ca9c80bbc",
+      "format": "version-pinned license evidence",
+      "sourceUrl": "https://dataverse.harvard.edu/file.xhtml?fileId=4468121&version=88.0",
+      "authority": "Harvard Dataverse",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Binds the retained state ZIP to dataset version 88.0 and CC BY 4.0 terms."
+    }
+  ],
+  "resultIdentity": {
+    "sourceId": "wi-wec-2016-president-recount-ward-by-ward",
+    "sourceUnitCount": 3636,
+    "colorableSourceUnitCount": 3626,
+    "excludedZeroVoteUnits": 10,
+    "officialTotals": {
+      "democraticVotes": 1382536,
+      "republicanVotes": 1405284,
+      "otherVotes": 188330,
+      "totalVotes": 2976150
+    },
+    "mappedTotals": {
+      "democraticVotes": 1382536,
+      "republicanVotes": 1405284,
+      "otherVotes": 188330,
+      "totalVotes": 2976150
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": true,
+    "mappedResultUnits": 3626,
+    "unlinkedGeometryFeatures": 22,
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false,
+    "relationshipSummary": {
+      "resultRows": 3636,
+      "sourceFeatures": 6872,
+      "resultMunicipalities": 1915,
+      "sourceMunicipalities": 1916,
+      "resolvedResultRows": 3626,
+      "unresolvedResultRows": 10,
+      "assignedSourceFeatures": 6850,
+      "unassignedSourceFeatures": 22,
+      "missingSourceGroups": 0,
+      "noExactCoverGroups": 0,
+      "ambiguousGroups": 0,
+      "partialGroups": 8
+    }
+  },
+  "caveats": [
+    "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+    "10 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+    "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+    "VEST reconstructed the November boundary edition from LTSB and Wisconsin Department of Administration records and disaggregated source votes; all 2016 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+    "22 source boundary components have no official result relationship and are retained only as explicit no-data shapes."
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}
