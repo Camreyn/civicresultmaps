@@ -195,11 +195,19 @@ rollback target.
 
 ## 8. Atomic public cutover
 
-Build and write the publication plan and `NO_GO_PUBLIC` authorization template
-from the exact hidden-load receipt and Blob evidence:
+Build and write the publication plan from the exact hidden-load receipt and
+Blob evidence:
 
 ```powershell
-npm.cmd run precinct-gis:publication-status:sc -- --package=$PKG --package-sha256=$PKG_SHA --hidden-receipt=$HIDDEN_RECEIPT --hidden-receipt-sha256=$HIDDEN_SHA --blob-evidence=$BLOB_EVIDENCE --blob-evidence-sha256=$BLOB_SHA --write-plan --write-authorization-template
+npm.cmd run precinct-gis:publication-status:sc -- --package=$PKG --package-sha256=$PKG_SHA --hidden-receipt=$HIDDEN_RECEIPT --hidden-receipt-sha256=$HIDDEN_SHA --blob-evidence=$BLOB_EVIDENCE --blob-evidence-sha256=$BLOB_SHA --write-plan
+```
+
+Record the emitted `$PLAN_SHA`, then generate the separately hash-pinned
+`NO_GO_PUBLIC` authorization template. Publication-status modes are mutually
+exclusive, so these must remain two commands:
+
+```powershell
+npm.cmd run precinct-gis:publication-status:sc -- --package=$PKG --package-sha256=$PKG_SHA --hidden-receipt=$HIDDEN_RECEIPT --hidden-receipt-sha256=$HIDDEN_SHA --blob-evidence=$BLOB_EVIDENCE --blob-evidence-sha256=$BLOB_SHA --plan-sha256=$PLAN_SHA --write-authorization-template
 ```
 
 The reviewed `GO_PUBLIC` authorization must pin the plan SHA, authorization SHA,

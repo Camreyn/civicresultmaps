@@ -7654,3 +7654,37 @@ evidence against its verified top-level package.
   read-only publication-receipt recovery. No production database, Blob,
   Vercel, canonical registry, or public eligibility mutation occurs in this
   tooling change.
+
+### 2026-08-15 - South Carolina production publication
+
+- The production package was resealed from the merged guarded-release code as
+  SHA-256 `ea6b131f7c942865773beacacb8dbaf1d1b872da3b7d0b0f6260fa10f928eee2`.
+  A read-only production preflight and full public-schema backup with verified
+  restore preceded the atomic hidden load. The hidden-load receipt is pinned
+  at SHA-256
+  `fdac8ec10763580db17a3810cb5ef81ae8f3541ffaef3e15856337584c0c1e10`,
+  with the three geography versions still blocked at public revision 18.
+- Immutable delivery publication created 138 county-scoped objects followed
+  by three index objects. The Blob evidence is pinned at SHA-256
+  `fa8822ed6310f12cb155553a6e2e5d73d32224eea65fd48fc82f5c30452a15c4`.
+  Static activation was merged in pull request 244 and deployed from commit
+  `17596de9e5622b3b9bd7a7f341f76f0721267c75`, tree
+  `9290df7c40affc5f41b75d9062fda60de4e8b0f7`, as READY/PROMOTED deployment
+  `dpl_Bp3uLzvq4wqxW6LUWdVpJ9BrU3yt`. Both public APIs remained closed while
+  the database versions were blocked.
+- Publication plan SHA-256
+  `e5cd5bf599a1127f3bcee256250b69067b37061264f18bc740442c75735a84de`
+  was applied under activation
+  `sc-public-20260815T161351Z-17596de9`. The atomic database transition
+  published all three versions and incremented public revision 18 to 19. The
+  immutable publication receipt is pinned at SHA-256
+  `a29eede3945d78f89473fd7c0ccf6cca7a8e4ac827d2533f8de231d76f10ca92`.
+- Post-cutover verification covered every county in every published election:
+  2016 serves 2,234 features and 2,232 joined result units, with two reviewed
+  no-data shapes; 2020 serves 2,263 features and 2,261 joined result units,
+  with two reviewed no-data shapes; and 2024 serves 2,308 features and 2,308
+  joined result units. All 138 county result/geometry joins passed, the public
+  API smoke passed against the exact deployed commit and database source, and
+  browser checks confirmed the 2016/2020/2024 maps, OpenStreetMap base layer,
+  and year-pinned 2020 export/API examples. The 2012 manifest, results, and
+  geometry endpoints remain unavailable as designed.
