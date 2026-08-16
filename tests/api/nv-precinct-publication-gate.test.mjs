@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  guardedLocalGeographyMatchMethods,
   matchesPrecinctGeometryPublicationMetadata,
   precinctGeometryPublicManifestSha256,
   requiresPrecinctGeometryPublicationGate,
@@ -104,10 +105,11 @@ test("Nevada precinct results and geometry use the guarded publication path", ()
 
 test("Nevada exact reviewed rows are accepted only inside the full public gate", () => {
   const source = readFileSync("src/lib/data-access.ts", "utf8");
-  assert.equal(
-    (source.match(/'official_crosswalk'/g) ?? []).length,
-    3,
-  );
+  assert.deepEqual(guardedLocalGeographyMatchMethods("NV"), [
+    "exact_official_id",
+    "official_crosswalk",
+  ]);
+  assert.match(source, /reviewedMatchMethods/);
   assert.equal(
     (source.match(/gate_version\.status = 'published'/g) ?? []).length,
     2,

@@ -1,6 +1,14 @@
 import { createHash } from "node:crypto";
 import type { PrecinctGeometryManifest } from "./precinct-geography";
 
+type GuardedReleaseContract = {
+  geographyLevel: string;
+  geographyLevels?: readonly string[];
+  geographyLevelByYear?: Readonly<Record<number, string>>;
+  releaseCandidatePattern: RegExp;
+  reviewedMatchMethods?: readonly string[];
+};
+
 const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
   AK: {
     geographyLevel: "precinct",
@@ -31,6 +39,16 @@ const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
       "reviewed_name",
     ]),
   },
+  NC: {
+    geographyLevel: "precinct",
+    geographyLevels: Object.freeze(["vtd", "precinct"]),
+    geographyLevelByYear: Object.freeze({
+      2012: "vtd",
+      2016: "precinct",
+      2020: "precinct",
+    }),
+    releaseCandidatePattern: /^nc-local-gis-three-election-v\d+$/,
+  },
   TX: {
     geographyLevel: "precinct",
     releaseCandidatePattern: /^tx-precinct-gis-four-election-v\d+$/,
@@ -45,11 +63,7 @@ const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
       "spatial_review",
     ]),
   },
-} satisfies Record<string, {
-  geographyLevel: string;
-  releaseCandidatePattern: RegExp;
-  reviewedMatchMethods?: readonly string[];
-}>);
+} satisfies Record<string, GuardedReleaseContract>);
 
 const DEFAULT_REVIEWED_MATCH_METHODS = Object.freeze([
   "exact_official_id",
@@ -58,17 +72,30 @@ const DEFAULT_REVIEWED_MATCH_METHODS = Object.freeze([
 
 type GuardedLocalGeographyState = keyof typeof GUARDED_LOCAL_GEOGRAPHY_RELEASES;
 
-function guardedReleaseContract(state: string) {
+function guardedReleaseContract(state: string): GuardedReleaseContract | null {
   const normalized = state.trim().toUpperCase();
   return Object.hasOwn(GUARDED_LOCAL_GEOGRAPHY_RELEASES, normalized)
     ? GUARDED_LOCAL_GEOGRAPHY_RELEASES[
         normalized as GuardedLocalGeographyState
-      ]
+      ] as GuardedReleaseContract
     : null;
 }
 
-export function guardedLocalGeographyLevel(state: string) {
-  return guardedReleaseContract(state)?.geographyLevel ?? null;
+function guardedGeographyLevels(contract: GuardedReleaseContract) {
+  return contract.geographyLevels ?? [contract.geographyLevel];
+}
+
+export function guardedLocalGeographyLevel(state: string, year?: number) {
+  const contract = guardedReleaseContract(state);
+  if (!contract) return null;
+  if (
+    year !== undefined
+    && contract.geographyLevelByYear
+    && Object.hasOwn(contract.geographyLevelByYear, year)
+  ) {
+    return contract.geographyLevelByYear[year];
+  }
+  return contract.geographyLevel;
 }
 
 export function guardedLocalGeographyMatchMethods(state: string) {
@@ -83,7 +110,7 @@ export function requiresPrecinctResultPublicationGate(input: {
   level: string;
 }) {
   const contract = guardedReleaseContract(input.state);
-  return contract !== null && input.level === contract.geographyLevel;
+  return contract !== null && guardedGeographyLevels(contract).includes(input.level);
 }
 
 export function requiresPrecinctGeometryPublicationGate(
@@ -91,7 +118,7 @@ export function requiresPrecinctGeometryPublicationGate(
 ) {
   const contract = guardedReleaseContract(manifest.state);
   return contract !== null
-    && manifest.geography.level === contract.geographyLevel;
+    && guardedGeographyLevels(contract).includes(manifest.geography.level);
 }
 
 function canonicalize(value: unknown): unknown {
@@ -211,6 +238,10 @@ export function matchesPrecinctGeometryPublicationMetadata(
     && /^[a-f0-9]{64}$/.test(activation.authorizationSha256)
     && activation.mode === "publish"
     && activation.year === manifest.election.year
+    && (
+      manifest.state !== "NC"
+      || activation.geographyLevel === manifest.geography.level
+    )
     && activation.manifestId === manifest.id
     && activation.publicManifestSha256
       === precinctGeometryPublicManifestSha256(manifest)

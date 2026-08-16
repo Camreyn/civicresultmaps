@@ -283,7 +283,10 @@ export function PrecinctDetailMap({
   selectedState,
 }: PrecinctDetailMapProps) {
   const electionDate = electionDates[electionYear];
-  const requestedGeographyLevel = guardedLocalGeographyLevel(selectedState)
+  const requestedGeographyLevel = guardedLocalGeographyLevel(
+    selectedState,
+    electionYear,
+  )
     ?? "precinct";
   const manifestQueryKey = selectedState
     + "|"
@@ -398,10 +401,14 @@ export function PrecinctDetailMap({
   const manifestLevel = manifest?.geography.level ?? requestedGeographyLevel;
   const unitLabel = manifestLevel === "local_reporting_unit"
     ? "local reporting unit"
-    : "precinct";
+    : manifestLevel === "vtd"
+      ? "VTD"
+      : "precinct";
   const unitLabelPlural = manifestLevel === "local_reporting_unit"
     ? "local reporting units"
-    : "precincts";
+    : manifestLevel === "vtd"
+      ? "VTDs"
+      : "precincts";
   const parentScope = localGeographyParentScope({
     state: selectedState,
     geographyLevel: manifestLevel,
