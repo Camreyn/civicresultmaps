@@ -1520,7 +1520,7 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_admin_context",
       "tier": "tier_1_official_export_database",
-      "reportingGrain": "precinct_review_county_certified_historical_review",
+      "reportingGrain": "county_certified_precinct_review_historical_vtd_and_precinct_geometry",
       "exportFormats": [
         "ZIP",
         "CSV"
@@ -1534,8 +1534,13 @@
         "https://www.ncsbe.gov/results-data/voter-history-data",
         "https://www.ncsbe.gov/results-data/voting-maps-redistricting",
         "https://www.ncsbe.gov/about-elections/election-security/post-election-procedures-and-audits",
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2012_11_06/results_sort_20121106.zip",
         "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2016_11_08/results_pct_20161108.zip",
-        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip"
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip",
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20161004.zip",
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20201018.zip",
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20240723.zip",
+        "https://github.com/mggg-states/NC-shapefiles"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -1550,18 +1555,23 @@
         "official NCSBE 2024 history_stats voter-history turnout lead",
         "generated county turnout-denominator lead and source-review summary",
         "official 2016 county President-versus-U.S.-Senate historical advisory rows aggregated from all 3,209 source reporting-unit keys across 100 canonical county tags",
-        "official 2020 same-grain President-versus-U.S.-Senate historical advisory rows for 2,662 Real Precinct=Y county/precinct keys across 100 county tags"
+        "official 2020 same-grain President-versus-U.S.-Senate historical advisory rows for 2,662 Real Precinct=Y county/precinct keys across 100 county tags",
+        "reviewed 2012 VTD geometry and exact official precinct-sorted presidential crosswalk for 2,692 geographic units",
+        "reviewed 2016 official precinct geometry and exact crosswalk for 2,704 geographic units",
+        "reviewed 2020 official precinct geometry with four independently documented official-source supplements and exact crosswalk for 2,662 Real Precinct=Y units",
+        "complete 2024 candidate geometry and exact crosswalk for 2,658 Real Precinct=Y units plus one explicit no-data feature"
       ],
       "missingFields": [
         "state-native turnout replacement semantics for history_stats voters versus ballots cast",
-        "precinct boundary geometry normalized for map joins",
+        "November 5, 2024 boundary-vintage confirmation for Henderson CV and Wake 01-07A / 07-07A restored from the official August 2019 snapshot",
+        "guarded database and immutable delivery release for the reviewed 2012, 2016, and 2020 local geometry packages",
         "normalized audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native county certified package loaded; 2024 review rows filtered to official Real Precinct=Y rows; historicalPresidentialCsv loaded from official NCSBE 2012/2016/2020 precinct result ZIPs; scripts/normalize-nc-historical-review.mjs generates 100 official 2016 county President-versus-U.S.-Senate rows from the source County field plus 2,662 official 2020 Real Precinct=Y rows, while reconciling the 2016 statewide totals, all 100 presidential baseline tuples, one signed source correction, and the 403 excluded 2020 Real Precinct=N keys; scripts/normalize-nc-turnout.mjs generates NCSBE voter_stats/history_stats turnout-denominator lead rows and source-review summary, but active turnout remains EAC fallback pending numerator semantics review",
+      "parserStatus": "native county certified package loaded; scripts/build-nc-reviewed-precincts.mjs hash-pins and replays four local-boundary packages without vote allocation: 2012 official precinct-sorted VTD rows joined to MGGG/NCGA geometry, 2016 exact official NCSBE geometry IDs, 2020 official NCSBE geometry plus four documented official supplements, and a fail-closed 2024 candidate plus three unconfirmed supplements; historical advisory and turnout normalizers remain unchanged",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Certified county totals aggregate all official reporting units, including early, absentee, provisional, and transfer rows. Review charts use only rows where the NCSBE Real Precinct field is Y, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; excluded non-real reporting units account for 1,775,402 presidential votes. NCSBE voter_stats_20241105.zip matches the active EAC registered-voter denominator at 7,854,464, but NCSBE history_stats_20241105.zip reports 5,705,861 voters who participated, 50,245 below EAC ballots cast and 18,126 below the NCSBE turnout overview ballots-cast figure. Historical baselines are county aggregates for context only. The 2016 historical advisory package aggregates all official reporting rows by the explicit County field into 100 county rows: 4,741,564 presidential votes and 4,691,133 U.S. Senate votes. All presidential county tuples match the official baseline; one signed -4 write-in source correction is retained before final nonnegative reconciliation, and no precinct-level claim is made. The 2020 package includes 2,662 Real Precinct=Y keys across 100 canonical county tags: 3,201,711 included presidential votes and 3,172,016 included U.S. Senate votes. It excludes and exactly reconciles 403 Real Precinct=N administrative keys totaling 2,323,091 presidential votes and 2,302,936 comparison votes.",
-      "nextAction": "Keep the 2024 and 2020 Real Precinct=Y review caveats visible and describe the 2016 historical screen as county-only aggregation, not precinct evidence; review NCSBE history_stats voter-participation semantics against ballots-cast/eligible-voter published totals before replacing EAC turnout; next upgrades are normalized precinct boundary geometry from the NCSBE shapefile folder and normalized audit/recount/CVR/incident/correction records."
+      "caveats": "Certified county totals aggregate all official reporting units. Local geometry never receives administrative, absentee, early-vote, provisional, transfer, or other no-geometry totals. The 2012 VTD analysis export reassigns accepted absentee/provisional ballots to residential VTDs and adds statutory statistical noise; it is official NCSBE analysis data rather than the certified canvass presentation, and MGGG ODbL/DBCL terms apply to geometry. The 2016 package maps 2,704 official precinct identities and keeps 505 result-only units separate. The 2020 package maps all 2,662 Real Precinct=Y units after four official-source topology repairs and keeps 403 Real Precinct=N units separate. The 2024 candidate maps all 2,658 Real Precinct=Y units and preserves one no-data feature, but public rendering remains blocked because three restored subprecinct polygons lack November 5 applicability confirmation. Each election retains its own boundary vintage and is not a stable cross-election trend geography.",
+      "nextAction": "Prepare guarded local database and immutable delivery tooling for reviewed 2012, 2016, and 2020 packages; keep 2024 outside public activation until an election-effective source or custodian confirmation establishes the three restored boundaries, and continue the separate turnout/audit context work."
     },
     {
       "state": "ND",

@@ -154,8 +154,8 @@ test("NC config exposes both evaluated historical review years and year-specific
   const raw2020 = sourceById.get(source2020.sourceId);
   const normalized = sourceById.get("nc-2020-historical-review-rows");
 
-  assert.equal(config.sources.length, 10);
-  assert.equal(config.expected.sources, 10);
+  assert.equal(config.sources.length, 11);
+  assert.equal(config.expected.sources, 11);
   assert.equal(config.expected.historicalReviewRows, expected.county2016.rowCount + expected.includedRealPrecinctKeys);
   assert.equal(raw2016.electionYear, 2016);
   assert.equal(raw2016.localFile, source2016.localFile);

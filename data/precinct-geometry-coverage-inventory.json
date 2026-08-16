@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T00:33:54.328Z",
+  "updatedAt": "2026-08-16T04:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 9,
+    "totalJurisdictions": 10,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 9
+      "reviewed": 10
     },
     "disposition": {
       "undecided": 0,
       "mapped": 9,
       "partial": 0,
       "official_geometry_unavailable": 0,
-      "blocked": 0
+      "blocked": 1
     },
     "publicEligibleJurisdictions": 8
   },
@@ -551,6 +551,68 @@
         "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
         "NYT election values are used only to verify the join and are removed from normalized geometry; NYT non-commercial attribution terms must accompany eventual delivery.",
         "This election retains its own boundary vintage and is not treated as a stable local-unit trend geography."
+      ]
+    },
+    {
+      "state": "NC",
+      "stateName": "North Carolina",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 12,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-16T04:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+        "https://www.ncsbe.gov/results-data/voting-maps-redistricting"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "nc-2024-11-05-supplemented-precinct-candidate-v1"
+        ],
+        "officialSourceLeads": [
+          "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20240723.zip",
+          "https://s3.amazonaws.com/dl.ncsbe.gov/PrecinctMaps/SBE_PRECINCTS_20190827.zip"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/NC/2024-11-05-general/source-evidence.json",
+          "data/precinct-geometry/NC/2024-11-05-general/normalized/nc-2024-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/NC/2024-11-05-general/crosswalk/nc-2024-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 2659,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 2908,
+        "colorableResultUnits": 2658,
+        "matchedResultUnits": 2658,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 250,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "The November 5, 2024 applicability of Henderson CV and Wake 01-07A / 07-07A restored from the official August 2019 snapshot is not yet confirmed by an election-effective source or custodian statement.",
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Seek a public election-effective source or custodian confirmation for the three restored subprecinct polygons; keep 2024 outside public activation while preparing the reviewed 2012, 2016, and 2020 release candidate.",
+      "notes": [
+        "All 2,658 official Real Precinct=Y rows have exact county-qualified relationships in the complete candidate after three missing units are restored from the official August 2019 snapshot.",
+        "The 250 Real Precinct=N units totaling 1,775,402 votes remain non-geographic and are never allocated.",
+        "Official Durham feature 48 remains visible as an explicit no-data candidate feature; no result is invented.",
+        "The three restored units lack November 5 applicability proof, so row-level public rendering remains fail-closed despite exact result reconciliation.",
+        "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
       ]
     }
   ]

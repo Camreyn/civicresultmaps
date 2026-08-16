@@ -98,6 +98,13 @@
 /data/precinct-geometry/MI/**/*.html -diff
 /data/precinct-geometry/MI/**/*.xml -diff
 
+# Preserve every hash-pinned North Carolina VTD/precinct source and derivative byte-for-byte.
+/data/precinct-geometry/NC/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/NC/**/*.zip -diff
+/data/precinct-geometry/NC/**/*.gz -diff
+/data/precinct-geometry/NC/**/*.pdf -diff
+/data/precinct-geometry/NC/**/*.xml -diff
+
 # Preserve every hash-pinned South Carolina precinct source and derivative byte-for-byte.
 /data/precinct-geometry/SC/** -text whitespace=-trailing-space,-space-before-tab
 /data/precinct-geometry/SC/**/*.zip -diff

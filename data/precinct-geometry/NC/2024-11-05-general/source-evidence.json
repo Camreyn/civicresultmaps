@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-2024-precinct-geometry-and-official-results-review",
+  "state": "NC",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "North Carolina State Board of Elections",
+  "retrievedAt": "2026-08-16T04:00:00.000Z",
+  "reviewedAt": "2026-08-16T04:00:00.000Z",
+  "sourceUrls": [
+    "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+    "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20240723.zip"
+  ],
+  "boundaryContext": {
+    "boundaryVintage": "NCSBE July 23, 2024 statewide snapshot supplemented with three official 2019 subprecinct polygons whose November 5, 2024 applicability remains unconfirmed",
+    "vintageStatus": "unknown",
+    "derivationMethod": "hybrid_reconstruction",
+    "sourceFeatureCount": 2656,
+    "normalizedFeatureCount": 2659,
+    "reviewedNoDataFeatureCount": 1,
+    "licenseOrTerms": "Official public North Carolina State Board of Elections geospatial exports; the source page states no additional reuse restriction."
+  },
+  "resultIdentity": {
+    "sourceUnitCount": 2908,
+    "geographicSourceUnitCount": 2658,
+    "administrativeSourceUnitCount": 250,
+    "colorableSourceUnitCount": 2658,
+    "excludedSourceUnitCount": 250,
+    "officialTotals": {
+      "democraticVotes": 2715375,
+      "republicanVotes": 2898423,
+      "otherVotes": 85343,
+      "totalVotes": 5699141
+    },
+    "geographicTotals": {
+      "democraticVotes": 1721868,
+      "republicanVotes": 2139650,
+      "otherVotes": 62221,
+      "totalVotes": 3923739
+    },
+    "administrativeTotals": {
+      "democraticVotes": 993507,
+      "republicanVotes": 758773,
+      "otherVotes": 23122,
+      "totalVotes": 1775402
+    },
+    "mappedTotals": {
+      "democraticVotes": 1721868,
+      "republicanVotes": 2139650,
+      "otherVotes": 62221,
+      "totalVotes": 3923739
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": false,
+    "methods": [
+      "exact_official_id"
+    ],
+    "mappedResultUnits": 2658,
+    "administrativeNoGeometryUnits": 250,
+    "unlinkedGeometryUnits": 1,
+    "unlinkedGeometryFeatureIds": [
+      "37063|nc:2024:37063:48"
+    ],
+    "directIdMatches": 2658,
+    "voteSignatureMatches": 0,
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false
+  },
+  "topologyReview": {
+    "supplementalRepairCount": 3,
+    "repairs": [
+      {
+        "sourceUnitKey": "37089|CV",
+        "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+        "coverageRatio": 1,
+        "containingSourceUnitKeys": [
+          "37089|HV-2",
+          "37089|NE"
+        ],
+        "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+      },
+      {
+        "sourceUnitKey": "37183|1-07A",
+        "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+        "coverageRatio": 1,
+        "containingSourceUnitKeys": [
+          "37183|1-07"
+        ],
+        "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+      },
+      {
+        "sourceUnitKey": "37183|7-07A",
+        "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+        "coverageRatio": 0.9999999595108856,
+        "containingSourceUnitKeys": [
+          "37183|7-07",
+          "37183|7-11"
+        ],
+        "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+      }
+    ],
+    "overlapCreationPermitted": false,
+    "method": "Each old official feature is clipped to current county coverage; its exact overlap is subtracted from every containing current feature before the supplemental feature is inserted."
+  },
+  "artifacts": [
+    {
+      "localArtifactPath": "data/nc-2024-results-precinct.zip",
+      "byteCount": 3741131,
+      "sha256": "2fab44e9b12e03c0d88ef832c2e6dc8c569e2b020d64df06a8b551b62bbdb426",
+      "format": "official NCSBE precinct results ZIP",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official presidential rows with Real Precinct classification; sole displayed vote source."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/raw-shared/ncsbe/SBE_PRECINCTS_20240723.zip",
+      "byteCount": 22091618,
+      "sha256": "bd9d37ac1f59ca77c55ce94cb3fe10c7c42cf7fc00f4dece7c841afe2cfb03b9",
+      "format": "official NCSBE statewide precinct Shapefile ZIP",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20240723.zip",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official pre-election statewide snapshot with 2,656 feature identities."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/raw-shared/ncsbe/SBE_PRECINCTS_20190827.zip",
+      "byteCount": 19527464,
+      "sha256": "76de0fe26651529b6b34963864c9f25a24964b803636f2970ed7251c6fe2aeed",
+      "format": "official NCSBE supplemental precinct Shapefile ZIP",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/PrecinctMaps/SBE_PRECINCTS_20190827.zip",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Supplies three missing official result identities as a complete topology-preserving candidate; their November 5, 2024 applicability remains unconfirmed."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/raw-shared/ncsbe/ncsbe-precinct-archive-index.xml",
+      "byteCount": 49709,
+      "sha256": "62290bf154bf952363f8f98c7205dfe1af99c2ca1cb38db054abf1b981ea3489",
+      "format": "official NCSBE S3 precinct archive index XML",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov?list-type=2&prefix=ShapeFiles%2FPrecinct%2F",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retains the official chronology and exact July 2024 object metadata."
+    },
+    {
+      "localArtifactPath": "data/nc-counties.geojson",
+      "byteCount": 17562822,
+      "sha256": "1a5b4f9029bb1ad6b4a5e6b19c84e7ba91c12e7d86d2127b2a9c0b2c7d38192d",
+      "format": "official Census TIGERweb county GeoJSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query",
+      "authority": "U.S. Census Bureau",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Used only to resolve the 100 county parent GEOIDs; never used as local election geometry."
+    }
+  ],
+  "caveats": [
+    "250 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+    "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+    "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+    "The complete candidate includes three restored official subprecinct polygons and one Durham no-data feature; no result value is invented for the no-data feature.",
+    "The 2024 package remains blocked despite an exact crosswalk because the restored boundaries lack election-date confirmation."
+  ],
+  "blockers": [
+    "The November 5, 2024 applicability of Henderson CV and Wake 01-07A / 07-07A restored from the official August 2019 snapshot is not yet confirmed by an election-effective source or custodian statement.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

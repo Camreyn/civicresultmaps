@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-2016-precinct-geometry-and-official-results-review",
+  "state": "NC",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "North Carolina State Board of Elections",
+  "retrievedAt": "2026-08-16T04:00:00.000Z",
+  "reviewedAt": "2026-08-16T04:00:00.000Z",
+  "sourceUrls": [
+    "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2016_11_08/results_pct_20161108.zip",
+    "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20161004.zip"
+  ],
+  "boundaryContext": {
+    "boundaryVintage": "NCSBE statewide precinct snapshot dated October 4, 2016, the final retained statewide snapshot before the November 8 general election",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "official_export",
+    "sourceFeatureCount": 2704,
+    "normalizedFeatureCount": 2704,
+    "reviewedNoDataFeatureCount": 0,
+    "licenseOrTerms": "Official public North Carolina State Board of Elections geospatial export; the source page states no additional reuse restriction."
+  },
+  "resultIdentity": {
+    "sourceUnitCount": 3209,
+    "geographicSourceUnitCount": 2704,
+    "administrativeSourceUnitCount": 505,
+    "colorableSourceUnitCount": 2704,
+    "excludedSourceUnitCount": 505,
+    "officialTotals": {
+      "democraticVotes": 2189316,
+      "republicanVotes": 2362631,
+      "otherVotes": 189617,
+      "totalVotes": 4741564
+    },
+    "geographicTotals": {
+      "democraticVotes": 1365383,
+      "republicanVotes": 1675761,
+      "otherVotes": 136367,
+      "totalVotes": 3177511
+    },
+    "administrativeTotals": {
+      "democraticVotes": 823933,
+      "republicanVotes": 686870,
+      "otherVotes": 53250,
+      "totalVotes": 1564053
+    },
+    "mappedTotals": {
+      "democraticVotes": 1365383,
+      "republicanVotes": 1675761,
+      "otherVotes": 136367,
+      "totalVotes": 3177511
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": true,
+    "methods": [
+      "exact_official_id"
+    ],
+    "mappedResultUnits": 2704,
+    "administrativeNoGeometryUnits": 505,
+    "unlinkedGeometryUnits": 0,
+    "unlinkedGeometryFeatureIds": [],
+    "directIdMatches": 2704,
+    "voteSignatureMatches": 0,
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false
+  },
+  "topologyReview": {
+    "supplementalRepairCount": 0,
+    "repairs": [],
+    "overlapCreationPermitted": false,
+    "method": "No supplemental overlay was required."
+  },
+  "artifacts": [
+    {
+      "localArtifactPath": "data/nc-2016-results-precinct.zip",
+      "byteCount": 2583551,
+      "sha256": "b6e9e002e03e8173e339154cea943a062936090a17337985bc555ca48018406a",
+      "format": "official NCSBE precinct results ZIP",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2016_11_08/results_pct_20161108.zip",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official presidential result rows; sole displayed vote source."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/raw-shared/ncsbe/SBE_PRECINCTS_20161004.zip",
+      "byteCount": 19254674,
+      "sha256": "4739d58fe4681ec93d37771073b4b7c661bedc36180e57cd48f3f245972aeb63",
+      "format": "official NCSBE statewide precinct Shapefile ZIP",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20161004.zip",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Final retained statewide snapshot before the November 8, 2016 election; all 2,704 feature IDs exactly match official result identities."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/raw-shared/ncsbe/ncsbe-precinct-archive-index.xml",
+      "byteCount": 49709,
+      "sha256": "62290bf154bf952363f8f98c7205dfe1af99c2ca1cb38db054abf1b981ea3489",
+      "format": "official NCSBE S3 precinct archive index XML",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov?list-type=2&prefix=ShapeFiles%2FPrecinct%2F",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retains the official chronology, object key, timestamp, size, and ETag for the dated statewide snapshot."
+    },
+    {
+      "localArtifactPath": "data/nc-counties.geojson",
+      "byteCount": 17562822,
+      "sha256": "1a5b4f9029bb1ad6b4a5e6b19c84e7ba91c12e7d86d2127b2a9c0b2c7d38192d",
+      "format": "official Census TIGERweb county GeoJSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query",
+      "authority": "U.S. Census Bureau",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Used only to resolve the 100 county parent GEOIDs; never used as local election geometry."
+    }
+  ],
+  "caveats": [
+    "505 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+    "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+    "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography."
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

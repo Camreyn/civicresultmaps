@@ -372,7 +372,9 @@
     "precinct-gis:production-release:sc": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-sc-precinct-release.mjs",
     "precinct-gis:public-activation:sc": "node --experimental-strip-types scripts/prepare-sc-precinct-public-activation.mjs",
     "precinct-gis:publication-status:sc": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-sc-precinct-geography-status.mjs",
-    "test:precinct-geometry:sc": "node --experimental-strip-types --test tests/api/sc-precinct-geometry.test.mjs tests/api/sc-precinct-gis-plan.test.mjs tests/api/sc-precinct-gis-local.test.mjs tests/api/sc-precinct-release-candidate.test.mjs tests/api/sc-precinct-blob-publication.test.mjs tests/api/sc-precinct-production-release.test.mjs tests/api/sc-precinct-public-activation.test.mjs tests/api/sc-precinct-publication-gate.test.mjs tests/api/sc-precinct-publication.test.mjs"
+    "test:precinct-geometry:sc": "node --experimental-strip-types --test tests/api/sc-precinct-geometry.test.mjs tests/api/sc-precinct-gis-plan.test.mjs tests/api/sc-precinct-gis-local.test.mjs tests/api/sc-precinct-release-candidate.test.mjs tests/api/sc-precinct-blob-publication.test.mjs tests/api/sc-precinct-production-release.test.mjs tests/api/sc-precinct-public-activation.test.mjs tests/api/sc-precinct-publication-gate.test.mjs tests/api/sc-precinct-publication.test.mjs",
+    "precinct-gis:collect:nc": "node --experimental-strip-types scripts/build-nc-reviewed-precincts.mjs",
+    "test:precinct-geometry:nc": "node --experimental-strip-types --test tests/api/nc-precinct-geometry.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",
