@@ -206,7 +206,16 @@ test("North Carolina four-year local geometry packages replay byte-identically a
 
 test("North Carolina packages preserve official totals and keep 2024 fail closed", () => {
   const registry = JSON.parse(readFileSync("data/precinct-geometry-manifests.json", "utf8"));
-  assert.deepEqual(registry.manifests.filter((manifest) => manifest.state === "NC"), []);
+  const registered = registry.manifests.filter((manifest) => manifest.state === "NC");
+  assert.deepEqual(
+    registered.map((manifest) => manifest.id),
+    YEARS.filter((spec) => spec.rowLevelSafe).map((spec) => spec.manifestId),
+  );
+  assert.ok(registered.every((manifest) => (
+    manifest.validation.status === "reviewed"
+    && manifest.validation.rowLevelRenderingSafe === true
+    && manifest.delivery?.format === "parent_scoped_geojson"
+  )));
   const inventoryPaths = new Map([
     [2012, "data/precinct-geometry-coverage-inventory-2012.json"],
     [2016, "data/precinct-geometry-coverage-inventory-2016.json"],
@@ -279,7 +288,7 @@ test("North Carolina packages preserve official totals and keep 2024 fail closed
     assert.ok(inventoryRow);
     assert.deepEqual(inventoryRow.geometry.manifestIds, [spec.manifestId]);
     assert.equal(inventoryRow.geometry.featureCount, spec.features);
-    assert.equal(inventoryRow.geometry.publicEligibleManifestCount, 0);
+    assert.equal(inventoryRow.geometry.publicEligibleManifestCount, spec.rowLevelSafe ? 1 : 0);
     assert.equal(inventoryRow.crosswalk.resultUnits, spec.sourceUnits);
     assert.equal(inventoryRow.crosswalk.matchedResultUnits, spec.mapped);
     assert.equal(inventoryRow.disposition, spec.rowLevelSafe ? "mapped" : "blocked");

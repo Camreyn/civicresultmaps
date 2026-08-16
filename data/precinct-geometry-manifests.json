@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T00:33:54.328Z",
+  "updatedAt": "2026-08-16T08:28:02.504Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -2827,6 +2827,336 @@
         "100 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
         "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
         "The NYT geometry is marked official_boundary=true and matches WEC by county, complete reporting label, and exact Harris/Trump values. NYT non-commercial attribution terms must accompany delivery.",
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "nc-2012-11-06-reviewed-vtd-geometry-v1",
+      "state": "NC",
+      "election": {
+        "id": "2012-11-06-general",
+        "date": "2012-11-06",
+        "year": 2012,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "vtd",
+        "parentLevel": "county",
+        "boundaryVintage": "MGGG/NC General Assembly VTD package with a fully reconciled November 6, 2012 presidential VTD result universe",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "North Carolina State Board of Elections results with MGGG/NC General Assembly VTD geometry",
+        "url": "https://github.com/mggg-states/NC-shapefiles",
+        "retrievedAt": "2026-08-16T04:00:00.000Z",
+        "artifact": "data/precinct-geometry/NC/2012-11-06-general/source-evidence.json",
+        "sha256": "da9c60cc5453d664a0a777821280534938e9be7f259426582f5098307c35055f",
+        "byteCount": 7501,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "MGGG publishes the database under ODbL 1.0 and individual contents under DBCL 1.0; attribution and share-alike obligations apply."
+      },
+      "normalization": {
+        "script": "scripts/build-nc-reviewed-precincts.mjs",
+        "sourceCrs": "EPSG:6543, normalized to EPSG:4326 by shpjs",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/NC/2012-11-06-general/normalized/nc-2012-reviewed-vtd-geometry.geojson.gz",
+        "sha256": "edf38fb97bc1defd2a8fed780775ee3de2bf9d6fc501096bcc2916dc494bbb5e",
+        "byteCount": 26021871,
+        "featureCount": 2692,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "nc-2012-ncsbe-precinct-sorted-president",
+        "artifact": "data/precinct-geometry/NC/2012-11-06-general/crosswalk/nc-2012-result-to-geometry-review.json",
+        "sha256": "31b7189a6702086ed90f81808cacf4be89aae80cb46d60498c6e859fd2c13c5e",
+        "byteCount": 2105121,
+        "resultUnits": 3011,
+        "colorableResultUnits": 2692,
+        "matchedResultUnits": 2692,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 319,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 2692,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 319,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 3011,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "exact_official_id",
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "319 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+          "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+          "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+          "The NCSBE precinct-sorted export reassigns accepted absentee/provisional ballots to residential VTDs and adds statutory statistical noise; it is official VTD analysis data, not the certified canvass presentation.",
+          "MGGG/NCGA election fields are used only to prove the crosswalk and are excluded from geometry and displayed results.",
+          "ODbL 1.0 attribution and share-alike obligations must accompany eventual public delivery.",
+          "All 2692 displayable vtd relationships are reviewed one-to-one across all 100 North Carolina counties.",
+          "All 319 administrative reporting units remain explicitly non-geographic and are never assigned to a polygon.",
+          "The 0 zero-presidential-vote local units remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/nc/2012-11-06/vtd/nc-2012-11-06-reviewed-vtd-geometry-v1-ff54ac43a8fd/index.json",
+        "sha256": "ff54ac43a8fd23de201a27cfaeff24476a568d7f7a8455f3173b002f8d769e7b",
+        "byteCount": 19223,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 100,
+        "featureCount": 2692
+      },
+      "caveats": [
+        "No result value from MGGG, VEST, Census, or any geometry source is used as a displayed election result.",
+        "319 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+        "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+        "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+        "The NCSBE precinct-sorted export reassigns accepted absentee/provisional ballots to residential VTDs and adds statutory statistical noise; it is official VTD analysis data, not the certified canvass presentation.",
+        "MGGG/NCGA election fields are used only to prove the crosswalk and are excluded from geometry and displayed results.",
+        "ODbL 1.0 attribution and share-alike obligations must accompany eventual public delivery.",
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "nc-2016-11-08-reviewed-precinct-geometry-v1",
+      "state": "NC",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "NCSBE statewide precinct snapshot dated October 4, 2016, the final retained statewide snapshot before the November 8 general election",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "official_export"
+      },
+      "source": {
+        "authority": "North Carolina State Board of Elections",
+        "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20161004.zip",
+        "retrievedAt": "2026-08-16T04:00:00.000Z",
+        "artifact": "data/precinct-geometry/NC/2016-11-08-general/source-evidence.json",
+        "sha256": "ee2b33e30db493000eaddcdf13b309d0e5e4801584204b56992484975e54492d",
+        "byteCount": 5559,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "Official public North Carolina State Board of Elections geospatial export; the source page states no additional reuse restriction."
+      },
+      "normalization": {
+        "script": "scripts/build-nc-reviewed-precincts.mjs",
+        "sourceCrs": "source-defined ESRI Shapefile CRS, normalized to EPSG:4326 by shpjs",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/NC/2016-11-08-general/normalized/nc-2016-reviewed-precinct-geometry.geojson.gz",
+        "sha256": "3c8a96386944a55548aa20e28875810eda92da019ed5d9293d24e2127c9caa7d",
+        "byteCount": 25916331,
+        "featureCount": 2704,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "nc-2016-results-precinct-zip",
+        "artifact": "data/precinct-geometry/NC/2016-11-08-general/crosswalk/nc-2016-result-to-geometry-review.json",
+        "sha256": "d921faf139049660c4a24303cdaf2236ca81bf5f1c5a206a5f7c86d28147ade0",
+        "byteCount": 2215041,
+        "resultUnits": 3209,
+        "colorableResultUnits": 2704,
+        "matchedResultUnits": 2704,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 505,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 2704,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 505,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 3209,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "exact_official_id"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "505 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+          "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+          "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+          "All 2704 displayable precinct relationships are reviewed one-to-one across all 100 North Carolina counties.",
+          "All 505 administrative reporting units remain explicitly non-geographic and are never assigned to a polygon.",
+          "The 0 zero-presidential-vote local units remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/nc/2016-11-08/precinct/nc-2016-11-08-reviewed-precinct-geometry-v1-177a64a234e6/index.json",
+        "sha256": "177a64a234e66b75de1fdd530c2265902c62f27fb11e63630400c05f0cff6c7e",
+        "byteCount": 19240,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 100,
+        "featureCount": 2704
+      },
+      "caveats": [
+        "No result value from MGGG, VEST, Census, or any geometry source is used as a displayed election result.",
+        "505 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+        "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+        "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "nc-2020-11-03-reviewed-precinct-geometry-v1",
+      "state": "NC",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "NCSBE October 18, 2020 statewide snapshot with four missing official result units restored from the official August 27, 2019 snapshot using the independently documented VEST/RDH method",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "hybrid_reconstruction"
+      },
+      "source": {
+        "authority": "North Carolina State Board of Elections",
+        "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20201018.zip",
+        "retrievedAt": "2026-08-16T04:00:00.000Z",
+        "artifact": "data/precinct-geometry/NC/2020-11-03-general/source-evidence.json",
+        "sha256": "437814cc54fe79e91d8d80d7c1e8fb1817e9ebbf50a96ba3514a6b234f06de14",
+        "byteCount": 8696,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "Official public North Carolina State Board of Elections geospatial exports; the source page states no additional reuse restriction."
+      },
+      "normalization": {
+        "script": "scripts/build-nc-reviewed-precincts.mjs",
+        "sourceCrs": "source-defined ESRI Shapefile CRS, normalized to EPSG:4326 by shpjs",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/NC/2020-11-03-general/normalized/nc-2020-reviewed-precinct-geometry.geojson.gz",
+        "sha256": "87a7d0ef2ce910ebe8d327ebbc667542bc58eab277b3c0def2eaf981cc5c9e13",
+        "byteCount": 17346673,
+        "featureCount": 2662,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "nc-2020-results-precinct-zip",
+        "artifact": "data/precinct-geometry/NC/2020-11-03-general/crosswalk/nc-2020-result-to-geometry-review.json",
+        "sha256": "950ef37921b974f9bbe717a52275533784911ff3290a3e8dd7fe8308f46cf380",
+        "byteCount": 2092827,
+        "resultUnits": 3065,
+        "colorableResultUnits": 2662,
+        "matchedResultUnits": 2662,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 403,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 2662,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 403,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 3065,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "exact_official_id"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "403 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+          "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+          "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+          "Four missing official result units are restored from the NCSBE August 2019 snapshot using the independently documented RDH/VEST source method and topology-preserving clipping; no result is split or allocated.",
+          "All 2662 displayable precinct relationships are reviewed one-to-one across all 100 North Carolina counties.",
+          "All 403 administrative reporting units remain explicitly non-geographic and are never assigned to a polygon.",
+          "The 0 zero-presidential-vote local units remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/nc/2020-11-03/precinct/nc-2020-11-03-reviewed-precinct-geometry-v1-f77906ef4ded/index.json",
+        "sha256": "f77906ef4ded68cf17e0ff9f1bd8868497fbaf846eb781ed5e559ca936c3faec",
+        "byteCount": 19291,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 100,
+        "featureCount": 2662
+      },
+      "caveats": [
+        "No result value from MGGG, VEST, Census, or any geometry source is used as a displayed election result.",
+        "403 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+        "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+        "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+        "Four missing official result units are restored from the NCSBE August 2019 snapshot using the independently documented RDH/VEST source method and topology-preserving clipping; no result is split or allocated.",
         "Immutable parent-scoped delivery and the guarded production release have not been completed."
       ]
     }
