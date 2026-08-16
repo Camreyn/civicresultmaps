@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 
-const CHECKED_AT = "2026-08-16T18:00:00.000Z";
+const CHECKED_AT = "2026-08-16T12:00:00.000Z";
 const SPECS = Object.freeze([
   {
     year: 2012,

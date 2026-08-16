@@ -14,6 +14,10 @@ const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
     geographyLevel: "precinct",
     releaseCandidatePattern: /^ak-precinct-gis-four-election-v\d+$/,
   },
+  FL: {
+    geographyLevel: "precinct",
+    releaseCandidatePattern: /^fl-precinct-gis-three-election-v\d+$/,
+  },
   IA: {
     geographyLevel: "precinct",
     releaseCandidatePattern: /^ia-precinct-gis-three-election-v\d+$/,

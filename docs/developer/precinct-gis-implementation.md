@@ -7944,3 +7944,51 @@ evidence against its verified top-level package.
   are President-versus-Senate comparison signals, not evidence of fraud or
   misconduct. This source-package branch did not check or change production
   indicator storage.
+
+### 2026-08-16 - Florida guarded three-election release tooling
+
+- Corrected the source package's deterministic review time from a future UTC
+  value to `2026-08-16T12:00:00.000Z`, replayed all four election packages,
+  and refreshed their exact manifest and coverage hashes. The validator now
+  accepts the retained evidence without weakening its future-time rejection.
+- Added Florida-only guarded local plan/load/validation, content-addressed
+  candidate sealing, production preflight and restore-verified backup
+  contracts, hidden-load receipt recovery, immutable Blob publication, static
+  activation, atomic database publication, rollback, and read-only
+  publication-receipt recovery. The public result and geometry gates now
+  recognize only `fl-precinct-gis-three-election-v*` releases.
+- The release is fixed to 2016, 2020, and 2024: 17,424 loaded geographic
+  result units, 52,272 candidate rows, 17,555 polygons, and 17,424 reviewed
+  one-to-one relationships. The 161 source units without reviewed geometry and
+  their 29,871 candidate votes remain in exact source reconciliation evidence
+  and are never loaded, estimated, or spatially allocated. The 131 reviewed
+  unlinked polygons remain explicit no-data features.
+- Florida's 2012 package is rejected by every release entry point and remains
+  absent from static activation. Issue #277 continues to track the missing
+  complete election-effective statewide boundary archive and authoritative
+  result-to-feature crosswalk.
+- The loopback-only Docker rehearsal loaded and read-only validated 2016 at
+  5,852 units / 17,556 rows / 5,962 features, 2020 at 5,989 / 17,967 / 6,010,
+  and 2024 at 5,583 / 16,749 / 5,583. All three geography versions stayed
+  `blocked`, every public-delivery flag stayed false, invalid constraints were
+  zero, and the local public revision became 28.
+- The local content-addressed rehearsal sealed candidate SHA-256
+  `7d881d0dad03c1b469b21cb457b6c97675a1325f0b116dc4e590bdd9c510075b`.
+  Its 204 immutable delivery objects are 201 county-scoped files followed by
+  three indexes. This ignored `.etl` package is validation evidence only and
+  must be resealed from the clean merged release commit before production
+  evidence is collected.
+- Verification passed the 34-test Florida source/release suite, TypeScript,
+  the production build, the two-test merge-gated HTTP API suite, state ETL
+  validation/import, and source-package, map, and provenance validators. The
+  validators reported only existing legacy-reference and equipment-geometry
+  warnings, with no failure.
+- The end-of-state advisory audit again evaluated 5,618 Florida review rows and
+  calculated 83 county advisory rows across 59 counties: 51
+  `vote_share_pattern` and 32 `average_down_ballot_difference`. These are broad
+  review signals, not evidence of fraud or misconduct. This branch did not
+  query or change production indicator storage.
+- No canonical Florida manifest, public eligibility, production database,
+  Blob object, Vercel setting, deployment, or Git ref is changed by this
+  tooling phase. The deployment and final database publication remain
+  separately reviewed operations so both public endpoints stay fail-closed.

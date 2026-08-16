@@ -28,6 +28,8 @@ For Michigan's official four-election precinct source packages, hash-pinned repl
 
 For the guarded South Carolina 2016/2020/2024 precinct release, county-scoped immutable delivery, non-geographic reconciliation rules, database-gated cutover, and separately blocked 2012 package, read [`docs/developer/sc-precinct-gis-runbook.md`](sc-precinct-gis-runbook.md).
 
+For the guarded Florida 2016/2020/2024 precinct release, allocation-free official-result joins, reviewed no-data polygons, 67-county immutable delivery, database-gated cutover, and separately blocked 2012 package, read [`docs/developer/fl-precinct-gis-runbook.md`](fl-precinct-gis-runbook.md).
+
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
 ## Coordinator Protocol
