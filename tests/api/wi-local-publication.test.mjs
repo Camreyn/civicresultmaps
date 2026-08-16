@@ -10,6 +10,7 @@ import path from "node:path";
 import test from "node:test";
 import {
   WISCONSIN_PUBLICATION_SCOPES,
+  WISCONSIN_PUBLICATION_EXPECTED_TOTALS,
   WISCONSIN_PUBLIC_ROLLBACK_SCOPES,
   buildWisconsinPublicRollbackAuthorizationTemplate,
   buildWisconsinPublicationAuthorizationTemplate,
@@ -19,6 +20,7 @@ import {
   validateWisconsinPublicRollbackAuthorization,
   validateWisconsinPublicationAuthorization,
 } from "../../scripts/lib/wi-local-publication.mjs";
+import { WISCONSIN_LOCAL_GIS_YEAR_SPECS } from "../../scripts/lib/wi-local-gis-plan.mjs";
 import {
   applyWisconsinGeographyPublicationTransaction,
   inspectWisconsinPublicationReceipt,
@@ -92,6 +94,18 @@ const authorizationPlan = {
   },
   staticRegistry: { sha256: "7".repeat(64) },
 };
+
+test("Wisconsin publication totals retain every reviewed zero-vote unit", () => {
+  const reviewedZeroVoteUnits = WISCONSIN_LOCAL_GIS_YEAR_SPECS.reduce(
+    (sum, year) => sum + year.expectedZeroVoteGeographicUnits,
+    0,
+  );
+  assert.equal(reviewedZeroVoteUnits, 316);
+  assert.equal(
+    WISCONSIN_PUBLICATION_EXPECTED_TOTALS.zeroVoteUnits,
+    reviewedZeroVoteUnits,
+  );
+});
 
 function publicAuthorization() {
   const value = buildWisconsinPublicationAuthorizationTemplate(
