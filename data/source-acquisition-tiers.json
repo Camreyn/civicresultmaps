@@ -554,12 +554,16 @@
         "official county detail tables",
         "official precinct-level ZIP",
         "field definitions PDF",
-        "tab-delimited statewide extract"
+        "tab-delimited statewide extract",
+        "reviewed election-specific precinct geometry packages"
       ],
       "sourceUrls": [
         "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
         "https://results.elections.myflorida.com/DetailRpt.Asp?ELECTIONDATE=11/5/2024&RACE=PRE&PARTY=&DIST=&GRP=&DATAMODE=",
-        "https://results.elections.myflorida.com/downloadresults.asp?ElectionDate=11/5/2024&DATAMODE="
+        "https://results.elections.myflorida.com/downloadresults.asp?ElectionDate=11/5/2024&DATAMODE=",
+        "https://doi.org/10.7910/DVN/NH5S2I/IAELIN",
+        "https://dataverse.harvard.edu/file.xhtml?fileId=4938250&version=24.0",
+        "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/FL-precincts-with-results.geojson.gz"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -568,19 +572,20 @@
         "precinct/location registered-voter denominator lead from official precinct ZIP",
         "county turnout from EAC fallback",
         "county geometry",
+        "reviewed 2016, 2020, and 2024 precinct geometry and official-result relationships",
         "secondary 2012/2016/2020 county historical presidential baselines"
       ],
       "missingFields": [
         "state-native ballots-cast rows compatible with the precinct ZIP registration denominator",
-        "precinct boundary geometry and result-label crosswalk",
+        "complete election-effective statewide 2012 precinct boundary geometry and result-to-feature crosswalk",
         "official 2012/2016/2020 historical baseline replacement rows",
         "normalized audit, recount, CVR availability, incident, correction, litigation, custody, and tabulator-log rows"
       ],
-      "parserStatus": "nativeFloridaDetailHtml keeps certified county map totals from the official county detail table; floridaPrecinctZipPresidentSenate loads 5,618 same-grain President-versus-U.S. Senate precinct/location review rows from data/fl-2024-general-precinct-results.zip; EAC fallback turnout remains active",
+      "parserStatus": "nativeFloridaDetailHtml keeps certified county map totals from the official county detail table; floridaPrecinctZipPresidentSenate loads 5,618 same-grain President-versus-U.S. Senate precinct/location review rows; scripts/collect-fl-precinct-geometry.mjs deterministically retains official four-year presidential result universes and reviewed 2016/2020/2024 geometry relationships while keeping 2012 blocked; EAC fallback turnout remains active",
       "manualReviewBurden": "low",
       "confidence": "loaded_with_caveat",
-      "caveats": "The official precinct ZIP is valid for same-grain review rows and registration-denominator leads, but not for replacing certified county map totals: its presidential candidate total is 204 votes below the official county detail table and its Trump total is one vote higher. The ZIP does not provide compatible ballots-cast rows, so turnout remains EAC fallback.",
-      "nextAction": "Collect compatible Florida state-native ballots-cast/turnout rows, precinct geometry/crosswalks, official historical baseline replacements, and normalized audit/CVR/recount/incident/correction/litigation records."
+      "caveats": "The official precinct ZIP is valid for same-grain review rows and registration-denominator leads, but not for replacing certified county map totals: its presidential candidate total is 204 votes below the official county detail table and its Trump total is one vote higher. The ZIP does not provide compatible ballots-cast rows, so turnout remains EAC fallback. The 2016 and 2020 presentation geometry is attributed VEST data under retained CC BY 4.0 evidence; the 2024 presentation geometry is attributed New York Times data under retained C-UDA non-commercial terms. Every displayed vote value comes only from official Florida exports, and excluded units are never allocated.",
+      "nextAction": "Complete immutable delivery and the guarded release for 2016, 2020, and 2024; continue public archive discovery or a records request for election-effective 2012 geometry; collect compatible state-native turnout, official county historical baseline replacements, and normalized administration-context records."
     },
     {
       "state": "GA",

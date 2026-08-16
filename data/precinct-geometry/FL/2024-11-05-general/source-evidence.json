@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "id": "fl-2024-precinct-geometry-source-evidence-v1",
+  "state": "FL",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "retrievedAt": "2026-08-16T18:00:00.000Z",
+  "authority": "Florida Department of State results with attributed New York Times election-specific geometry",
+  "artifacts": [
+    {
+      "authority": "Florida Department of State, Division of Elections",
+      "sourceUrl": "https://dos.fl.gov/media/708761/2024-gen-outputofficial1.zip",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/fl-2024-general-precinct-results.zip",
+      "format": "official statewide county-submitted precinct-result ZIP",
+      "reportingGrain": "county-scoped precinct candidate rows",
+      "byteCount": 4915683,
+      "sha256": "1a954b8bf9e261e2eb11443b016f55c87a52f69a1778ba1d5e7d229cddd79856",
+      "note": "Sole authority for every displayed vote value; OverVotes and UnderVotes are not candidate votes."
+    },
+    {
+      "authority": "New York Times",
+      "sourceUrl": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/FL-precincts-with-results.geojson.gz",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/raw/nyt/FL-precincts-with-results.geojson.gz",
+      "format": "election-specific GeoJSON gzip",
+      "reportingGrain": "statewide 2024 precinct geometry",
+      "byteCount": 39181599,
+      "sha256": "b1a4cbd68c0f3137e37c5504ffcae9210b691f3b108950b246e8f37a605c145d",
+      "note": "Contains 4,319 official-boundary and 1,264 generated-boundary features. All NYT vote fields are stripped and never displayed.",
+      "uncompressedByteCount": 125810558,
+      "uncompressedSha256": "2b8b0878d7a1a1318d289fed786e162fb2d4b0b80b73ef9930b3daf6b5b4ac8c"
+    },
+    {
+      "authority": "New York Times",
+      "sourceUrl": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/FL-precincts-with-results.csv.gz",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/raw/nyt/FL-precincts-with-results.csv.gz",
+      "format": "companion CSV gzip",
+      "reportingGrain": "geometry identity and diagnostic vote signatures",
+      "byteCount": 71286,
+      "sha256": "587c909d8311542dce061f70495a815c3c3491fddf08bd3498bd3d4118d9d413",
+      "note": "Used only as retained companion evidence; not a displayed result source.",
+      "uncompressedByteCount": 220730,
+      "uncompressedSha256": "203d4b5d4b0b5e0cc3beba06cf88494307e43d7be6675ac1bfb99d14c91ac27f"
+    },
+    {
+      "authority": "New York Times",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/raw/nyt/README.md",
+      "format": "source README",
+      "reportingGrain": "methodology and state coverage",
+      "byteCount": 49879,
+      "sha256": "987ea44ab04c77182d335670207dac88f7114f3ae02675ea5d7076e581ffccdf",
+      "note": "Retains the source project's official/generated boundary disclosure."
+    },
+    {
+      "authority": "New York Times",
+      "sourceUrl": "https://github.com/nytimes/presidential-precinct-map-2024/blob/main/LICENSE",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/raw/nyt/LICENSE",
+      "format": "NYT Content API Use and Data Agreement",
+      "reportingGrain": "reuse terms",
+      "byteCount": 4106,
+      "sha256": "77e8635500262b129a50772647773c2c66d812902aba6ac13bdb2bab14fd59c2",
+      "note": "Non-commercial attribution and downstream-use obligations accompany any delivery."
+    }
+  ],
+  "resultUniverse": {
+    "sourceUnits": 5712,
+    "colorableUnits": 5583,
+    "excludedUnits": 126,
+    "zeroVoteSourceUnits": 92,
+    "totals": {
+      "democratic": 4683038,
+      "republican": 6110126,
+      "other": 142302,
+      "total": 10935466
+    },
+    "mappedTotals": {
+      "democratic": 4675803,
+      "republican": 6099601,
+      "other": 142114,
+      "total": 10917518
+    },
+    "excludedTotals": {
+      "democratic": 7235,
+      "republican": 10525,
+      "other": 188,
+      "total": 17948
+    },
+    "duplicateCandidateRowsDiscarded": 0
+  },
+  "geometryReview": {
+    "rawFeatures": 5583,
+    "normalizedFeatures": 5583,
+    "reviewedRelationships": 5583,
+    "reviewedNoDataFeatures": 0,
+    "methods": {
+      "exactOfficialId": 5391,
+      "officialComponentAggregation": 3,
+      "uniqueFullSignature": 189,
+      "uniqueMajorSignature": 0
+    },
+    "officialBoundaryFeatures": 4319,
+    "generatedBoundaryFeatures": 1264
+  },
+  "policies": [
+    "Florida Department of State values are the sole displayed election results.",
+    "Geometry-source vote fields are stripped and never copied to normalized geometry or public result rows.",
+    "Only reviewed whole-source-component sums are allowed; no vote is estimated or distributed.",
+    "Unmatched official result units remain exclusions and are never forced onto polygons."
+  ]
+}

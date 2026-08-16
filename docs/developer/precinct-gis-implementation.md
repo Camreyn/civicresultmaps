@@ -7883,3 +7883,64 @@ evidence against its verified top-level package.
   `down_ballot_outliers`. These are broad review signals, not evidence of fraud
   or misconduct. This branch did not check or change the production API/DB
   indicator counts.
+
+### 2026-08-16 - Florida four-election source and geometry packages
+
+- Added a deterministic Florida collector that hash-pins the official Division
+  of Elections presidential precinct exports for 2012, 2016, 2020, and 2024,
+  retains complete source and license evidence, strips every election-value
+  field from geometry, and rebuilds normalized results, geometry, crosswalks,
+  reports, and blocked candidate manifests byte-for-byte. Official Florida
+  exports are the sole source of every displayed vote value.
+- The 2012 official source universe contains 6,319 reporting units and
+  8,492,336 presidential candidate votes, including write-ins. No complete
+  statewide November 6, 2012 precinct boundary edition was found. The retained
+  9,435-feature Census 2010 VTD archive is diagnostic statistical geography,
+  not an election precinct snapshot, and is never used to color a result. All
+  6,319 units remain pending and 2012 is excluded from any release candidate.
+- The 2016 package normalizes 5,967 VEST source features to 5,962 boundaries,
+  including five reviewed Union County multipart unions. It maps 5,852
+  official Florida result units and 9,488,349 candidate votes through 5,841
+  exact identifiers, six reviewed aliases, and five complete source unions.
+  Eighteen source units / 9,744 votes remain excluded, while 110 unlinked
+  polygons are explicitly reviewed no-data features. Twenty-one documented
+  Palm Beach identities contain exact duplicated candidate records under two
+  polling locations; only those exact duplicates are counted once.
+- The 2020 package contains 6,010 boundaries and 5,989 mapped official result
+  units totaling 11,088,665 candidate votes. The 775 Miami-Dade joins sum
+  complete official source components belonging to one reviewed base precinct;
+  they do not estimate or proportionally distribute a vote. Seventeen source
+  units / 2,179 votes remain excluded, and 21 unlinked polygons are retained as
+  explicit reviewed no-data features.
+- The 2024 package maps all 5,583 election-specific New York Times boundaries:
+  4,319 are source-labeled official boundaries and 1,264 are source-labeled
+  generated boundaries. It uses 5,391 exact official identifiers, three
+  complete Charlotte source-component sums, and 189 unique complete official
+  candidate-signature joins. The latter require the full Democratic,
+  Republican, Other, and total tuple; no major-party-only match is permitted.
+  The package maps 10,917,518 candidate votes and leaves 126 official source
+  units / 17,948 votes excluded and unallocated.
+- The 2016 and 2020 geometry is attributed VEST election-specific geometry with
+  retained version, custody, Redistricting Data Hub validation, and CC BY 4.0
+  evidence. The 2024 geometry retains the New York Times C-UDA non-commercial
+  license and attribution. Geometry-source vote fields are discarded before
+  normalization and never enter the result plan.
+- Four coverage ledgers and the Florida source inventories now record the
+  packages. Public eligibility remains zero: no Florida manifest is in the
+  canonical registry, no immutable delivery is declared, and no database,
+  Blob, deployment, or production state changes in this source-package phase.
+  The guarded release may include 2016, 2020, and 2024 only.
+- The full four-year alternate-root replay passed byte-identically, rejected a
+  modified raw artifact before any output write, validated all four manifest
+  contracts, and confirmed that reviewed relationships use only exact official
+  identifiers, complete official source-component sums, or unique complete
+  official vote signatures. Each election keeps its own boundary vintage; a
+  separate reviewed correspondence would be required for apples-to-apples
+  precinct trend comparisons.
+- The required 2024 advisory audit evaluated all 5,618 existing Florida review
+  rows and calculated 83 county-level advisory rows across 59 counties: 51
+  `vote_share_pattern` and 32 `average_down_ballot_difference`. The report's
+  broad-signal warning is retained because most counties were flagged; these
+  are President-versus-Senate comparison signals, not evidence of fraud or
+  misconduct. This source-package branch did not check or change production
+  indicator storage.

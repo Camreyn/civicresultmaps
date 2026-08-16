@@ -83,6 +83,17 @@
       "status": "loaded"
     },
     {
+      "id": "fl-four-election-precinct-gis-reviewed-evidence",
+      "category": "Reviewed 2012, 2016, 2020, and 2024 precinct result and geometry evidence",
+      "url": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+      "localFile": "data/precinct-geometry/FL",
+      "parser": "precinctGeometryManifestSet",
+      "authority": "Florida Department of State; U.S. Census Bureau; attributed VEST and New York Times geometry sources",
+      "timestampBasis": "Exact raw artifacts, licenses, normalized outputs, crosswalks, and blocked candidate manifests reviewed August 16, 2026.",
+      "confidence": "Official Florida presidential precinct results are retained for all four elections. Reviewed election-specific presentation geometry is complete for 2016, 2020, and 2024 without using geometry-source vote values or allocating excluded votes. The 2012 package remains fail-closed because no complete election-effective statewide precinct boundary edition was found.",
+      "status": "candidate"
+    },
+    {
       "id": "fl-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2712%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -148,7 +159,7 @@
   "expected": {
     "jurisdictions": 67,
     "resultRows": 67,
-    "sources": 9,
+    "sources": 10,
     "geometryFeatures": 67,
     "stateTotal": 10893752,
     "trump": 6110125,

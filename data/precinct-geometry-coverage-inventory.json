@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T04:00:00.000Z",
+  "updatedAt": "2026-08-16T18:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 10,
+    "totalJurisdictions": 11,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 10
+      "reviewed": 11
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 9,
+      "mapped": 10,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 1
@@ -613,6 +613,66 @@
         "Official Durham feature 48 remains visible as an explicit no-data candidate feature; no result is invented.",
         "The three restored units lack November 5 applicability proof, so row-level public rendering remains fail-closed despite exact result reconciliation.",
         "This election retains its own boundary vintage and is not treated as a stable precinct trend geography."
+      ]
+    },
+    {
+      "state": "FL",
+      "stateName": "Florida",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 13,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_2_public_secondary"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+        "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/FL-precincts-with-results.geojson.gz"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "fl-2024-11-05-reviewed-precinct-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/FL-precincts-with-results.geojson.gz"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/FL/2024-11-05-general/source-evidence.json",
+          "data/precinct-geometry/FL/2024-11-05-general/normalized/fl-2024-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/FL/2024-11-05-general/crosswalk/fl-2024-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 5583,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 5583,
+        "colorableResultUnits": 5583,
+        "matchedResultUnits": 5583,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build the hash-pinned parent-scoped delivery package and complete the guarded hidden-load, deployment, and atomic publication sequence.",
+      "notes": [
+        "All displayed votes come only from the Florida Department of State export; every NYT election-value field is discarded before geometry normalization.",
+        "The reviewed package contains 4,319 official-boundary features and 1,264 generated-boundary features under retained NYT C-UDA non-commercial attribution terms.",
+        "Three Charlotte source-component sums and 189 unique complete official vote-signature joins are retained; 126 source units totaling 17,948 votes remain excluded and are never allocated.",
+        "The retained official source universe contains 5,712 reporting units and 10,935,466 presidential candidate votes.",
+        "Each election retains its own boundary evidence and is not treated as a stable cross-election precinct geography."
       ]
     }
   ]

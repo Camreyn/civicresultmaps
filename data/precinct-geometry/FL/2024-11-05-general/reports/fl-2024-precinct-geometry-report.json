@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "state": "FL",
+  "electionId": "2024-11-05-general",
+  "status": "reviewed_candidate",
+  "resultArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/normalized/fl-2024-president-results.json.gz",
+    "byteCount": 152066,
+    "sha256": "a88102c4eda8af69adacf0ccfcb0e10997129305ee89069ebbfdc3de9f0b54a5"
+  },
+  "geometryArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/normalized/fl-2024-reviewed-precinct-geometry.geojson.gz",
+    "byteCount": 38450848,
+    "sha256": "cfb9779f635f7159a62a8b4ad1369fdb7b4874ff9ca0d97e8c7d534b63ab4dc3"
+  },
+  "crosswalkArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/crosswalk/fl-2024-result-to-geometry-review.json",
+    "byteCount": 3911662,
+    "sha256": "a5f1445bb4e05f699233a44b96f42a787f089945b6155acd372a6559a8c9709d"
+  },
+  "evidenceArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2024-11-05-general/source-evidence.json",
+    "byteCount": 5949,
+    "sha256": "5ec1d6513b1c1c5560c343787ad5b9baca156ab18e1e1431721446e9b695327c"
+  },
+  "resultUniverse": {
+    "sourceUnits": 5712,
+    "colorableUnits": 5583,
+    "excludedUnits": 126,
+    "zeroVoteSourceUnits": 92,
+    "totals": {
+      "democratic": 4683038,
+      "republican": 6110126,
+      "other": 142302,
+      "total": 10935466
+    },
+    "mappedTotals": {
+      "democratic": 4675803,
+      "republican": 6099601,
+      "other": 142114,
+      "total": 10917518
+    },
+    "excludedTotals": {
+      "democratic": 7235,
+      "republican": 10525,
+      "other": 188,
+      "total": 17948
+    },
+    "duplicateCandidateRowsDiscarded": 0
+  },
+  "geometryReview": {
+    "rawFeatures": 5583,
+    "normalizedFeatures": 5583,
+    "reviewedRelationships": 5583,
+    "reviewedNoDataFeatures": 0,
+    "methods": {
+      "exactOfficialId": 5391,
+      "officialComponentAggregation": 3,
+      "uniqueFullSignature": 189,
+      "uniqueMajorSignature": 0
+    },
+    "officialBoundaryFeatures": 4319,
+    "generatedBoundaryFeatures": 1264
+  },
+  "sourceTotalsReconciled": true,
+  "publicDeliveryAuthorized": false
+}

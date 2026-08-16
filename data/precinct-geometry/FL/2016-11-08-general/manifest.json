@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "fl-2016-11-08-reviewed-precinct-geometry-v1",
+  "state": "FL",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "VEST 2016 election-specific Florida precinct reconstruction independently reviewed by Redistricting Data Hub",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Florida Department of State results with attributed VEST election-specific geometry",
+    "url": "https://doi.org/10.7910/DVN/NH5S2I/IAELIN",
+    "retrievedAt": "2026-08-16T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/FL/2016-11-08-general/source-evidence.json",
+    "sha256": "095066d8eb09b9b226a171f0fcd9a7b87bb0bf26ad1cc3d120ed8b8db3ba7f22",
+    "byteCount": 5192,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "VEST database geometry is retained under CC BY 4.0 with version and custody evidence; Florida DOS remains the sole displayed vote authority."
+  },
+  "normalization": {
+    "script": "scripts/collect-fl-precinct-geometry.mjs",
+    "sourceCrs": "source-defined Shapefile CRS normalized to EPSG:4326 by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/FL/2016-11-08-general/normalized/fl-2016-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "82962ded53905be4e5847098783d5fc0d69bf741b377fb8353a656a9917cb6cc",
+    "byteCount": 19447602,
+    "featureCount": 5962,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "fl-dos-2016-general-precinct-results",
+    "artifact": "data/precinct-geometry/FL/2016-11-08-general/crosswalk/fl-2016-result-to-geometry-review.json",
+    "sha256": "72c8ec01bafb4329d01eef6dcf4e550973c5a227d58c86d98f7b33f87055850b",
+    "byteCount": 4081785,
+    "resultUnits": 5852,
+    "colorableResultUnits": 5852,
+    "matchedResultUnits": 5852,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 5852,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 5852,
+    "reviewedNoDataFeatures": 110,
+    "methods": [
+      "exact_official_id",
+      "reviewed_source_union",
+      "reviewed_vote_signature_alias"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+      "18 official source units totaling 9,744 candidate votes lack reviewed geometry and are never allocated to polygons.",
+      "Twenty-one Palm Beach source identities contain exact duplicate candidate rows under two polling locations; exact duplicate rows are counted once as documented by the retained validation report."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No vote is estimated, spatially allocated, or copied from a geometry source.",
+    "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+    "18 official source units totaling 9,744 candidate votes lack reviewed geometry and are never allocated to polygons.",
+    "Twenty-one Palm Beach source identities contain exact duplicate candidate rows under two polling locations; exact duplicate rows are counted once as documented by the retained validation report.",
+    "Immutable delivery and guarded production activation remain separate decisions."
+  ]
+}
