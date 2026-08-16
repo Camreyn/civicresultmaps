@@ -6,7 +6,7 @@ import JSZip from "jszip";
 import shp from "shpjs";
 import { reportingUnitCode } from "../../src/lib/precinct-geography.ts";
 
-export const FLORIDA_REVIEWED_AT = "2026-08-16T18:00:00.000Z";
+export const FLORIDA_REVIEWED_AT = "2026-08-16T12:00:00.000Z";
 
 export const FLORIDA_PRECINCT_YEAR_SPECS = Object.freeze({
   2012: {
