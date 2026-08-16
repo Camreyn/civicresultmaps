@@ -7837,3 +7837,49 @@ evidence against its verified top-level package.
   production. Each election retains its own boundary vintage, so the maps are
   not an apples-to-apples trend geography without a separate reviewed
   cross-election correspondence.
+
+### 2026-08-16 - North Carolina guarded three-election release tooling
+
+- Added a North Carolina-only guarded local database plan, loader, validator,
+  content-addressed candidate builder, production preflight and backup
+  contracts, hidden-load receipt recovery, immutable Blob publisher, static
+  activation builder, atomic publication, rollback, and read-only publication
+  receipt recovery. The release preserves 2012 as `vtd` and 2016/2020 as
+  `precinct`; shared API and map code select the reviewed grain by state and
+  election year instead of relabeling North Carolina 2012.
+- The fixed release universe is 9,285 official reporting units, 24,174
+  candidate-result rows, 8,058 polygons, and 9,285 reviewed relationships.
+  Exactly 8,058 relationships are geographic one-to-one joins and 1,227 are
+  explicit non-geographic reconciliation rows. Delivery consists of 300
+  county-scoped objects plus three year indexes. Geometry contains no election
+  values.
+- The plan, loader, candidate, public activation, and publication paths reject
+  2024. Its three restored 2019 polygons remain blocked until election-date
+  applicability is supported by retained public evidence.
+- The fixed loopback Docker rehearsal loaded and read-only validated 2012 at
+  3,011 units / 8,076 result rows / 2,692 features, 2016 at 3,209 / 8,112 /
+  2,704, and 2020 at 3,065 / 7,986 / 2,662. All three geography versions stayed
+  `blocked`, every public-delivery flag stayed false, and invalid constraints
+  were zero at local public revision 26.
+- A local validation rehearsal sealed candidate SHA-256
+  `6362c56c1834ba5c81ec395b1643fbaec6689d2163a15bf7e8be3a89195cfdcc`
+  with 303 immutable delivery artifacts. This ignored `.etl` package is local
+  evidence only and must be resealed from the clean merged commit before any
+  production evidence is collected.
+- The implementation changes no canonical manifest, public eligibility,
+  production database, Blob object, Vercel setting, deployment, or Git ref.
+  Static activation and the final database publication remain distinct,
+  separately reviewed operations so both public endpoints stay fail-closed
+  until one exact release is authorized.
+- Verification passed the 35-test North Carolina source/release suite, 30
+  cross-state publication-gate and delivery regressions, TypeScript, the
+  production build, the two-test merge-gated HTTP API suite, North Carolina
+  ETL validation/import, and the source-package, map, and provenance
+  validators. Existing repository validators retained only their documented
+  legacy-file/equipment-shape warnings and reported no failure.
+- The normal 2024 staging advisory audit evaluated 2,658 North Carolina review
+  rows and produced 206 advisory indicator rows across 86 counties/areas: 81
+  `vote_share_pattern`, 86 `average_down_ballot_difference`, and 39
+  `down_ballot_outliers`. These are broad review signals, not evidence of fraud
+  or misconduct. This branch did not check or change the production API/DB
+  indicator counts.

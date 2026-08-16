@@ -28,6 +28,7 @@ export function localGeographyParentScope(input: {
   }
   if (
     geographyLevel === "precinct"
+    || geographyLevel === "vtd"
     || geographyLevel === "local_reporting_unit"
   ) {
     return {
