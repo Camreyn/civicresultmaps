@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 
 const publicManifestId =
   "ak-2020-11-03-general-precinct-geometry-candidate-v1";
+const wisconsinPublicManifestId =
+  "wi-2024-11-05-reviewed-local-reporting-geometry-v1";
 
 function normalizeBaseUrl(value) {
   const url = new URL(value);
@@ -152,30 +154,31 @@ export async function verifyPublicApiDeployment(options) {
   );
   summary.rowCounts.results = resultRows.length;
 
-  const blockedWisconsinLocalResults = (await check(
+  const wisconsinLocalResults = (await check(
     "/api/results?state=WI&year=2024&level=local_reporting_unit&parentGeoid=55025&office=president",
   )).payload;
-  assert.equal(
-    assertArray(
-      blockedWisconsinLocalResults.data,
-      "blocked Wisconsin local reporting results",
-    ).length,
-    0,
-    "Wisconsin local reporting results must remain closed before publication",
+  const wisconsinLocalResultRows = assertArray(
+    wisconsinLocalResults.data,
+    "Wisconsin local reporting results",
   );
 
-  const blockedWisconsinManifests = (await check(
+  const wisconsinManifests = (await check(
     "/api/geography-manifests?state=WI&electionDate=2024-11-05&level=local_reporting_unit",
     { expectedSource: undefined },
   )).payload;
-  assert.equal(
-    assertArray(
-      blockedWisconsinManifests.data,
-      "eligible Wisconsin local geography manifests",
-    ).length,
-    0,
-    "Wisconsin must not expose a public manifest before static activation",
+  const wisconsinManifestRows = assertArray(
+    wisconsinManifests.data,
+    "eligible Wisconsin local geography manifests",
   );
+  assert.equal(
+    wisconsinManifestRows.length,
+    1,
+    "Wisconsin 2024 must have one eligible static manifest",
+  );
+  assert.equal(wisconsinManifestRows[0].id, wisconsinPublicManifestId);
+  assert.equal(wisconsinManifestRows[0].state, "WI");
+  assert.equal(wisconsinManifestRows[0].election.date, "2024-11-05");
+  assert.equal(wisconsinManifestRows[0].geography.level, "local_reporting_unit");
 
   const reviewedWisconsinManifests = (await check(
     "/api/geography-manifests?state=WI&electionDate=2024-11-05&level=local_reporting_unit&includeBlocked=true",
@@ -187,24 +190,43 @@ export async function verifyPublicApiDeployment(options) {
   );
   assert.equal(
     reviewedWisconsinManifestRows.length,
-    0,
-    "Wisconsin must remain absent from the canonical registry before activation",
+    1,
+    "Wisconsin includeBlocked discovery must return the same activated manifest",
   );
+  assert.equal(reviewedWisconsinManifestRows[0].id, wisconsinPublicManifestId);
 
-  const blockedWisconsinGeometry = await check(
-    "/api/precinct-geography?manifestId=wi-2024-11-05-reviewed-local-reporting-geometry-v1&parentGeoid=55025",
-    { allowedStatuses: [404], expectedSource: undefined },
+  const wisconsinGeometry = await check(
+    `/api/precinct-geography?manifestId=${wisconsinPublicManifestId}&parentGeoid=55025`,
+    { allowedStatuses: [200, 404], expectedSource: undefined },
   );
-  assert.equal(
-    blockedWisconsinGeometry.payload.data,
-    null,
-    "blocked Wisconsin geometry data",
-  );
-  assert.match(
-    String(blockedWisconsinGeometry.payload.error ?? ""),
-    /eligible local geography manifest not found|publication is not active/i,
-    "blocked Wisconsin geography gate error",
-  );
+  if (wisconsinGeometry.response.status === 200) {
+    assert.ok(
+      wisconsinLocalResultRows.length > 0,
+      "published Wisconsin geometry must have published local reporting results",
+    );
+    assertRows(
+      wisconsinLocalResultRows,
+      { level: "local_reporting_unit", office: "president", state: "WI", year: 2024 },
+      "Wisconsin local reporting results",
+    );
+    assert.equal(wisconsinGeometry.payload.data.type, "FeatureCollection");
+    assert.ok(Array.isArray(wisconsinGeometry.payload.data.features));
+    assert.ok(wisconsinGeometry.payload.data.features.length > 0);
+    assert.equal(wisconsinGeometry.payload.meta.manifestId, wisconsinPublicManifestId);
+    assert.equal(wisconsinGeometry.payload.meta.parentGeoid, "55025");
+  } else {
+    assert.equal(
+      wisconsinLocalResultRows.length,
+      0,
+      "blocked Wisconsin geometry must also keep local reporting results closed",
+    );
+    assert.equal(wisconsinGeometry.payload.data, null, "blocked Wisconsin geometry data");
+    assert.match(
+      String(wisconsinGeometry.payload.error ?? ""),
+      /publication is not active/i,
+      "blocked Wisconsin geometry gate error",
+    );
+  }
 
   const sources = (await check("/api/sources?state=WI&year=2024")).payload;
   const sourceRows = assertArray(sources.data, "sources");

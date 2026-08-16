@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T18:00:00.000Z",
+  "updatedAt": "2026-08-16T00:33:54.328Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
-    "publicEligibleJurisdictions": 7
+    "publicEligibleJurisdictions": 8
   },
   "states": [
     {
@@ -499,7 +499,7 @@
       "programStatus": "reviewed",
       "wave": 11,
       "disposition": "mapped",
-      "checkedAt": "2026-08-15T18:00:00.000Z",
+      "checkedAt": "2026-08-16T00:33:54.328Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_3_secondary_geometry"
@@ -529,7 +529,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 3705,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 3698,
@@ -539,10 +539,8 @@
         "nonGeographicResultUnits": 2,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable parent-scoped delivery and the guarded production release have not been completed."
-      ],
-      "nextAction": "Build the guarded local database, immutable county-scoped delivery, and production activation path while retaining all no-data and zero-vote units.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "All 3,696 mapped local reporting units preserve complete official WEC recount rows and all 3,298,041 official presidential votes.",
         "Two official zero-vote reporting units without reviewed geometry remain explicit no-geometry reconciliation rows; nine reviewed source features remain explicit no-data shapes.",
