@@ -234,8 +234,9 @@ all unmatched-unit reconciliation evidence, and increments the public revision o
 
 For every year and several counties, verify:
 
-- `/api/geography-manifests?state=FL&year=<year>&level=precinct` returns exactly
-  one eligible manifest;
+- `/api/geography-manifests?state=FL&electionDate=<YYYY-MM-DD>&level=precinct`
+  returns exactly one eligible manifest. The route also accepts its canonical
+  `electionId`; it does not implement a `year` filter;
 - `/api/precinct-geography?manifestId=<id>&parentGeoid=<county GEOID>` returns
   the expected county-scoped GeoJSON;
 - `/api/results?state=FL&year=<year>&level=precinct&office=president&parentGeoid=<county GEOID>`
@@ -249,6 +250,40 @@ For every year and several counties, verify:
 Run the production API smoke against the exact deployed Git SHA with
 `--expect-source=database`. Preserve the publication receipt and verification
 evidence.
+
+## Completed 2026-08-16 production checkpoint
+
+- Human-merged commit: `89d4030402e1c4bbe16e8104978715cdd333fe51`;
+  reviewed tree: `6234e3d568bb5dbfbe5e89db75de80e65df18e42`.
+- READY/PROMOTED production deployment:
+  `dpl_4FPtsSkeF7pzM2BNbRThoZFU2kNC`.
+- Gate-capable rollback deployment:
+  `dpl_EArfLj4sHW4HNWD5LyP7Q5JCVUgW` at commit
+  `11f8497795819f90033e2005242c093b0f196ef9`.
+- Publication activation:
+  `fl-precinct-public-20260816T225352Z-57c2b8fb8873`; public revision `25`.
+- Publication plan SHA-256:
+  `57c2b8fb88730adfc25e5d2a93f6d8359d227544f4e84055e31466a1c3444993`.
+- Publication receipt SHA-256:
+  `1e79f8e2058472b37d65842d2888065de52e344679b9365e22f9da887e2ca2ae`.
+- Exhaustive API verification SHA-256:
+  `80bcce2c3b8291178e2f830fac99b6677dc4145a7c23874e8768d1338bb045ab`.
+- Independent read-only database verification SHA-256:
+  `64e722f1312fdd83c07e788c383d1b0103589c3d080a81f99b3d2eeb655a000a`.
+- Browser verification SHA-256:
+  `bddca4b0d1fc6c9c36857e70bee7f3ec832fd3c17c261fb78da6be315961f487`.
+- Combined production verification SHA-256:
+  `01fb7e0edc7096249ba794e1d14900e1e54ea4b43e00e9e79cef04dbacb8886f`.
+
+The live checks covered all 201 county/year parent scopes. They confirmed
+17,424 result units, 17,555 features, 131 explicit reviewed no-data features,
+140 mapped zero-vote units, 31,494,532 displayed official votes, and zero
+invalid public constraints. Browser checks confirmed the three published maps,
+OpenStreetMap attribution, source/vintage labels, interactive selection, and
+year-pinned Exports & API examples. Florida 2012 remained unavailable. An
+invalid non-Florida parent GEOID exposed no data but currently produces a
+fail-closed HTTP 500 from the geometry endpoint; early state-prefix rejection
+is a non-blocking API-hardening follow-up.
 
 ## Rollback
 
