@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T12:00:00.000Z",
+  "updatedAt": "2026-08-16T21:24:13.304Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
-    "publicEligibleJurisdictions": 9
+    "publicEligibleJurisdictions": 10
   },
   "states": [
     {
@@ -614,7 +614,7 @@
       "programStatus": "reviewed",
       "wave": 13,
       "disposition": "mapped",
-      "checkedAt": "2026-08-16T12:00:00.000Z",
+      "checkedAt": "2026-08-16T21:24:13.304Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_2_public_secondary"
@@ -645,7 +645,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 6010,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 5989,
@@ -655,10 +655,8 @@
         "nonGeographicResultUnits": 0,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable parent-scoped delivery and the guarded production release have not been completed."
-      ],
-      "nextAction": "Build the hash-pinned parent-scoped delivery package and complete the guarded hidden-load, deployment, and atomic publication sequence.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "All displayed votes come only from the Florida Department of State export; VEST supplies attributed election-specific geometry only.",
         "The 775 Miami-Dade relationships sum complete official source components belonging to one reviewed base precinct; no vote is estimated or proportionally allocated.",

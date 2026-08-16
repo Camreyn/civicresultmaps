@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T08:28:02.504Z",
+  "updatedAt": "2026-08-16T21:24:13.304Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -3158,6 +3158,332 @@
         "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
         "Four missing official result units are restored from the NCSBE August 2019 snapshot using the independently documented RDH/VEST source method and topology-preserving clipping; no result is split or allocated.",
         "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "fl-2016-11-08-reviewed-precinct-geometry-v1",
+      "state": "FL",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "VEST 2016 election-specific Florida precinct reconstruction independently reviewed by Redistricting Data Hub",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Florida Department of State results with attributed VEST election-specific geometry",
+        "url": "https://doi.org/10.7910/DVN/NH5S2I/IAELIN",
+        "retrievedAt": "2026-08-16T12:00:00.000Z",
+        "artifact": "data/precinct-geometry/FL/2016-11-08-general/source-evidence.json",
+        "sha256": "9cf8e0a975d79c6b04d9d9bea00bcb56c7568be3c4cd9fc42b630bfec0b6f6b6",
+        "byteCount": 5192,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "VEST database geometry is retained under CC BY 4.0 with version and custody evidence; Florida DOS remains the sole displayed vote authority."
+      },
+      "normalization": {
+        "script": "scripts/collect-fl-precinct-geometry.mjs",
+        "sourceCrs": "source-defined Shapefile CRS normalized to EPSG:4326 by shpjs",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/FL/2016-11-08-general/normalized/fl-2016-reviewed-precinct-geometry.geojson.gz",
+        "sha256": "82962ded53905be4e5847098783d5fc0d69bf741b377fb8353a656a9917cb6cc",
+        "byteCount": 19447602,
+        "featureCount": 5962,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "fl-dos-2016-general-precinct-results",
+        "artifact": "data/precinct-geometry/FL/2016-11-08-general/crosswalk/fl-2016-result-to-geometry-review.json",
+        "sha256": "a9aed5a8053d3c558f1ae37a11c7d89b4c69e169069981a39b43c28f3486362f",
+        "byteCount": 4081785,
+        "resultUnits": 5852,
+        "colorableResultUnits": 5852,
+        "matchedResultUnits": 5852,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 5852,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 5852,
+        "reviewedNoDataFeatures": 110,
+        "methods": [
+          "exact_official_id",
+          "reviewed_source_union",
+          "reviewed_vote_signature_alias"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+          "18 official source units totaling 9,744 candidate votes lack reviewed geometry and are never allocated to polygons.",
+          "Twenty-one Palm Beach source identities contain exact duplicate candidate rows under two polling locations; exact duplicate rows are counted once as documented by the retained validation report.",
+          "All 5852 displayable precinct relationships are reviewed one-to-one across all 67 Florida counties.",
+          "All official result units without reviewed geometry remain excluded from display and are never spatially allocated.",
+          "The 33 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 110 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/fl/2016-11-08/precinct/fl-2016-11-08-reviewed-precinct-geometry-v1-283e2be8dddf/index.json",
+        "sha256": "283e2be8dddfa094013d0968c099b630de8180438c5f54b8a05134056529b6b3",
+        "byteCount": 13288,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 67,
+        "featureCount": 5962
+      },
+      "caveats": [
+        "No vote is estimated, spatially allocated, or copied from a geometry source.",
+        "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+        "18 official source units totaling 9,744 candidate votes lack reviewed geometry and are never allocated to polygons.",
+        "Twenty-one Palm Beach source identities contain exact duplicate candidate rows under two polling locations; exact duplicate rows are counted once as documented by the retained validation report.",
+        "Immutable delivery and guarded production activation remain separate decisions."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "fl-2020-11-03-reviewed-precinct-geometry-v1",
+      "state": "FL",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "VEST 2020 election-specific Florida precinct reconstruction independently reviewed by Redistricting Data Hub",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Florida Department of State results with attributed VEST election-specific geometry",
+        "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4938250&version=24.0",
+        "retrievedAt": "2026-08-16T12:00:00.000Z",
+        "artifact": "data/precinct-geometry/FL/2020-11-03-general/source-evidence.json",
+        "sha256": "612b467758f5842e286f33692ec8bf8af6eb32e7efd8023abba5ed7c779e7de2",
+        "byteCount": 5283,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "VEST database geometry is retained under CC BY 4.0 with version and custody evidence; Florida DOS remains the sole displayed vote authority."
+      },
+      "normalization": {
+        "script": "scripts/collect-fl-precinct-geometry.mjs",
+        "sourceCrs": "source-defined Shapefile CRS normalized to EPSG:4326 by shpjs",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/FL/2020-11-03-general/normalized/fl-2020-reviewed-precinct-geometry.geojson.gz",
+        "sha256": "3cbaa7134481106531b0bb6f07793ddedab3a8900e1e5c299f253337077e2627",
+        "byteCount": 20548823,
+        "featureCount": 6010,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "fl-dos-2020-general-precinct-results",
+        "artifact": "data/precinct-geometry/FL/2020-11-03-general/crosswalk/fl-2020-result-to-geometry-review.json",
+        "sha256": "d90fa1e3017017fd2379ca5f52c2f2f9f100ae14006aa26a80169abb92352d4a",
+        "byteCount": 4173669,
+        "resultUnits": 5989,
+        "colorableResultUnits": 5989,
+        "matchedResultUnits": 5989,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 5989,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 5989,
+        "reviewedNoDataFeatures": 21,
+        "methods": [
+          "exact_official_id",
+          "official_source_component_aggregation"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+          "17 official source units totaling 2,179 candidate votes lack reviewed geometry and are never allocated to polygons.",
+          "VEST distributed nongeographic source votes in its own fields; every such field is stripped and none is used by CivicResultMaps.",
+          "All 5989 displayable precinct relationships are reviewed one-to-one across all 67 Florida counties.",
+          "All official result units without reviewed geometry remain excluded from display and are never spatially allocated.",
+          "The 107 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 21 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/fl/2020-11-03/precinct/fl-2020-11-03-reviewed-precinct-geometry-v1-7b1d0bcfb4a6/index.json",
+        "sha256": "7b1d0bcfb4a66a84f7ad71ff172c253a2bdab33a3d88aa0abaf52155514f314c",
+        "byteCount": 13315,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 67,
+        "featureCount": 6010
+      },
+      "caveats": [
+        "No vote is estimated, spatially allocated, or copied from a geometry source.",
+        "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+        "17 official source units totaling 2,179 candidate votes lack reviewed geometry and are never allocated to polygons.",
+        "VEST distributed nongeographic source votes in its own fields; every such field is stripped and none is used by CivicResultMaps.",
+        "Immutable delivery and guarded production activation remain separate decisions."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "fl-2024-11-05-reviewed-precinct-geometry-v1",
+      "state": "FL",
+      "election": {
+        "id": "2024-11-05-general",
+        "date": "2024-11-05",
+        "year": 2024,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "NYT 2024 election-specific Florida precinct package: 4,319 official and 1,264 generated boundary features",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Florida Department of State results with attributed New York Times election-specific geometry",
+        "url": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/FL-precincts-with-results.geojson.gz",
+        "retrievedAt": "2026-08-16T12:00:00.000Z",
+        "artifact": "data/precinct-geometry/FL/2024-11-05-general/source-evidence.json",
+        "sha256": "1d41fdf3f9280667dd8435ad6bfa7b8cc437111953c5fb0ae6b812f482d0a446",
+        "byteCount": 5949,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "NYT geometry is retained under C-UDA non-commercial attribution terms; Florida DOS remains the sole displayed vote authority."
+      },
+      "normalization": {
+        "script": "scripts/collect-fl-precinct-geometry.mjs",
+        "sourceCrs": "EPSG:4326 GeoJSON",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/FL/2024-11-05-general/normalized/fl-2024-reviewed-precinct-geometry.geojson.gz",
+        "sha256": "cfb9779f635f7159a62a8b4ad1369fdb7b4874ff9ca0d97e8c7d534b63ab4dc3",
+        "byteCount": 38450848,
+        "featureCount": 5583,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "fl-dos-2024-general-precinct-results",
+        "artifact": "data/precinct-geometry/FL/2024-11-05-general/crosswalk/fl-2024-result-to-geometry-review.json",
+        "sha256": "ad826fd343b6fa8224d3caf28f7245c609785b58873da25807c795e0c71fd1c6",
+        "byteCount": 3911662,
+        "resultUnits": 5583,
+        "colorableResultUnits": 5583,
+        "matchedResultUnits": 5583,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 5583,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 5583,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "exact_official_id",
+          "official_source_component_aggregation",
+          "unique_complete_official_vote_signature"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+          "126 official source units totaling 17,948 candidate votes lack reviewed geometry and are never allocated to polygons.",
+          "1,264 NYT features use generated boundaries and remain explicitly disclosed; no NYT result value is displayed.",
+          "All 5583 displayable precinct relationships are reviewed one-to-one across all 67 Florida counties.",
+          "All official result units without reviewed geometry remain excluded from display and are never spatially allocated.",
+          "The 0 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/fl/2024-11-05/precinct/fl-2024-11-05-reviewed-precinct-geometry-v1-d8761fafd442/index.json",
+        "sha256": "d8761fafd442e191c826c0b5fae8a40ba1f2ebd803ad7074c3dc34b031b13501",
+        "byteCount": 13340,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 67,
+        "featureCount": 5583
+      },
+      "caveats": [
+        "No vote is estimated, spatially allocated, or copied from a geometry source.",
+        "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+        "126 official source units totaling 17,948 candidate votes lack reviewed geometry and are never allocated to polygons.",
+        "1,264 NYT features use generated boundaries and remain explicitly disclosed; no NYT result value is displayed.",
+        "Immutable delivery and guarded production activation remain separate decisions."
       ]
     }
   ]
