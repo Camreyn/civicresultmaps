@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "id": "fl-2012-precinct-geometry-source-evidence-v1",
+  "state": "FL",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "retrievedAt": "2026-08-16T18:00:00.000Z",
+  "authority": "Florida Department of State results; U.S. Census Bureau VTD availability diagnostic",
+  "artifacts": [
+    {
+      "authority": "Florida Department of State, Division of Elections",
+      "sourceUrl": "https://dos.fl.gov/media/697204/precinctlevelelectionresults2012gen.zip",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2012-11-06-general/raw/florida-dos/fl-2012-general-precinct-results.zip",
+      "format": "official statewide county-submitted precinct-result ZIP",
+      "reportingGrain": "county-scoped precinct candidate rows",
+      "byteCount": 5085954,
+      "sha256": "97a7c28ef2b5cbfed449b32c43f0abd29b4914728ac32daf2a73ae8597456ca0",
+      "note": "Sole authority for every displayed vote value; OverVotes and UnderVotes are not candidate votes."
+    },
+    {
+      "authority": "U.S. Census Bureau",
+      "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_12_vtd10.zip",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2012-11-06-general/raw/us-census/tl_2012_12_vtd10.zip",
+      "format": "TIGER/Line 2012 ZIP containing 2010 Census VTD polygons",
+      "reportingGrain": "statistical VTD diagnostic",
+      "byteCount": 17577732,
+      "sha256": "836cbef456142af8af160ede65ad0716044a88f305832f0c20de26453a7d305b",
+      "note": "Contains 9,435 statistical VTD features and is not asserted to represent Florida's November 6, 2012 election precinct configuration."
+    }
+  ],
+  "resultUniverse": {
+    "sourceUnits": 6319,
+    "colorableUnits": 0,
+    "excludedUnits": 6319,
+    "zeroVoteSourceUnits": 56,
+    "totals": {
+      "democratic": 4236647,
+      "republican": 4162600,
+      "other": 93089,
+      "total": 8492336
+    },
+    "mappedTotals": {
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0
+    },
+    "excludedTotals": {
+      "democratic": 4236647,
+      "republican": 4162600,
+      "other": 93089,
+      "total": 8492336
+    },
+    "duplicateCandidateRowsDiscarded": 0
+  },
+  "geometryReview": {
+    "rawFeatures": 9435,
+    "normalizedFeatures": 0,
+    "reviewedRelationships": 0,
+    "reviewedNoDataFeatures": 0,
+    "methods": {},
+    "officialBoundaryFeatures": null,
+    "generatedBoundaryFeatures": null
+  },
+  "policies": [
+    "Florida Department of State values are the sole displayed election results.",
+    "Geometry-source vote fields are stripped and never copied to normalized geometry or public result rows.",
+    "Only reviewed whole-source-component sums are allowed; no vote is estimated or distributed.",
+    "2010 Census VTDs remain an unjoined diagnostic and are never labeled as 2012 election precincts."
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "fl-2020-11-03-reviewed-precinct-geometry-v1",
+  "state": "FL",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "VEST 2020 election-specific Florida precinct reconstruction independently reviewed by Redistricting Data Hub",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Florida Department of State results with attributed VEST election-specific geometry",
+    "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4938250&version=24.0",
+    "retrievedAt": "2026-08-16T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/FL/2020-11-03-general/source-evidence.json",
+    "sha256": "efff0a806f419e2ef3ec10b4338672a4bee88dcbd34e62c21f60f0458c9764ed",
+    "byteCount": 5283,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "VEST database geometry is retained under CC BY 4.0 with version and custody evidence; Florida DOS remains the sole displayed vote authority."
+  },
+  "normalization": {
+    "script": "scripts/collect-fl-precinct-geometry.mjs",
+    "sourceCrs": "source-defined Shapefile CRS normalized to EPSG:4326 by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/FL/2020-11-03-general/normalized/fl-2020-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "3cbaa7134481106531b0bb6f07793ddedab3a8900e1e5c299f253337077e2627",
+    "byteCount": 20548823,
+    "featureCount": 6010,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "fl-dos-2020-general-precinct-results",
+    "artifact": "data/precinct-geometry/FL/2020-11-03-general/crosswalk/fl-2020-result-to-geometry-review.json",
+    "sha256": "2f4704492c247d79a2b441a05eb8a7458d90bc2101eaffde70f9c2f9486d43b2",
+    "byteCount": 4173669,
+    "resultUnits": 5989,
+    "colorableResultUnits": 5989,
+    "matchedResultUnits": 5989,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 5989,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 5989,
+    "reviewedNoDataFeatures": 21,
+    "methods": [
+      "exact_official_id",
+      "official_source_component_aggregation"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+      "17 official source units totaling 2,179 candidate votes lack reviewed geometry and are never allocated to polygons.",
+      "VEST distributed nongeographic source votes in its own fields; every such field is stripped and none is used by CivicResultMaps."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No vote is estimated, spatially allocated, or copied from a geometry source.",
+    "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+    "17 official source units totaling 2,179 candidate votes lack reviewed geometry and are never allocated to polygons.",
+    "VEST distributed nongeographic source votes in its own fields; every such field is stripped and none is used by CivicResultMaps.",
+    "Immutable delivery and guarded production activation remain separate decisions."
+  ]
+}

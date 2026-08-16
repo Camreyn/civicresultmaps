@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T08:28:02.504Z",
+  "updatedAt": "2026-08-16T18:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 10,
+    "totalJurisdictions": 11,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 10
+      "reviewed": 11
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 9,
+      "mapped": 10,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 1
@@ -605,6 +605,66 @@
         "The same four-unit source method is independently documented by the retained RDH/VEST validation report; CivicResultMaps performs its own topology-preserving clip/subtract reconstruction and uses no allocated VEST result values.",
         "The 403 Real Precinct=N units totaling 2,323,091 votes remain non-geographic and are never allocated.",
         "Every displayed value will come only from the official NCSBE result ZIP, and this election retains its own boundary vintage."
+      ]
+    },
+    {
+      "state": "FL",
+      "stateName": "Florida",
+      "electionId": "2020-11-03-general",
+      "programStatus": "reviewed",
+      "wave": 13,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_2_public_secondary"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+        "https://dataverse.harvard.edu/file.xhtml?fileId=4938250&version=24.0"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "fl-2020-11-03-reviewed-precinct-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://dataverse.harvard.edu/file.xhtml?fileId=4938250&version=24.0"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/FL/2020-11-03-general/source-evidence.json",
+          "data/precinct-geometry/FL/2020-11-03-general/normalized/fl-2020-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/FL/2020-11-03-general/crosswalk/fl-2020-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 6010,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 5989,
+        "colorableResultUnits": 5989,
+        "matchedResultUnits": 5989,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build the hash-pinned parent-scoped delivery package and complete the guarded hidden-load, deployment, and atomic publication sequence.",
+      "notes": [
+        "All displayed votes come only from the Florida Department of State export; VEST supplies attributed election-specific geometry only.",
+        "The 775 Miami-Dade relationships sum complete official source components belonging to one reviewed base precinct; no vote is estimated or proportionally allocated.",
+        "Seventeen official source units totaling 2,179 votes remain excluded from geometry, and 21 unlinked polygons remain visible as reviewed no-data features.",
+        "The retained official source universe contains 6,097 reporting units and 11,090,844 presidential candidate votes.",
+        "Each election retains its own boundary evidence and is not treated as a stable cross-election precinct geography."
       ]
     }
   ]

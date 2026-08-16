@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "id": "fl-2016-precinct-geometry-source-evidence-v1",
+  "state": "FL",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "retrievedAt": "2026-08-16T18:00:00.000Z",
+  "authority": "Florida Department of State results with attributed VEST election-specific geometry",
+  "artifacts": [
+    {
+      "authority": "Florida Department of State, Division of Elections",
+      "sourceUrl": "https://dos.fl.gov/media/697454/precinctlevelelectionresults2016gen.zip",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2016-11-08-general/raw/florida-dos/fl-2016-general-precinct-results.zip",
+      "format": "official statewide county-submitted precinct-result ZIP",
+      "reportingGrain": "county-scoped precinct candidate rows",
+      "byteCount": 4952971,
+      "sha256": "0d9b6ee46f9c5b4399b8909a3df91d8cc270c0b8daaf0589e515c69160d35657",
+      "note": "Sole authority for every displayed vote value; OverVotes and UnderVotes are not candidate votes."
+    },
+    {
+      "authority": "Voting and Election Science Team (VEST), public PlanScore custody mirror",
+      "sourceUrl": "https://doi.org/10.7910/DVN/NH5S2I/IAELIN",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2016-11-08-general/raw/vest/fl_2016.zip",
+      "format": "version-pinned statewide VEST Shapefile ZIP",
+      "reportingGrain": "election-specific precinct geometry",
+      "byteCount": 23080142,
+      "sha256": "bec5cbc12cc4294f2ccd1c7767a5a99dce15046b5f04c778b890317959ee052e",
+      "note": "Election-value attributes are used only for reviewed identity diagnostics and are stripped from normalized geometry; displayed votes remain Florida DOS values."
+    },
+    {
+      "authority": "Redistricting Data Hub",
+      "sourceUrl": "https://redistrictingdatahub.org/wp-content/uploads/2020/12/fl_vest_16_validation_report.pdf",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; the local byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/FL/2016-11-08-general/raw/review/fl_vest_16_validation_report.pdf",
+      "format": "VEST Florida validation report PDF",
+      "reportingGrain": "statewide methodology and reconciliation evidence",
+      "byteCount": 133824,
+      "sha256": "f02a6639c310b9de2c94147154e6a6e5bc8a43fca343684e10facc3474266b1f",
+      "note": "The report documents source joins, county corrections, and unassigned administrative/UOCAVA returns."
+    },
+    {
+      "authority": "Voting and Election Science Team publication and version-pinned custody evidence",
+      "sourceUrl": "https://www.nature.com/articles/s41597-024-04024-2",
+      "derivation": "Deterministically generated from the version-pinned VEST checksum, Dataverse/file DOI evidence, PlanScore custody commit/blob, and the VEST data descriptor's database-license statement.",
+      "localArtifactPath": "data/precinct-geometry/FL/2016-11-08-general/raw/vest/dataverse-license-evidence.json",
+      "format": "version and license evidence JSON",
+      "reportingGrain": "source provenance and reuse terms",
+      "byteCount": 1210,
+      "sha256": "9074119f39f2f3ada277979a73d557a80c45be0a5f5eac96d0fca3b60351a120",
+      "note": "Pins the reviewed VEST file version, checksum, public custody mirror commit/blob, and CC BY 4.0 database terms evidence."
+    }
+  ],
+  "resultUniverse": {
+    "sourceUnits": 5870,
+    "colorableUnits": 5852,
+    "excludedUnits": 18,
+    "zeroVoteSourceUnits": 33,
+    "totals": {
+      "democratic": 4504403,
+      "republican": 4617476,
+      "other": 376214,
+      "total": 9498093
+    },
+    "mappedTotals": {
+      "democratic": 4500899,
+      "republican": 4611546,
+      "other": 375904,
+      "total": 9488349
+    },
+    "excludedTotals": {
+      "democratic": 3504,
+      "republican": 5930,
+      "other": 310,
+      "total": 9744
+    },
+    "duplicateCandidateRowsDiscarded": 107
+  },
+  "geometryReview": {
+    "rawFeatures": 5967,
+    "normalizedFeatures": 5962,
+    "reviewedRelationships": 5852,
+    "reviewedNoDataFeatures": 110,
+    "methods": {
+      "exactOfficialId": 5841,
+      "reviewedVoteAlias": 6,
+      "reviewedSourceUnion": 5
+    },
+    "officialBoundaryFeatures": null,
+    "generatedBoundaryFeatures": null
+  },
+  "policies": [
+    "Florida Department of State values are the sole displayed election results.",
+    "Geometry-source vote fields are stripped and never copied to normalized geometry or public result rows.",
+    "Only reviewed whole-source-component sums are allowed; no vote is estimated or distributed.",
+    "Unmatched official result units remain exclusions and are never forced onto polygons."
+  ]
+}

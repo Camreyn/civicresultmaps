@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "id": "fl-2012-11-06-precinct-geometry-unavailable-v1",
+  "state": "FL",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "2010 Census VTD statistical geography retained only as a diagnostic; November 6, 2012 election precinct geometry remains unavailable",
+    "vintageStatus": "unknown",
+    "derivationMethod": "availability_diagnostic"
+  },
+  "source": {
+    "authority": "Florida Department of State results; U.S. Census Bureau VTD availability diagnostic",
+    "url": "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_12_vtd10.zip",
+    "retrievedAt": "2026-08-16T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/FL/2012-11-06-general/source-evidence.json",
+    "sha256": "c0cb4bd02568191f6be9b43f2751686069765f4dfacbeefd868b65e819a63fbe",
+    "byteCount": 3325,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Florida public election records and U.S. Census public-domain statistical geography; no 2012 geometry is delivered."
+  },
+  "normalization": {
+    "script": "scripts/collect-fl-precinct-geometry.mjs",
+    "sourceCrs": "source-defined Shapefile CRS normalized to EPSG:4326 by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/FL/2012-11-06-general/normalized/fl-2012-no-approved-precinct-geometry.json",
+    "sha256": "8a59eaf69dc9a7ce6eadbefe5afc0b46e8e0ff1bb05a5fd065a36393c0655d48",
+    "byteCount": 350,
+    "featureCount": 0,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "resultSourceId": "fl-dos-2012-general-precinct-results",
+    "artifact": "data/precinct-geometry/FL/2012-11-06-general/crosswalk/fl-2012-result-to-geometry-review.json",
+    "sha256": "2e19d9c5cafb933f59174a2eedf4831eb84db4ad4fc33c7223199417fbc33fec",
+    "byteCount": 4231827,
+    "resultUnits": 6319,
+    "colorableResultUnits": 6319,
+    "matchedResultUnits": 0,
+    "unmatchedResultUnits": 6319,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 0,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 6319
+    },
+    "reviewedRelationshipRecords": 0,
+    "reviewedNoDataFeatures": 0,
+    "methods": []
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": false,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Complete election-effective November 6, 2012 Florida precinct geometry and a reviewed result crosswalk are unavailable."
+    ],
+    "warnings": [
+      "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+      "6319 official source units totaling 8,492,336 candidate votes lack reviewed geometry and are never allocated to polygons."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No vote is estimated, spatially allocated, or copied from a geometry source.",
+    "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+    "6319 official source units totaling 8,492,336 candidate votes lack reviewed geometry and are never allocated to polygons.",
+    "The 2010 Census VTD diagnostic is not public precinct delivery."
+  ]
+}

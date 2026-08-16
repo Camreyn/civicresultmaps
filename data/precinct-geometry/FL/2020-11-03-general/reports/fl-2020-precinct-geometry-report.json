@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "state": "FL",
+  "electionId": "2020-11-03-general",
+  "status": "reviewed_candidate",
+  "resultArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2020-11-03-general/normalized/fl-2020-president-results.json.gz",
+    "byteCount": 153230,
+    "sha256": "48c7925e5ecca00e86952210bd31c8bdcccf4a15cb14ab4059561833ae31cebf"
+  },
+  "geometryArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2020-11-03-general/normalized/fl-2020-reviewed-precinct-geometry.geojson.gz",
+    "byteCount": 20548823,
+    "sha256": "3cbaa7134481106531b0bb6f07793ddedab3a8900e1e5c299f253337077e2627"
+  },
+  "crosswalkArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2020-11-03-general/crosswalk/fl-2020-result-to-geometry-review.json",
+    "byteCount": 4173669,
+    "sha256": "2f4704492c247d79a2b441a05eb8a7458d90bc2101eaffde70f9c2f9486d43b2"
+  },
+  "evidenceArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2020-11-03-general/source-evidence.json",
+    "byteCount": 5283,
+    "sha256": "efff0a806f419e2ef3ec10b4338672a4bee88dcbd34e62c21f60f0458c9764ed"
+  },
+  "resultUniverse": {
+    "sourceUnits": 6097,
+    "colorableUnits": 5989,
+    "excludedUnits": 17,
+    "zeroVoteSourceUnits": 132,
+    "totals": {
+      "democratic": 5297036,
+      "republican": 5668716,
+      "other": 125092,
+      "total": 11090844
+    },
+    "mappedTotals": {
+      "democratic": 5295976,
+      "republican": 5667620,
+      "other": 125069,
+      "total": 11088665
+    },
+    "excludedTotals": {
+      "democratic": 1060,
+      "republican": 1096,
+      "other": 23,
+      "total": 2179
+    },
+    "duplicateCandidateRowsDiscarded": 0
+  },
+  "geometryReview": {
+    "rawFeatures": 6010,
+    "normalizedFeatures": 6010,
+    "reviewedRelationships": 5989,
+    "reviewedNoDataFeatures": 21,
+    "methods": {
+      "exactOfficialId": 5214,
+      "officialComponentAggregation": 775
+    },
+    "officialBoundaryFeatures": null,
+    "generatedBoundaryFeatures": null
+  },
+  "sourceTotalsReconciled": true,
+  "publicDeliveryAuthorized": false
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "state": "FL",
+  "electionYear": 2020,
+  "geometryArtifact": {
+    "filename": "fl_2020.zip",
+    "sha256": "a2e1a068cdbda507bdc38087de311a143feef0f79fa4992aed875cd8477d8bdb",
+    "byteCount": 21074653,
+    "md5": "d14975ec566ab3a6ebb6060c2256d593",
+    "dataverseFileId": 4938250,
+    "reviewedDataverseVersion": "24.0",
+    "datasetDoi": "10.7910/DVN/K7760H"
+  },
+  "custodyMirror": {
+    "repository": "https://github.com/PlanScore/National-Input-Data",
+    "path": "VEST/fl_2020.zip",
+    "commit": "b8d27cbdc2e752fbadf8e3432d8eb3c96ba579b7",
+    "gitBlobSha1": "753b0f55296de3921f5b44bbd19ebe7e5396792c",
+    "note": "The public PlanScore repository is byte custody only; VEST and the reviewed RDH report establish the dataset identity and methodology."
+  },
+  "rights": {
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "evidenceUrl": "https://www.nature.com/articles/s41597-024-04024-2",
+    "note": "The VEST data descriptor states that the precinct-level election-result databases are released under CC BY 4.0. The article's own publication license is separate and is not asserted for the database bytes."
+  }
+}

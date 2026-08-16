@@ -385,7 +385,10 @@
     "precinct-gis:production-release:nc": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-nc-local-release.mjs",
     "precinct-gis:public-activation:nc": "node --experimental-strip-types scripts/prepare-nc-local-public-activation.mjs",
     "precinct-gis:publication-status:nc": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-nc-local-geography-status.mjs",
-    "test:precinct-geometry:nc": "node --experimental-strip-types --test tests/api/nc-precinct-geometry.test.mjs tests/api/nc-local-gis-plan.test.mjs tests/api/nc-local-gis-local.test.mjs tests/api/nc-local-release-candidate.test.mjs tests/api/nc-local-blob-publication.test.mjs tests/api/nc-local-production-release.test.mjs tests/api/nc-local-public-activation.test.mjs tests/api/nc-local-publication-gate.test.mjs tests/api/nc-local-publication.test.mjs"
+    "test:precinct-geometry:nc": "node --experimental-strip-types --test tests/api/nc-precinct-geometry.test.mjs tests/api/nc-local-gis-plan.test.mjs tests/api/nc-local-gis-local.test.mjs tests/api/nc-local-release-candidate.test.mjs tests/api/nc-local-blob-publication.test.mjs tests/api/nc-local-production-release.test.mjs tests/api/nc-local-public-activation.test.mjs tests/api/nc-local-publication-gate.test.mjs tests/api/nc-local-publication.test.mjs",
+    "precinct-gis:collect:fl": "node --experimental-strip-types scripts/collect-fl-precinct-geometry.mjs",
+    "precinct-gis:coverage:fl": "node scripts/refresh-fl-precinct-geometry-coverage.mjs",
+    "test:precinct-geometry:fl": "node --experimental-strip-types --test tests/api/fl-precinct-geometry.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",

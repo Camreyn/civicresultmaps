@@ -117,6 +117,12 @@
 /data/precinct-geometry/WI/**/*.xls -diff
 /data/precinct-geometry/WI/**/*.xlsx -diff
 
+# Preserve every hash-pinned Florida precinct source and derivative byte-for-byte.
+/data/precinct-geometry/FL/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/FL/**/*.zip -diff
+/data/precinct-geometry/FL/**/*.gz -diff
+/data/precinct-geometry/FL/**/*.pdf -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

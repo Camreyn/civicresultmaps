@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "fl-2024-11-05-reviewed-precinct-geometry-v1",
+  "state": "FL",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "NYT 2024 election-specific Florida precinct package: 4,319 official and 1,264 generated boundary features",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Florida Department of State results with attributed New York Times election-specific geometry",
+    "url": "https://int.nyt.com/newsgraphics/elections/map-data/2024/national/FL-precincts-with-results.geojson.gz",
+    "retrievedAt": "2026-08-16T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/FL/2024-11-05-general/source-evidence.json",
+    "sha256": "5ec1d6513b1c1c5560c343787ad5b9baca156ab18e1e1431721446e9b695327c",
+    "byteCount": 5949,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "NYT geometry is retained under C-UDA non-commercial attribution terms; Florida DOS remains the sole displayed vote authority."
+  },
+  "normalization": {
+    "script": "scripts/collect-fl-precinct-geometry.mjs",
+    "sourceCrs": "EPSG:4326 GeoJSON",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/FL/2024-11-05-general/normalized/fl-2024-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "cfb9779f635f7159a62a8b4ad1369fdb7b4874ff9ca0d97e8c7d534b63ab4dc3",
+    "byteCount": 38450848,
+    "featureCount": 5583,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "fl-dos-2024-general-precinct-results",
+    "artifact": "data/precinct-geometry/FL/2024-11-05-general/crosswalk/fl-2024-result-to-geometry-review.json",
+    "sha256": "a5f1445bb4e05f699233a44b96f42a787f089945b6155acd372a6559a8c9709d",
+    "byteCount": 3911662,
+    "resultUnits": 5583,
+    "colorableResultUnits": 5583,
+    "matchedResultUnits": 5583,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 5583,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 5583,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "exact_official_id",
+      "official_source_component_aggregation",
+      "unique_complete_official_vote_signature"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+      "126 official source units totaling 17,948 candidate votes lack reviewed geometry and are never allocated to polygons.",
+      "1,264 NYT features use generated boundaries and remain explicitly disclosed; no NYT result value is displayed."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No vote is estimated, spatially allocated, or copied from a geometry source.",
+    "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
+    "126 official source units totaling 17,948 candidate votes lack reviewed geometry and are never allocated to polygons.",
+    "1,264 NYT features use generated boundaries and remain explicitly disclosed; no NYT result value is displayed.",
+    "Immutable delivery and guarded production activation remain separate decisions."
+  ]
+}

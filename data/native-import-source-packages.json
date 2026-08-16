@@ -1871,6 +1871,12 @@
           "localFile": "data/fl-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "GEOID"
+        },
+        "precinctGeometry": {
+          "sourceTitle": "Florida four-election reviewed precinct result and geometry packages",
+          "sourceUrl": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+          "localFile": "data/precinct-geometry/FL",
+          "parserHint": "scripts/collect-fl-precinct-geometry.mjs hash-pins and replays official 2012/2016/2020/2024 presidential result universes, vote-free election-specific geometry, and reviewed crosswalks. Geometry is complete for guarded 2016/2020/2024 release; 2012 remains unavailable and excluded from release candidates."
         }
       },
       "expected": {
@@ -1895,7 +1901,9 @@
         "Certified Florida county map totals remain anchored to the official county detail table, not the precinct ZIP.",
         "The official precinct ZIP presidential candidate total is 204 votes below the county detail table and the ZIP Trump total is one vote higher.",
         "The precinct ZIP registered-voter field is a denominator lead only because no compatible state-native ballots-cast rows are loaded.",
-        "County geometry is loaded; precinct boundary geometry/crosswalks are not loaded.",
+        "Reviewed precinct geometry and official-result relationships are retained for 2016, 2020, and 2024 but remain outside production until immutable delivery and guarded activation are complete.",
+        "No complete election-effective statewide 2012 precinct boundary edition is retained, so 2012 remains fail-closed and no result is assigned to Census VTD geometry.",
+        "The 2016/2020 VEST and 2024 New York Times geometry sources are secondary presentation geometry with explicit attribution and terms; Florida Department of State exports remain the sole displayed vote source.",
         "Historical baselines are secondary county context rows and not 2024 certified data."
       ],
       "legacyReferenceBundle": "data/fl-app-data.js"

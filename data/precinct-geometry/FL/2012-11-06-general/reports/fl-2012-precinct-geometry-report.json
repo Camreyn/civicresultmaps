@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "state": "FL",
+  "electionId": "2012-11-06-general",
+  "status": "blocked",
+  "resultArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2012-11-06-general/normalized/fl-2012-president-results.json.gz",
+    "byteCount": 170821,
+    "sha256": "997dabc2dc843015aed0abc4deba8605ec1d69d33f58442ec080f093f4f0e1d0"
+  },
+  "geometryArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2012-11-06-general/normalized/fl-2012-no-approved-precinct-geometry.json",
+    "byteCount": 350,
+    "sha256": "8a59eaf69dc9a7ce6eadbefe5afc0b46e8e0ff1bb05a5fd065a36393c0655d48"
+  },
+  "crosswalkArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2012-11-06-general/crosswalk/fl-2012-result-to-geometry-review.json",
+    "byteCount": 4231827,
+    "sha256": "2e19d9c5cafb933f59174a2eedf4831eb84db4ad4fc33c7223199417fbc33fec"
+  },
+  "evidenceArtifact": {
+    "localArtifactPath": "data/precinct-geometry/FL/2012-11-06-general/source-evidence.json",
+    "byteCount": 3325,
+    "sha256": "c0cb4bd02568191f6be9b43f2751686069765f4dfacbeefd868b65e819a63fbe"
+  },
+  "resultUniverse": {
+    "sourceUnits": 6319,
+    "colorableUnits": 0,
+    "excludedUnits": 6319,
+    "zeroVoteSourceUnits": 56,
+    "totals": {
+      "democratic": 4236647,
+      "republican": 4162600,
+      "other": 93089,
+      "total": 8492336
+    },
+    "mappedTotals": {
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0
+    },
+    "excludedTotals": {
+      "democratic": 4236647,
+      "republican": 4162600,
+      "other": 93089,
+      "total": 8492336
+    },
+    "duplicateCandidateRowsDiscarded": 0
+  },
+  "geometryReview": {
+    "rawFeatures": 9435,
+    "normalizedFeatures": 0,
+    "reviewedRelationships": 0,
+    "reviewedNoDataFeatures": 0,
+    "methods": {},
+    "officialBoundaryFeatures": null,
+    "generatedBoundaryFeatures": null
+  },
+  "sourceTotalsReconciled": true,
+  "publicDeliveryAuthorized": false
+}

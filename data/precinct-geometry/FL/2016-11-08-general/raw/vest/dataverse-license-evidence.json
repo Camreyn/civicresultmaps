@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "state": "FL",
+  "electionYear": 2016,
+  "geometryArtifact": {
+    "filename": "fl_2016.zip",
+    "sha256": "bec5cbc12cc4294f2ccd1c7767a5a99dce15046b5f04c778b890317959ee052e",
+    "byteCount": 23080142,
+    "md5": "117d2e07b5eb4a5b072fa5c8a54dbeb8",
+    "vestFileDoi": "10.7910/DVN/NH5S2I/IAELIN",
+    "reviewedDataverseVersion": "54.0"
+  },
+  "custodyMirror": {
+    "repository": "https://github.com/PlanScore/National-Input-Data",
+    "path": "VEST/fl_2016.zip",
+    "commit": "c99a1b0ad91f3a5d610f4730db242726343bd24f",
+    "gitBlobSha1": "f93c511efb09b279b0b07abbddc9ce0e12e6d9bd",
+    "note": "The public PlanScore repository is byte custody only; VEST and the reviewed RDH report establish the dataset identity and methodology."
+  },
+  "rights": {
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "evidenceUrl": "https://www.nature.com/articles/s41597-024-04024-2",
+    "note": "The VEST data descriptor states that the precinct-level election-result databases are released under CC BY 4.0. The article's own publication license is separate and is not asserted for the database bytes."
+  }
+}

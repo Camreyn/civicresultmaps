@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T08:28:02.504Z",
+  "updatedAt": "2026-08-16T18:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 9,
+    "totalJurisdictions": 10,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 9
+      "reviewed": 10
     },
     "disposition": {
       "undecided": 0,
       "mapped": 4,
       "partial": 1,
       "official_geometry_unavailable": 0,
-      "blocked": 4
+      "blocked": 5
     },
     "publicEligibleJurisdictions": 4
   },
@@ -573,6 +573,67 @@
         "The 319 result-only units totaling 12,759 votes remain non-geographic and are never allocated.",
         "NCSBE documents residence-based reassignment and statutory statistical noise in the precinct-sorted data, so the map is labeled VTD analysis data rather than the certified canvass presentation.",
         "ODbL 1.0 attribution and share-alike terms must accompany eventual delivery, and this election retains its own boundary vintage."
+      ]
+    },
+    {
+      "state": "FL",
+      "stateName": "Florida",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 13,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+        "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_12_vtd10.zip"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "fl-2012-11-06-precinct-geometry-unavailable-v1"
+        ],
+        "officialSourceLeads": [
+          "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_12_vtd10.zip"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/FL/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/FL/2012-11-06-general/normalized/fl-2012-no-approved-precinct-geometry.json",
+          "data/precinct-geometry/FL/2012-11-06-general/crosswalk/fl-2012-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 0,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 6319,
+        "colorableResultUnits": 6319,
+        "matchedResultUnits": 0,
+        "unmatchedResultUnits": 6319,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "No complete statewide precinct-boundary edition effective for the November 6, 2012 general election is publicly retained.",
+        "The Census 2010 VTD layer is a diagnostic statistical geography and is not backcast as Florida election precincts.",
+        "All 6,319 official source reporting units remain explicit and unassigned; no votes are spatially allocated."
+      ],
+      "nextAction": "Obtain a machine-readable statewide November 6, 2012 precinct boundary archive and an official county-qualified result-to-feature crosswalk; until then keep this year unavailable.",
+      "notes": [
+        "The official Florida Department of State result export is retained and reconciles to 8,492,336 presidential candidate votes, including write-ins.",
+        "The 9,435-feature Census 2010 VTD layer is retained only as evidence of an unsafe alternative and is not normalized for delivery.",
+        "This election remains outside every guarded release candidate.",
+        "The retained official source universe contains 6,319 reporting units and 8,492,336 presidential candidate votes.",
+        "Each election retains its own boundary evidence and is not treated as a stable cross-election precinct geography."
       ]
     }
   ]
