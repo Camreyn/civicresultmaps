@@ -7992,3 +7992,72 @@ evidence against its verified top-level package.
   Blob object, Vercel setting, deployment, or Git ref is changed by this
   tooling phase. The deployment and final database publication remain
   separately reviewed operations so both public endpoints stay fail-closed.
+
+### 2026-08-16 - Florida three-election production publication
+
+- Human-merged activation PR #280 produced commit
+  `89d4030402e1c4bbe16e8104978715cdd333fe51` and tree
+  `6234e3d568bb5dbfbe5e89db75de80e65df18e42`, exactly matching the reviewed
+  activation tree. Vercel deployment `dpl_4FPtsSkeF7pzM2BNbRThoZFU2kNC` is
+  `READY` and `PROMOTED` at that commit, and both live aliases expose the same
+  Git SHA. Preview and Production use the exact immutable Blob origin recorded
+  in the release evidence. The prior gate-capable deployment is pinned as
+  rollback target `dpl_EArfLj4sHW4HNWD5LyP7Q5JCVUgW` at commit
+  `11f8497795819f90033e2005242c093b0f196ef9`.
+- Before cutover, the merged production deployment remained fail-closed: all
+  three local-result checks returned no rows and all three geometry checks
+  returned not-active responses while the database versions were blocked.
+  The static registry contained exactly one eligible manifest for each of
+  2016, 2020, and 2024 and none for 2012. Registry verification uses the
+  route's implemented `electionId` or `electionDate` filter; `year` is not a
+  supported filter for this endpoint.
+- The immutable delivery evidence at SHA-256
+  `3648fc2ab7a2fc9c73d26676281a32b81b4c660409df0a215ee58ea52b470d71`
+  covers all 201 county files and three indexes. Every object was downloaded
+  again and byte-hash verified before authorization. The publication plan is
+  pinned at SHA-256
+  `57c2b8fb88730adfc25e5d2a93f6d8359d227544f4e84055e31466a1c3444993`.
+- Under activation
+  `fl-precinct-public-20260816T225352Z-57c2b8fb8873`, the guarded atomic
+  transaction published exactly the three reviewed geography versions,
+  authorized 17,424 reporting units and one-to-one crosswalks, retained all
+  unmatched source reconciliation evidence, and advanced the public revision
+  once from 24 to 25. The publication receipt is pinned at SHA-256
+  `1e79f8e2058472b37d65842d2888065de52e344679b9365e22f9da887e2ca2ae`;
+  it records 52,272 candidate result rows, six source documents, three import
+  runs, and zero invalid public constraints.
+- Exhaustive live verification covered all 201 election/county parent scopes
+  with 410 requests and 99,245,581 response bytes. The APIs served 17,424
+  result units and 17,555 features, including 131 reviewed no-data features
+  and 140 mapped zero-vote units, with 31,494,532 displayed official votes.
+  Every result ID joined one-for-one to a colorable feature, and every county
+  payload matched the sealed source/index SHA metadata. The exact API report
+  SHA-256 is
+  `80bcce2c3b8291178e2f830fac99b6677dc4145a7c23874e8768d1338bb045ab`.
+- A separate read-only production transaction independently confirmed public
+  revision 25, the activation metadata, all per-year row and feature counts,
+  all public-delivery flags, three published versions, and zero invalid
+  constraints. Its report SHA-256 is
+  `64e722f1312fdd83c07e788c383d1b0103589c3d080a81f99b3d2eeb655a000a`.
+  The repository public-API smoke also passed 22 checks while requiring the
+  exact merged Git SHA and database source.
+- Browser verification confirmed that the 2016, 2020, and 2024 Alachua County
+  maps render election-specific precinct polygons over OpenStreetMap with the
+  reviewed-geometry label, VEST/NYT vintage and source attribution, winner
+  colors, joined vote totals, and working year, county, and precinct controls.
+  The selected year remained pinned in Exports & API. Florida 2012 rendered no
+  precinct map and retained the intended unavailable-layer explanation. The
+  browser report SHA-256 is
+  `bddca4b0d1fc6c9c36857e70bee7f3ec832fd3c17c261fb78da6be315961f487`.
+- A deliberately invalid non-Florida parent GEOID returned zero result rows
+  and no geometry data. The geometry endpoint currently returns HTTP 500
+  rather than rejecting that state-prefix mismatch before immutable-delivery
+  validation; this is a non-blocking input-validation hardening item because
+  the request remained fail-closed. The combined production evidence is
+  pinned at SHA-256
+  `01fb7e0edc7096249ba794e1d14900e1e54ea4b43e00e9e79cef04dbacb8886f`.
+- Florida 2012 remains blocked under issue #277. The published elections retain
+  separate boundary vintages and are not an apples-to-apples precinct trend
+  geography without a future reviewed common-geography crosswalk. The 2024
+  advisory indicator inventory remains 83 broad screening rows across 59
+  counties; those signals are not evidence of fraud or misconduct.
