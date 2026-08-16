@@ -35,6 +35,16 @@ const GUARDED_LOCAL_GEOGRAPHY_RELEASES = Object.freeze({
     geographyLevel: "precinct",
     releaseCandidatePattern: /^tx-precinct-gis-four-election-v\d+$/,
   },
+  WI: {
+    geographyLevel: "local_reporting_unit",
+    releaseCandidatePattern: /^wi-local-reporting-gis-three-election-v\d+$/,
+    reviewedMatchMethods: Object.freeze([
+      "exact_official_id",
+      "official_crosswalk",
+      "reviewed_name",
+      "spatial_review",
+    ]),
+  },
 } satisfies Record<string, {
   geographyLevel: string;
   releaseCandidatePattern: RegExp;

@@ -22,6 +22,8 @@ For the guarded Iowa 2016/2020/2024 precinct-map release, official four-year res
 
 For Maine's four-year local-reporting-unit collection, mixed-grain labeling rules, deterministic replay, exact SOS reconciliation, and the separately blocked 2012 gaps, read [`docs/developer/me-local-reporting-gis-runbook.md`](me-local-reporting-gis-runbook.md).
 
+For Wisconsin's reviewed election-specific local-reporting-unit packages, guarded 2016/2020/2024 release workflow, non-geographic zero-vote treatment, and separately blocked 2012 crosswalk, read [`docs/developer/wi-local-reporting-gis-runbook.md`](wi-local-reporting-gis-runbook.md).
+
 For Michigan's official four-election precinct source packages, hash-pinned replay, allocation-free 2024 crosswalk, historical blockers, and cross-year comparison rules, read [`docs/developer/mi-precinct-gis-runbook.md`](mi-precinct-gis-runbook.md).
 
 For the guarded South Carolina 2016/2020/2024 precinct release, county-scoped immutable delivery, non-geographic reconciliation rules, database-gated cutover, and separately blocked 2012 package, read [`docs/developer/sc-precinct-gis-runbook.md`](sc-precinct-gis-runbook.md).
