@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T18:00:00.000Z",
+  "updatedAt": "2026-08-16T04:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 8,
+    "totalJurisdictions": 9,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 8
+      "reviewed": 9
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 3,
+      "mapped": 4,
       "partial": 1,
       "official_geometry_unavailable": 0,
       "blocked": 4
@@ -514,6 +514,67 @@
         "The official LTSB layer is retained only to document ward identities and the population-disaggregation problem; all election-value fields are excluded from derivatives.",
         "Zero result relationships are approved and no vote is assigned to geometry.",
         "No proportional allocation or name-only publication is permitted."
+      ]
+    },
+    {
+      "state": "NC",
+      "stateName": "North Carolina",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 12,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-16T04:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_3_secondary_geometry"
+      ],
+      "resultReportingGrains": [
+        "vtd",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2012_11_06/results_sort_20121106.zip",
+        "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "nc-2012-11-06-reviewed-vtd-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://github.com/mggg-states/NC-shapefiles"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/NC/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/NC/2012-11-06-general/normalized/nc-2012-reviewed-vtd-geometry.geojson.gz",
+          "data/precinct-geometry/NC/2012-11-06-general/crosswalk/nc-2012-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "vtd"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 2692,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 3011,
+        "colorableResultUnits": 2692,
+        "matchedResultUnits": 2692,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 319,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build and review the guarded North Carolina three-election release candidate for 2012, 2016, and 2020 while keeping 2024 outside public activation until its restored boundary vintage is confirmed.",
+      "notes": [
+        "All 2,692 VTD features map one-to-one to official NCSBE precinct-sorted rows: 2,654 by county-qualified identity and 38 by unique complete five-candidate vote signature.",
+        "All displayed values will come only from the official NCSBE VTD-sorted export; MGGG/NCGA election fields are stripped from geometry and used only to prove the crosswalk.",
+        "The 319 result-only units totaling 12,759 votes remain non-geographic and are never allocated.",
+        "NCSBE documents residence-based reassignment and statutory statistical noise in the precinct-sorted data, so the map is labeled VTD analysis data rather than the certified canvass presentation.",
+        "ODbL 1.0 attribution and share-alike terms must accompany eventual delivery, and this election retains its own boundary vintage."
       ]
     }
   ]

@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-2012-11-06-reviewed-vtd-geometry-v1",
+  "state": "NC",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "vtd",
+    "parentLevel": "county",
+    "boundaryVintage": "MGGG/NC General Assembly VTD package with a fully reconciled November 6, 2012 presidential VTD result universe",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "North Carolina State Board of Elections results with MGGG/NC General Assembly VTD geometry",
+    "url": "https://github.com/mggg-states/NC-shapefiles",
+    "retrievedAt": "2026-08-16T04:00:00.000Z",
+    "artifact": "data/precinct-geometry/NC/2012-11-06-general/source-evidence.json",
+    "sha256": "da9c60cc5453d664a0a777821280534938e9be7f259426582f5098307c35055f",
+    "byteCount": 7501,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "MGGG publishes the database under ODbL 1.0 and individual contents under DBCL 1.0; attribution and share-alike obligations apply."
+  },
+  "normalization": {
+    "script": "scripts/build-nc-reviewed-precincts.mjs",
+    "sourceCrs": "EPSG:6543, normalized to EPSG:4326 by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/NC/2012-11-06-general/normalized/nc-2012-reviewed-vtd-geometry.geojson.gz",
+    "sha256": "edf38fb97bc1defd2a8fed780775ee3de2bf9d6fc501096bcc2916dc494bbb5e",
+    "byteCount": 26021871,
+    "featureCount": 2692,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "nc-2012-ncsbe-precinct-sorted-president",
+    "artifact": "data/precinct-geometry/NC/2012-11-06-general/crosswalk/nc-2012-result-to-geometry-review.json",
+    "sha256": "31b7189a6702086ed90f81808cacf4be89aae80cb46d60498c6e859fd2c13c5e",
+    "byteCount": 2105121,
+    "resultUnits": 3011,
+    "colorableResultUnits": 2692,
+    "matchedResultUnits": 2692,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 319,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2692,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 319,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 3011,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "exact_official_id",
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "319 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+      "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+      "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+      "The NCSBE precinct-sorted export reassigns accepted absentee/provisional ballots to residential VTDs and adds statutory statistical noise; it is official VTD analysis data, not the certified canvass presentation.",
+      "MGGG/NCGA election fields are used only to prove the crosswalk and are excluded from geometry and displayed results.",
+      "ODbL 1.0 attribution and share-alike obligations must accompany eventual public delivery."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from MGGG, VEST, Census, or any geometry source is used as a displayed election result.",
+    "319 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+    "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+    "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+    "The NCSBE precinct-sorted export reassigns accepted absentee/provisional ballots to residential VTDs and adds statutory statistical noise; it is official VTD analysis data, not the certified canvass presentation.",
+    "MGGG/NCGA election fields are used only to prove the crosswalk and are excluded from geometry and displayed results.",
+    "ODbL 1.0 attribution and share-alike obligations must accompany eventual public delivery.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

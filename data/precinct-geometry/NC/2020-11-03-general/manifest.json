@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-2020-11-03-reviewed-precinct-geometry-v1",
+  "state": "NC",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "NCSBE October 18, 2020 statewide snapshot with four missing official result units restored from the official August 27, 2019 snapshot using the independently documented VEST/RDH method",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "hybrid_reconstruction"
+  },
+  "source": {
+    "authority": "North Carolina State Board of Elections",
+    "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20201018.zip",
+    "retrievedAt": "2026-08-16T04:00:00.000Z",
+    "artifact": "data/precinct-geometry/NC/2020-11-03-general/source-evidence.json",
+    "sha256": "437814cc54fe79e91d8d80d7c1e8fb1817e9ebbf50a96ba3514a6b234f06de14",
+    "byteCount": 8696,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official public North Carolina State Board of Elections geospatial exports; the source page states no additional reuse restriction."
+  },
+  "normalization": {
+    "script": "scripts/build-nc-reviewed-precincts.mjs",
+    "sourceCrs": "source-defined ESRI Shapefile CRS, normalized to EPSG:4326 by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/NC/2020-11-03-general/normalized/nc-2020-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "87a7d0ef2ce910ebe8d327ebbc667542bc58eab277b3c0def2eaf981cc5c9e13",
+    "byteCount": 17346673,
+    "featureCount": 2662,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "nc-2020-results-precinct-zip",
+    "artifact": "data/precinct-geometry/NC/2020-11-03-general/crosswalk/nc-2020-result-to-geometry-review.json",
+    "sha256": "950ef37921b974f9bbe717a52275533784911ff3290a3e8dd7fe8308f46cf380",
+    "byteCount": 2092827,
+    "resultUnits": 3065,
+    "colorableResultUnits": 2662,
+    "matchedResultUnits": 2662,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 403,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2662,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 403,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 3065,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "exact_official_id"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "403 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+      "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+      "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+      "Four missing official result units are restored from the NCSBE August 2019 snapshot using the independently documented RDH/VEST source method and topology-preserving clipping; no result is split or allocated."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from MGGG, VEST, Census, or any geometry source is used as a displayed election result.",
+    "403 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+    "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+    "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+    "Four missing official result units are restored from the NCSBE August 2019 snapshot using the independently documented RDH/VEST source method and topology-preserving clipping; no result is split or allocated.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

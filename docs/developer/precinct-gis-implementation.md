@@ -7780,3 +7780,60 @@ evidence against its verified top-level package.
   merge-gated HTTP API suite. The API smoke now explicitly proves that
   Wisconsin local result rows, manifests, and geometry remain closed before
   the later activation transaction.
+
+### 2026-08-16 - North Carolina four-election VTD/precinct source packages
+
+- Added one deterministic, hash-pinned North Carolina builder for 2012, 2016,
+  2020, and 2024. It writes vote-free normalized geometry, official NCSBE
+  presidential result rows, explicit one-to-one/no-geometry relationships,
+  source evidence, reconciliation reports, and fail-closed manifests. Every
+  raw artifact is verified before any output write, and no result is divided,
+  proportionally allocated, copied to several polygons, or inferred from
+  area.
+- The 2012 election is explicitly modeled as `vtd`, not silently relabeled as
+  ordinary precinct geometry. The official NCSBE precinct-sorted export has
+  3,011 VTD/result identities and 4,505,372 presidential votes. MGGG/NC
+  General Assembly geometry supplies 2,692 VTD features: 2,654 relationships
+  reconcile by county-qualified VTD identity and 38 by a unique complete
+  five-candidate vote signature. Those 2,692 mapped units retain 4,492,613
+  votes; 319 result-only units totaling 12,759 votes remain no-geometry
+  reconciliation rows. MGGG election fields are removed and never displayed.
+  NCSBE documents residence-based reassignment of accepted absentee and
+  provisional ballots plus statutory statistical noise in the sorted data,
+  so the source is described as official VTD analysis data rather than the
+  certified canvass presentation. MGGG ODbL/DBCL terms are retained.
+- The 2016 package uses the final retained NCSBE statewide snapshot before the
+  November 8 election. All 2,704 features match exactly one official
+  county-qualified result identity and retain 3,177,511 mapped votes. The 505
+  result-only units totaling 1,564,053 votes remain non-geographic. The
+  official export's signed -4 absentee write-in correction remains only in the
+  excluded source evidence and is never introduced into a mapped row.
+- The 2020 package begins with the official October 18 snapshot, dissolves its
+  one reviewed multipart duplicate, and restores Buncombe 681, Henderson CV,
+  Wake 01-07A, and Wake 07-07A from the official August 27, 2019 snapshot.
+  This is the same missing-unit source method independently identified by the
+  retained RDH/VEST validation report. CivicResultMaps performs its own
+  topology-preserving operation: each older feature is clipped to current
+  county coverage and its exact overlap is subtracted from every containing
+  current feature before insertion. The result has 2,662 features and maps all
+  2,662 official `Real Precinct=Y` units and 3,201,711 votes. All 403
+  `Real Precinct=N` units and 2,323,091 votes remain no-geometry rows; no VEST
+  allocated result is used.
+- The same procedure produces a complete 2024 candidate with 2,659 features:
+  all 2,658 official `Real Precinct=Y` result units are matched, all 250
+  `Real Precinct=N` units remain separate, and official Durham feature 48 is
+  retained as an explicit no-data shape. Henderson CV and Wake 01-07A /
+  07-07A are restored from August 2019, but no public source yet confirms that
+  those three polygons remained applicable on November 5, 2024. The exact
+  crosswalk is reviewed, but row-level public rendering and delivery remain
+  blocked on that temporal gate.
+- The four coverage ledgers and source inventories now record North Carolina.
+  Public eligibility remains zero because no manifest is added to the static
+  registry and no immutable delivery is declared. The next guarded-release
+  phase may include 2012, 2016, and 2020; it must exclude 2024 until its three
+  supplemental boundaries have election-date confirmation.
+- This source-package change does not load a database, publish Blob assets,
+  modify the public manifest registry, deploy the application, or change
+  production. Each election retains its own boundary vintage, so the maps are
+  not an apples-to-apples trend geography without a separate reviewed
+  cross-election correspondence.

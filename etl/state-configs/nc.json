@@ -24,8 +24,19 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is used for North Carolina county map joins; precinct boundary geometry is not included in this package.",
+      "confidence": "County geometry is used for North Carolina county map joins. Election-specific VTD/precinct geometry and official result crosswalks are retained separately for all four tracked elections; 2024 remains public-blocked pending supplemental-boundary vintage confirmation.",
       "status": "loaded"
+    },
+    {
+      "id": "nc-four-election-local-geometry-review",
+      "category": "Reviewed 2012 VTD and 2016/2020/2024 precinct geometry with official presidential result crosswalks",
+      "url": "https://www.ncsbe.gov/results-data/voting-maps-redistricting",
+      "localFile": "data/precinct-geometry/NC",
+      "parser": "northCarolinaReviewedPrecinctGeometry",
+      "authority": "North Carolina State Board of Elections, with attributed MGGG/NC General Assembly geometry for 2012",
+      "timestampBasis": "Separate hash-pinned election packages reviewed August 16, 2026 from official NCSBE results and dated boundary snapshots.",
+      "confidence": "2012 maps 2,692 official precinct-sorted VTD rows, 2016 maps 2,704 exact official precinct IDs, and 2020 maps all 2,662 Real Precinct=Y rows after four independently documented official-source topology repairs. The complete 2024 candidate maps all 2,658 Real Precinct=Y rows and preserves one no-data feature, but public rendering remains blocked because three restored August 2019 polygons lack November 5, 2024 applicability confirmation. No vote is allocated to geometry.",
+      "status": "candidate"
     },
     {
       "id": "nc-2024-eac-turnout",
@@ -175,7 +186,7 @@
   "expected": {
     "jurisdictions": 100,
     "resultRows": 100,
-    "sources": 10,
+    "sources": 11,
     "stateTotal": 5699141,
     "trump": 2898423,
     "harris": 2715375,

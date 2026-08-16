@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T00:33:54.328Z",
+  "updatedAt": "2026-08-16T04:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -26,15 +26,15 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 9,
+    "totalJurisdictions": 10,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 9
+      "reviewed": 10
     },
     "disposition": {
       "undecided": 0,
-      "mapped": 8,
+      "mapped": 9,
       "partial": 0,
       "official_geometry_unavailable": 0,
       "blocked": 1
@@ -547,6 +547,66 @@
         "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
         "VEST supplies attributed election-specific geometry only; every VEST election field is removed before normalized geometry is written.",
         "This election retains its own boundary vintage and is not treated as a stable local-unit trend geography."
+      ]
+    },
+    {
+      "state": "NC",
+      "stateName": "North Carolina",
+      "electionId": "2020-11-03-general",
+      "programStatus": "reviewed",
+      "wave": 12,
+      "disposition": "mapped",
+      "checkedAt": "2026-08-16T04:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct",
+        "administrative_reporting_unit"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip",
+        "https://www.ncsbe.gov/results-data/voting-maps-redistricting"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "nc-2020-11-03-reviewed-precinct-geometry-v1"
+        ],
+        "officialSourceLeads": [
+          "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20201018.zip",
+          "https://s3.amazonaws.com/dl.ncsbe.gov/PrecinctMaps/SBE_PRECINCTS_20190827.zip"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/NC/2020-11-03-general/source-evidence.json",
+          "data/precinct-geometry/NC/2020-11-03-general/normalized/nc-2020-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/NC/2020-11-03-general/crosswalk/nc-2020-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 2662,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 3065,
+        "colorableResultUnits": 2662,
+        "matchedResultUnits": 2662,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 403,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "Build and review the guarded North Carolina three-election release candidate for 2012, 2016, and 2020 while keeping 2024 outside public activation until its restored boundary vintage is confirmed.",
+      "notes": [
+        "All 2,662 official Real Precinct=Y rows match exactly one reviewed feature after four missing units are restored from the official August 2019 snapshot.",
+        "The same four-unit source method is independently documented by the retained RDH/VEST validation report; CivicResultMaps performs its own topology-preserving clip/subtract reconstruction and uses no allocated VEST result values.",
+        "The 403 Real Precinct=N units totaling 2,323,091 votes remain non-geographic and are never allocated.",
+        "Every displayed value will come only from the official NCSBE result ZIP, and this election retains its own boundary vintage."
       ]
     }
   ]

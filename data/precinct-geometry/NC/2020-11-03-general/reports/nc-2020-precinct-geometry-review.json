@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "state": "NC",
+  "electionId": "2020-11-03-general",
+  "generatedAt": "2026-08-16T04:00:00.000Z",
+  "disposition": "reviewed_row_level_rendering_delivery_pending",
+  "summary": {
+    "year": 2020,
+    "geographyLevel": "precinct",
+    "rawFeatures": 2659,
+    "normalizedFeatures": 2662,
+    "officialResultUnits": 3065,
+    "geographicResultUnits": 2662,
+    "administrativeResultUnits": 403,
+    "colorableResultUnits": 2662,
+    "mappedResultUnits": 2662,
+    "unlinkedGeometryUnits": 0,
+    "officialVotes": 5524802,
+    "mappedVotes": 3201711,
+    "administrativeVotes": 2323091,
+    "repairCount": 4,
+    "directIdMatches": 2662,
+    "voteSignatureMatches": 0
+  },
+  "officialTotals": {
+    "democraticVotes": 2684292,
+    "republicanVotes": 2758773,
+    "otherVotes": 81737,
+    "totalVotes": 5524802
+  },
+  "geographicTotals": {
+    "democraticVotes": 1354907,
+    "republicanVotes": 1796371,
+    "otherVotes": 50433,
+    "totalVotes": 3201711
+  },
+  "administrativeTotals": {
+    "democraticVotes": 1329385,
+    "republicanVotes": 962402,
+    "otherVotes": 31304,
+    "totalVotes": 2323091
+  },
+  "mappedTotals": {
+    "democraticVotes": 1354907,
+    "republicanVotes": 1796371,
+    "otherVotes": 50433,
+    "totalVotes": 3201711
+  },
+  "crosswalk": {
+    "resultUnits": 3065,
+    "colorableResultUnits": 2662,
+    "matchedResultUnits": 2662,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 403,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2662,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 403,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "noDataFeatureIds": [],
+  "topologyRepairs": [
+    {
+      "sourceUnitKey": "37021|681",
+      "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+      "coverageRatio": 0.9992772527542545,
+      "containingSourceUnitKeys": [
+        "37021|48.1",
+        "37021|49.1",
+        "37021|53.1",
+        "37021|68.1"
+      ],
+      "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+    },
+    {
+      "sourceUnitKey": "37089|CV",
+      "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+      "coverageRatio": 0.9999999926861017,
+      "containingSourceUnitKeys": [
+        "37089|HV-2",
+        "37089|NE"
+      ],
+      "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+    },
+    {
+      "sourceUnitKey": "37183|1-07A",
+      "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+      "coverageRatio": 1,
+      "containingSourceUnitKeys": [
+        "37183|1-07"
+      ],
+      "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+    },
+    {
+      "sourceUnitKey": "37183|7-07A",
+      "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+      "coverageRatio": 0.9999999865036285,
+      "containingSourceUnitKeys": [
+        "37183|7-07",
+        "37183|7-11"
+      ],
+      "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+    }
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/NC/2020-11-03-general/normalized/nc-2020-reviewed-precinct-geometry.geojson.gz",
+      "byteCount": 17346673,
+      "sha256": "87a7d0ef2ce910ebe8d327ebbc667542bc58eab277b3c0def2eaf981cc5c9e13",
+      "uncompressedByteCount": 178434909,
+      "uncompressedSha256": "78ff09b515da1c9b0b5028050ae160f0ed07bb6ecfcc112a59bc93af7f51fbf5"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/NC/2020-11-03-general/normalized/nc-2020-official-president-precinct-results.json.gz",
+      "byteCount": 117763,
+      "sha256": "1b02f23a00aedf700d1dc46a86683011f441c2caf5cc1346faa937aef1b13d0d",
+      "uncompressedByteCount": 3277248,
+      "uncompressedSha256": "561d62dd042b9ebc303b534791aa25550fd16bf95e27be92230aee493041b70d"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/NC/2020-11-03-general/crosswalk/nc-2020-result-to-geometry-review.json",
+      "byteCount": 2092827,
+      "sha256": "950ef37921b974f9bbe717a52275533784911ff3290a3e8dd7fe8308f46cf380"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/NC/2020-11-03-general/source-evidence.json",
+      "byteCount": 8696,
+      "sha256": "437814cc54fe79e91d8d80d7c1e8fb1817e9ebbf50a96ba3514a6b234f06de14"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/NC/2020-11-03-general/manifest.json",
+      "byteCount": 4451,
+      "sha256": "8c13c08cad108a5863f063a88f045726b17e36e0d472e67557a81a240013fd6a"
+    }
+  }
+}

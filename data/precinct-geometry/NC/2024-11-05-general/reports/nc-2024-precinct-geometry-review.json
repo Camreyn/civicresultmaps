@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "state": "NC",
+  "electionId": "2024-11-05-general",
+  "generatedAt": "2026-08-16T04:00:00.000Z",
+  "disposition": "blocked_supplemental_boundary_vintage_confirmation_required",
+  "summary": {
+    "year": 2024,
+    "geographyLevel": "precinct",
+    "rawFeatures": 2656,
+    "normalizedFeatures": 2659,
+    "officialResultUnits": 2908,
+    "geographicResultUnits": 2658,
+    "administrativeResultUnits": 250,
+    "colorableResultUnits": 2658,
+    "mappedResultUnits": 2658,
+    "unlinkedGeometryUnits": 1,
+    "officialVotes": 5699141,
+    "mappedVotes": 3923739,
+    "administrativeVotes": 1775402,
+    "repairCount": 3,
+    "directIdMatches": 2658,
+    "voteSignatureMatches": 0
+  },
+  "officialTotals": {
+    "democraticVotes": 2715375,
+    "republicanVotes": 2898423,
+    "otherVotes": 85343,
+    "totalVotes": 5699141
+  },
+  "geographicTotals": {
+    "democraticVotes": 1721868,
+    "republicanVotes": 2139650,
+    "otherVotes": 62221,
+    "totalVotes": 3923739
+  },
+  "administrativeTotals": {
+    "democraticVotes": 993507,
+    "republicanVotes": 758773,
+    "otherVotes": 23122,
+    "totalVotes": 1775402
+  },
+  "mappedTotals": {
+    "democraticVotes": 1721868,
+    "republicanVotes": 2139650,
+    "otherVotes": 62221,
+    "totalVotes": 3923739
+  },
+  "crosswalk": {
+    "resultUnits": 2908,
+    "colorableResultUnits": 2658,
+    "matchedResultUnits": 2658,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 250,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2658,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 250,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "noDataFeatureIds": [
+    "37063|nc:2024:37063:48"
+  ],
+  "topologyRepairs": [
+    {
+      "sourceUnitKey": "37089|CV",
+      "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+      "coverageRatio": 1,
+      "containingSourceUnitKeys": [
+        "37089|HV-2",
+        "37089|NE"
+      ],
+      "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+    },
+    {
+      "sourceUnitKey": "37183|1-07A",
+      "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+      "coverageRatio": 1,
+      "containingSourceUnitKeys": [
+        "37183|1-07"
+      ],
+      "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+    },
+    {
+      "sourceUnitKey": "37183|7-07A",
+      "sourceSnapshot": "SBE_PRECINCTS_20190827.zip",
+      "coverageRatio": 0.9999999595108856,
+      "containingSourceUnitKeys": [
+        "37183|7-07",
+        "37183|7-11"
+      ],
+      "method": "clipped_official_supplement_and_topology_preserving_subtraction"
+    }
+  ],
+  "blockers": [
+    "The November 5, 2024 applicability of Henderson CV and Wake 01-07A / 07-07A restored from the official August 2019 snapshot is not yet confirmed by an election-effective source or custodian statement.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/NC/2024-11-05-general/normalized/nc-2024-reviewed-precinct-geometry.geojson.gz",
+      "byteCount": 29568621,
+      "sha256": "b8760938577f66a2108bfbf9ff24990ec824aff02f301fb8af31aef9ee04cc07",
+      "uncompressedByteCount": 189018939,
+      "uncompressedSha256": "e36b105036012c1212d885274e6a82dd75e784a4857f49b975f51ab4fed6d1e4"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/NC/2024-11-05-general/normalized/nc-2024-official-president-precinct-results.json.gz",
+      "byteCount": 123919,
+      "sha256": "4ca913413b63cf040fb9ae29abf9543f57dbe5689120aa3f36c12f2074452a49",
+      "uncompressedByteCount": 3723738,
+      "uncompressedSha256": "9e560d88191b37da51f7bb742cda594886df93601face56cc0d22475cc01d7d5"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/NC/2024-11-05-general/crosswalk/nc-2024-result-to-geometry-review.json",
+      "byteCount": 1987168,
+      "sha256": "a46b59b6c196fa32476ab4d169f168da3adc349090b6cbdcff1995b81c927bea"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/NC/2024-11-05-general/source-evidence.json",
+      "byteCount": 7834,
+      "sha256": "6bb5b9e7d0f879f895621df9de827eb4ab1d68bb409499c6c88fa7eaea7421ab"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/NC/2024-11-05-general/manifest.json",
+      "byteCount": 5001,
+      "sha256": "ed9a970c35e550d61254192a74b221b09190402409d6c0f67605c1bc53f83d78"
+    }
+  }
+}

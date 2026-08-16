@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-2024-11-05-supplemented-precinct-candidate-v1",
+  "state": "NC",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "NCSBE July 23, 2024 statewide snapshot supplemented with three official 2019 subprecinct polygons whose November 5, 2024 applicability remains unconfirmed",
+    "vintageStatus": "unknown",
+    "derivationMethod": "hybrid_reconstruction"
+  },
+  "source": {
+    "authority": "North Carolina State Board of Elections",
+    "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ShapeFiles/Precinct/SBE_PRECINCTS_20240723.zip",
+    "retrievedAt": "2026-08-16T04:00:00.000Z",
+    "artifact": "data/precinct-geometry/NC/2024-11-05-general/source-evidence.json",
+    "sha256": "6bb5b9e7d0f879f895621df9de827eb4ab1d68bb409499c6c88fa7eaea7421ab",
+    "byteCount": 7834,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official public North Carolina State Board of Elections geospatial exports; the source page states no additional reuse restriction."
+  },
+  "normalization": {
+    "script": "scripts/build-nc-reviewed-precincts.mjs",
+    "sourceCrs": "source-defined ESRI Shapefile CRS, normalized to EPSG:4326 by shpjs",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/NC/2024-11-05-general/normalized/nc-2024-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "b8760938577f66a2108bfbf9ff24990ec824aff02f301fb8af31aef9ee04cc07",
+    "byteCount": 29568621,
+    "featureCount": 2659,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "nc-2024-results-precinct-zip",
+    "artifact": "data/precinct-geometry/NC/2024-11-05-general/crosswalk/nc-2024-result-to-geometry-review.json",
+    "sha256": "a46b59b6c196fa32476ab4d169f168da3adc349090b6cbdcff1995b81c927bea",
+    "byteCount": 1987168,
+    "resultUnits": 2908,
+    "colorableResultUnits": 2658,
+    "matchedResultUnits": 2658,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 250,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2658,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 250,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 2908,
+    "reviewedNoDataFeatures": 1,
+    "methods": [
+      "exact_official_id"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "The November 5, 2024 applicability of Henderson CV and Wake 01-07A / 07-07A restored from the official August 2019 snapshot is not yet confirmed by an election-effective source or custodian statement.",
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "250 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+      "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+      "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+      "The complete candidate includes three restored official subprecinct polygons and one Durham no-data feature; no result value is invented for the no-data feature.",
+      "The 2024 package remains blocked despite an exact crosswalk because the restored boundaries lack election-date confirmation."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No result value from MGGG, VEST, Census, or any geometry source is used as a displayed election result.",
+    "250 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+    "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+    "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+    "The complete candidate includes three restored official subprecinct polygons and one Durham no-data feature; no result value is invented for the no-data feature.",
+    "The 2024 package remains blocked despite an exact crosswalk because the restored boundaries lack election-date confirmation.",
+    "The November 5, 2024 applicability of Henderson CV and Wake 01-07A / 07-07A restored from the official August 2019 snapshot is not yet confirmed by an election-effective source or custodian statement.",
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}

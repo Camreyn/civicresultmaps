@@ -797,8 +797,8 @@
       "state": "NC",
       "name": "North Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_state_native_denominator_lead_historical_2016_2020_historical_review",
-      "authority": "North Carolina State Board of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_state_native_denominator_lead_historical_2016_2020_historical_review_reviewed_local_geometry_2012_2016_2020_2024_blocked",
+      "authority": "North Carolina State Board of Elections; U.S. Election Assistance Commission; U.S. Census Bureau; attributed MGGG/NC General Assembly 2012 VTD geometry",
       "configFile": "etl/state-configs/nc.json",
       "legacyReferenceBundle": "data/nc-app-data.js",
       "artifacts": {
@@ -830,6 +830,13 @@
           "localFile": "data/nc-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "localBoundaryReview": {
+          "sourceTitle": "North Carolina four-election reviewed VTD/precinct geometry and official-result crosswalk packages",
+          "sourceUrl": "https://www.ncsbe.gov/results-data/voting-maps-redistricting; https://www.ncsbe.gov/results-data/election-results/historical-election-results-data; https://github.com/mggg-states/NC-shapefiles",
+          "localFile": "data/precinct-geometry/NC",
+          "level": "2012 vtd; 2016/2020/2024 precinct",
+          "parserHint": "Run node --experimental-strip-types scripts/build-nc-reviewed-precincts.mjs. The builder hash-pins every source before writes, keeps all no-geometry rows separate, strips election fields from geometry, and emits exact per-election manifests/crosswalks/results/reconciliation reports. Prepare guarded release tooling only for 2012/2016/2020 until 2024 supplemental-boundary vintage is confirmed."
         },
         "historicalBaseline": {
           "sourceTitle": "North Carolina State Board of Elections historical precinct results ZIPs",
@@ -874,7 +881,8 @@
         "reviewMode": "president_vs_governor_real_precinct_filter",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_ncsbe_denominator_history_leads",
         "historicalBaselineMode": "official_ncsbe_precinct_zip_county_aggregates",
-        "historicalReviewMode": "official_2016_county_and_2020_real_precinct_y_president_vs_us_senate"
+        "historicalReviewMode": "official_2016_county_and_2020_real_precinct_y_president_vs_us_senate",
+        "localGeometryMode": "reviewed_2012_vtd_2016_2020_precinct_2024_exact_crosswalk_vintage_blocked"
       },
       "caveats": [
         "Certified county totals aggregate all NCSBE reporting units from the official results ZIP.",
@@ -884,7 +892,7 @@
         "Historical baseline rows are official NCSBE county aggregates for context only.",
         "The 2020 historical advisory package contains 2,662 same-grain President-versus-U.S.-Senate rows explicitly marked Real Precinct=Y. Included presidential votes total 3,201,711 and included comparison votes total 3,172,016; 403 Real Precinct=N administrative keys are excluded and reconcile to 2,323,091 presidential votes and 2,302,936 comparison votes.",
         "The 2016 historical advisory package aggregates all official President and U.S. Senate reporting rows by the explicit County field into 100 county rows and makes no precinct-level claim. All presidential county tuples match the official 2016 baseline; one signed -4 write-in source correction is retained before final nonnegative reconciliation.",
-        "Precinct boundary GeoJSON, normalized audit/recount/CVR availability, and incident/correction records remain gaps."
+        "Reviewed election-specific local geometry now exists for all four tracked elections, but 2024 remains public-blocked until the three August 2019 supplemental subprecinct polygons are confirmed applicable on November 5, 2024. The 2012 package is explicitly VTD-grain official analysis data under MGGG ODbL/DBCL terms, not a certified-canvass precinct presentation. Guarded database/delivery release tooling remains pending; normalized audit/recount/CVR availability and incident/correction records remain separate gaps."
       ]
     },
     {

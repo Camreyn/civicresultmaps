@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "state": "NC",
+  "electionId": "2012-11-06-general",
+  "generatedAt": "2026-08-16T04:00:00.000Z",
+  "disposition": "reviewed_row_level_rendering_delivery_pending",
+  "summary": {
+    "year": 2012,
+    "geographyLevel": "vtd",
+    "rawFeatures": 2692,
+    "normalizedFeatures": 2692,
+    "officialResultUnits": 3011,
+    "geographicResultUnits": 2692,
+    "administrativeResultUnits": 319,
+    "colorableResultUnits": 2692,
+    "mappedResultUnits": 2692,
+    "unlinkedGeometryUnits": 0,
+    "officialVotes": 4505372,
+    "mappedVotes": 4492613,
+    "administrativeVotes": 12759,
+    "repairCount": 0,
+    "directIdMatches": 2654,
+    "voteSignatureMatches": 38
+  },
+  "officialTotals": {
+    "democraticVotes": 2178391,
+    "republicanVotes": 2270395,
+    "otherVotes": 56586,
+    "totalVotes": 4505372
+  },
+  "geographicTotals": {
+    "democraticVotes": 2171293,
+    "republicanVotes": 2267353,
+    "otherVotes": 53967,
+    "totalVotes": 4492613
+  },
+  "administrativeTotals": {
+    "democraticVotes": 7098,
+    "republicanVotes": 3042,
+    "otherVotes": 2619,
+    "totalVotes": 12759
+  },
+  "mappedTotals": {
+    "democraticVotes": 2171293,
+    "republicanVotes": 2267353,
+    "otherVotes": 53967,
+    "totalVotes": 4492613
+  },
+  "crosswalk": {
+    "resultUnits": 3011,
+    "colorableResultUnits": 2692,
+    "matchedResultUnits": 2692,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 319,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 2692,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 319,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    }
+  },
+  "noDataFeatureIds": [],
+  "topologyRepairs": [],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ],
+  "artifacts": {
+    "geometry": {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/normalized/nc-2012-reviewed-vtd-geometry.geojson.gz",
+      "byteCount": 26021871,
+      "sha256": "edf38fb97bc1defd2a8fed780775ee3de2bf9d6fc501096bcc2916dc494bbb5e",
+      "uncompressedByteCount": 170353608,
+      "uncompressedSha256": "ea5ff1103040f54215b1683be817b34ec676b5cd5ee74754d5acc89c20e96a32"
+    },
+    "results": {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/normalized/nc-2012-official-president-vtd-results.json.gz",
+      "byteCount": 101677,
+      "sha256": "af622d482343424698b8c3a26a396bde7f1dda0c5ecb54eb89197f582c1eb47d",
+      "uncompressedByteCount": 2550892,
+      "uncompressedSha256": "61d3cca83b2eaea750918a9063e3ac4264ba1ec8b8ae651fa3ffd0d987159817"
+    },
+    "crosswalk": {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/crosswalk/nc-2012-result-to-geometry-review.json",
+      "byteCount": 2105121,
+      "sha256": "31b7189a6702086ed90f81808cacf4be89aae80cb46d60498c6e859fd2c13c5e"
+    },
+    "sourceEvidence": {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/source-evidence.json",
+      "byteCount": 7501,
+      "sha256": "da9c60cc5453d664a0a777821280534938e9be7f259426582f5098307c35055f"
+    },
+    "manifest": {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/manifest.json",
+      "byteCount": 4843,
+      "sha256": "31c2e7a8178c2224f27e8f14dbeda4a7e93c512b0e875ea947c63a6fce63c429"
+    }
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-2012-vtd-geometry-and-official-results-review",
+  "state": "NC",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "North Carolina State Board of Elections results with MGGG/NC General Assembly VTD geometry",
+  "retrievedAt": "2026-08-16T04:00:00.000Z",
+  "reviewedAt": "2026-08-16T04:00:00.000Z",
+  "sourceUrls": [
+    "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2012_11_06/results_sort_20121106.zip",
+    "https://github.com/mggg-states/NC-shapefiles"
+  ],
+  "boundaryContext": {
+    "boundaryVintage": "MGGG/NC General Assembly VTD package with a fully reconciled November 6, 2012 presidential VTD result universe",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction",
+    "sourceFeatureCount": 2692,
+    "normalizedFeatureCount": 2692,
+    "reviewedNoDataFeatureCount": 0,
+    "licenseOrTerms": "MGGG publishes the database under ODbL 1.0 and individual contents under DBCL 1.0; attribution and share-alike obligations apply."
+  },
+  "resultIdentity": {
+    "sourceUnitCount": 3011,
+    "geographicSourceUnitCount": 2692,
+    "administrativeSourceUnitCount": 319,
+    "colorableSourceUnitCount": 2692,
+    "excludedSourceUnitCount": 319,
+    "officialTotals": {
+      "democraticVotes": 2178391,
+      "republicanVotes": 2270395,
+      "otherVotes": 56586,
+      "totalVotes": 4505372
+    },
+    "geographicTotals": {
+      "democraticVotes": 2171293,
+      "republicanVotes": 2267353,
+      "otherVotes": 53967,
+      "totalVotes": 4492613
+    },
+    "administrativeTotals": {
+      "democraticVotes": 7098,
+      "republicanVotes": 3042,
+      "otherVotes": 2619,
+      "totalVotes": 12759
+    },
+    "mappedTotals": {
+      "democraticVotes": 2171293,
+      "republicanVotes": 2267353,
+      "otherVotes": 53967,
+      "totalVotes": 4492613
+    }
+  },
+  "joinReview": {
+    "reviewedForPublicRowRendering": true,
+    "methods": [
+      "exact_official_id",
+      "official_crosswalk"
+    ],
+    "mappedResultUnits": 2692,
+    "administrativeNoGeometryUnits": 319,
+    "unlinkedGeometryUnits": 0,
+    "unlinkedGeometryFeatureIds": [],
+    "directIdMatches": 2654,
+    "voteSignatureMatches": 38,
+    "resultAllocationPerformed": false,
+    "secondaryVoteFieldsUsedForDisplay": false
+  },
+  "topologyReview": {
+    "supplementalRepairCount": 0,
+    "repairs": [],
+    "overlapCreationPermitted": false,
+    "method": "No supplemental overlay was required."
+  },
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/raw/ncsbe/results_sort_20121106.zip",
+      "byteCount": 2440870,
+      "sha256": "90e76d5897a1737f08acabdb378e5bb0a961cb855ad031fe00d3f21f07eefc7a",
+      "format": "official NCSBE precinct-sorted results ZIP",
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2012_11_06/results_sort_20121106.zip",
+      "authority": "North Carolina State Board of Elections",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Official VTD-sorted presidential rows. NCSBE documents residence-based reassignment of accepted absentee/provisional ballots and statutory statistical noise; these are official VTD rows, not the certified canvass presentation."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/raw/mggg/NC_VTD.zip",
+      "byteCount": 21816996,
+      "sha256": "bd9cef855bc17db5f826a1a44d9d0cebc48764c73d8adb76c5193dbfed8a2055",
+      "format": "MGGG/NC General Assembly VTD Shapefile ZIP",
+      "sourceUrl": "https://github.com/mggg-states/NC-shapefiles",
+      "authority": "Metric Geometry and Gerrymandering Group; source geometry and election data attributed to the North Carolina General Assembly",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Geometry only. Embedded election fields are used solely to prove a unique, fully reconciled relationship to the official NCSBE VTD rows and are removed from normalized geometry."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/raw/mggg/README.md",
+      "byteCount": 6361,
+      "sha256": "81cc9824737b22756266d940789a27b119c258b8b60de95e851b6b1e5ae1abb3",
+      "format": "MGGG source and field documentation",
+      "sourceUrl": "https://github.com/mggg-states/NC-shapefiles/blob/master/README.md",
+      "authority": "Metric Geometry and Gerrymandering Group",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Identifies the NC General Assembly 2016 Redistricting Reference Data source and documents the 2012 presidential fields."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/raw/mggg/LICENSE.md",
+      "byteCount": 276,
+      "sha256": "122eeeecd323b6c6537c055a6706bb4ef4899dc30d7669fa0eb04872b9e19673",
+      "format": "MGGG license statement",
+      "sourceUrl": "https://github.com/mggg-states/NC-shapefiles",
+      "authority": "Metric Geometry and Gerrymandering Group",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Retains ODbL 1.0 database and DBCL 1.0 contents terms."
+    },
+    {
+      "localArtifactPath": "data/precinct-geometry/NC/2012-11-06-general/raw/review/nc-mggg-validation-report.pdf",
+      "byteCount": 195877,
+      "sha256": "57151333b0f9cbe01a39fdfe9139f7ad0409ed865310afb591b2dba35b63d38f",
+      "format": "Redistricting Data Hub independent validation report PDF",
+      "sourceUrl": "https://redistrictingdatahub.org/wp-content/uploads/2020/12/NC_mggg_validation_report.pdf",
+      "authority": "Redistricting Data Hub",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Independently documents the complete 2012 NCSBE precinct-sorted result join and exclusion of countywide/no-geometry categories."
+    },
+    {
+      "localArtifactPath": "data/nc-counties.geojson",
+      "byteCount": 17562822,
+      "sha256": "1a5b4f9029bb1ad6b4a5e6b19c84e7ba91c12e7d86d2127b2a9c0b2c7d38192d",
+      "format": "official Census TIGERweb county GeoJSON",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query",
+      "authority": "U.S. Census Bureau",
+      "derivation": "Retained byte-for-byte from the cited source.",
+      "note": "Used only to resolve the 100 county parent GEOIDs; never used as local election geometry."
+    }
+  ],
+  "caveats": [
+    "319 official result-only or Real Precinct=N units remain no-geometry reconciliation rows and are never allocated to polygons.",
+    "Every eventual displayed vote comes only from the retained North Carolina State Board of Elections result export.",
+    "Every election retains its own boundary vintage; these features are not treated as a stable cross-election comparison geography.",
+    "The NCSBE precinct-sorted export reassigns accepted absentee/provisional ballots to residential VTDs and adds statutory statistical noise; it is official VTD analysis data, not the certified canvass presentation.",
+    "MGGG/NCGA election fields are used only to prove the crosswalk and are excluded from geometry and displayed results.",
+    "ODbL 1.0 attribution and share-alike obligations must accompany eventual public delivery."
+  ],
+  "blockers": [
+    "Immutable parent-scoped delivery and the guarded production release have not been completed."
+  ]
+}
