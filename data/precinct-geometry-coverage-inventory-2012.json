@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T04:00:00.000Z",
+  "updatedAt": "2026-08-16T08:28:02.504Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 4
     },
-    "publicEligibleJurisdictions": 3
+    "publicEligibleJurisdictions": 4
   },
   "states": [
     {
@@ -523,7 +523,7 @@
       "programStatus": "reviewed",
       "wave": 12,
       "disposition": "mapped",
-      "checkedAt": "2026-08-16T04:00:00.000Z",
+      "checkedAt": "2026-08-16T08:28:02.504Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_3_secondary_geometry"
@@ -555,7 +555,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 2692,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 3011,
@@ -565,10 +565,8 @@
         "nonGeographicResultUnits": 319,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable parent-scoped delivery and the guarded production release have not been completed."
-      ],
-      "nextAction": "Build and review the guarded North Carolina three-election release candidate for 2012, 2016, and 2020 while keeping 2024 outside public activation until its restored boundary vintage is confirmed.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "All 2,692 VTD features map one-to-one to official NCSBE precinct-sorted rows: 2,654 by county-qualified identity and 38 by unique complete five-candidate vote signature.",
         "All displayed values will come only from the official NCSBE VTD-sorted export; MGGG/NCGA election fields are stripped from geometry and used only to prove the crosswalk.",
