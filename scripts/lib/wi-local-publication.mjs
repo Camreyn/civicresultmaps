@@ -20,15 +20,16 @@ export const WISCONSIN_PUBLIC_ROLLBACK_SCOPES = Object.freeze([
   "increment_public_data_revision",
 ]);
 
-const EXPECTED_TOTALS = Object.freeze({
+export const WISCONSIN_PUBLICATION_EXPECTED_TOTALS = Object.freeze({
   reportingUnits: 10_937,
   candidateResultRows: 32_475,
   geometryFeatures: 10_856,
   reviewedRelationships: 10_937,
-  zeroVoteUnits: 0,
+  zeroVoteUnits: 316,
   sourceDocuments: 6,
   importRuns: 3,
 });
+const EXPECTED_TOTALS = WISCONSIN_PUBLICATION_EXPECTED_TOTALS;
 
 export function sha256(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
