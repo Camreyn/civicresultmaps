@@ -152,6 +152,60 @@ export async function verifyPublicApiDeployment(options) {
   );
   summary.rowCounts.results = resultRows.length;
 
+  const blockedWisconsinLocalResults = (await check(
+    "/api/results?state=WI&year=2024&level=local_reporting_unit&parentGeoid=55025&office=president",
+  )).payload;
+  assert.equal(
+    assertArray(
+      blockedWisconsinLocalResults.data,
+      "blocked Wisconsin local reporting results",
+    ).length,
+    0,
+    "Wisconsin local reporting results must remain closed before publication",
+  );
+
+  const blockedWisconsinManifests = (await check(
+    "/api/geography-manifests?state=WI&electionDate=2024-11-05&level=local_reporting_unit",
+    { expectedSource: undefined },
+  )).payload;
+  assert.equal(
+    assertArray(
+      blockedWisconsinManifests.data,
+      "eligible Wisconsin local geography manifests",
+    ).length,
+    0,
+    "Wisconsin must not expose a public manifest before static activation",
+  );
+
+  const reviewedWisconsinManifests = (await check(
+    "/api/geography-manifests?state=WI&electionDate=2024-11-05&level=local_reporting_unit&includeBlocked=true",
+    { expectedSource: undefined },
+  )).payload;
+  const reviewedWisconsinManifestRows = assertArray(
+    reviewedWisconsinManifests.data,
+    "reviewed Wisconsin local geography manifests",
+  );
+  assert.equal(
+    reviewedWisconsinManifestRows.length,
+    0,
+    "Wisconsin must remain absent from the canonical registry before activation",
+  );
+
+  const blockedWisconsinGeometry = await check(
+    "/api/precinct-geography?manifestId=wi-2024-11-05-reviewed-local-reporting-geometry-v1&parentGeoid=55025",
+    { allowedStatuses: [404], expectedSource: undefined },
+  );
+  assert.equal(
+    blockedWisconsinGeometry.payload.data,
+    null,
+    "blocked Wisconsin geometry data",
+  );
+  assert.match(
+    String(blockedWisconsinGeometry.payload.error ?? ""),
+    /eligible local geography manifest not found|publication is not active/i,
+    "blocked Wisconsin geography gate error",
+  );
+
   const sources = (await check("/api/sources?state=WI&year=2024")).payload;
   const sourceRows = assertArray(sources.data, "sources");
   assert.ok(sourceRows.length > 0, "Wisconsin 2024 sources must not be empty");

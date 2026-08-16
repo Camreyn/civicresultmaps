@@ -7739,3 +7739,44 @@ evidence against its verified top-level package.
   `average_down_ballot_difference` rows. These are review signals only, not
   evidence of fraud or misconduct. This source-package task does not promote
   staging or mutate production data.
+
+### 2026-08-15 - Wisconsin guarded three-election release tooling
+
+- Added a Wisconsin-only local database plan, guarded loader, validator,
+  content-addressed release-candidate builder, production preflight and backup
+  contracts, hidden-load receipt recovery, immutable Blob publisher, static
+  activation builder, atomic database publication, rollback, and read-only
+  publication-receipt recovery. The implementation follows the hardened
+  local-reporting-unit release model and never relabels Wisconsin units as
+  precincts.
+- The candidate is fixed to 2016, 2020, and 2024: 10,937 official reporting
+  units, 32,475 candidate-result rows, 10,856 polygons, 10,937 reviewed
+  relationship records, 112 explicit zero-vote non-geographic units, 316
+  geographic zero-vote units, and 31 reviewed no-data polygons. Delivery
+  consists of 216 county-scoped objects plus three year indexes.
+- The application publication contract gates Wisconsin only at
+  `local_reporting_unit`. Both the results and geometry APIs remain closed
+  until one exact static manifest set, hidden database release, immutable Blob
+  evidence, reviewed deployment, and atomic publication transaction agree.
+- The release plan rejects 2012 before database or delivery work. Its 3,525
+  official rows and 3,047,999 votes remain retained evidence, but the
+  population-disaggregated LTSB context is not a vote-preserving crosswalk.
+- This tooling change does not modify the canonical public registry, upload a
+  Blob object, contact the production database, change a deployment, or make
+  Wisconsin public. Those are separately authorized release operations after
+  clean merged-code validation.
+- The loopback-only Docker rehearsal loaded and then read-only validated all
+  three elections at public revision 24 with zero invalid constraints. It
+  confirmed 126 mapped zero-vote units in 2016, 190 in 2020, and zero in 2024,
+  in addition to the 112 reconciliation-only units without geometry.
+- A local content-addressed rehearsal sealed package SHA-256
+  `ee04bd4bd4989fba8d11de7b625f02d5a1e3f91261c7e1de087d371320809311`
+  with 219 delivery artifacts and a 46,695,130-byte Blob plan. This local
+  package is validation evidence only and must be resealed from the clean
+  merged commit before production evidence is collected.
+- Verification passed the 36-test Wisconsin source/release suite, the full
+  standard repository suite (including 183 Python ETL tests), TypeScript,
+  production build, source-tier/source-package/map validators, and the 2-test
+  merge-gated HTTP API suite. The API smoke now explicitly proves that
+  Wisconsin local result rows, manifests, and geometry remain closed before
+  the later activation transaction.
