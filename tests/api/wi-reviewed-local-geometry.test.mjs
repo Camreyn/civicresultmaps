@@ -148,7 +148,18 @@ test("Wisconsin manifests expose only reviewed candidates and keep 2012 blocked"
   }
 
   const registry = JSON.parse(readFileSync("data/precinct-geometry-manifests.json", "utf8"));
-  assert.equal(registry.manifests.some((manifest) => manifest.state === "WI"), false);
+  const wisconsinManifests = registry.manifests.filter((manifest) => manifest.state === "WI");
+  assert.deepEqual(
+    wisconsinManifests.map((manifest) => manifest.election.year),
+    [2016, 2020, 2024],
+  );
+  for (const manifest of wisconsinManifests) {
+    assert.equal(manifest.geography.level, "local_reporting_unit");
+    assert.equal(manifest.validation.status, "reviewed");
+    assert.equal(manifest.validation.rowLevelRenderingSafe, true);
+    assert.deepEqual(manifest.validation.errors, []);
+    assert.equal(manifest.delivery.format, "parent_scoped_geojson");
+  }
 
   const inventories = new Map([
     [2012, "data/precinct-geometry-coverage-inventory-2012.json"],
@@ -160,7 +171,7 @@ test("Wisconsin manifests expose only reviewed candidates and keep 2012 blocked"
     const inventory = JSON.parse(readFileSync(inventoryPath, "utf8"));
     const row = inventory.states.find((entry) => entry.state === "WI");
     assert.ok(row, `${year} inventory must contain Wisconsin`);
-    assert.equal(row.geometry.publicEligibleManifestCount, 0);
+    assert.equal(row.geometry.publicEligibleManifestCount, year === 2012 ? 0 : 1);
     assert.equal(row.disposition, year === 2012 ? "blocked" : "mapped");
     assert.equal(row.geometry.featureCount, EXPECTED[year].normalizedFeatures);
     assert.equal(row.crosswalk.resultUnits, EXPECTED[year].sourceResultUnits);

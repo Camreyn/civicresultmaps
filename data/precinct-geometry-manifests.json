@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T15:16:03.574Z",
+  "updatedAt": "2026-08-16T00:33:54.328Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -2493,6 +2493,340 @@
         "Every displayed candidate value, when authorized, comes only from the retained South Carolina Election Commission CSV.",
         "The 2,308 geographic rows reconcile exactly by county and unique complete presidential vote signature; the 6,263 administrative votes remain outside geometry.",
         "NYT non-commercial attribution terms must accompany any eventual delivery.",
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "wi-2016-11-08-reviewed-local-reporting-geometry-v1",
+      "state": "WI",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "local_reporting_unit",
+        "parentLevel": "county",
+        "boundaryVintage": "VEST 2016 election-specific reconstruction from Wisconsin LTSB boundaries and Wisconsin Department of Administration municipal change records",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Wisconsin Elections Commission and Voting and Election Science Team",
+        "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4468121&version=88.0",
+        "retrievedAt": "2026-08-15T18:00:00.000Z",
+        "artifact": "data/precinct-geometry/WI/2016-11-08-general/source-evidence.json",
+        "sha256": "d2fb308dd0a05024de87ff439cdee5776130d62e3ef1b345be1571fda6453366",
+        "byteCount": 4893,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "VEST geometry is retained under CC BY 4.0 with attribution; official WEC/GAB values are the sole vote source."
+      },
+      "normalization": {
+        "script": "scripts/build-wi-reviewed-local-geometry.mjs",
+        "sourceCrs": "source-defined and normalized by shpjs",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/WI/2016-11-08-general/normalized/wi-2016-reviewed-local-reporting-geometry.geojson.gz",
+        "sha256": "cce73026a46ef5dcae5137f0d23a6b5b254422a3faaa1c51774ee1ba2305f320",
+        "byteCount": 22324555,
+        "featureCount": 3648,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "wi-wec-2016-president-recount-ward-by-ward",
+        "artifact": "data/precinct-geometry/WI/2016-11-08-general/crosswalk/wi-2016-result-to-geometry-review.json",
+        "sha256": "75c4fc759bfb9decf077662c278baddc161c26265108ab79b51e3ca96c576974",
+        "byteCount": 2773352,
+        "resultUnits": 3636,
+        "colorableResultUnits": 3626,
+        "matchedResultUnits": 3626,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 10,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 3626,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 10,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 3636,
+        "reviewedNoDataFeatures": 22,
+        "methods": [
+          "reviewed_name",
+          "spatial_review"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+          "10 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+          "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+          "VEST reconstructed the November boundary edition from LTSB and Wisconsin Department of Administration records and disaggregated source votes; all 2016 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+          "22 source boundary components have no official result relationship and are retained only as explicit no-data shapes.",
+          "All 3626 displayable local-result relationships are reviewed one-to-one across all 72 Wisconsin counties.",
+          "All 10 official zero-vote units without reviewed geometry remain explicitly non-geographic and are never assigned to a polygon.",
+          "The 126 zero-presidential-vote local units remain geographic reporting units.",
+          "All 22 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/wi/2016-11-08/local_reporting_unit/wi-2016-11-08-reviewed-local-reporting-geometry-v1-56bdaf69373b/index.json",
+        "sha256": "56bdaf69373b50a4d9acd18e481a9e2eaf2ccf7c8e2958e9d4534504923d238d",
+        "byteCount": 14186,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 72,
+        "featureCount": 3648
+      },
+      "caveats": [
+        "No result value from VEST, NYT, or LTSB allocated election fields is used as a displayed election result.",
+        "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+        "10 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+        "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+        "VEST reconstructed the November boundary edition from LTSB and Wisconsin Department of Administration records and disaggregated source votes; all 2016 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+        "22 source boundary components have no official result relationship and are retained only as explicit no-data shapes.",
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "wi-2020-11-03-reviewed-local-reporting-geometry-v1",
+      "state": "WI",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "local_reporting_unit",
+        "parentLevel": "county",
+        "boundaryVintage": "VEST 2020 election-specific reconstruction using Wisconsin LTSB Fall 2020 wards and reviewed later-ward corrections",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Wisconsin Elections Commission and Voting and Election Science Team",
+        "url": "https://dataverse.harvard.edu/file.xhtml?fileId=4773528&version=21.0",
+        "retrievedAt": "2026-08-15T18:00:00.000Z",
+        "artifact": "data/precinct-geometry/WI/2020-11-03-general/source-evidence.json",
+        "sha256": "4c005d6aed82bc9bef57a3c3bab1131a5e5dfde79c453ff712d0fceb59cfa059",
+        "byteCount": 4820,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "VEST geometry is retained under CC BY 4.0 with attribution; official WEC/GAB values are the sole vote source."
+      },
+      "normalization": {
+        "script": "scripts/build-wi-reviewed-local-geometry.mjs",
+        "sourceCrs": "source-defined and normalized by shpjs",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/WI/2020-11-03-general/normalized/wi-2020-reviewed-local-reporting-geometry.geojson.gz",
+        "sha256": "5007f95ba2916f9ed15f4cf621c2307ae98f9bfd1021146c508188b11f5921ca",
+        "byteCount": 23636300,
+        "featureCount": 3705,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "wi-wec-2020-president-after-recount-ward-by-ward",
+        "artifact": "data/precinct-geometry/WI/2020-11-03-general/crosswalk/wi-2020-result-to-geometry-review.json",
+        "sha256": "5d32babe6bb5a401a80224321312865681fafb0e3d13eb6cd45be2d2e48c39f8",
+        "byteCount": 2821641,
+        "resultUnits": 3698,
+        "colorableResultUnits": 3696,
+        "matchedResultUnits": 3696,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 2,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 3696,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 2,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 3698,
+        "reviewedNoDataFeatures": 9,
+        "methods": [
+          "reviewed_name",
+          "spatial_review"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+          "2 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+          "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+          "VEST reconciled LTSB Fall 2020 and later ward information and disaggregated source votes; all 2020 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+          "9 source boundary components have no official result relationship and are retained only as explicit no-data shapes.",
+          "All 3696 displayable local-result relationships are reviewed one-to-one across all 72 Wisconsin counties.",
+          "All 2 official zero-vote units without reviewed geometry remain explicitly non-geographic and are never assigned to a polygon.",
+          "The 190 zero-presidential-vote local units remain geographic reporting units.",
+          "All 9 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/wi/2020-11-03/local_reporting_unit/wi-2020-11-03-reviewed-local-reporting-geometry-v1-058b74f8b6e9/index.json",
+        "sha256": "058b74f8b6e99fc5c225bfa27605c00a33a599f61fb35dc61c871cded7051e44",
+        "byteCount": 14156,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 72,
+        "featureCount": 3705
+      },
+      "caveats": [
+        "No result value from VEST, NYT, or LTSB allocated election fields is used as a displayed election result.",
+        "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+        "2 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+        "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+        "VEST reconciled LTSB Fall 2020 and later ward information and disaggregated source votes; all 2020 VEST vote fields are discarded. The official WEC recount workbook remains the sole vote source.",
+        "9 source boundary components have no official result relationship and are retained only as explicit no-data shapes.",
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "wi-2024-11-05-reviewed-local-reporting-geometry-v1",
+      "state": "WI",
+      "election": {
+        "id": "2024-11-05-general",
+        "date": "2024-11-05",
+        "year": 2024,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "local_reporting_unit",
+        "parentLevel": "county",
+        "boundaryVintage": "NYT 2024 Wisconsin election-specific package; every retained feature is marked official_boundary=true",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Wisconsin Elections Commission and The New York Times",
+        "url": "https://www.arcgis.com/sharing/rest/content/items/878d8826218f42509e07437a82ef6b6e?f=json",
+        "retrievedAt": "2026-08-15T18:00:00.000Z",
+        "artifact": "data/precinct-geometry/WI/2024-11-05-general/source-evidence.json",
+        "sha256": "88d5258b80524eccf9e0c8945e03425d65c54cc16c03091bb130767ae070dafd",
+        "byteCount": 5787,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "NYT geometry is retained under the NYT Content API Use and Data Agreement non-commercial attribution terms; official WEC values are the sole vote source."
+      },
+      "normalization": {
+        "script": "scripts/build-wi-reviewed-local-geometry.mjs",
+        "sourceCrs": "EPSG:4326 GeoJSON",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/WI/2024-11-05-general/normalized/wi-2024-reviewed-local-reporting-geometry.geojson.gz",
+        "sha256": "c3df5017d970bc3a266b846665dd543ae3a671bfa67785f697bba70312d5d378",
+        "byteCount": 27082198,
+        "featureCount": 3503,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "wi-wec-2024-ward-by-ward-federal-state-xlsx",
+        "artifact": "data/precinct-geometry/WI/2024-11-05-general/crosswalk/wi-2024-result-to-geometry-review.json",
+        "sha256": "c2c2fa121e65723bac863e8344c4bfc0d6fdadbe44ce79c4779f0e53d3fdb424",
+        "byteCount": 3012501,
+        "resultUnits": 3603,
+        "colorableResultUnits": 3503,
+        "matchedResultUnits": 3503,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 100,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 3503,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 100,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 3603,
+        "reviewedNoDataFeatures": 0,
+        "methods": [
+          "reviewed_name",
+          "spatial_review"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+          "100 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+          "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+          "The NYT geometry is marked official_boundary=true and matches WEC by county, complete reporting label, and exact Harris/Trump values. NYT non-commercial attribution terms must accompany delivery.",
+          "All 3503 displayable local-result relationships are reviewed one-to-one across all 72 Wisconsin counties.",
+          "All 100 official zero-vote units without reviewed geometry remain explicitly non-geographic and are never assigned to a polygon.",
+          "The 0 zero-presidential-vote local units remain geographic reporting units.",
+          "All 0 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/wi/2024-11-05/local_reporting_unit/wi-2024-11-05-reviewed-local-reporting-geometry-v1-e6495013943a/index.json",
+        "sha256": "e6495013943aca54416431a3808e443bdfb624ae15b9272557c5cc4575e2925f",
+        "byteCount": 14196,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 72,
+        "featureCount": 3503
+      },
+      "caveats": [
+        "No result value from VEST, NYT, or LTSB allocated election fields is used as a displayed election result.",
+        "Every displayed candidate value, when separately authorized, comes only from the official WEC/GAB result workbook.",
+        "100 official zero-vote reporting units lack reviewed geometry and remain reconciliation-only.",
+        "No WEC result is divided, proportionally allocated, or copied to multiple polygons.",
+        "The NYT geometry is marked official_boundary=true and matches WEC by county, complete reporting label, and exact Harris/Trump values. NYT non-commercial attribution terms must accompany delivery.",
         "Immutable parent-scoped delivery and the guarded production release have not been completed."
       ]
     }
