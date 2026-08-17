@@ -11,6 +11,7 @@ import {
   guardedLocalGeographyLevel,
   requiresPrecinctResultPublicationGate,
 } from "../../src/lib/precinct-result-publication.ts";
+import { states } from "../../scripts/state-metadata.mjs";
 
 test("Alaska uses forty House District parent IDs and a guarded precinct release", () => {
   assert.equal(ALASKA_HOUSE_DISTRICT_PARENT_IDS.length, 40);
@@ -64,4 +65,35 @@ test("Alaska and county-scoped parent contracts remain mutually exclusive", () =
     geographyLevel: "local_reporting_unit",
     parentGeoid: "23001",
   }), true);
+});
+
+test("county parent contracts require each state's canonical FIPS prefix", () => {
+  for (const state of states) {
+    if (state.code === "AK") continue;
+    assert.equal(isValidLocalGeographyParentId({
+      state: state.code,
+      geographyLevel: "precinct",
+      parentGeoid: state.fips + "001",
+    }), true, `${state.code} should accept its own state FIPS prefix`);
+    assert.equal(isValidLocalGeographyParentId({
+      state: state.code,
+      geographyLevel: "precinct",
+      parentGeoid: (state.fips === "01" ? "02" : "01") + "001",
+    }), false, `${state.code} should reject another state's FIPS prefix`);
+  }
+});
+
+test("Alaska county-parent local levels keep the Alaska FIPS prefix", () => {
+  for (const geographyLevel of ["vtd", "local_reporting_unit"]) {
+    assert.equal(isValidLocalGeographyParentId({
+      state: "AK",
+      geographyLevel,
+      parentGeoid: "02020",
+    }), true);
+    assert.equal(isValidLocalGeographyParentId({
+      state: "AK",
+      geographyLevel,
+      parentGeoid: "19001",
+    }), false);
+  }
 });

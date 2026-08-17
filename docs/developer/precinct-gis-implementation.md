@@ -8061,3 +8061,25 @@ evidence against its verified top-level package.
   geography without a future reviewed common-geography crosswalk. The 2024
   advisory indicator inventory remains 83 broad screening rows across 59
   counties; those signals are not evidence of fraud or misconduct.
+
+### 2026-08-16 - Local parent GEOID state-prefix hardening
+
+- A post-publication Florida negative check reproduced one input-validation
+  gap on production commit `47c0576a7105d89179f49d8db970fae5d3dd6070`:
+  `state=FL&parentGeoid=13001` returned an empty HTTP 200 result response and
+  an HTTP 500 geometry validation response. Both paths remained fail-closed,
+  but neither rejected the cross-state county identifier at the API boundary.
+- The shared local-geography parent contract now requires every five-digit
+  county GEOID to begin with the two-digit Census state FIPS code for the
+  requested state. Both result and immutable-geometry routes already apply
+  that contract before their data reads, so the same invalid Florida/Georgia
+  combination is rejected as HTTP 400 after deployment. Alaska's reviewed
+  `HD01` through `HD40` House District parent contract remains unchanged.
+- Focused regressions cover both Florida API routes and Florida immutable-
+  delivery construction with an out-of-state county parent. This code change
+  does not alter election results, geometry, crosswalks, publication metadata,
+  Blob assets, database rows, public revision, or the Florida 2012 blocker.
+- The Florida package suite's two pre-activation assertions now require the
+  canonical registry and coverage inventories to expose exactly the reviewed
+  2016, 2020, and 2024 manifests while continuing to require zero public
+  eligibility for the blocked 2012 package.

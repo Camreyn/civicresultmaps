@@ -27,3 +27,29 @@ test("public API verification rejects a production fallback or stale deployment"
     }),
   ).rejects.toThrow(/deployment that triggered this smoke test/);
 });
+
+test("local geography routes reject a cross-state county parent at the API boundary", async ({
+  request,
+}) => {
+  const expectedError =
+    "parentGeoid must be a five-digit county GEOID beginning with 12 for FL";
+  const responses = await Promise.all([
+    request.get(
+      "/api/results?state=FL&year=2024&level=precinct"
+      + "&office=president&parentGeoid=13001",
+    ),
+    request.get(
+      "/api/precinct-geography"
+      + "?manifestId=fl-2024-11-05-reviewed-precinct-geometry-v1"
+      + "&parentGeoid=13001",
+    ),
+  ]);
+
+  for (const response of responses) {
+    expect(response.status()).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      data: null,
+      error: expectedError,
+    });
+  }
+});

@@ -9,6 +9,10 @@ import {
   requiresPrecinctGeometryPublicationGate,
   requiresPrecinctResultPublicationGate,
 } from "../../src/lib/precinct-result-publication.ts";
+import {
+  isValidLocalGeographyParentId,
+  localGeographyParentValidationMessage,
+} from "../../src/lib/local-geography-parent.ts";
 
 test("Florida precinct GIS commands remain loopback-only and public-fail-closed", () => {
   const setup = readFileSync("scripts/setup-fl-precinct-gis-local.mjs", "utf8");
@@ -36,6 +40,23 @@ test("Florida results and geometry require exact publication evidence", () => {
     state: "FL",
     geography: { level: "precinct" },
   }), true);
+});
+
+test("Florida county parents require the Florida state FIPS prefix", () => {
+  assert.equal(isValidLocalGeographyParentId({
+    state: "FL",
+    geographyLevel: "precinct",
+    parentGeoid: "12001",
+  }), true);
+  assert.equal(isValidLocalGeographyParentId({
+    state: "FL",
+    geographyLevel: "precinct",
+    parentGeoid: "13001",
+  }), false);
+  assert.match(localGeographyParentValidationMessage({
+    state: "FL",
+    geographyLevel: "precinct",
+  }), /beginning with 12 for FL/);
 });
 
 test("Florida release precondition rejects duplicate or boundary-drifted versions", () => {
