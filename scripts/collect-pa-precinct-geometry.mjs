@@ -91,6 +91,28 @@ function verifyPin(relativePath, bytes, context = "source") {
   }
 }
 
+function restoreReviewedCrlfArtifact(relativePath) {
+  const target = absolute(relativePath);
+  if (!existsSync(target)) return;
+  const bytes = readFileSync(target);
+  const pin = PENNSYLVANIA_RAW_SOURCE_PINS[relativePath];
+  if (!pin || (bytes.length === pin[0] && sha256(bytes) === pin[1])) return;
+  const restored = [];
+  for (let index = 0; index < bytes.length; index += 1) {
+    if (bytes[index] === 10 && (index === 0 || bytes[index - 1] !== 13)) {
+      restored.push(13);
+    }
+    restored.push(bytes[index]);
+  }
+  const restoredBytes = Buffer.from(restored);
+  if (
+    restoredBytes.length === pin[0]
+    && sha256(restoredBytes) === pin[1]
+  ) {
+    write(relativePath, restoredBytes);
+  }
+}
+
 async function downloadPinned(relativePath, url) {
   const response = await fetch(url, {
     headers: { "user-agent": "CivicResultMaps-source-collector/1.0" },
@@ -528,6 +550,11 @@ function manifestDocument(documents, artifacts, paths) {
 }
 
 await acquire();
+if (year === 2016 || year === 2020) {
+  restoreReviewedCrlfArtifact(
+    spec.base + "/raw/vest/documentation.txt",
+  );
+}
 verifyPennsylvaniaRawSources(root, year);
 
 const paths = pathsForYear();
