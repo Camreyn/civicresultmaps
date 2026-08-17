@@ -1901,7 +1901,7 @@
         "Certified Florida county map totals remain anchored to the official county detail table, not the precinct ZIP.",
         "The official precinct ZIP presidential candidate total is 204 votes below the county detail table and the ZIP Trump total is one vote higher.",
         "The precinct ZIP registered-voter field is a denominator lead only because no compatible state-native ballots-cast rows are loaded.",
-        "Reviewed precinct geometry and official-result relationships are retained for 2016, 2020, and 2024 but remain outside production until immutable delivery and guarded activation are complete.",
+        "Reviewed precinct geometry and official-result relationships for 2016, 2020, and 2024 are publicly delivered at production revision 25 through the guarded, hash-pinned release; 2012 remains outside production.",
         "No complete election-effective statewide 2012 precinct boundary edition is retained, so 2012 remains fail-closed and no result is assigned to Census VTD geometry.",
         "The 2016/2020 VEST and 2024 New York Times geometry sources are secondary presentation geometry with explicit attribution and terms; Florida Department of State exports remain the sole displayed vote source.",
         "Historical baselines are secondary county context rows and not 2024 certified data."

@@ -280,10 +280,21 @@ The live checks covered all 201 county/year parent scopes. They confirmed
 140 mapped zero-vote units, 31,494,532 displayed official votes, and zero
 invalid public constraints. Browser checks confirmed the three published maps,
 OpenStreetMap attribution, source/vintage labels, interactive selection, and
-year-pinned Exports & API examples. Florida 2012 remained unavailable. An
-invalid non-Florida parent GEOID exposed no data but currently produces a
-fail-closed HTTP 500 from the geometry endpoint; early state-prefix rejection
-is a non-blocking API-hardening follow-up.
+year-pinned Exports & API examples. Florida 2012 remained unavailable.
+
+The parent-validation hardening was subsequently human-merged as commit
+`6aad834fa31306c3117f2bf974b81544b8a2859a` (tree
+`e989a76490d2c8046f3eae03002c370621008d88`) and promoted as production
+deployment `dpl_GhN6DNUBedB67u4ruNTiocquQuUo`. Live checks against the exact
+deployment SHA confirmed that a Florida request using Georgia county GEOID
+`13001` now returns HTTP 400 from both the results and geometry endpoints with
+the Florida-prefix validation message. Valid Alachua County `12001` checks
+still returned one manifest, 63 result units, and 63 features for each of 2016,
+2020, and 2024; 2012 still returned no manifest or precinct results. The
+exact-SHA, database-backed public smoke passed all 22 checks, and the deployment
+had no HTTP 500 or error-level runtime logs during the verification window.
+This hardening changed no database row, Blob object, environment variable,
+manifest eligibility, or public revision.
 
 ## Rollback
 

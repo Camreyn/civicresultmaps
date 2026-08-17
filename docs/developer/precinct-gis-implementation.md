@@ -8083,3 +8083,19 @@ evidence against its verified top-level package.
   canonical registry and coverage inventories to expose exactly the reviewed
   2016, 2020, and 2024 manifests while continuing to require zero public
   eligibility for the blocked 2012 package.
+- PR #282 was human-merged at `2026-08-17T00:52:43Z` as commit
+  `6aad834fa31306c3117f2bf974b81544b8a2859a`, tree
+  `e989a76490d2c8046f3eae03002c370621008d88`. Production deployment
+  `dpl_GhN6DNUBedB67u4ruNTiocquQuUo` reached `READY` with the public aliases,
+  and live `X-Deployment-Sha` headers pinned that exact merge commit.
+- The exact-SHA, database-backed public API smoke passed all 22 checks. The
+  Florida/Georgia `13001` negative control returned HTTP 400 with the expected
+  Florida-prefix message from both API routes. Alachua County `12001` retained
+  one eligible manifest, 63 database result units, and 63 immutable geometry
+  features for each of 2016, 2020, and 2024; 2012 retained zero eligible
+  manifests and zero precinct result rows.
+- Post-deploy GitHub CI and production smoke completed successfully. The exact
+  deployment had no HTTP 500 requests or error-level runtime logs during the
+  verification window. This hardening performed no database, Blob, environment,
+  manifest-eligibility, activation, or public-revision mutation; revision 25
+  and the hash-pinned release evidence remain authoritative.
