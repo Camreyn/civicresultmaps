@@ -82,3 +82,18 @@ test("county parent contracts require each state's canonical FIPS prefix", () =>
     }), false, `${state.code} should reject another state's FIPS prefix`);
   }
 });
+
+test("Alaska county-parent local levels keep the Alaska FIPS prefix", () => {
+  for (const geographyLevel of ["vtd", "local_reporting_unit"]) {
+    assert.equal(isValidLocalGeographyParentId({
+      state: "AK",
+      geographyLevel,
+      parentGeoid: "02020",
+    }), true);
+    assert.equal(isValidLocalGeographyParentId({
+      state: "AK",
+      geographyLevel,
+      parentGeoid: "19001",
+    }), false);
+  }
+});

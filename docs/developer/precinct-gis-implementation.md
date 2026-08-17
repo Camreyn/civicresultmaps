@@ -8075,10 +8075,10 @@ evidence against its verified top-level package.
   that contract before their data reads, so the same invalid Florida/Georgia
   combination is rejected as HTTP 400 after deployment. Alaska's reviewed
   `HD01` through `HD40` House District parent contract remains unchanged.
-- Focused regressions cover Florida API validation and immutable-delivery
-  construction with an out-of-state county parent. This code change does not
-  alter election results, geometry, crosswalks, publication metadata, Blob
-  assets, database rows, public revision, or the Florida 2012 blocker.
+- Focused regressions cover both Florida API routes and Florida immutable-
+  delivery construction with an out-of-state county parent. This code change
+  does not alter election results, geometry, crosswalks, publication metadata,
+  Blob assets, database rows, public revision, or the Florida 2012 blocker.
 - The Florida package suite's two pre-activation assertions now require the
   canonical registry and coverage inventories to expose exactly the reviewed
   2016, 2020, and 2024 manifests while continuing to require zero public

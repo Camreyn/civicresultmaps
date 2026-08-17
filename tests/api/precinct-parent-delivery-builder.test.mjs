@@ -159,4 +159,18 @@ test("parent-scoped builder supports Alaska House District parents without weake
     () => buildParentScopedPrecinctDeliveryPackage(iowaForeignCountyParent),
     /beginning with 19 for IA/,
   );
+
+  const floridaForeignCountyParent = statewideCollection();
+  floridaForeignCountyParent.metadata = {
+    ...floridaForeignCountyParent.metadata,
+    manifestId: "fl-2024-11-05-reviewed-precinct-geometry-v1",
+    state: "FL",
+  };
+  floridaForeignCountyParent.features = [feature("P1", "13001")];
+  assert.throws(
+    () => buildParentScopedPrecinctDeliveryPackage(
+      floridaForeignCountyParent,
+    ),
+    /beginning with 12 for FL/,
+  );
 });
