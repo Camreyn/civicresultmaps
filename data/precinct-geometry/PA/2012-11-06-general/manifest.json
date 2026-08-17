@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "pa-2012-11-06-precinct-geometry-unavailable-v1",
+  "state": "PA",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "2010 Census VTD statistical geography retained only as an availability diagnostic",
+    "vintageStatus": "unknown",
+    "derivationMethod": "availability_diagnostic"
+  },
+  "source": {
+    "authority": "Pennsylvania Department of State results; U.S. Census Bureau 2010 VTD availability diagnostic",
+    "url": "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip",
+    "retrievedAt": "2026-08-16T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/PA/2012-11-06-general/source-evidence.json",
+    "sha256": "8156003c349ab1324b9e887d6f1b257b75b71d0d4ae31c74e02e63647596da85",
+    "byteCount": 5842,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "Official Pennsylvania public election records and U.S. Census Bureau statistical geography; no 2012 geometry delivery is authorized."
+  },
+  "normalization": {
+    "script": "scripts/collect-pa-precinct-geometry.mjs",
+    "sourceCrs": "GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]]",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/PA/2012-11-06-general/normalized/pa-2012-no-approved-precinct-geometry.json",
+    "sha256": "27ba9fd0f70254e29f9e61b74c07bb4c2271d29d7e17f03e0d70c0c1116f8549",
+    "byteCount": 353,
+    "featureCount": 0,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "blocked",
+    "resultSourceId": "pa-dos-2012-general-precinct-results",
+    "artifact": "data/precinct-geometry/PA/2012-11-06-general/crosswalk/pa-2012-result-to-geometry-review.json",
+    "sha256": "35e121cc5fab8aa39591cdeecd6636f1296cf77a4a905615d0eeff72ab7cc70c",
+    "byteCount": 6207554,
+    "resultUnits": 9246,
+    "colorableResultUnits": 9246,
+    "matchedResultUnits": 0,
+    "unmatchedResultUnits": 9246,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 0,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 9246
+    },
+    "reviewedRelationshipRecords": 0,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": false,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": false,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Complete election-effective Pennsylvania precinct geometry and a reviewed result crosswalk are unavailable for 2012."
+    ],
+    "warnings": [
+      "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+      "9246 official source units totaling 5,734,022 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+      "The Census 2010 VTD layer is a statistical availability diagnostic, not the November 6, 2012 election precinct edition."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No vote is estimated, spatially allocated, or copied from a geometry source.",
+    "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+    "9246 official source units totaling 5,734,022 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+    "The Census 2010 VTD layer is a statistical availability diagnostic, not the November 6, 2012 election precinct edition.",
+    "The retained diagnostic layer is not public precinct delivery."
+  ]
+}

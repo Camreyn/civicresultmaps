@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "state": "PA",
+  "electionYear": 2020,
+  "geometryArtifact": {
+    "filename": "pa_2020.zip",
+    "byteCount": 20887385,
+    "sha256": "8c05f2724f0b0c015eb5ba504b33892acbb78057f4a546aa66a7d453277d8d48",
+    "vestDatasetPage": "https://election.lab.ufl.edu/dataset/pa-2020-precinct-level-election-results/"
+  },
+  "custodyMirror": {
+    "repository": "https://github.com/PlanScore/National-Input-Data",
+    "path": "VEST/pa_2020.zip",
+    "commit": "4ee0f4724a1e99213c95bd5c00926fb4b0c3d4c6",
+    "gitBlobSha1": "e2e63a6610383195d7f03f96660f85516c86f531",
+    "note": "The PlanScore repository supplies version-pinned public byte custody; VEST supplies the dataset and methodology."
+  },
+  "independentReview": {
+    "authority": "Redistricting Data Hub",
+    "status": "review_limitations_recorded",
+    "note": "The retained report describes checks but says the reviewer could not fully reproduce the joins and validation. CivicResultMaps therefore accepts only county-qualified VTD matches whose complete presidential candidate vectors agree exactly."
+  },
+  "rights": {
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "evidenceUrl": "https://www.nature.com/articles/s41597-024-04024-2",
+    "note": "The VEST data descriptor states that the 2016, 2018, and 2020 precinct databases are released under CC BY 4.0. The article publication license is separate."
+  }
+}

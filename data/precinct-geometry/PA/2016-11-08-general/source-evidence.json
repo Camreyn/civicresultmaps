@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "id": "pa-2016-precinct-geometry-source-evidence-v1",
+  "state": "PA",
+  "election": {
+    "id": "2016-11-08-general",
+    "date": "2016-11-08",
+    "year": 2016,
+    "type": "general",
+    "office": "president"
+  },
+  "retrievedAt": "2026-08-16T18:00:00.000Z",
+  "authority": "Pennsylvania Department of State results with attributed VEST election-specific geometry",
+  "artifacts": [
+    {
+      "authority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/pa-2016-general-election-returns-precinct.txt",
+      "format": "official statewide comma-delimited precinct election returns",
+      "reportingGrain": "county-scoped precinct candidate rows",
+      "byteCount": 29062839,
+      "sha256": "1f91168dcba029b424e3b3f627e28f2e55f7f05de2579eea26ab0a97ac4cf39c",
+      "note": "Sole authority for every displayed vote value; all USP candidate rows are retained."
+    },
+    {
+      "authority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/ElectionReturns_2016_General_ReadMeFile.txt",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/pa-2016-general-election-returns-readme.txt",
+      "format": "official precinct returns data dictionary",
+      "reportingGrain": "field definitions and county code table",
+      "byteCount": 4284,
+      "sha256": "e6f62869a181fd677c6738b5a49712e3f8556307fbc01dac4dafd807e3b39a4a",
+      "note": "Defines County Code, Precinct Code, VTD code, candidate fields, and the 67-county lookup."
+    },
+    {
+      "authority": "Voting and Election Science Team (VEST), public PlanScore custody mirror",
+      "sourceUrl": "https://raw.githubusercontent.com/PlanScore/National-Input-Data/b8d27cbdc2e752fbadf8e3432d8eb3c96ba579b7/VEST/pa_2016.zip",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/PA/2016-11-08-general/raw/vest/pa_2016.zip",
+      "format": "version-pinned statewide VEST Shapefile ZIP",
+      "reportingGrain": "election-specific precinct reconstruction",
+      "byteCount": 20771693,
+      "sha256": "156d833b813bef4ef5f095299b1283e1c843e646198c6b5b2fead4cd238fb991",
+      "note": "Election-value attributes are used only for exact identity diagnostics, then stripped. Pennsylvania DOS remains the sole displayed vote authority.",
+      "archiveMembers": [
+        {
+          "name": "pa_2016.cpg",
+          "byteCount": 5,
+          "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+        },
+        {
+          "name": "pa_2016.dbf",
+          "byteCount": 2677502,
+          "sha256": "7823001f8387f7b675d287fba582117b3f79af3809eb867d456d2f4f110b4428"
+        },
+        {
+          "name": "pa_2016.prj",
+          "byteCount": 167,
+          "sha256": "84cf5b9a3c1a444f83ac30ff76f8c5035990223027ba69b2f4d628388adcbd65"
+        },
+        {
+          "name": "pa_2016.sbn",
+          "byteCount": 95420,
+          "sha256": "75a29cbcace6cd71e47219cb84d2d33b8cd114a9aaeb92bf256af2d509486855"
+        },
+        {
+          "name": "pa_2016.sbx",
+          "byteCount": 5804,
+          "sha256": "ee6e83787d78185b841d3aa86840c7b0c19969891681ca9be2b18a662bfbec2e"
+        },
+        {
+          "name": "pa_2016.shp",
+          "byteCount": 63968000,
+          "sha256": "ec6c5a4e83a3d323208587d2274e59dd1a2ea53a16dfe5de04bb6706ab50405f"
+        },
+        {
+          "name": "pa_2016.shx",
+          "byteCount": 73436,
+          "sha256": "6e81c335d9711c76c7044099eac3ec5cc03b0053ddf30673f6831f388feb7171"
+        }
+      ],
+      "sourceCrs": "GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]"
+    },
+    {
+      "authority": "Voting and Election Science Team (VEST)",
+      "sourceUrl": "https://election.lab.ufl.edu/data-downloads/resultsdata/2016/precinct/documentation.txt",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/PA/2016-11-08-general/raw/vest/documentation.txt",
+      "format": "VEST nationwide precinct documentation text",
+      "reportingGrain": "source and methodology documentation",
+      "byteCount": 156582,
+      "sha256": "1feba4a879741eec2d3138da1e71e0d5da735ec8c9b5ba5718ef0a3b4251ae0d",
+      "note": "The Pennsylvania section documents the result and boundary sources used by VEST."
+    },
+    {
+      "authority": "Redistricting Data Hub",
+      "sourceUrl": "https://redistrictingdatahub.org/wp-content/uploads/2020/12/pa_vest_16_validation_report.pdf",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/PA/2016-11-08-general/raw/review/pa_vest_16_validation_report.pdf",
+      "format": "VEST Pennsylvania validation report PDF",
+      "reportingGrain": "independent review evidence",
+      "byteCount": 73752,
+      "sha256": "04647f0a402e4b381a826927affb1a308b51dd259e84da735961b45b817408c4",
+      "note": "The review could not fully reproduce the joins and validation; that limitation is preserved and motivates the exact-vector-only acceptance rule."
+    },
+    {
+      "authority": "Voting and Election Science Team publication and version-pinned custody evidence",
+      "sourceUrl": "https://www.nature.com/articles/s41597-024-04024-2",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/PA/2016-11-08-general/raw/vest/version-license-evidence.json",
+      "format": "version and license evidence JSON",
+      "reportingGrain": "source provenance and reuse terms",
+      "byteCount": 1479,
+      "sha256": "3f692007acb635112b366f4c46994667f7cccaa98d06b09722e8625454fcb134",
+      "note": "Pins the reviewed VEST file checksum, PlanScore custody commit/blob, independent-review limitation, and CC BY 4.0 database terms evidence."
+    }
+  ],
+  "resultUniverse": {
+    "sourceUnits": 9176,
+    "presidentialSourceRows": 45880,
+    "colorableUnits": 8014,
+    "mappedSourceComponents": 8018,
+    "excludedUnits": 1158,
+    "zeroVoteSourceUnits": 14,
+    "mappedZeroVoteSourceComponents": 4,
+    "mappedZeroVoteAggregateRows": 0,
+    "totals": {
+      "democratic": 2925758,
+      "republican": 2970378,
+      "other": 218160,
+      "total": 6114296
+    },
+    "mappedTotals": {
+      "democratic": 2522337,
+      "republican": 2618972,
+      "other": 190304,
+      "total": 5331613
+    },
+    "excludedTotals": {
+      "democratic": 403421,
+      "republican": 351406,
+      "other": 27856,
+      "total": 782683
+    }
+  },
+  "geometryReview": {
+    "rawFeatures": 9167,
+    "normalizedFeatures": 9167,
+    "reviewedRelationships": 8014,
+    "reviewedNoDataFeatures": 1153,
+    "methods": {
+      "exactOfficialVtdAndCompleteVoteSignature": 8014,
+      "officialSourceComponentAggregation": 4
+    },
+    "candidateKeyDiagnostics": {
+      "officialResultUnits": 9176,
+      "officialUnitsWithNonzeroVtd": 9118,
+      "officialUnitsWithZeroVtd": 58,
+      "officialVtdKeys": 9078,
+      "duplicateOfficialVtdKeys": 36,
+      "geometryFeatures": 9167,
+      "geometryVtdKeys": 9163,
+      "duplicateGeometryVtdKeys": 4,
+      "candidateIntersectingVtdKeys": 8821,
+      "candidateResultUnitsOnIntersectingKeys": 8830,
+      "approvedRelationships": 8014
+    }
+  },
+  "policies": [
+    "Pennsylvania Department of State values are the sole displayed election results.",
+    "Geometry-source election-value fields are stripped and never copied to normalized geometry or public result rows.",
+    "Only complete official source-unit sums may be accepted, and only when county-qualified VTD identity and the complete presidential candidate vector agree exactly with one unique polygon.",
+    "Unmatched official result units remain exclusions and are never forced onto polygons."
+  ]
+}

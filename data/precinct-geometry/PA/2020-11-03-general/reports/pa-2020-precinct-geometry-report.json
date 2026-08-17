@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "state": "PA",
+  "electionId": "2020-11-03-general",
+  "status": "reviewed_partial_candidate",
+  "resultArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2020-11-03-general/normalized/pa-2020-president-results.json.gz",
+    "byteCount": 266056,
+    "sha256": "c44b42b11f4d565f897649b047c73be9f80a14356c41bde0c0ff3ef1287843e7"
+  },
+  "geometryArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2020-11-03-general/normalized/pa-2020-reviewed-precinct-geometry.geojson.gz",
+    "byteCount": 14085181,
+    "sha256": "17bb9a62e9c948de41e8d51079e4ff6f0f4b922e8bdb4e5f81ab3301ca21f2db"
+  },
+  "crosswalkArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2020-11-03-general/crosswalk/pa-2020-result-to-geometry-review.json",
+    "byteCount": 5524866,
+    "sha256": "300e0818664dcac9d380d787ae59ba01ebe5111ea4636b0184157ccda669d2c0"
+  },
+  "evidenceArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2020-11-03-general/source-evidence.json",
+    "byteCount": 8925,
+    "sha256": "36fddd63655e27dd235ec96b23f2c0f33d3dd90f46bf3b4e455e012a8e51464e"
+  },
+  "resultUniverse": {
+    "sourceUnits": 9187,
+    "presidentialSourceRows": 27561,
+    "colorableUnits": 6805,
+    "mappedSourceComponents": 6827,
+    "excludedUnits": 2360,
+    "zeroVoteSourceUnits": 27,
+    "mappedZeroVoteSourceComponents": 18,
+    "mappedZeroVoteAggregateRows": 0,
+    "totals": {
+      "democratic": 3457343,
+      "republican": 3379320,
+      "other": 79381,
+      "total": 6916044
+    },
+    "mappedTotals": {
+      "democratic": 2503433,
+      "republican": 2802054,
+      "other": 64854,
+      "total": 5370341
+    },
+    "excludedTotals": {
+      "democratic": 953910,
+      "republican": 577266,
+      "other": 14527,
+      "total": 1545703
+    }
+  },
+  "geometryReview": {
+    "rawFeatures": 9150,
+    "normalizedFeatures": 9150,
+    "reviewedRelationships": 6805,
+    "reviewedNoDataFeatures": 2345,
+    "methods": {
+      "exactOfficialVtdAndCompleteVoteSignature": 6805,
+      "officialSourceComponentAggregation": 22
+    },
+    "candidateKeyDiagnostics": {
+      "officialResultUnits": 9187,
+      "officialUnitsWithNonzeroVtd": 9149,
+      "officialUnitsWithZeroVtd": 38,
+      "officialVtdKeys": 9019,
+      "duplicateOfficialVtdKeys": 106,
+      "geometryFeatures": 9150,
+      "geometryVtdKeys": 9146,
+      "duplicateGeometryVtdKeys": 4,
+      "candidateIntersectingVtdKeys": 8619,
+      "candidateResultUnitsOnIntersectingKeys": 8661,
+      "approvedRelationships": 6805
+    }
+  },
+  "sourceTotalsReconciled": true,
+  "parentScopeCount": 66,
+  "publicDeliveryAuthorized": false
+}

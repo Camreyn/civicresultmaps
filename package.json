@@ -399,7 +399,10 @@
     "precinct-gis:production-release:fl": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-fl-precinct-release.mjs",
     "precinct-gis:public-activation:fl": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-fl-precinct-public-activation.mjs",
     "precinct-gis:publication-status:fl": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-fl-precinct-geography-status.mjs",
-    "test:precinct-geometry:fl": "node --max-old-space-size=4096 --experimental-strip-types --test tests/api/fl-precinct-geometry.test.mjs tests/api/fl-precinct-gis-plan.test.mjs tests/api/fl-precinct-gis-local.test.mjs tests/api/fl-precinct-release-candidate.test.mjs tests/api/fl-precinct-blob-publication.test.mjs tests/api/fl-precinct-production-release.test.mjs tests/api/fl-precinct-public-activation.test.mjs tests/api/fl-precinct-publication-gate.test.mjs tests/api/fl-precinct-publication.test.mjs"
+    "test:precinct-geometry:fl": "node --max-old-space-size=4096 --experimental-strip-types --test tests/api/fl-precinct-geometry.test.mjs tests/api/fl-precinct-gis-plan.test.mjs tests/api/fl-precinct-gis-local.test.mjs tests/api/fl-precinct-release-candidate.test.mjs tests/api/fl-precinct-blob-publication.test.mjs tests/api/fl-precinct-production-release.test.mjs tests/api/fl-precinct-public-activation.test.mjs tests/api/fl-precinct-publication-gate.test.mjs tests/api/fl-precinct-publication.test.mjs",
+    "precinct-gis:collect:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/collect-pa-precinct-geometry.mjs",
+    "precinct-gis:coverage:pa": "node --experimental-strip-types scripts/refresh-pa-precinct-geometry-coverage.mjs",
+    "test:precinct-geometry:pa": "node --max-old-space-size=4096 --experimental-strip-types --experimental-test-isolation=none --test tests/api/pa-precinct-geometry.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",

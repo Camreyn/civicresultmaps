@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "state": "PA",
+  "electionId": "2012-11-06-general",
+  "status": "blocked",
+  "resultArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2012-11-06-general/normalized/pa-2012-president-results.json.gz",
+    "byteCount": 251429,
+    "sha256": "555eff2ffb83329986c7505bff5068751bf881480bca59974c01c9bd8c66fbe7"
+  },
+  "geometryArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2012-11-06-general/normalized/pa-2012-no-approved-precinct-geometry.json",
+    "byteCount": 353,
+    "sha256": "27ba9fd0f70254e29f9e61b74c07bb4c2271d29d7e17f03e0d70c0c1116f8549"
+  },
+  "crosswalkArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2012-11-06-general/crosswalk/pa-2012-result-to-geometry-review.json",
+    "byteCount": 6207554,
+    "sha256": "35e121cc5fab8aa39591cdeecd6636f1296cf77a4a905615d0eeff72ab7cc70c"
+  },
+  "evidenceArtifact": {
+    "localArtifactPath": "data/precinct-geometry/PA/2012-11-06-general/source-evidence.json",
+    "byteCount": 5842,
+    "sha256": "8156003c349ab1324b9e887d6f1b257b75b71d0d4ae31c74e02e63647596da85"
+  },
+  "resultUniverse": {
+    "sourceUnits": 9246,
+    "presidentialSourceRows": 40295,
+    "colorableUnits": 0,
+    "mappedSourceComponents": 0,
+    "excludedUnits": 9246,
+    "zeroVoteSourceUnits": 28,
+    "mappedZeroVoteSourceComponents": 0,
+    "mappedZeroVoteAggregateRows": 0,
+    "totals": {
+      "democratic": 2985454,
+      "republican": 2672742,
+      "other": 75826,
+      "total": 5734022
+    },
+    "mappedTotals": {
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0
+    },
+    "excludedTotals": {
+      "democratic": 2985454,
+      "republican": 2672742,
+      "other": 75826,
+      "total": 5734022
+    }
+  },
+  "geometryReview": {
+    "rawFeatures": 9256,
+    "normalizedFeatures": 0,
+    "reviewedRelationships": 0,
+    "reviewedNoDataFeatures": 0,
+    "methods": {},
+    "candidateKeyDiagnostics": {
+      "officialResultUnits": 9246,
+      "officialUnitsWithNonzeroVtd": 9201,
+      "officialUnitsWithZeroVtd": 45,
+      "officialVtdKeys": 9195,
+      "duplicateOfficialVtdKeys": 6,
+      "geometryFeatures": 9256,
+      "geometryVtdKeys": 9256,
+      "duplicateGeometryVtdKeys": 0,
+      "candidateIntersectingVtdKeys": 8533,
+      "candidateResultUnitsOnIntersectingKeys": 8535,
+      "approvedRelationships": 0
+    }
+  },
+  "sourceTotalsReconciled": true,
+  "parentScopeCount": 0,
+  "publicDeliveryAuthorized": false
+}

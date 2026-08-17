@@ -2,9 +2,9 @@
   "state": "PA",
   "stateName": "Pennsylvania",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-08-16",
   "purpose": "State-scoped coverage inventory for Pennsylvania 2024 result, review, turnout, registration, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_precinct_review_county_turnout_loaded_official_historical_loaded_precinct_registration_lead_collected",
+  "status": "official_precinct_review_county_turnout_loaded_official_historical_loaded_precinct_registration_lead_and_four_precinct_geometry_source_packages_collected_delivery_blocked",
   "authorityPriority": "Official Pennsylvania Department of State, county boards of elections, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -87,6 +87,34 @@
         "Precinct boundary geometry is not included."
       ],
       "confidence": "loaded_county_geometry"
+    },
+    {
+      "id": "pa-four-election-precinct-geometry-source-packages",
+      "sourceAuthority": "Pennsylvania Department of State results; U.S. Census Bureau and Pennsylvania Legislative Reapportionment Commission official diagnostics; attributed VEST 2016/2020 geometry",
+      "sourceUrl": "https://www.redistricting.state.pa.us/maps/",
+      "localPath": "data/pa-precinct-gis-source-inventory.json; data/precinct-geometry/PA/2012-11-06-general; data/precinct-geometry/PA/2016-11-08-general; data/precinct-geometry/PA/2020-11-03-general; data/precinct-geometry/PA/2024-11-05-general",
+      "electionYear": "2012, 2016, 2020, 2024",
+      "reportingGrain": "precinct",
+      "parserNormalizationPath": "scripts/collect-pa-precinct-geometry.mjs and scripts/lib/pa-precinct-geometry.mjs deterministically verify retained source bytes, parse DOS County Code plus Precinct Code identities, strip all geometry-source election values, and retain only exact county-qualified VTD plus complete-candidate-vector relationships",
+      "expectedCounts": {
+        "sourcePackages": 4,
+        "publicEligibleManifests": 0,
+        "normalizedFeatures2012": 0,
+        "normalizedFeatures2016": 9167,
+        "mappedResultRows2016": 8014,
+        "excludedOfficialSourceUnits2016": 1158,
+        "normalizedFeatures2020": 9150,
+        "mappedResultRows2020": 6805,
+        "excludedOfficialSourceUnits2020": 2360,
+        "normalizedFeatures2024": 0
+      },
+      "caveats": [
+        "Pennsylvania DOS remains the sole vote authority. No VEST, Census, LRC, county, or other geometry-source election value is displayed.",
+        "The 2016 and 2020 packages are partial reviewed candidates only. They exclude 782,683 and 1,545,703 official presidential candidate votes respectively; every 2020 Pike County unit remains excluded.",
+        "The 2012 Census VTD and 2024 LRC VTD layers are availability diagnostics with zero normalized features because election-date applicability and a complete result crosswalk are unproven.",
+        "Every manifest has validation.status=blocked and delivery=null, no Pennsylvania entry was added to the public manifest registry, and current production maps remain county-level."
+      ],
+      "confidence": "collected_partial_reviewed_delivery_blocked"
     },
     {
       "id": "pa-2024-equipment-context",
@@ -226,7 +254,7 @@
     }
   ],
   "requestPath": {
-    "neededArtifact": "Same-grain precinct turnout/ballots-cast rows and precinct boundary geometry that can join to the Pennsylvania precinct return keys.",
+    "neededArtifact": "Same-grain precinct turnout/ballots-cast rows plus complete election-effective precinct boundary editions and authoritative crosswalks for the portions not covered by the retained exact-vector source packages.",
     "preferredAuthorities": [
       "Pennsylvania Department of State Bureau of Elections",
       "Pennsylvania county boards of elections",
@@ -255,10 +283,10 @@
     },
     {
       "artifact": "precinct_boundary_geometry",
-      "status": "not_loaded",
+      "status": "partial_source_packages_retained_not_public",
       "neededFor": "Subcounty map joins for precinct review rows.",
       "preferredAuthority": "County election/GIS offices or an official statewide precinct boundary publication if available.",
-      "remainingRisk": "The current map remains county-level even though advisory review rows are precinct-level."
+      "remainingRisk": "The current map remains county-level. The 2016 and 2020 source packages are partial and delivery-blocked, while 2012 and 2024 have no normalized features; complete election-effective county archives and crosswalks remain necessary."
     },
     {
       "artifact": "official_historical_presidential_baselines",
@@ -278,6 +306,8 @@
   "confidenceNotes": [
     "Pennsylvania has strong official precinct President-versus-U.S. Senate review coverage and county turnout coverage.",
     "The new official precinct voter-registration file is useful denominator evidence, but it is intentionally not wired into turnout until same-grain ballots-cast or vote-history rows are collected.",
-    "Official 2012/2016/2020 historical presidential baselines are now normalized from DOS bulk returns; next implementation step remains precinct geometry and same-grain precinct turnout/ballots-cast rows."
+    "Official 2012/2016/2020 historical presidential baselines are normalized from DOS bulk returns.",
+    "Four deterministic precinct geometry source packages are retained. Only partial 2016 and 2020 exact-vector subsets contain vote-free normalized geometry; 2012 and 2024 remain zero-feature blocked diagnostics, and no package changes current public maps.",
+    "Next implementation steps are source-package review, continued 67-county archive/crosswalk collection, same-grain precinct turnout/ballots-cast collection, and a separate guarded release decision only after merge."
   ]
 }

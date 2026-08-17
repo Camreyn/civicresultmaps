@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "id": "pa-2012-precinct-geometry-source-evidence-v1",
+  "state": "PA",
+  "election": {
+    "id": "2012-11-06-general",
+    "date": "2012-11-06",
+    "year": 2012,
+    "type": "general",
+    "office": "president"
+  },
+  "retrievedAt": "2026-08-16T18:00:00.000Z",
+  "authority": "Pennsylvania Department of State results; U.S. Census Bureau 2010 VTD availability diagnostic",
+  "artifacts": [
+    {
+      "authority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/pa-2012-general-election-returns-precinct.txt",
+      "format": "official statewide comma-delimited precinct election returns",
+      "reportingGrain": "county-scoped precinct candidate rows",
+      "byteCount": 29126226,
+      "sha256": "b3c4c87e4963d3cb17d984ca46f755f67be4fe48208ffca29a0fdfcf10cd4063",
+      "note": "Sole authority for every displayed vote value; all USP candidate rows are retained."
+    },
+    {
+      "authority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/ElectionReturns_2012_General_ReadMeFile.txt",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/pa-2012-general-election-returns-readme.txt",
+      "format": "official precinct returns data dictionary",
+      "reportingGrain": "field definitions and county code table",
+      "byteCount": 4355,
+      "sha256": "b47960283bfaa059d5891c7997f630e67e22c4be6aaf1df16f2645a98caa45ca",
+      "note": "Defines County Code, Precinct Code, VTD code, candidate fields, and the 67-county lookup."
+    },
+    {
+      "authority": "U.S. Census Bureau",
+      "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/PA/2012-11-06-general/raw/us-census/tl_2012_42_vtd10.zip",
+      "format": "TIGER/Line 2012 ZIP containing 2010 Census VTD polygons",
+      "reportingGrain": "statistical VTD availability diagnostic",
+      "byteCount": 18978398,
+      "sha256": "d6efe39b359692235ca711d8c42bbcd27d8ae01f05b5ec8165169bb3c8020864",
+      "note": "The 9,256 features do not establish the precinct boundaries in effect for Pennsylvania's November 6, 2012 election.",
+      "archiveMembers": [
+        {
+          "name": "tl_2012_42_vtd10.dbf",
+          "byteCount": 2619930,
+          "sha256": "1ccbb34335e72d1fa323f6d30d4d22c88809489efe424ad7b1f31a53031056e7"
+        },
+        {
+          "name": "tl_2012_42_vtd10.prj",
+          "byteCount": 165,
+          "sha256": "0b9041e921d9ebb43247d314608fe9e38a0b008ee793067fc1806199ea1fb9dd"
+        },
+        {
+          "name": "tl_2012_42_vtd10.shp",
+          "byteCount": 32475924,
+          "sha256": "3a115bf6d66cfd9fbc8e1726520db98ba4f95133effc977616ac29ca8f893056"
+        },
+        {
+          "name": "tl_2012_42_vtd10.shp.xml",
+          "byteCount": 19970,
+          "sha256": "3549d3d8455c22f15c2557298df5fd3ef61c1d0f7287ffe01e0773efbf16bda7"
+        },
+        {
+          "name": "tl_2012_42_vtd10.shx",
+          "byteCount": 74148,
+          "sha256": "d91cf4fac6dcf68537984fedd1e98b2f744bc3dc3cf5d22a849f50bf66f0b619"
+        }
+      ],
+      "sourceCrs": "GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]]"
+    }
+  ],
+  "resultUniverse": {
+    "sourceUnits": 9246,
+    "presidentialSourceRows": 40295,
+    "colorableUnits": 0,
+    "mappedSourceComponents": 0,
+    "excludedUnits": 9246,
+    "zeroVoteSourceUnits": 28,
+    "mappedZeroVoteSourceComponents": 0,
+    "mappedZeroVoteAggregateRows": 0,
+    "totals": {
+      "democratic": 2985454,
+      "republican": 2672742,
+      "other": 75826,
+      "total": 5734022
+    },
+    "mappedTotals": {
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0
+    },
+    "excludedTotals": {
+      "democratic": 2985454,
+      "republican": 2672742,
+      "other": 75826,
+      "total": 5734022
+    }
+  },
+  "geometryReview": {
+    "rawFeatures": 9256,
+    "normalizedFeatures": 0,
+    "reviewedRelationships": 0,
+    "reviewedNoDataFeatures": 0,
+    "methods": {},
+    "candidateKeyDiagnostics": {
+      "officialResultUnits": 9246,
+      "officialUnitsWithNonzeroVtd": 9201,
+      "officialUnitsWithZeroVtd": 45,
+      "officialVtdKeys": 9195,
+      "duplicateOfficialVtdKeys": 6,
+      "geometryFeatures": 9256,
+      "geometryVtdKeys": 9256,
+      "duplicateGeometryVtdKeys": 0,
+      "candidateIntersectingVtdKeys": 8533,
+      "candidateResultUnitsOnIntersectingKeys": 8535,
+      "approvedRelationships": 0
+    }
+  },
+  "policies": [
+    "Pennsylvania Department of State values are the sole displayed election results.",
+    "Geometry-source election-value fields are stripped and never copied to normalized geometry or public result rows.",
+    "Only complete official source-unit sums may be accepted, and only when county-qualified VTD identity and the complete presidential candidate vector agree exactly with one unique polygon.",
+    "Unmatched official result units remain exclusions and are never forced onto polygons."
+  ]
+}
