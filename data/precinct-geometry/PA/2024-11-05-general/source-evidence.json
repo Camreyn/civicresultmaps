@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "id": "pa-2024-precinct-geometry-source-evidence-v1",
+  "state": "PA",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "retrievedAt": "2026-08-16T18:00:00.000Z",
+  "authority": "Pennsylvania Department of State results; Pennsylvania Legislative Reapportionment Commission 2021 VTD availability diagnostic",
+  "artifacts": [
+    {
+      "authority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/er/erstat_2024_g_268768_20250129.txt",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/pa-2024-general-election-returns-precinct.txt",
+      "format": "official statewide comma-delimited precinct election returns",
+      "reportingGrain": "county-scoped precinct candidate rows",
+      "byteCount": 42907408,
+      "sha256": "34339122238fe82272c52717a4065dbd3949e00eeb98320332797853c96f3b6c",
+      "note": "Sole authority for every displayed vote value; all USP candidate rows are retained."
+    },
+    {
+      "authority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/er/erstat_2024_g_readme.txt",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/pa-2024-general-election-returns-readme.txt",
+      "format": "official precinct returns data dictionary",
+      "reportingGrain": "field definitions and county code table",
+      "byteCount": 4437,
+      "sha256": "b0d9e221deab9acd982982d187e4f16e7fae43d59b360b867cd89fad559eb632",
+      "note": "Defines County Code, Precinct Code, VTD code, candidate fields, and the 67-county lookup."
+    },
+    {
+      "authority": "Pennsylvania Legislative Reapportionment Commission",
+      "sourceUrl": "https://www.redistricting.state.pa.us/resources/GISData/Census/2021/2021-DataSet1-WithoutPrisoner/2021%20LRC%20Data%20Release%201b%20-%20Geography.zip",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/PA/2024-11-05-general/raw/pa-lrc/pa-lrc-2021-voting-districts.zip",
+      "format": "deterministic exact-member subset of the official statewide geography ZIP",
+      "reportingGrain": "2021 corrected voting-district availability diagnostic",
+      "byteCount": 21060413,
+      "sha256": "7d3dad7f046a07fd9f7d944ae1d3c5f47be49b9e09a4b7b487dda8c350924098",
+      "note": "Contains only the seven WP_VotingDistricts members from the pinned 338,792,424-byte official archive. It is not treated as November 5, 2024 precinct geometry.",
+      "archiveMembers": [
+        {
+          "name": "WP_VotingDistricts.CPG",
+          "byteCount": 5,
+          "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+        },
+        {
+          "name": "WP_VotingDistricts.dbf",
+          "byteCount": 7996408,
+          "sha256": "27f40e099e192e969af21821075fae6324ef41d0b91fc1f1d55c01eba41f9282"
+        },
+        {
+          "name": "WP_VotingDistricts.prj",
+          "byteCount": 167,
+          "sha256": "84cf5b9a3c1a444f83ac30ff76f8c5035990223027ba69b2f4d628388adcbd65"
+        },
+        {
+          "name": "WP_VotingDistricts.sbn",
+          "byteCount": 95484,
+          "sha256": "55f4e4d825d606abdfc51df7c15af20b8ae2f585b03f0fd5a8492a00f341a403"
+        },
+        {
+          "name": "WP_VotingDistricts.sbx",
+          "byteCount": 5780,
+          "sha256": "be3cec9ea7dc983bf2a054e7cf1a85966ef35b4317679c333eb6bb51e75a4d42"
+        },
+        {
+          "name": "WP_VotingDistricts.shp",
+          "byteCount": 32515920,
+          "sha256": "33b2ebe043b0e1f4b8b2b7a9639041c99f7c7f00a943f3ff46491a850e05f894"
+        },
+        {
+          "name": "WP_VotingDistricts.shx",
+          "byteCount": 73524,
+          "sha256": "c4c40459e67873ad252fd8d8c22a216ba6d5596a43a2ee759986b9da51aef103"
+        }
+      ],
+      "sourceCrs": "GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]",
+      "derivedFromUrls": [
+        "https://www.redistricting.state.pa.us/resources/GISData/Census/2021/2021-DataSet1-WithoutPrisoner/2021%20LRC%20Data%20Release%201b%20-%20Geography.zip"
+      ]
+    },
+    {
+      "authority": "Pennsylvania Legislative Reapportionment Commission",
+      "sourceUrl": "https://www.redistricting.state.pa.us/resources/press/2021-10-25%20LRC%20Transcript%20A.pdf",
+      "derivation": "Downloaded byte-for-byte from the stated HTTPS source or retained as a deterministic evidence record derived from that source; byte count and SHA-256 are pinned.",
+      "localArtifactPath": "data/precinct-geometry/PA/2024-11-05-general/raw/pa-lrc/2021-lrc-data-certification-transcript.pdf",
+      "format": "official data-certification transcript PDF",
+      "reportingGrain": "boundary vintage and correction methodology",
+      "byteCount": 1006750,
+      "sha256": "33dcbcd053adfc20c19d95aa14168b3d2883791d23d899a7e9b02d3a973700fa",
+      "note": "Documents changes through December 31, 2020, including boundary adjustments, split blocks, and name/code corrections."
+    }
+  ],
+  "upstreamArtifacts": [
+    {
+      "url": "https://www.redistricting.state.pa.us/resources/GISData/Census/2021/2021-DataSet1-WithoutPrisoner/2021%20LRC%20Data%20Release%201b%20-%20Geography.zip",
+      "byteCount": 338792424,
+      "sha256": "14187001c627c6a16bf967415059408c4ef7007d366fd9105b5be30763250e3b",
+      "format": "official statewide multi-layer geography ZIP",
+      "retention": "external_due_to_repository_limit",
+      "retentionReason": "The 338,792,424-byte upstream archive exceeds the repository's reviewed raw-artifact budget; its exact seven-member VTD subset is retained.",
+      "retrievalScript": "scripts/collect-pa-precinct-geometry.mjs",
+      "derivedArtifactPaths": [
+        "data/precinct-geometry/PA/2024-11-05-general/raw/pa-lrc/pa-lrc-2021-voting-districts.zip"
+      ]
+    }
+  ],
+  "resultUniverse": {
+    "sourceUnits": 9187,
+    "presidentialSourceRows": 36748,
+    "colorableUnits": 0,
+    "mappedSourceComponents": 0,
+    "excludedUnits": 9187,
+    "zeroVoteSourceUnits": 33,
+    "mappedZeroVoteSourceComponents": 0,
+    "mappedZeroVoteAggregateRows": 0,
+    "totals": {
+      "democratic": 3420865,
+      "republican": 3543041,
+      "other": 67831,
+      "total": 7031737
+    },
+    "mappedTotals": {
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0
+    },
+    "excludedTotals": {
+      "democratic": 3420865,
+      "republican": 3543041,
+      "other": 67831,
+      "total": 7031737
+    }
+  },
+  "geometryReview": {
+    "rawFeatures": 9178,
+    "normalizedFeatures": 0,
+    "reviewedRelationships": 0,
+    "reviewedNoDataFeatures": 0,
+    "methods": {},
+    "candidateKeyDiagnostics": {
+      "officialResultUnits": 9187,
+      "officialUnitsWithNonzeroVtd": 9149,
+      "officialUnitsWithZeroVtd": 38,
+      "officialVtdKeys": 9008,
+      "duplicateOfficialVtdKeys": 115,
+      "geometryFeatures": 9178,
+      "geometryVtdKeys": 9178,
+      "duplicateGeometryVtdKeys": 0,
+      "candidateIntersectingVtdKeys": 8589,
+      "candidateResultUnitsOnIntersectingKeys": 8636,
+      "approvedRelationships": 0
+    }
+  },
+  "policies": [
+    "Pennsylvania Department of State values are the sole displayed election results.",
+    "Geometry-source election-value fields are stripped and never copied to normalized geometry or public result rows.",
+    "Only complete official source-unit sums may be accepted, and only when county-qualified VTD identity and the complete presidential candidate vector agree exactly with one unique polygon.",
+    "Unmatched official result units remain exclusions and are never forced onto polygons."
+  ]
+}

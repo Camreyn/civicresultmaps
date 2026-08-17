@@ -471,7 +471,7 @@
       "state": "PA",
       "name": "Pennsylvania",
       "priority": 3,
-      "nativeReadiness": "complete_county_map_precinct_review_county_turnout",
+      "nativeReadiness": "complete_county_map_precinct_review_county_turnout_with_blocked_precinct_geometry_source_packages",
       "authority": "Pennsylvania Department of State",
       "configFile": "etl/state-configs/pa.json",
       "legacyReferenceBundle": "data/pa-app-data.js",
@@ -525,6 +525,45 @@
             2016,
             2020
           ]
+        },
+        "precinctGeometrySourcePackages": {
+          "sourceTitle": "Pennsylvania four-election precinct geometry source packages",
+          "sourceUrl": "https://www.redistricting.state.pa.us/maps/",
+          "inventoryFile": "data/pa-precinct-gis-source-inventory.json",
+          "collector": "scripts/collect-pa-precinct-geometry.mjs",
+          "years": [
+            {
+              "year": 2012,
+              "manifest": "data/precinct-geometry/PA/2012-11-06-general/manifest.json",
+              "status": "blocked",
+              "normalizedFeatures": 0,
+              "mappedResultRows": 0
+            },
+            {
+              "year": 2016,
+              "manifest": "data/precinct-geometry/PA/2016-11-08-general/manifest.json",
+              "status": "reviewed_partial_candidate_delivery_blocked",
+              "normalizedFeatures": 9167,
+              "mappedResultRows": 8014,
+              "excludedOfficialSourceUnits": 1158
+            },
+            {
+              "year": 2020,
+              "manifest": "data/precinct-geometry/PA/2020-11-03-general/manifest.json",
+              "status": "reviewed_partial_candidate_delivery_blocked",
+              "normalizedFeatures": 9150,
+              "mappedResultRows": 6805,
+              "excludedOfficialSourceUnits": 2360
+            },
+            {
+              "year": 2024,
+              "manifest": "data/precinct-geometry/PA/2024-11-05-general/manifest.json",
+              "status": "blocked",
+              "normalizedFeatures": 0,
+              "mappedResultRows": 0
+            }
+          ],
+          "parserHint": "The deterministic collector keeps Pennsylvania DOS as the sole vote authority, strips all geometry-source election values, and accepts 2016/2020 polygons only when a unique county-qualified VTD and complete presidential candidate vector match complete official source units exactly."
         }
       },
       "expected": {
@@ -535,19 +574,24 @@
         "harris": 3420865,
         "other": 67831,
         "localReviewRows": 9154,
-        "turnoutRows": 67
+        "turnoutRows": 67,
+        "precinctGeometrySourcePackages": 4,
+        "publicEligiblePrecinctGeometryManifests": 0
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff",
         "turnoutMode": "county_vote_history_registration_summary",
-        "historicalBaselineMode": "official_dos_bulk_context"
+        "historicalBaselineMode": "official_dos_bulk_context",
+        "precinctGeometryMode": "four_source_packages_delivery_null_registry_unchanged"
       },
       "caveats": [
         "Official readme says the election returns data was extracted January 10, 2025; the direct bulk file name includes 20250129.",
         "Turnout is county-level, not precinct-level.",
-        "Precinct boundary GeoJSON is not present in this package.",
+        "Vote-free 2016 and 2020 precinct GeoJSON source packages are retained as partial reviewed candidates, but they are not in the public manifest registry and have no immutable delivery or production activation.",
+        "The 2012 and 2024 geometry packages remain blocked with zero normalized features because no complete election-effective boundary edition and result crosswalk is retained.",
+        "The 2016 package excludes 1,158 official units totaling 782,683 votes; the 2020 package excludes 2,360 units totaling 1,545,703 votes, including every Pike County unit. No excluded value is allocated.",
         "Historical baselines are official DOS bulk context; bulk rows do not include a separate write-in reconciliation artifact."
       ]
     },

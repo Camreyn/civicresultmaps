@@ -2172,33 +2172,44 @@
       "stateName": "Pennsylvania",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_geometry",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
         "TXT",
-        "XLSX"
+        "XLSX",
+        "official Census and LRC Shapefile ZIP diagnostics",
+        "version-pinned VEST Shapefile ZIPs",
+        "normalized vote-free GeoJSON and reviewed crosswalk JSON"
       ],
       "sourceUrls": [
         "https://www.pa.gov/agencies/vote/elections/election-results.html",
-        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data"
+        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+        "https://www.redistricting.state.pa.us/maps/",
+        "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip",
+        "https://election.lab.ufl.edu/dataset/pa-2016-precinct-level-election-results/",
+        "https://election.lab.ufl.edu/dataset/pa-2020-precinct-level-election-results/"
       ],
       "exampleUrls": [],
       "availableFields": [
         "precinct President rows",
         "precinct U.S. Senate rows",
         "county turnout",
-        "official 2012/2016/2020 county historical baselines from precinct bulk rows"
+        "official 2012/2016/2020 county historical baselines from precinct bulk rows",
+        "reviewed partial 2016 and 2020 precinct geometry/crosswalk source packages with every geometry-source vote field stripped",
+        "blocked 2012 Census VTD and 2024 LRC VTD availability diagnostics"
       ],
       "missingFields": [
-        "precinct boundary geometry",
+        "complete election-effective 2012 and 2024 precinct geometry and official result crosswalks",
+        "complete 2016 and 2020 result-to-geometry coverage beyond the exact-vector subsets",
+        "immutable parent-scoped delivery and guarded activation for any reviewed package",
         "precinct turnout denominator"
       ],
-      "parserStatus": "native precinct review package loaded; official historical bulk baseline loaded",
-      "manualReviewBurden": "low",
-      "confidence": "loaded",
-      "caveats": "Turnout is county-level, not precinct-level. Historical baselines are official DOS bulk context and may differ from secondary certified-summary tables where write-in reconciliation is separate.",
-      "nextAction": "Optional next steps are precinct geometry and precinct turnout denominator."
+      "parserStatus": "Native precinct review and official historical bulk baselines are loaded. scripts/collect-pa-precinct-geometry.mjs deterministically rebuilds four vote-free source packages; 2016 and 2020 retain only unique county-qualified VTD relationships with exact complete-candidate-vector equality, while 2012 and 2024 normalize zero geometry features.",
+      "manualReviewBurden": "high",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Turnout is county-level, not precinct-level. Historical baselines are official DOS bulk context and may differ from secondary certified-summary tables where write-in reconciliation is separate. VEST supplies attributed 2016/2020 geometry only; its election-value fields are stripped and DOS remains the sole vote authority. The 2016 package excludes 1,158 official units/782,683 votes; the 2020 package excludes 2,360 units/1,545,703 votes, including every Pike County unit. The 2012 and 2024 packages remain blocked with zero normalized features. No PA geometry manifest is public or delivered.",
+      "nextAction": "Review and merge the source packages first. Then consider a separate guarded delivery change for the exact 2016/2020 subsets, while continuing 67-county archive/crosswalk collection for incomplete years and normalizing a same-grain precinct turnout denominator."
     },
     {
       "state": "RI",

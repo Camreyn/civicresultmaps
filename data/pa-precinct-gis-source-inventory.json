@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "state": "PA",
+  "stateName": "Pennsylvania",
+  "reviewedAt": "2026-08-16T18:00:00.000Z",
+  "purpose": "Four-election precinct-boundary source inventory and fail-closed implementation record. It distinguishes official result authority from geometry custody, records every excluded result unit, and authorizes no public delivery or production change.",
+  "policy": {
+    "resultAuthority": "Pennsylvania Department of State",
+    "canonicalResultIdentity": "County Code plus Precinct Code",
+    "vtdUse": "The county-qualified VTD field is crosswalk metadata only. It never replaces the official result identity.",
+    "aggregationRule": "A polygon may display only the sum of complete official DOS source units sharing its unique county-qualified VTD when every presidential candidate value matches the geometry source's complete candidate vector exactly.",
+    "allocationRule": "No vote may be estimated, proportionally distributed, spatially allocated, or copied from a geometry source.",
+    "geometryValueRule": "All geometry-source election-value fields are stripped before normalization.",
+    "releaseRule": "Source-package review and merge must precede a separate guarded delivery/release change. The manifest registry remains unchanged and every Pennsylvania manifest has delivery=null."
+  },
+  "elections": [
+    {
+      "year": 2012,
+      "electionId": "2012-11-06-general",
+      "manifest": "data/precinct-geometry/PA/2012-11-06-general/manifest.json",
+      "status": "blocked",
+      "officialResults": {
+        "localArtifactPath": "data/pa-2012-general-election-returns-precinct.txt",
+        "byteCount": 29126226,
+        "sha256": "b3c4c87e4963d3cb17d984ca46f755f67be4fe48208ffca29a0fdfcf10cd4063",
+        "presidentialSourceRows": 40295,
+        "sourceUnits": 9246,
+        "countyParents": 67,
+        "zeroVoteSourceUnits": 28,
+        "presidentialCandidateVotes": 5734022
+      },
+      "geometryCandidate": {
+        "authority": "U.S. Census Bureau",
+        "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip",
+        "localArtifactPath": "data/precinct-geometry/PA/2012-11-06-general/raw/us-census/tl_2012_42_vtd10.zip",
+        "byteCount": 18978398,
+        "sha256": "d6efe39b359692235ca711d8c42bbcd27d8ae01f05b5ec8165169bb3c8020864",
+        "sourceFeatures": 9256,
+        "reportingGrain": "2010 Census statistical VTD",
+        "parserNormalizationPath": "scripts/collect-pa-precinct-geometry.mjs using shpjs",
+        "disposition": "availability_diagnostic_only"
+      },
+      "normalizedFeatures": 0,
+      "mappedResultRows": 0,
+      "excludedSourceUnits": 9246,
+      "excludedVotes": 5734022,
+      "blocker": "The Census 2010 VTD layer does not establish the precinct boundaries or result crosswalk in effect on November 6, 2012."
+    },
+    {
+      "year": 2016,
+      "electionId": "2016-11-08-general",
+      "manifest": "data/precinct-geometry/PA/2016-11-08-general/manifest.json",
+      "status": "reviewed_partial_candidate_delivery_blocked",
+      "officialResults": {
+        "localArtifactPath": "data/pa-2016-general-election-returns-precinct.txt",
+        "byteCount": 29062839,
+        "sha256": "1f91168dcba029b424e3b3f627e28f2e55f7f05de2579eea26ab0a97ac4cf39c",
+        "presidentialSourceRows": 45880,
+        "sourceUnits": 9176,
+        "countyParents": 67,
+        "zeroVoteSourceUnits": 14,
+        "presidentialCandidateVotes": 6114296
+      },
+      "geometryCandidate": {
+        "authority": "Voting and Election Science Team (VEST); version-pinned public PlanScore custody mirror",
+        "sourceUrl": "https://raw.githubusercontent.com/PlanScore/National-Input-Data/b8d27cbdc2e752fbadf8e3432d8eb3c96ba579b7/VEST/pa_2016.zip",
+        "localArtifactPath": "data/precinct-geometry/PA/2016-11-08-general/raw/vest/pa_2016.zip",
+        "byteCount": 20771693,
+        "sha256": "156d833b813bef4ef5f095299b1283e1c843e646198c6b5b2fead4cd238fb991",
+        "sourceFeatures": 9167,
+        "reportingGrain": "election-specific precinct reconstruction",
+        "parserNormalizationPath": "scripts/collect-pa-precinct-geometry.mjs and scripts/lib/pa-precinct-geometry.mjs",
+        "disposition": "partial_exact_vector_review"
+      },
+      "normalizedFeatures": 9167,
+      "mappedResultRows": 8014,
+      "mappedOfficialSourceUnits": 8018,
+      "mappedZeroVoteSourceUnits": 4,
+      "mappedVotes": 5331613,
+      "excludedSourceUnits": 1158,
+      "excludedVotes": 782683,
+      "reviewedNoDataFeatures": 1153,
+      "reconciledCountyParents": 67,
+      "blocker": "The retained independent review could not fully reproduce VEST's joins. Only the exact-vector subset is accepted, and immutable delivery plus guarded release remain separate work."
+    },
+    {
+      "year": 2020,
+      "electionId": "2020-11-03-general",
+      "manifest": "data/precinct-geometry/PA/2020-11-03-general/manifest.json",
+      "status": "reviewed_partial_candidate_delivery_blocked",
+      "officialResults": {
+        "localArtifactPath": "data/pa-2020-general-election-returns-precinct.txt",
+        "byteCount": 28738883,
+        "sha256": "e01ab230eeaecf8fd5c090661029494e3e822ee65953f99265d7c409d086da56",
+        "presidentialSourceRows": 27561,
+        "sourceUnits": 9187,
+        "countyParents": 67,
+        "zeroVoteSourceUnits": 27,
+        "presidentialCandidateVotes": 6916044
+      },
+      "geometryCandidate": {
+        "authority": "Voting and Election Science Team (VEST); version-pinned public PlanScore custody mirror",
+        "sourceUrl": "https://raw.githubusercontent.com/PlanScore/National-Input-Data/4ee0f4724a1e99213c95bd5c00926fb4b0c3d4c6/VEST/pa_2020.zip",
+        "localArtifactPath": "data/precinct-geometry/PA/2020-11-03-general/raw/vest/pa_2020.zip",
+        "byteCount": 20887385,
+        "sha256": "8c05f2724f0b0c015eb5ba504b33892acbb78057f4a546aa66a7d453277d8d48",
+        "sourceFeatures": 9150,
+        "reportingGrain": "election-specific precinct reconstruction",
+        "parserNormalizationPath": "scripts/collect-pa-precinct-geometry.mjs and scripts/lib/pa-precinct-geometry.mjs",
+        "disposition": "partial_exact_vector_review"
+      },
+      "normalizedFeatures": 9150,
+      "mappedResultRows": 6805,
+      "mappedOfficialSourceUnits": 6827,
+      "mappedZeroVoteSourceUnits": 18,
+      "mappedVotes": 5370341,
+      "excludedSourceUnits": 2360,
+      "excludedVotes": 1545703,
+      "reviewedNoDataFeatures": 2345,
+      "reconciledCountyParents": 66,
+      "fullyExcludedCountyParents": [
+        {
+          "name": "Pike County",
+          "geoid": "42103",
+          "sourceUnits": 18,
+          "presidentialCandidateVotes": 32554,
+          "reason": "No Pike result unit passed the unique county-qualified VTD and exact complete-candidate-vector rule."
+        }
+      ],
+      "blocker": "The exact-vector subset is incomplete statewide. Immutable delivery plus guarded release remain separate work and may not expand this crosswalk without new evidence."
+    },
+    {
+      "year": 2024,
+      "electionId": "2024-11-05-general",
+      "manifest": "data/precinct-geometry/PA/2024-11-05-general/manifest.json",
+      "status": "blocked",
+      "officialResults": {
+        "localArtifactPath": "data/pa-2024-general-election-returns-precinct.txt",
+        "byteCount": 42907408,
+        "sha256": "34339122238fe82272c52717a4065dbd3949e00eeb98320332797853c96f3b6c",
+        "presidentialSourceRows": 36748,
+        "sourceUnits": 9187,
+        "countyParents": 67,
+        "zeroVoteSourceUnits": 33,
+        "presidentialCandidateVotes": 7031737
+      },
+      "geometryCandidate": {
+        "authority": "Pennsylvania Legislative Reapportionment Commission",
+        "sourceUrl": "https://www.redistricting.state.pa.us/resources/GISData/Census/2021/2021-DataSet1-WithoutPrisoner/2021%20LRC%20Data%20Release%201b%20-%20Geography.zip",
+        "upstreamByteCount": 338792424,
+        "upstreamSha256": "14187001c627c6a16bf967415059408c4ef7007d366fd9105b5be30763250e3b",
+        "localArtifactPath": "data/precinct-geometry/PA/2024-11-05-general/raw/pa-lrc/pa-lrc-2021-voting-districts.zip",
+        "byteCount": 21060413,
+        "sha256": "7d3dad7f046a07fd9f7d944ae1d3c5f47be49b9e09a4b7b487dda8c350924098",
+        "sourceFeatures": 9178,
+        "reportingGrain": "corrected 2021 voting-district geography",
+        "parserNormalizationPath": "scripts/collect-pa-precinct-geometry.mjs exact-member derivation and shpjs diagnostic inspection",
+        "disposition": "availability_diagnostic_only"
+      },
+      "normalizedFeatures": 0,
+      "mappedResultRows": 0,
+      "excludedSourceUnits": 9187,
+      "excludedVotes": 7031737,
+      "blocker": "The LRC layer reflects corrections through December 31, 2020 and does not establish the precinct configuration in effect on November 5, 2024."
+    }
+  ],
+  "sourceLeads": [
+    {
+      "id": "pa-dos-election-data",
+      "authority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+      "sourceType": "official statewide precinct result exports and data dictionaries",
+      "status": "collected",
+      "role": "sole displayed vote authority"
+    },
+    {
+      "id": "pa-lrc-2021-release-1b",
+      "authority": "Pennsylvania Legislative Reapportionment Commission",
+      "sourceUrl": "https://www.redistricting.state.pa.us/maps/",
+      "sourceType": "official corrected statewide voting-district geography",
+      "status": "collected_diagnostic",
+      "role": "2020-era and 2024 availability evidence; not an exact election-date snapshot"
+    },
+    {
+      "id": "us-census-2012-pa-vtd10",
+      "authority": "U.S. Census Bureau",
+      "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip",
+      "sourceType": "official statistical VTD geography",
+      "status": "collected_diagnostic",
+      "role": "2012 availability evidence only"
+    },
+    {
+      "id": "us-census-2020-pa-vtd20",
+      "authority": "U.S. Census Bureau",
+      "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2020PL/LAYER/VTD/2020/tl_2020_42_vtd20.zip",
+      "sourceType": "official statistical VTD geography",
+      "status": "reviewed_not_retained_in_election_package",
+      "role": "diagnostic comparison lead, not a result crosswalk"
+    },
+    {
+      "id": "pa-dep-current-voting-districts",
+      "authority": "Pennsylvania Department of Environmental Protection GIS",
+      "sourceUrl": "https://gis.dep.pa.gov/depgisprd/rest/services/emappa/eMapPA_External/MapServer/336",
+      "sourceType": "official current polygon service",
+      "status": "current_only_not_collected",
+      "role": "source-discovery lead only; no election-effective vintage"
+    },
+    {
+      "id": "vest-pa-2016-2020",
+      "authority": "Voting and Election Science Team (VEST)",
+      "sourceUrl": "https://election.lab.ufl.edu/precinct-data-downloads/",
+      "sourceType": "secondary election-specific precinct reconstruction",
+      "status": "collected_with_exact_vector_restriction",
+      "role": "geometry only; all election-value attributes stripped"
+    },
+    {
+      "id": "vest-pa-2024",
+      "authority": "Voting and Election Science Team (VEST)",
+      "sourceUrl": "https://election.lab.ufl.edu/dataset/pa-2024-precinct-level-election-results/",
+      "sourceType": "secondary 2024 precinct reconstruction",
+      "status": "access_controlled_not_collected",
+      "role": "candidate lead only",
+      "caveat": "The published methodology describes Census 2020 and county sources with statewide voter-file edits; no independently reviewed, reproducibly downloadable package was available."
+    },
+    {
+      "id": "pasda-union-historical-voting-precincts",
+      "authority": "Union County through Pennsylvania Spatial Data Access",
+      "sourceUrl": "https://www.pasda.psu.edu/download/unioncounty/historic/UnionCounty_VotingPrecincts/",
+      "sourceType": "county historical snapshot archive",
+      "status": "promising_not_collected",
+      "role": "county-specific 2020 and 2024 archive lead pending identifier and effective-date review"
+    }
+  ],
+  "countyCollectionPlan": {
+    "expectedParentCount": 67,
+    "status": "not_sent",
+    "contactDirectory": "https://www.pa.gov/agencies/vote/contact-us/contact-your-election-officials",
+    "priority": [
+      "Request election-effective 2012 and 2024 precinct polygon archives and data dictionaries from all 67 county election/GIS offices.",
+      "Request authoritative crosswalk fields connecting county geometry IDs to DOS County Code plus Precinct Code, including municipality, ward, district, MCD, FIPS, VTD, and split identifiers.",
+      "Request 2016 and 2020 historical archives where the retained exact-vector package excludes result units, prioritizing Pike County for 2020.",
+      "Review Union County's dated archive and Bucks County's May 2024 source first, but do not infer election applicability from publication month alone.",
+      "Retain current York and DEP services only as diagnostics unless authoritative election-date applicability and an identifier crosswalk are supplied."
+    ],
+    "requiredResponseFields": [
+      "election date and election type",
+      "boundary effective date and revision history",
+      "stable feature identifier",
+      "DOS County Code and Precinct Code crosswalk",
+      "municipality, ward, district, MCD, FIPS, VTD, and split identifiers",
+      "archive format, CRS, layer name, and field definitions",
+      "authority and reuse terms",
+      "confirmation that the archive is complete for the county",
+      "known non-geographic or combined reporting units"
+    ],
+    "acceptanceRule": "Each retained package must be byte-pinned, polygonal, parent-assigned, election-applicable, vote-free after normalization, and reconciled without allocating any official source unit."
+  },
+  "remainingRisks": [
+    "The 2016 and 2020 secondary geometry source carries an independent-review limitation; exact candidate-vector equality reduces but does not erase source-method uncertainty.",
+    "The partial 2016 and 2020 packages intentionally leave material official vote totals without polygons.",
+    "No complete election-effective source is retained for 2012 or 2024.",
+    "Precinct boundaries and identifiers change over time; no package may be reused across election years without separate evidence.",
+    "No Pennsylvania package is in the public manifest registry, has immutable delivery, or changes current county-level production maps."
+  ]
+}

@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 11,
+    "totalJurisdictions": 12,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 11
+      "reviewed": 12
     },
     "disposition": {
       "undecided": 0,
       "mapped": 10,
       "partial": 0,
       "official_geometry_unavailable": 0,
-      "blocked": 1
+      "blocked": 2
     },
     "publicEligibleJurisdictions": 9
   },
@@ -671,6 +671,66 @@
         "Three Charlotte source-component sums and 189 unique complete official vote-signature joins are retained; 126 source units totaling 17,948 votes remain excluded and are never allocated.",
         "The retained official source universe contains 5,712 reporting units and 10,935,466 presidential candidate votes.",
         "Each election retains its own boundary evidence and is not treated as a stable cross-election precinct geography."
+      ]
+    },
+    {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "electionId": "2024-11-05-general",
+      "programStatus": "reviewed",
+      "wave": 14,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+        "https://www.redistricting.state.pa.us/maps/"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "pa-2024-11-05-precinct-geometry-unavailable-v1"
+        ],
+        "officialSourceLeads": [
+          "https://www.redistricting.state.pa.us/maps/"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/PA/2024-11-05-general/source-evidence.json",
+          "data/precinct-geometry/PA/2024-11-05-general/normalized/pa-2024-no-approved-precinct-geometry.json",
+          "data/precinct-geometry/PA/2024-11-05-general/crosswalk/pa-2024-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 0,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 9187,
+        "colorableResultUnits": 9187,
+        "matchedResultUnits": 0,
+        "unmatchedResultUnits": 9187,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "No complete independently reviewable statewide precinct-boundary edition effective for November 5, 2024 is retained.",
+        "The 2021 LRC corrected VTD layer reflects updates through December 31, 2020 and is neither backcast nor forward-cast to the 2024 election.",
+        "All 9,187 official result units remain explicit and unassigned; no votes are spatially allocated."
+      ],
+      "nextAction": "Continue official county and state records requests for a November 5, 2024 boundary edition and crosswalk; do not substitute current VTDs or access-controlled edited voter-file geometry.",
+      "notes": [
+        "The retained official DOS source universe reconciles to 7,031,737 presidential candidate votes.",
+        "The deterministic 9,178-feature LRC VTD subset and its certification transcript are retained only as availability evidence and yield zero normalized delivery features.",
+        "The retained official source universe contains 9,187 reporting units and 7,031,737 presidential candidate votes.",
+        "Each election retains its own boundary evidence and is not treated as stable cross-election precinct geography."
       ]
     }
   ]

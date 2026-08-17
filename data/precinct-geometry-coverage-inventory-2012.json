@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T12:00:00.000Z",
+  "updatedAt": "2026-08-16T18:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2012-11-06-general",
@@ -26,18 +26,18 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 10,
+    "totalJurisdictions": 11,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 10
+      "reviewed": 11
     },
     "disposition": {
       "undecided": 0,
       "mapped": 4,
       "partial": 1,
       "official_geometry_unavailable": 0,
-      "blocked": 5
+      "blocked": 6
     },
     "publicEligibleJurisdictions": 4
   },
@@ -634,6 +634,66 @@
         "This election remains outside every guarded release candidate.",
         "The retained official source universe contains 6,319 reporting units and 8,492,336 presidential candidate votes.",
         "Each election retains its own boundary evidence and is not treated as a stable cross-election precinct geography."
+      ]
+    },
+    {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "electionId": "2012-11-06-general",
+      "programStatus": "reviewed",
+      "wave": 14,
+      "disposition": "blocked",
+      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+        "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "pa-2012-11-06-precinct-geometry-unavailable-v1"
+        ],
+        "officialSourceLeads": [
+          "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/PA/2012-11-06-general/source-evidence.json",
+          "data/precinct-geometry/PA/2012-11-06-general/normalized/pa-2012-no-approved-precinct-geometry.json",
+          "data/precinct-geometry/PA/2012-11-06-general/crosswalk/pa-2012-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "unknown"
+        ],
+        "featureCount": 0,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 9246,
+        "colorableResultUnits": 9246,
+        "matchedResultUnits": 0,
+        "unmatchedResultUnits": 9246,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "No complete statewide precinct-boundary edition effective for the November 6, 2012 general election is retained.",
+        "The Census 2010 VTD layer is a statistical availability diagnostic and is not backcast as Pennsylvania election precincts.",
+        "All 9,246 official result units remain explicit and unassigned; no votes are spatially allocated."
+      ],
+      "nextAction": "Obtain an official or independently reviewable November 6, 2012 precinct boundary archive and a county-qualified result-to-feature crosswalk; until then keep the year unavailable.",
+      "notes": [
+        "The retained official DOS source universe reconciles to 5,734,022 presidential candidate votes.",
+        "The 9,256-feature Census 2010 VTD layer is retained only as evidence of an unsafe alternative and yields zero normalized delivery features.",
+        "The retained official source universe contains 9,246 reporting units and 5,734,022 presidential candidate votes.",
+        "Each election retains its own boundary evidence and is not treated as stable cross-election precinct geography."
       ]
     }
   ]

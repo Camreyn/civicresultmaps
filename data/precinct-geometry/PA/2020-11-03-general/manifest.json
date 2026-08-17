@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "pa-2020-11-03-reviewed-precinct-geometry-v1",
+  "state": "PA",
+  "election": {
+    "id": "2020-11-03-general",
+    "date": "2020-11-03",
+    "year": 2020,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "VEST 2020 election-specific Pennsylvania precinct reconstruction with exact-vector acceptance review",
+    "vintageStatus": "election_date_confirmed",
+    "derivationMethod": "secondary_reconstruction"
+  },
+  "source": {
+    "authority": "Pennsylvania Department of State results with attributed VEST election-specific geometry",
+    "url": "https://raw.githubusercontent.com/PlanScore/National-Input-Data/4ee0f4724a1e99213c95bd5c00926fb4b0c3d4c6/VEST/pa_2020.zip",
+    "retrievedAt": "2026-08-16T18:00:00.000Z",
+    "artifact": "data/precinct-geometry/PA/2020-11-03-general/source-evidence.json",
+    "sha256": "36fddd63655e27dd235ec96b23f2c0f33d3dd90f46bf3b4e455e012a8e51464e",
+    "byteCount": 8925,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "VEST database geometry is retained under CC BY 4.0 with version and custody evidence; Pennsylvania DOS remains the sole displayed vote authority."
+  },
+  "normalization": {
+    "script": "scripts/collect-pa-precinct-geometry.mjs",
+    "sourceCrs": "GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/PA/2020-11-03-general/normalized/pa-2020-reviewed-precinct-geometry.geojson.gz",
+    "sha256": "17bb9a62e9c948de41e8d51079e4ff6f0f4b922e8bdb4e5f81ab3301ca21f2db",
+    "byteCount": 14085181,
+    "featureCount": 9150,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "pa-dos-2020-general-precinct-results",
+    "artifact": "data/precinct-geometry/PA/2020-11-03-general/crosswalk/pa-2020-result-to-geometry-review.json",
+    "sha256": "300e0818664dcac9d380d787ae59ba01ebe5111ea4636b0184157ccda669d2c0",
+    "byteCount": 5524866,
+    "resultUnits": 6805,
+    "colorableResultUnits": 6805,
+    "matchedResultUnits": 6805,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 6805,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 6805,
+    "reviewedNoDataFeatures": 2345,
+    "methods": [
+      "official_crosswalk"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": true,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "Immutable parent-scoped delivery and the guarded production release have not been completed."
+    ],
+    "warnings": [
+      "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+      "2360 official source units totaling 1,545,703 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+      "The retained Redistricting Data Hub report could not fully reproduce VEST's joins and validation; CivicResultMaps accepts only exact county-qualified VTD and complete-candidate-vector matches."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "No vote is estimated, spatially allocated, or copied from a geometry source.",
+    "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+    "2360 official source units totaling 1,545,703 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+    "The retained Redistricting Data Hub report could not fully reproduce VEST's joins and validation; CivicResultMaps accepts only exact county-qualified VTD and complete-candidate-vector matches.",
+    "Immutable delivery and guarded production activation remain separate decisions."
+  ]
+}

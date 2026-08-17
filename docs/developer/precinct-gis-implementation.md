@@ -8099,3 +8099,89 @@ evidence against its verified top-level package.
   verification window. This hardening performed no database, Blob, environment,
   manifest-eligibility, activation, or public-revision mutation; revision 25
   and the hash-pinned release evidence remain authoritative.
+
+### 2026-08-17 - Pennsylvania four-election precinct GIS source packages
+
+- This implementation supersedes earlier Pennsylvania narrative entries that
+  described diagnostic artifacts which were not present in the merged Git
+  history. At the start of this work, the canonical branch contained no
+  tracked `data/precinct-geometry/PA` package, no PA geometry collector or
+  test, and no Pennsylvania row in any of the four coverage ledgers or the
+  public manifest registry. The packages documented below were rebuilt from
+  retained, byte-pinned sources on `state/pa-precinct-gis`; the older entries
+  remain historical notes, not evidence that those missing files were merged.
+- The deterministic collector parses all Pennsylvania Department of State
+  presidential rows using the official county table and preserves `County
+  Code + Precinct Code` as the canonical source identity. The DOS VTD field is
+  county-qualified crosswalk metadata only. The retained source universes are
+  9,246 units / 40,295 candidate rows / 5,734,022 votes for 2012; 9,176 /
+  45,880 / 6,114,296 for 2016; 9,187 / 27,561 / 6,916,044 for 2020; and 9,187 /
+  36,748 / 7,031,737 for 2024. All 67 county parents are present each year.
+- The 2012 package retains the official 9,256-feature Census 2010 VTD archive
+  only as an availability diagnostic. It establishes neither the November 6,
+  2012 boundary edition nor an authoritative result crosswalk. The normalized
+  geometry contains zero features; all 9,246 official result units and all
+  5,734,022 votes remain pending and unassigned.
+- The 2016 package retains a version-pinned 9,167-feature VEST reconstruction,
+  its documentation, Redistricting Data Hub review, public custody commit/blob,
+  and CC BY 4.0 database-license evidence. A polygon is accepted only when its
+  county-qualified VTD identity is unique and the sum of every complete DOS
+  source component equals every VEST presidential candidate field exactly.
+  This yields 8,014 mapped rows consuming 8,018 official source units and
+  5,331,613 DOS votes. The other 1,158 units / 782,683 votes remain excluded,
+  and 1,153 polygons remain explicit reviewed no-data features.
+- The 2020 package applies the same rule to a version-pinned 9,150-feature VEST
+  reconstruction. It yields 6,805 mapped rows consuming 6,827 official source
+  units and 5,370,341 DOS votes. The other 2,360 units / 1,545,703 votes remain
+  excluded, and 2,345 polygons remain reviewed no-data features. All 18 Pike
+  County units (GEOID `42103`) and their 32,554 votes are excluded because no
+  relationship passes the exact rule; the displayed subset reconciles across
+  66 county parents rather than implying complete statewide coverage.
+- The 2024 package retains a deterministic seven-member, 9,178-feature subset
+  of the official 338,792,424-byte LRC Release 1b geography archive plus its
+  certification transcript. The LRC record describes corrections through
+  December 31, 2020, so the layer is neither backcast nor forward-cast to
+  November 5, 2024. The normalized geometry contains zero features; all 9,187
+  official units and all 7,031,737 votes remain pending and unassigned. The
+  access-controlled VEST 2024 reconstruction and current DEP/county services
+  remain source leads, not silent substitutes.
+- Every normalized feature is polygonal EPSG:4326 geometry with only explicit
+  source/crosswalk metadata. All `G16*`, `G20*`, candidate, party, vote, total,
+  and percentage fields are discarded. Displayed result documents contain
+  only complete DOS source-unit sums; no geometry-source value is copied and
+  no official value is estimated, proportionally distributed, or spatially
+  allocated.
+- `data/pa-precinct-gis-source-inventory.json` records source authority, URLs,
+  retained hashes, election grain, parser paths, expected counts, county
+  request priorities, and remaining risks. Four coverage ledgers now carry PA
+  rows. All four manifests remain `validation.status: blocked` with
+  `delivery: null`; `data/precinct-geometry-manifests.json` intentionally has
+  no PA entry. This source-package change performs no database, Blob, Vercel,
+  deployment, production, or public-map mutation.
+- The next release decision is deliberately separate. After this source package
+  is reviewed and merged, a guarded delivery change may consider only the exact
+  2016 and 2020 subsets. Collection must continue for election-effective 2012
+  and 2024 county archives, incomplete 2016/2020 relationships, and authoritative
+  county crosswalks; current services may not be reused across elections without
+  affirmative vintage evidence.
+- The focused Pennsylvania suite passes four tests, including a complete
+  alternate-root replay that is byte-identical to every tracked derived artifact
+  and a raw-artifact tamper check that fails before derived files are written.
+  `npm test`, `npm run typecheck`, and `npm run build` pass. Source-acquisition,
+  source-package, turnout-package, map, provenance, and admin-package validators
+  also pass; their remaining warnings are the repository's recorded legacy or
+  equipment-geometry caveats, not Pennsylvania source-package failures.
+- Pennsylvania ETL validate/import passes with 67 result rows, 9,154 native
+  review rows, and 67 turnout rows. The staging-only advisory report calculates
+  111 county indicator rows across 66 counties/areas: 58
+  `vote_share_pattern`, 52 `average_down_ballot_difference`, and one
+  `down_ballot_outliers`. The report warns that broad contest-specific ticket
+  splitting may dominate this screen. These are advisory review signals, not
+  evidence of fraud or misconduct; production storage was neither checked nor
+  changed in this source-package phase.
+- Independent no-edit review found no blocking defect. It confirmed that the
+  public registry and delivery remain closed, geometry properties are vote-free,
+  and the 2016/2020 relationships use only complete official source-unit sums.
+  Its non-blocking schema note is that `election_date_confirmed` describes the
+  election-specific VEST reconstruction vintage, not official provenance; the
+  manifest authority, derivation method, and caveats retain that distinction.

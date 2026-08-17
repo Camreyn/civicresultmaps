@@ -26,16 +26,16 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 11,
+    "totalJurisdictions": 12,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 11
+      "reviewed": 12
     },
     "disposition": {
       "undecided": 0,
       "mapped": 10,
-      "partial": 0,
+      "partial": 1,
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
@@ -661,6 +661,66 @@
         "Eighteen official source units totaling 9,744 votes remain excluded from geometry, and 110 unlinked polygons remain visible as reviewed no-data features.",
         "The retained official source universe contains 5,870 reporting units and 9,498,093 presidential candidate votes.",
         "Each election retains its own boundary evidence and is not treated as a stable cross-election precinct geography."
+      ]
+    },
+    {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "electionId": "2016-11-08-general",
+      "programStatus": "reviewed",
+      "wave": 14,
+      "disposition": "partial",
+      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_2_public_secondary"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "pa-2016-11-08-reviewed-precinct-geometry-v1"
+        ],
+        "officialSourceLeads": [],
+        "secondarySourceLeads": [
+          "https://election.lab.ufl.edu/dataset/pa-2016-precinct-level-election-results/"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/PA/2016-11-08-general/source-evidence.json",
+          "data/precinct-geometry/PA/2016-11-08-general/normalized/pa-2016-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/PA/2016-11-08-general/crosswalk/pa-2016-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 9167,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 8014,
+        "colorableResultUnits": 8014,
+        "matchedResultUnits": 8014,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "After source-package review and merge, build a hash-pinned parent-scoped delivery candidate and run the separate guarded release workflow without expanding the reviewed crosswalk.",
+      "notes": [
+        "8,014 VEST polygons match 8,018 complete official DOS source units by unique county-qualified VTD identity and exact complete presidential candidate vector.",
+        "1,158 official source units totaling 782,683 votes remain excluded, and 1,153 polygons remain reviewed no-data features.",
+        "Every election-value attribute is stripped from geometry; only DOS votes can be displayed.",
+        "The retained official source universe contains 9,176 reporting units and 6,114,296 presidential candidate votes.",
+        "Each election retains its own boundary evidence and is not treated as stable cross-election precinct geography."
       ]
     }
   ]

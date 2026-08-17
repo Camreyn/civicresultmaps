@@ -123,6 +123,12 @@
 /data/precinct-geometry/FL/**/*.gz -diff
 /data/precinct-geometry/FL/**/*.pdf -diff
 
+# Preserve every hash-pinned Pennsylvania precinct source and derivative byte-for-byte.
+/data/precinct-geometry/PA/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/PA/**/*.zip -diff
+/data/precinct-geometry/PA/**/*.gz -diff
+/data/precinct-geometry/PA/**/*.pdf -diff
+
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff

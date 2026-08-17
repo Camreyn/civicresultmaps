@@ -26,16 +26,16 @@
     "geometryManifestRegistry": "data/precinct-geometry-manifests.json"
   },
   "summary": {
-    "totalJurisdictions": 11,
+    "totalJurisdictions": 12,
     "programStatus": {
       "not_started": 0,
       "in_progress": 0,
-      "reviewed": 11
+      "reviewed": 12
     },
     "disposition": {
       "undecided": 0,
       "mapped": 10,
-      "partial": 0,
+      "partial": 1,
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
@@ -663,6 +663,67 @@
         "Seventeen official source units totaling 2,179 votes remain excluded from geometry, and 21 unlinked polygons remain visible as reviewed no-data features.",
         "The retained official source universe contains 6,097 reporting units and 11,090,844 presidential candidate votes.",
         "Each election retains its own boundary evidence and is not treated as a stable cross-election precinct geography."
+      ]
+    },
+    {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "electionId": "2020-11-03-general",
+      "programStatus": "reviewed",
+      "wave": 14,
+      "disposition": "partial",
+      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "sourceTiers": [
+        "tier_1_official_export_database",
+        "tier_2_public_secondary"
+      ],
+      "resultReportingGrains": [
+        "precinct"
+      ],
+      "generalOfficialSourceLeads": [
+        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data"
+      ],
+      "geometry": {
+        "manifestIds": [
+          "pa-2020-11-03-reviewed-precinct-geometry-v1"
+        ],
+        "officialSourceLeads": [],
+        "secondarySourceLeads": [
+          "https://election.lab.ufl.edu/dataset/pa-2020-precinct-level-election-results/"
+        ],
+        "retainedArtifacts": [
+          "data/precinct-geometry/PA/2020-11-03-general/source-evidence.json",
+          "data/precinct-geometry/PA/2020-11-03-general/normalized/pa-2020-reviewed-precinct-geometry.geojson.gz",
+          "data/precinct-geometry/PA/2020-11-03-general/crosswalk/pa-2020-result-to-geometry-review.json"
+        ],
+        "levels": [
+          "precinct"
+        ],
+        "vintageStatuses": [
+          "election_date_confirmed"
+        ],
+        "featureCount": 9150,
+        "publicEligibleManifestCount": 0
+      },
+      "crosswalk": {
+        "resultUnits": 6805,
+        "colorableResultUnits": 6805,
+        "matchedResultUnits": 6805,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0
+      },
+      "blockers": [
+        "Immutable parent-scoped delivery and the guarded production release have not been completed."
+      ],
+      "nextAction": "After source-package review and merge, build a hash-pinned parent-scoped delivery candidate and run the separate guarded release workflow without expanding the reviewed crosswalk.",
+      "notes": [
+        "6,805 VEST polygons match 6,827 complete official DOS source units by unique county-qualified VTD identity and exact complete presidential candidate vector.",
+        "2,360 official source units totaling 1,545,703 votes remain excluded, and 2,345 polygons remain reviewed no-data features.",
+        "Pike County (GEOID 42103) has no accepted relationship: all 18 official units totaling 32,554 votes remain excluded.",
+        "Every election-value attribute is stripped from geometry; only DOS votes can be displayed.",
+        "The retained official source universe contains 9,187 reporting units and 6,916,044 presidential candidate votes.",
+        "Each election retains its own boundary evidence and is not treated as stable cross-election precinct geography."
       ]
     }
   ]

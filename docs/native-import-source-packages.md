@@ -150,6 +150,8 @@ Caveats: MVIC live download endpoints are browser-protected, but exact official 
 - Turnout source: `data/pa-2024-voter-registration-vote-history-summary.xlsx`
 - Precinct registration denominator lead: `data/pa-2024-general-voter-registration-precinct.txt` (official DOS precinct registered-voter rows; not loaded as turnout until same-grain precinct vote-history/ballots-cast rows are collected)
 - Historical baseline source: official DOS 2012/2016/2020 precinct election-return bulk files normalized by `scripts/collect-pa-historical-baseline.mjs` into `data/pa-historical-presidential-baseline.csv`
+- Precinct GIS source inventory: `data/pa-precinct-gis-source-inventory.json`
+- Precinct GIS collector: `scripts/collect-pa-precinct-geometry.mjs` retains four deterministic source packages. The 2016 package has 9,167 vote-free polygons and 8,014 exact reviewed result relationships; the 2020 package has 9,150 vote-free polygons and 6,805 exact reviewed relationships. The 2012 and 2024 packages are zero-feature availability diagnostics.
 - Coverage inventory: `data/pa-2024-data-coverage-inventory.json`
 - Turnout denominator: registered voters
 - County boundary: `data/pa-counties.geojson`
@@ -169,7 +171,7 @@ Expected validation:
 | Local review rows | 9,154 |
 | Turnout rows | 67 |
 
-Caveats: the official readme says the election returns data was extracted January 10, 2025; the direct file name includes `20250129`. Turnout is county-level. The collected precinct registration file is a denominator lead only because no same-grain precinct vote-history/ballots-cast source is loaded. Precinct boundary GeoJSON is not included. The PA coverage inventory also records official 2024 RLA context and official 2012/2016/2020 historical bulk-return source leads for a future replacement of secondary historical baselines.
+Caveats: the official readme says the election returns data was extracted January 10, 2025; the direct file name includes `20250129`. Turnout is county-level. The collected precinct registration file is a denominator lead only because no same-grain precinct vote-history/ballots-cast source is loaded. The 2016 and 2020 precinct GIS packages are partial source candidates only: 1,158 official 2016 units / 782,683 votes and 2,360 official 2020 units / 1,545,703 votes remain excluded and unallocated; every 2020 Pike County unit is excluded. The 2012 and 2024 packages have zero normalized features. All four manifests remain blocked with no immutable delivery, no registry entry, and no production activation, so current maps remain county-level. The PA coverage inventory also records official 2024 RLA context and the loaded official 2012/2016/2020 historical bulk-return baselines.
 
 ## Nebraska Wave 5 Update
 
