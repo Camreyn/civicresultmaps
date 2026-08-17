@@ -8185,3 +8185,89 @@ evidence against its verified top-level package.
   Its non-blocking schema note is that `election_date_confirmed` describes the
   election-specific VEST reconstruction vintage, not official provenance; the
   manifest authority, derivation method, and caveats retain that distinction.
+
+### 2026-08-17 - Pennsylvania guarded partial release tooling
+
+- The source-package change was human-merged before this phase as commit
+  `b88e940d1b9f450fd4a3dcb68bcda29e14cbe512`. The release tooling consumes only
+  the exact reviewed partial 2016 and 2020 packages. Its plan rejects 2012 and
+  2024, duplicate years, boundary-version drift, excluded source units, and any
+  candidate whose official-result or geometry evidence differs from the source
+  manifests.
+- The local loopback clone rehearsal passed with zero invalid constraints and
+  public revision 31. It retained both geography versions as blocked and kept
+  `publicDeliveryAuthorized: false`. The load contains 8,014 result units /
+  24,042 candidate rows / 9,167 features for 2016 and 6,805 / 20,415 / 9,150
+  for 2020. The combined displayed DOS vote total is 10,701,954; the 3,518
+  excluded official units and their 2,328,386 votes remain unallocated.
+- The deterministic release candidate is
+  `.etl/precinct-release-candidates/PA/pa-precinct-gis-two-election-v1-de720ed2bb1e/release-candidate.json`,
+  SHA-256
+  `de720ed2bb1e2f3f7471c7a5e9a737b200a95cb6bce3b5c417ac859911e4863a`.
+  It seals 14,819 reporting units and crosswalks, 44,457 candidate rows, 18,317
+  features, and 3,498 explicit reviewed no-data features. Its 139 files comprise
+  the release document, two draft manifests, 134 county assets, and two indexes.
+  Candidate creation changed no canonical manifest, registry, database, Blob
+  object, deployment, or Git ref.
+- All 67 county geometry parents are present for both elections. The 2020
+  result subset spans 66 county parents; Pike County `42103` retains 18 reviewed
+  geometry features and zero mapped result units, so its county asset contains
+  only no-data shapes. Philadelphia requires the shared bounded parent-feature
+  guard to admit 1,686 features in 2016 and 1,703 in 2020. The guard is raised
+  from 1,500 to 2,000 while the independent eight-megabyte per-parent ceiling
+  remains unchanged. The largest candidate file is Allegheny County 2016 at
+  3,491,663 bytes.
+- Clean Git checkouts had converted the two retained VEST documentation files
+  from reviewed CRLF bytes to bare LF despite their raw-artifact pins. The
+  collector now performs one narrowly scoped repair: for the 2016/2020 VEST
+  `documentation.txt` path only, it restores CRLF only when the resulting byte
+  count and SHA-256 exactly match the reviewed pin. All four packages then
+  replay byte-identically, and all other raw artifacts remain strict byte
+  matches.
+- A no-write Blob plan confirms exactly 136 immutable objects, ordered as all
+  134 county assets before the two indexes, totaling 65,578,988 bytes. Its
+  decision remains `NO_GO_PUBLICATION`. A no-write static activation plan is
+  pinned at SHA-256
+  `62ac3107586bda08163b120042368bf227cf2222f6028dfccc38da91d4bb006c`
+  and would touch exactly the manifest registry plus the 2016 and 2020 coverage
+  inventories while preserving their `partial` disposition. This phase did not
+  write that plan, change the canonical registry, contact production, upload a
+  Blob object, or alter public eligibility.
+- Guarded scripts cover local setup/validation, candidate sealing, read-only
+  production preflight, restore-verified backup, transactional hidden load,
+  immutable Blob publication, three-file static activation, atomic public
+  cutover, receipt recovery, and database-first rollback. Production scopes are
+  restricted to `apply_migration_0009`,
+  `load_pa_precinct_results_and_geometry_hidden`, and
+  `increment_public_data_revision`. Every production or public write requires
+  exact package/evidence hashes and separate environment authorization.
+- The focused Pennsylvania suite passes all 39 tests, including the four-year
+  source replay and raw-tamper guard. The shared delivery regression passes all
+  seven tests. The full repository test command also passes, including 183
+  Python ETL tests with one expected skip. Typecheck, production build, hermetic
+  public API integration, source-package, turnout-package, map, provenance, and
+  admin-package validation all pass. Existing repository warnings concern
+  recorded legacy app bundles or equipment boundary counts, not the
+  Pennsylvania precinct release.
+- Pennsylvania ETL validate/import passes with 67 result rows, 9,154 native
+  review rows, and 67 turnout rows. The staging-only advisory report calculates
+  111 county indicator rows across 66 counties/areas: 58
+  `vote_share_pattern`, 52 `average_down_ballot_difference`, and one
+  `down_ballot_outliers`. The report warns that broad contest-specific ticket
+  splitting may dominate this screen. These are advisory review signals, not
+  evidence of fraud or misconduct; production storage was not checked or
+  changed.
+- Independent no-edit review found no blocking defect. Its initial hardening
+  findings are resolved: duplicate year requests now fail instead of silently
+  deduplicating; local cleanup rejects release-attributed or non-blocked
+  geography versions before deleting any replay row; immutable activation
+  evidence is persisted before tracked registry outputs; and a production
+  backup manifest must live under the fixed backup root with its same-stamp
+  restore dump present and byte-rehashed. Focused regressions cover all four
+  conditions.
+- The next steps remain separately reviewed and explicitly authorized: merge
+  this tooling, rerun the candidate on that clean merge, perform read-only
+  production preflight and a restore-verified backup, load both versions hidden,
+  publish immutable assets, merge the static activation, and execute the final
+  database-gated cutover with exhaustive API/UI verification. Pennsylvania 2012
+  and 2024 remain blocked throughout.

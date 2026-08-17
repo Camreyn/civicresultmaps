@@ -402,7 +402,18 @@
     "test:precinct-geometry:fl": "node --max-old-space-size=4096 --experimental-strip-types --test tests/api/fl-precinct-geometry.test.mjs tests/api/fl-precinct-gis-plan.test.mjs tests/api/fl-precinct-gis-local.test.mjs tests/api/fl-precinct-release-candidate.test.mjs tests/api/fl-precinct-blob-publication.test.mjs tests/api/fl-precinct-production-release.test.mjs tests/api/fl-precinct-public-activation.test.mjs tests/api/fl-precinct-publication-gate.test.mjs tests/api/fl-precinct-publication.test.mjs",
     "precinct-gis:collect:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/collect-pa-precinct-geometry.mjs",
     "precinct-gis:coverage:pa": "node --experimental-strip-types scripts/refresh-pa-precinct-geometry-coverage.mjs",
-    "test:precinct-geometry:pa": "node --max-old-space-size=4096 --experimental-strip-types --experimental-test-isolation=none --test tests/api/pa-precinct-geometry.test.mjs"
+    "precinct-gis:plan:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/setup-pa-precinct-gis-local.mjs",
+    "precinct-gis:setup:pa:local": "node --max-old-space-size=4096 --experimental-strip-types scripts/setup-pa-precinct-gis-local.mjs --apply",
+    "precinct-gis:validate:pa:local": "node --max-old-space-size=4096 --experimental-strip-types scripts/validate-pa-precinct-gis-local.mjs",
+    "precinct-gis:release-candidate:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-pa-precinct-release-candidate.mjs",
+    "precinct-gis:release-candidate:pa:write": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-pa-precinct-release-candidate.mjs --write",
+    "precinct-gis:delivery-publish:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-pa-precinct-delivery-assets.mjs",
+    "precinct-gis:production-preflight:pa": "node --experimental-strip-types scripts/report-pa-precinct-production-preflight.mjs",
+    "precinct-gis:production-backup:pa": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-pa-precinct-production.ps1",
+    "precinct-gis:production-release:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/apply-pa-precinct-release.mjs",
+    "precinct-gis:public-activation:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-pa-precinct-public-activation.mjs",
+    "precinct-gis:publication-status:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-pa-precinct-geography-status.mjs",
+    "test:precinct-geometry:pa": "node --max-old-space-size=4096 --experimental-strip-types --experimental-test-isolation=none --test tests/api/pa-precinct-geometry.test.mjs tests/api/pa-precinct-gis-plan.test.mjs tests/api/pa-precinct-gis-local.test.mjs tests/api/pa-precinct-release-candidate.test.mjs tests/api/pa-precinct-blob-publication.test.mjs tests/api/pa-precinct-production-release.test.mjs tests/api/pa-precinct-public-activation.test.mjs tests/api/pa-precinct-publication-gate.test.mjs tests/api/pa-precinct-publication.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",

@@ -5,9 +5,10 @@ import {
   localGeographyDeliveryParentValidationMessage,
 } from "./local-geography-parent.ts";
 
-// Harris County, Texas has 1,070 election-specific VTD features in 2024.
-// Keep the guard bounded while allowing complete county-scoped delivery.
-export const MAX_SELECTED_PARENT_PRECINCT_FEATURES = 1500;
+// Philadelphia County, Pennsylvania has 1,686 reviewed divisions in 2016 and
+// 1,703 in 2020. Keep the guard bounded while allowing complete county delivery;
+// release builders separately enforce their per-parent byte ceilings.
+export const MAX_SELECTED_PARENT_PRECINCT_FEATURES = 2000;
 
 export type PrecinctDeliveryGeometry = {
   type: "Polygon" | "MultiPolygon";

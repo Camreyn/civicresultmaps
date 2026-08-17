@@ -30,6 +30,8 @@ For the guarded South Carolina 2016/2020/2024 precinct release, county-scoped im
 
 For the guarded Florida 2016/2020/2024 precinct release, allocation-free official-result joins, reviewed no-data polygons, 67-county immutable delivery, database-gated cutover, and separately blocked 2012 package, read [`docs/developer/fl-precinct-gis-runbook.md`](fl-precinct-gis-runbook.md).
 
+For the guarded Pennsylvania partial 2016/2020 precinct release, exact Department of State result joins, reviewed no-data geometry, 67-county immutable delivery, database-gated cutover, and separately blocked 2012/2024 packages, read [`docs/developer/pa-precinct-gis-runbook.md`](pa-precinct-gis-runbook.md).
+
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
 ## Coordinator Protocol
