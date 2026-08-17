@@ -581,11 +581,11 @@
         "official 2012/2016/2020 historical baseline replacement rows",
         "normalized audit, recount, CVR availability, incident, correction, litigation, custody, and tabulator-log rows"
       ],
-      "parserStatus": "nativeFloridaDetailHtml keeps certified county map totals from the official county detail table; floridaPrecinctZipPresidentSenate loads 5,618 same-grain President-versus-U.S. Senate precinct/location review rows; scripts/collect-fl-precinct-geometry.mjs deterministically retains official four-year presidential result universes and reviewed 2016/2020/2024 geometry relationships while keeping 2012 blocked; EAC fallback turnout remains active",
+      "parserStatus": "nativeFloridaDetailHtml keeps certified county map totals from the official county detail table; floridaPrecinctZipPresidentSenate loads 5,618 same-grain President-versus-U.S. Senate precinct/location review rows; scripts/collect-fl-precinct-geometry.mjs deterministically retains official four-year presidential result universes and the reviewed 2016/2020/2024 geometry relationships published at production revision 25 while keeping 2012 blocked; EAC fallback turnout remains active",
       "manualReviewBurden": "low",
       "confidence": "loaded_with_caveat",
       "caveats": "The official precinct ZIP is valid for same-grain review rows and registration-denominator leads, but not for replacing certified county map totals: its presidential candidate total is 204 votes below the official county detail table and its Trump total is one vote higher. The ZIP does not provide compatible ballots-cast rows, so turnout remains EAC fallback. The 2016 and 2020 presentation geometry is attributed VEST data under retained CC BY 4.0 evidence; the 2024 presentation geometry is attributed New York Times data under retained C-UDA non-commercial terms. Every displayed vote value comes only from official Florida exports, and excluded units are never allocated.",
-      "nextAction": "Complete immutable delivery and the guarded release for 2016, 2020, and 2024; continue public archive discovery or a records request for election-effective 2012 geometry; collect compatible state-native turnout, official county historical baseline replacements, and normalized administration-context records."
+      "nextAction": "Maintain the reviewed public delivery and hash-pinned release evidence for 2016, 2020, and 2024; continue public archive discovery or a records request for election-effective 2012 geometry; collect compatible state-native turnout, official county historical baseline replacements, and normalized administration-context records."
     },
     {
       "state": "GA",
