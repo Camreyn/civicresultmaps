@@ -152,4 +152,11 @@ test("parent-scoped builder supports Alaska House District parents without weake
     () => buildParentScopedPrecinctDeliveryPackage(iowaHouseDistrictParent),
     /five-digit county GEOID/,
   );
+
+  const iowaForeignCountyParent = statewideCollection();
+  iowaForeignCountyParent.features[0].properties.parentGeoid = "12001";
+  assert.throws(
+    () => buildParentScopedPrecinctDeliveryPackage(iowaForeignCountyParent),
+    /beginning with 19 for IA/,
+  );
 });
