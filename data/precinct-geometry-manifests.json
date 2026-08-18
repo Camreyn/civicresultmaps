@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T21:24:13.304Z",
+  "updatedAt": "2026-08-17T23:11:19.225Z",
   "manifests": [
     {
       "schemaVersion": 1,
@@ -3483,6 +3483,223 @@
         "Every displayed vote value comes only from the retained Florida Department of State precinct result export.",
         "126 official source units totaling 17,948 candidate votes lack reviewed geometry and are never allocated to polygons.",
         "1,264 NYT features use generated boundaries and remain explicitly disclosed; no NYT result value is displayed.",
+        "Immutable delivery and guarded production activation remain separate decisions."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "pa-2016-11-08-reviewed-precinct-geometry-v1",
+      "state": "PA",
+      "election": {
+        "id": "2016-11-08-general",
+        "date": "2016-11-08",
+        "year": 2016,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "VEST 2016 election-specific Pennsylvania precinct reconstruction with exact-vector acceptance review",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Pennsylvania Department of State results with attributed VEST election-specific geometry",
+        "url": "https://raw.githubusercontent.com/PlanScore/National-Input-Data/b8d27cbdc2e752fbadf8e3432d8eb3c96ba579b7/VEST/pa_2016.zip",
+        "retrievedAt": "2026-08-16T18:00:00.000Z",
+        "artifact": "data/precinct-geometry/PA/2016-11-08-general/source-evidence.json",
+        "sha256": "4a6bc00d89e09a9fd12244a785e4b382e5d95d8e428a9ec0a4972f4bf67eaf12",
+        "byteCount": 8923,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "VEST database geometry is retained under CC BY 4.0 with version and custody evidence; Pennsylvania DOS remains the sole displayed vote authority."
+      },
+      "normalization": {
+        "script": "scripts/collect-pa-precinct-geometry.mjs",
+        "sourceCrs": "GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/PA/2016-11-08-general/normalized/pa-2016-reviewed-precinct-geometry.geojson.gz",
+        "sha256": "3d95de1a3784a2151f00ea7e1f15794b92834480a2c94c5f232b9cdc5898c8d0",
+        "byteCount": 14033577,
+        "featureCount": 9167,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "pa-dos-2016-general-precinct-results",
+        "artifact": "data/precinct-geometry/PA/2016-11-08-general/crosswalk/pa-2016-result-to-geometry-review.json",
+        "sha256": "22863fa57661ebe3045c71f2e9f05ef13dfc765b8102d7acc64afae28ef6242c",
+        "byteCount": 6513290,
+        "resultUnits": 8014,
+        "colorableResultUnits": 8014,
+        "matchedResultUnits": 8014,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 8014,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 8014,
+        "reviewedNoDataFeatures": 1153,
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+          "1158 official source units totaling 782,683 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+          "The retained Redistricting Data Hub report could not fully reproduce VEST's joins and validation; CivicResultMaps accepts only exact county-qualified VTD and complete-candidate-vector matches.",
+          "All 8014 displayable precinct relationships are reviewed one-to-one across 67 mapped Pennsylvania county scopes.",
+          "Geometry delivery retains reviewed features for all 67 Pennsylvania counties, including explicit no-data shapes.",
+          "All official result units without reviewed geometry remain excluded from display and are never spatially allocated.",
+          "The 0 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 1153 reviewed no-data polygons remain visible without an invented result row.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/pa/2016-11-08/precinct/pa-2016-11-08-reviewed-precinct-geometry-v1-10d8b4d4f777/index.json",
+        "sha256": "10d8b4d4f777b3e5abce09918fe379eac45bbcfd31b45e234522aa11095f99cb",
+        "byteCount": 13380,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 67,
+        "featureCount": 9167
+      },
+      "caveats": [
+        "No vote is estimated, spatially allocated, or copied from a geometry source.",
+        "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+        "1158 official source units totaling 782,683 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+        "The retained Redistricting Data Hub report could not fully reproduce VEST's joins and validation; CivicResultMaps accepts only exact county-qualified VTD and complete-candidate-vector matches.",
+        "Immutable delivery and guarded production activation remain separate decisions."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "pa-2020-11-03-reviewed-precinct-geometry-v1",
+      "state": "PA",
+      "election": {
+        "id": "2020-11-03-general",
+        "date": "2020-11-03",
+        "year": 2020,
+        "type": "general",
+        "office": "president"
+      },
+      "geography": {
+        "level": "precinct",
+        "parentLevel": "county",
+        "boundaryVintage": "VEST 2020 election-specific Pennsylvania precinct reconstruction with exact-vector acceptance review",
+        "vintageStatus": "election_date_confirmed",
+        "derivationMethod": "secondary_reconstruction"
+      },
+      "source": {
+        "authority": "Pennsylvania Department of State results with attributed VEST election-specific geometry",
+        "url": "https://raw.githubusercontent.com/PlanScore/National-Input-Data/4ee0f4724a1e99213c95bd5c00926fb4b0c3d4c6/VEST/pa_2020.zip",
+        "retrievedAt": "2026-08-16T18:00:00.000Z",
+        "artifact": "data/precinct-geometry/PA/2020-11-03-general/source-evidence.json",
+        "sha256": "36fddd63655e27dd235ec96b23f2c0f33d3dd90f46bf3b4e455e012a8e51464e",
+        "byteCount": 8925,
+        "format": "precinct-source-evidence+json",
+        "licenseOrTerms": "VEST database geometry is retained under CC BY 4.0 with version and custody evidence; Pennsylvania DOS remains the sole displayed vote authority."
+      },
+      "normalization": {
+        "script": "scripts/collect-pa-precinct-geometry.mjs",
+        "sourceCrs": "GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]",
+        "servedCrs": "EPSG:4326",
+        "artifact": "data/precinct-geometry/PA/2020-11-03-general/normalized/pa-2020-reviewed-precinct-geometry.geojson.gz",
+        "sha256": "17bb9a62e9c948de41e8d51079e4ff6f0f4b922e8bdb4e5f81ab3301ca21f2db",
+        "byteCount": 14085181,
+        "featureCount": 9150,
+        "sourceFeatureIdFields": [
+          "CRM_FEATURE_ID"
+        ],
+        "parentIdFields": [
+          "CRM_PARENT_GEOID"
+        ]
+      },
+      "crosswalk": {
+        "status": "reviewed",
+        "resultSourceId": "pa-dos-2020-general-precinct-results",
+        "artifact": "data/precinct-geometry/PA/2020-11-03-general/crosswalk/pa-2020-result-to-geometry-review.json",
+        "sha256": "300e0818664dcac9d380d787ae59ba01ebe5111ea4636b0184157ccda669d2c0",
+        "byteCount": 5524866,
+        "resultUnits": 6805,
+        "colorableResultUnits": 6805,
+        "matchedResultUnits": 6805,
+        "unmatchedResultUnits": 0,
+        "nonGeographicResultUnits": 0,
+        "sourceAliasResultUnits": 0,
+        "relationships": {
+          "oneToOne": 6805,
+          "oneToMany": 0,
+          "manyToOne": 0,
+          "unmatched": 0,
+          "nonGeographic": 0,
+          "sourceAlias": 0,
+          "pendingReview": 0
+        },
+        "reviewedRelationshipRecords": 6805,
+        "reviewedNoDataFeatures": 2345,
+        "methods": [
+          "official_crosswalk"
+        ]
+      },
+      "validation": {
+        "status": "reviewed",
+        "geometryValid": true,
+        "rowLevelRenderingSafe": true,
+        "parentTotalsReconciled": true,
+        "resultTotalsReconciled": true,
+        "errors": [],
+        "warnings": [
+          "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+          "2360 official source units totaling 1,545,703 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+          "The retained Redistricting Data Hub report could not fully reproduce VEST's joins and validation; CivicResultMaps accepts only exact county-qualified VTD and complete-candidate-vector matches.",
+          "All 6805 displayable precinct relationships are reviewed one-to-one across 66 mapped Pennsylvania county scopes.",
+          "Geometry delivery retains reviewed features for all 67 Pennsylvania counties, including explicit no-data shapes.",
+          "All official result units without reviewed geometry remain excluded from display and are never spatially allocated.",
+          "The 0 zero-presidential-vote precincts remain geographic reporting units.",
+          "All 2345 reviewed no-data polygons remain visible without an invented result row.",
+          "Pike County (GEOID 42103) has 18 reviewed geometry features and no accepted result relationship; all remain visible as no-data shapes.",
+          "Public presentation geometry is rounded to seven decimals and simplified at a 0.000005-degree tolerance; raw source geometry and exact join identities remain hash-pinned and unchanged."
+        ]
+      },
+      "delivery": {
+        "format": "parent_scoped_geojson",
+        "url": "/data/geography/pa/2020-11-03/precinct/pa-2020-11-03-reviewed-precinct-geometry-v1-830dd3cbccfc/index.json",
+        "sha256": "830dd3cbccfc1f0717dab5d8bfb73430a86c22809ff957da01258c30f58cc61a",
+        "byteCount": 13378,
+        "featureIdProperty": "geometryFeatureId",
+        "resultUnitProperty": "resultUnitCode",
+        "parentGeoidProperty": "parentGeoid",
+        "parentCount": 67,
+        "featureCount": 9150
+      },
+      "caveats": [
+        "No vote is estimated, spatially allocated, or copied from a geometry source.",
+        "Every displayed vote value comes only from the retained Pennsylvania Department of State precinct result export.",
+        "2360 official source units totaling 1,545,703 presidential candidate votes lack a reviewed polygon relationship and are never allocated.",
+        "The retained Redistricting Data Hub report could not fully reproduce VEST's joins and validation; CivicResultMaps accepts only exact county-qualified VTD and complete-candidate-vector matches.",
         "Immutable delivery and guarded production activation remain separate decisions."
       ]
     }
