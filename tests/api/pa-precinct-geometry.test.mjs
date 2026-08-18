@@ -266,7 +266,7 @@ test(
 );
 
 test(
-  "Pennsylvania packages preserve the official result universe and keep delivery closed",
+  "Pennsylvania packages preserve the official result universe while only reviewed partial years are active",
   () => {
     const registry = JSON.parse(
       readFileSync("data/precinct-geometry-manifests.json", "utf8"),
@@ -275,8 +275,14 @@ test(
       registry.manifests
         .filter((manifest) => manifest.state === "PA")
         .map((manifest) => manifest.id),
-      [],
-      "the source-package PR must not activate Pennsylvania manifests",
+      YEARS.filter((spec) => spec.safe).map((spec) => spec.manifestId),
+    );
+    assert.equal(
+      registry.manifests.some((manifest) =>
+        manifest.id === YEARS[0].manifestId
+        || manifest.id === YEARS[3].manifestId
+      ),
+      false,
     );
 
     for (const spec of YEARS) {
@@ -416,7 +422,7 @@ test(
 );
 
 test(
-  "Pennsylvania coverage ledgers expose no source package as publicly eligible",
+  "Pennsylvania coverage ledgers expose only reviewed partial years as publicly eligible",
   () => {
     const inventories = new Map([
       [2012, "data/precinct-geometry-coverage-inventory-2012.json"],
@@ -435,7 +441,10 @@ test(
       assert.equal(row.disposition, spec.disposition);
       assert.deepEqual(row.geometry.manifestIds, [spec.manifestId]);
       assert.equal(row.geometry.featureCount, spec.features);
-      assert.equal(row.geometry.publicEligibleManifestCount, 0);
+      assert.equal(
+        row.geometry.publicEligibleManifestCount,
+        spec.safe ? 1 : 0,
+      );
       assert.equal(
         row.crosswalk.resultUnits,
         spec.safe ? spec.mappedRows : spec.sourceUnits,

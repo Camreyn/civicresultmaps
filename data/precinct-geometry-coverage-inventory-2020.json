@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T21:24:13.304Z",
+  "updatedAt": "2026-08-17T23:11:19.225Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -39,7 +39,7 @@
       "official_geometry_unavailable": 0,
       "blocked": 1
     },
-    "publicEligibleJurisdictions": 10
+    "publicEligibleJurisdictions": 11
   },
   "states": [
     {
@@ -672,7 +672,7 @@
       "programStatus": "reviewed",
       "wave": 14,
       "disposition": "partial",
-      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "checkedAt": "2026-08-17T23:11:19.225Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_2_public_secondary"
@@ -703,7 +703,7 @@
           "election_date_confirmed"
         ],
         "featureCount": 9150,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 1
       },
       "crosswalk": {
         "resultUnits": 6805,
@@ -713,10 +713,8 @@
         "nonGeographicResultUnits": 0,
         "sourceAliasResultUnits": 0
       },
-      "blockers": [
-        "Immutable parent-scoped delivery and the guarded production release have not been completed."
-      ],
-      "nextAction": "After source-package review and merge, build a hash-pinned parent-scoped delivery candidate and run the separate guarded release workflow without expanding the reviewed crosswalk.",
+      "blockers": [],
+      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
       "notes": [
         "6,805 VEST polygons match 6,827 complete official DOS source units by unique county-qualified VTD identity and exact complete presidential candidate vector.",
         "2,360 official source units totaling 1,545,703 votes remain excluded, and 2,345 polygons remain reviewed no-data features.",

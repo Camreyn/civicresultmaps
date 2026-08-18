@@ -8271,3 +8271,48 @@ evidence against its verified top-level package.
   publish immutable assets, merge the static activation, and execute the final
   database-gated cutover with exhaustive API/UI verification. Pennsylvania 2012
   and 2024 remain blocked throughout.
+
+### 2026-08-18 - Pennsylvania hidden load and immutable delivery completed
+
+- Release tooling merged as commit `ce0a70f7863f4986917ff3386ca12c201ef1b54b`.
+  The clean merged-commit rehearsal resealed release
+  `pa-precinct-gis-two-election-v1` at SHA-256
+  `1501aee622addd9908cef4fb53075ef0517211fc0a5f3f331e29beff214a462e`.
+  The candidate retains only the reviewed partial 2016 and 2020 universes;
+  2012 and 2024 remain absent from every release and activation path.
+- A read-only production preflight at public revision 25 found PostgreSQL 17,
+  migrations 0008 and 0009 complete, zero invalid constraints, and no existing
+  Pennsylvania precinct release rows. A subsequent full 31-table `public`
+  schema backup restored into the isolated PostgreSQL 17 clone with the exact
+  table set and every source row count matched before the guarded write.
+- The coupled hidden load committed at `2026-08-18T01:51:53.132Z` as
+  `COMMITTED_HIDDEN_NOT_PUBLIC`, incrementing the public revision once to 26.
+  Receipt SHA-256
+  `16ed15a6b18be8719d502fb4512f21a74429832b31d6b0746c09ba138e9fd8f9`
+  validates 8,014 reporting units, 24,042 candidate rows, and 9,167 features for
+  2016 plus 6,805 units, 20,415 rows, and 9,150 features for 2020. Both
+  geography versions remain blocked, `publicDeliveryAuthorized` remains false,
+  no canonical manifest changed, and no pending recovery marker remains.
+- Immediate live checks confirmed both gates stayed closed: the 2016 and 2020
+  PA manifest queries returned zero eligible rows, and sample Philadelphia 2016
+  and Pike 2020 precinct-result queries returned zero database rows.
+- All 136 immutable delivery objects were then created at the existing
+  credential-free Vercel Blob origin
+  `https://ehnlruzhgkm5byoi.public.blob.vercel-storage.com`. The publisher
+  uploaded 134 county objects before the two indexes, re-downloaded and
+  byte/hash verified all 65,578,988 bytes, and recorded evidence SHA-256
+  `8df1d6c859d7ee2f2b14c8dfb37f92f718a03ec6f9b7fee625ab8d102bcbcb8f`.
+  Blob publication did not change the registry or database eligibility.
+- Static activation candidate SHA-256
+  `989cee7550d934069dd34f86d31c38e2dc6e8f1b4e0da5b0c26a8e839d29ae66`
+  updates the canonical registry and the 2016/2020 coverage inventories while
+  retaining both rows as `partial`. The source-package regression now follows
+  the established activated-state contract: only the two reviewed years are
+  eligible, while the blocked 2012 and 2024 manifest identities remain absent.
+  The PA suite passes 39/39, shared parent delivery passes 7/7, and map,
+  provenance, source-package, typecheck, and production-build validation pass.
+- Public access is not yet enabled. The activation tree still requires a
+  protected Preview, review and merge, an exact READY/PROMOTED Production
+  deployment with the same Blob origin, and the separately hash-pinned atomic
+  database publication transaction. Excluded official units and their votes
+  remain unallocated throughout.
