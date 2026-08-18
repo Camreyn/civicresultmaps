@@ -8316,3 +8316,67 @@ evidence against its verified top-level package.
   deployment with the same Blob origin, and the separately hash-pinned atomic
   database publication transaction. Excluded official units and their votes
   remain unallocated throughout.
+
+### 2026-08-18 - Pennsylvania reviewed partial precinct delivery published
+
+- Static activation merged as exact commit
+  `0779239c251f3e2afbce92e17e4ea0a7dcb0ef93`, tree
+  `d65cec238acf7510a25e7c2c928cdcde6e736e3f`. Production deployment
+  `dpl_5Evd63c87anNuy1BBStFqLt9zrgu` was `READY` and promoted to the public
+  domains from that exact commit. Rollback deployment
+  `dpl_CEWdY1G9QVPAvjPzpveVZJEyhfHc`, pinned to the prior merge commit
+  `ce0a70f7863f4986917ff3386ca12c201ef1b54b`, remained `READY` and
+  fail-closed before cutover.
+- Pre-cutover checks on exact merged `origin/main` found one reviewed partial
+  PA manifest for each of 2016 and 2020, no eligible manifest for 2012 or 2024,
+  zero live Pennsylvania precinct result rows, and closed geography delivery.
+  The configured production geography origin matched the immutable Vercel Blob
+  origin used by all 136 previously verified objects.
+- Publication plan SHA-256
+  `a0d31d0a4c1a5803374057997abe33a8a787f48c53fced13d8933338917b1a22`
+  pinned the package, hidden-load receipt, Blob evidence, registry, production
+  and rollback trees, delivery origin, and exact database state. A separate
+  `GO_PUBLIC` authorization, SHA-256
+  `989cc9c310457cd9f58f901d60a80d9d17af5bc1425d627d9a72692621368b31`,
+  allowed one atomic publication transaction only.
+- The cutover committed at `2026-08-18T20:51:12.16Z` with decision
+  `PUBLISHED`, increasing the public revision once from 26 to 27. Publication
+  receipt SHA-256
+  `632e23c17cf4ae76f4c30ded0519fdb2156495ecaa04f0613f05d14ad735b55c`
+  validates two geography versions, 14,819 reporting units, 14,819
+  crosswalks, 44,457 candidate rows, zero invalid constraints, both public
+  gates open, and no pending recovery marker.
+- Exhaustive live verification completed at `2026-08-18T21:02:22.938Z` with
+  decision `LIVE_API_DATABASE_AND_BLOB_VERIFIED`. All 134 county-year scopes
+  were fetched through the public geography and result routes. Their parent
+  partition contains exactly 18,317 features with no missing, duplicate, or
+  cross-parent feature. Every API geometry object deep-matched the sealed
+  county JSON, and all 136 Blob objects were re-downloaded and byte/hash
+  verified, totaling 65,578,988 bytes.
+- The 2016 live subset contains 9,167 reviewed features, 8,014 joined result
+  units, 24,042 candidate rows, 1,153 explicit no-data features, and 5,331,613
+  displayed official votes. The 2020 subset contains 9,150 reviewed features,
+  6,805 joined result units, 20,415 candidate rows, 2,345 no-data features,
+  and 5,370,341 displayed official votes. The 2,328,386 excluded official
+  votes remain retained in source evidence and were never estimated,
+  distributed, or spatially allocated.
+- The live manifest preserves Pennsylvania Department of State result
+  authority, VEST election-specific geometry provenance, CC BY 4.0 licensing,
+  partial-coverage warnings, and the explicit no-allocation caveat. Unsupported
+  2012 and 2024 requests remain fail-closed. Cross-state parent GEOIDs fail
+  input validation; well-formed non-county PA parent probes also fail closed,
+  currently with an HTTP 500 delivery-validation response rather than 404.
+- Visible production checks confirmed Adams County 2016 renders 49 reviewed
+  precincts with winner colors, Adams County 2020 renders its 50-shape mixed
+  joined/no-data case, and Pike County 2020 renders all 18 reviewed shapes as
+  `No joined result`. Election-vintage provenance and OpenStreetMap attribution
+  are present, and the browser console reported no warnings or errors. Runtime
+  error- and warning-level queries for the exact deployment returned no
+  application messages; observed 500 request records were the deliberate
+  fail-closed non-county-parent probes.
+- Pennsylvania 2012 and 2024 remain blocked and absent from public delivery.
+  Future collection should seek election-applicable official county geometry
+  and authoritative crosswalks for those years and for the excluded 2016/2020
+  source units. Current services must not be backcast or forward-cast without
+  affirmative vintage evidence, and excluded votes must not be spatially
+  allocated.
