@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "state": "PA",
+  "electionId": "2020-11-03-general",
+  "generatedAt": "2026-08-18T00:00:00.000Z",
+  "disposition": "reviewed_union_county_candidate_delivery_blocked",
+  "parentGeoid": "42119",
+  "sourceFeatureCount": 27,
+  "resultUnitCount": 27,
+  "colorableResultUnits": 27,
+  "matchedResultUnits": 27,
+  "unmatchedResultUnits": 0,
+  "reviewedRelationshipRecords": 27,
+  "directIdEqualityUsed": false,
+  "officialCountyTotals": {
+    "democratic": 7475,
+    "republican": 12356,
+    "other": 284,
+    "total": 20115
+  },
+  "canonicalPackageComparison": {
+    "manifestId": "pa-2020-11-03-reviewed-precinct-geometry-v1",
+    "resultArtifact": "data/precinct-geometry/PA/2020-11-03-general/normalized/pa-2020-president-results.json.gz",
+    "resultArtifactSha256": "c44b42b11f4d565f897649b047c73be9f80a14356c41bde0c0ff3ef1287843e7",
+    "resultArtifactByteCount": 266056,
+    "mappedResultUnits": 25,
+    "mappedTotals": {
+      "democratic": 7116,
+      "republican": 11688,
+      "other": 273,
+      "total": 19077
+    },
+    "excludedResultUnits": 2,
+    "excludedTotals": {
+      "democratic": 359,
+      "republican": 668,
+      "other": 11,
+      "total": 1038
+    },
+    "candidateAdditionalResultUnits": 2,
+    "candidateAdditionalTotals": {
+      "democratic": 359,
+      "republican": 668,
+      "other": 11,
+      "total": 1038
+    },
+    "candidateAdditionalRows": [
+      {
+        "sourceUnitId": "0000210",
+        "sourceDisplayName": "UNION",
+        "democratic": 342,
+        "republican": 622,
+        "other": 9,
+        "total": 973
+      },
+      {
+        "sourceUnitId": "0000215",
+        "sourceDisplayName": "UNION INDEPENDENT",
+        "democratic": 17,
+        "republican": 46,
+        "other": 2,
+        "total": 65
+      }
+    ]
+  },
+  "statewideScope": {
+    "officialSourceUnits": 9187,
+    "candidatePackageSourceUnits": 27,
+    "remainingSourceUnits": 9160,
+    "officialStatewideVotes": 6916044,
+    "candidatePackageVotes": 20115,
+    "remainingVotes": 6895929
+  },
+  "reconciliation": {
+    "status": "passed",
+    "scopes": [
+      {
+        "scopeType": "parent",
+        "scopeId": "42119",
+        "resultTotals": {
+          "democratic": 7475,
+          "republican": 12356,
+          "other": 284,
+          "total": 20115
+        },
+        "mappedTotals": {
+          "democratic": 7475,
+          "republican": 12356,
+          "other": 284,
+          "total": 20115
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      }
+    ],
+    "caveat": "This reconciliation proves the reviewed Union County package only. It does not imply statewide Pennsylvania geometry coverage."
+  },
+  "votesAssignedFromGeometry": 0,
+  "delivery": null,
+  "caveats": [
+    "This is a complete reviewed Union County package, not a complete statewide Pennsylvania package.",
+    "The crosswalk uses a unique complete county-scoped normalized-name bijection. Union County PRECINCTID and Pennsylvania Department of State Precinct Code are different identity systems and are never equated.",
+    "Geometry-source attributes that could be mistaken for election values are stripped; displayed vote values must continue to come only from the official Pennsylvania Department of State result artifact.",
+    "The PASDA metadata provides an as-is warranty and indemnity disclaimer but no explicit open-data license; public delivery remains blocked pending terms review and a separate guarded release."
+  ]
+}

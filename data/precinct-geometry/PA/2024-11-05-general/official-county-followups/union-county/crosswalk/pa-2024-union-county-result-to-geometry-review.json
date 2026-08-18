@@ -1,0 +1,525 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "pa-2024-union-county-official-precinct-geometry-candidate-v1",
+  "state": "PA",
+  "electionId": "2024-11-05-general",
+  "geographyLevel": "precinct",
+  "resultSourceId": "pa-dos-2024-general-precinct-results",
+  "generatedAt": "2026-08-18T00:00:00.000Z",
+  "rows": [
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000010",
+      "sourceUnitId": "0000010",
+      "sourceDisplayName": "BUFFALO X 1 1",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:010",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name BUFFALO 1 pairs official DOS unit 0000010 with Union County PRECINCTID 10. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000020",
+      "sourceUnitId": "0000020",
+      "sourceDisplayName": "BUFFALO X 2 2",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:020",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name BUFFALO 2 pairs official DOS unit 0000020 with Union County PRECINCTID 20. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000030",
+      "sourceUnitId": "0000030",
+      "sourceDisplayName": "EAST BUFFALO X 1 1",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:030",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name EAST BUFFALO 1 pairs official DOS unit 0000030 with Union County PRECINCTID 30. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000040",
+      "sourceUnitId": "0000040",
+      "sourceDisplayName": "EAST BUFFALO X 2 2",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:040",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name EAST BUFFALO 2 pairs official DOS unit 0000040 with Union County PRECINCTID 40. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000050",
+      "sourceUnitId": "0000050",
+      "sourceDisplayName": "EAST BUFFALO X 3 3",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:050",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name EAST BUFFALO 3 pairs official DOS unit 0000050 with Union County PRECINCTID 50. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000060",
+      "sourceUnitId": "0000060",
+      "sourceDisplayName": "EAST BUFFALO X 4 4",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:060",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name EAST BUFFALO 4 pairs official DOS unit 0000060 with Union County PRECINCTID 60. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000070",
+      "sourceUnitId": "0000070",
+      "sourceDisplayName": "GREGG",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:080",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name GREGG pairs official DOS unit 0000070 with Union County PRECINCTID 80. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000080",
+      "sourceUnitId": "0000080",
+      "sourceDisplayName": "HARTLETON",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:200",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name HARTLETON pairs official DOS unit 0000080 with Union County PRECINCTID 200. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000090",
+      "sourceUnitId": "0000090",
+      "sourceDisplayName": "HARTLEY",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:090",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name HARTLEY pairs official DOS unit 0000090 with Union County PRECINCTID 90. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000100",
+      "sourceUnitId": "0000100",
+      "sourceDisplayName": "KELLY X 1 1",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:100",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name KELLY 1 pairs official DOS unit 0000100 with Union County PRECINCTID 100. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000110",
+      "sourceUnitId": "0000110",
+      "sourceDisplayName": "KELLY X 2 2",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:110",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name KELLY 2 pairs official DOS unit 0000110 with Union County PRECINCTID 110. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000120",
+      "sourceUnitId": "0000120",
+      "sourceDisplayName": "LEWIS",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:120",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name LEWIS pairs official DOS unit 0000120 with Union County PRECINCTID 120. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000130",
+      "sourceUnitId": "0000130",
+      "sourceDisplayName": "LEWISBURG W 1 1",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:210",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name LEWISBURG 1 pairs official DOS unit 0000130 with Union County PRECINCTID 210. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000140",
+      "sourceUnitId": "0000140",
+      "sourceDisplayName": "LEWISBURG W 2 2",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:220",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name LEWISBURG 2 pairs official DOS unit 0000140 with Union County PRECINCTID 220. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000150",
+      "sourceUnitId": "0000150",
+      "sourceDisplayName": "LEWISBURG W 3 3",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:230",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name LEWISBURG 3 pairs official DOS unit 0000150 with Union County PRECINCTID 230. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000160",
+      "sourceUnitId": "0000160",
+      "sourceDisplayName": "LEWISBURG W 4 4",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:240",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name LEWISBURG 4 pairs official DOS unit 0000160 with Union County PRECINCTID 240. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000170",
+      "sourceUnitId": "0000170",
+      "sourceDisplayName": "LIMESTONE",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:130",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name LIMESTONE pairs official DOS unit 0000170 with Union County PRECINCTID 130. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000180",
+      "sourceUnitId": "0000180",
+      "sourceDisplayName": "MIFFLINBURG X EAST EAST",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:250",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name MIFFLINBURG EAST pairs official DOS unit 0000180 with Union County PRECINCTID 250. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000190",
+      "sourceUnitId": "0000190",
+      "sourceDisplayName": "MIFFLINBURG X WEST WEST",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:260",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name MIFFLINBURG WEST pairs official DOS unit 0000190 with Union County PRECINCTID 260. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000200",
+      "sourceUnitId": "0000200",
+      "sourceDisplayName": "NEW BERLIN",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:270",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name NEW BERLIN pairs official DOS unit 0000200 with Union County PRECINCTID 270. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000210",
+      "sourceUnitId": "0000210",
+      "sourceDisplayName": "UNION",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:140",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name UNION pairs official DOS unit 0000210 with Union County PRECINCTID 140. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000215",
+      "sourceUnitId": "0000215",
+      "sourceDisplayName": "UNION INDEPENDENT",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:150",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name UNION INDEPENDENT pairs official DOS unit 0000215 with Union County PRECINCTID 150. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000220",
+      "sourceUnitId": "0000220",
+      "sourceDisplayName": "WEST BUFFALO",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:070",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name WEST BUFFALO pairs official DOS unit 0000220 with Union County PRECINCTID 70. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000230",
+      "sourceUnitId": "0000230",
+      "sourceDisplayName": "WHITE DEER X 1 1",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:160",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name WHITE DEER 1 pairs official DOS unit 0000230 with Union County PRECINCTID 160. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000240",
+      "sourceUnitId": "0000240",
+      "sourceDisplayName": "WHITE DEER X 2 2",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:170",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name WHITE DEER 2 pairs official DOS unit 0000240 with Union County PRECINCTID 170. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000250",
+      "sourceUnitId": "0000250",
+      "sourceDisplayName": "WHITE DEER X 3 3",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:180",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name WHITE DEER 3 pairs official DOS unit 0000250 with Union County PRECINCTID 180. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    },
+    {
+      "resultUnitCode": "reporting:PA:2024-11-05-general:precinct:42119:0000260",
+      "sourceUnitId": "0000260",
+      "sourceDisplayName": "WHITE DEER X 4 4",
+      "parentGeoid": "42119",
+      "reportingGrain": "precinct",
+      "isGeographic": true,
+      "relationships": [
+        {
+          "sourceFeatureId": "42119|pa:2024:42119:union:190",
+          "relationshipType": "one_to_one",
+          "matchMethod": "reviewed_name",
+          "reviewStatus": "reviewed",
+          "confidence": "high",
+          "note": "The unique county-scoped normalized name WHITE DEER 4 pairs official DOS unit 0000260 with Union County PRECINCTID 190. The complete 27-name universes are identical; PRECINCTID is not treated as the DOS Precinct Code, and no geometry-source vote value is used."
+        }
+      ]
+    }
+  ],
+  "reconciliation": {
+    "status": "passed",
+    "scopes": [
+      {
+        "scopeType": "parent",
+        "scopeId": "42119",
+        "resultTotals": {
+          "democratic": 8015,
+          "republican": 12969,
+          "other": 204,
+          "total": 21188
+        },
+        "mappedTotals": {
+          "democratic": 8015,
+          "republican": 12969,
+          "other": 204,
+          "total": 21188
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      }
+    ],
+    "caveat": "This reconciliation proves the reviewed Union County package only. It does not imply statewide Pennsylvania geometry coverage."
+  }
+}

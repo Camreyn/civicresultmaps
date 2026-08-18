@@ -471,7 +471,7 @@
       "state": "PA",
       "name": "Pennsylvania",
       "priority": 3,
-      "nativeReadiness": "complete_county_map_precinct_review_county_turnout_with_blocked_precinct_geometry_source_packages",
+      "nativeReadiness": "complete_county_map_precinct_review_county_turnout_with_published_partial_2016_2020_precinct_geometry_and_reviewed_union_followups",
       "authority": "Pennsylvania Department of State",
       "configFile": "etl/state-configs/pa.json",
       "legacyReferenceBundle": "data/pa-app-data.js",
@@ -527,10 +527,11 @@
           ]
         },
         "precinctGeometrySourcePackages": {
-          "sourceTitle": "Pennsylvania four-election precinct geometry source packages",
+          "sourceTitle": "Pennsylvania four-election precinct geometry source packages plus official Union County follow-ups",
           "sourceUrl": "https://www.redistricting.state.pa.us/maps/",
+          "officialCountyFollowupSourceUrl": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994",
           "inventoryFile": "data/pa-precinct-gis-source-inventory.json",
-          "collector": "scripts/collect-pa-precinct-geometry.mjs",
+          "collector": "scripts/collect-pa-precinct-geometry.mjs; scripts/collect-pa-union-county-precinct-geometry.mjs",
           "years": [
             {
               "year": 2012,
@@ -542,7 +543,7 @@
             {
               "year": 2016,
               "manifest": "data/precinct-geometry/PA/2016-11-08-general/manifest.json",
-              "status": "reviewed_partial_candidate_delivery_blocked",
+              "status": "published_reviewed_partial",
               "normalizedFeatures": 9167,
               "mappedResultRows": 8014,
               "excludedOfficialSourceUnits": 1158
@@ -550,20 +551,43 @@
             {
               "year": 2020,
               "manifest": "data/precinct-geometry/PA/2020-11-03-general/manifest.json",
-              "status": "reviewed_partial_candidate_delivery_blocked",
+              "status": "published_reviewed_partial_with_official_union_candidate",
               "normalizedFeatures": 9150,
               "mappedResultRows": 6805,
-              "excludedOfficialSourceUnits": 2360
+              "excludedOfficialSourceUnits": 2360,
+              "officialUnionCountyFollowup": {
+                "manifest": "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/manifest.json",
+                "status": "reviewed_candidate_delivery_blocked",
+                "featureMetadataDate": "2020-09-24",
+                "vintageStatus": "election_date_confirmed",
+                "normalizedFeatures": 27,
+                "matchedResultUnits": 27,
+                "officialCountyVotes": 20115,
+                "candidateAdditionalUnitsBeyondPublished": 2,
+                "candidateAdditionalVotesBeyondPublished": 1038
+              }
             },
             {
               "year": 2024,
               "manifest": "data/precinct-geometry/PA/2024-11-05-general/manifest.json",
-              "status": "blocked",
+              "status": "blocked_statewide_with_reviewed_union_county_candidate",
               "normalizedFeatures": 0,
-              "mappedResultRows": 0
+              "mappedResultRows": 0,
+              "officialUnionCountyFollowup": {
+                "manifest": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/manifest.json",
+                "status": "reviewed_name_candidate_vintage_and_delivery_blocked",
+                "sourceExportDate": "2024-09-05",
+                "featureMetadataDate": "2021-10-12",
+                "vintageStatus": "unknown",
+                "normalizedFeatures": 27,
+                "matchedResultUnits": 27,
+                "officialCountyVotes": 21188,
+                "remainingStatewideSourceUnits": 9160,
+                "remainingStatewideVotes": 7010549
+              }
             }
           ],
-          "parserHint": "The deterministic collector keeps Pennsylvania DOS as the sole vote authority, strips all geometry-source election values, and accepts 2016/2020 polygons only when a unique county-qualified VTD and complete presidential candidate vector match complete official source units exactly."
+          "parserHint": "The canonical collector keeps Pennsylvania DOS as the sole vote authority, strips all geometry-source election values, and accepts 2016/2020 VEST polygons only under the exact-vector rule. The Union County collector separately requires hash-pinned official archives and a complete unique reviewed county-scoped name bijection; county PRECINCTID is never treated as DOS Precinct Code. The 2020 feature metadata confirms its pre-election vintage, while the 2024 archive has a 2024 export lineage but 2021 feature metadata and therefore remains vintage-unknown."
         }
       },
       "expected": {
@@ -576,7 +600,8 @@
         "localReviewRows": 9154,
         "turnoutRows": 67,
         "precinctGeometrySourcePackages": 4,
-        "publicEligiblePrecinctGeometryManifests": 0
+        "officialCountyFollowupPackages": 2,
+        "publicEligiblePrecinctGeometryManifests": 2
       },
       "validationStatus": {
         "localArtifactsPresent": true,
@@ -584,13 +609,13 @@
         "reviewMode": "president_vs_senate_dropoff",
         "turnoutMode": "county_vote_history_registration_summary",
         "historicalBaselineMode": "official_dos_bulk_context",
-        "precinctGeometryMode": "four_source_packages_delivery_null_registry_unchanged"
+        "precinctGeometryMode": "published_partial_2016_2020_plus_delivery_null_union_2020_2024_candidates"
       },
       "caveats": [
         "Official readme says the election returns data was extracted January 10, 2025; the direct bulk file name includes 20250129.",
         "Turnout is county-level, not precinct-level.",
-        "Vote-free 2016 and 2020 precinct GeoJSON source packages are retained as partial reviewed candidates, but they are not in the public manifest registry and have no immutable delivery or production activation.",
-        "The 2012 and 2024 geometry packages remain blocked with zero normalized features because no complete election-effective boundary edition and result crosswalk is retained.",
+        "Vote-free reviewed partial 2016 and 2020 precinct packages are public at revision 27 through immutable parent-scoped delivery manifests.",
+        "The canonical 2012 and statewide 2024 geometry packages remain blocked with zero normalized features. Separate official Union County 2020/2024 candidates each contain 27 vote-free polygons and 27 reviewed relationships, but remain delivery-null and absent from production pending PASDA terms and guarded release review. The 2024 archive has a 2024-09-05 export lineage but 2021-10-12 feature metadata, so Election Day boundary effectiveness is not independently established.",
         "The 2016 package excludes 1,158 official units totaling 782,683 votes; the 2020 package excludes 2,360 units totaling 1,545,703 votes, including every Pike County unit. No excluded value is allocated.",
         "Historical baselines are official DOS bulk context; bulk rows do not include a separate write-in reconciliation artifact."
       ]
