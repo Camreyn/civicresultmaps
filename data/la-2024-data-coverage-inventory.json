@@ -1,10 +1,10 @@
 {
-  "checkedAt": "2026-07-05",
+  "checkedAt": "2026-08-19",
   "state": "LA",
   "stateName": "Louisiana",
   "electionYear": 2024,
-  "status": "official_precinct_results_review_sos_turnout_parish_geometry_equipment_context_loaded",
-  "summary": "Louisiana has official Secretary of State 2024 parish presidential totals derived from precinct CSV rows, official precinct and vote-mode President-versus-U.S.-House review rows, official Secretary of State parish post-election turnout/qualified-voter statistics, Census parish geometry, and county/parish equipment context. Precinct boundary geometry, 2012/2016/2020 historical baseline rows, and normalized audit/CVR/incident/correction/recount/litigation records remain uncollected.",
+  "status": "official_precinct_results_review_sos_turnout_2016_2020_historical_parish_geometry_equipment_context_loaded",
+  "summary": "Louisiana has official Secretary of State 2024 parish presidential totals derived from precinct CSV rows, official precinct and vote-mode President-versus-U.S.-House review rows, official Secretary of State parish post-election turnout/qualified-voter statistics, official 2016 and 2020 parish presidential historical baselines, Census parish geometry, and county/parish equipment context. Precinct boundary geometry, the official 2012 historical baseline, and normalized audit/CVR/incident/correction/recount/litigation records remain uncollected.",
   "officialSourcePages": [
     "https://voterportal.sos.la.gov/static/",
     "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential",
@@ -13,7 +13,9 @@
     "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
     "https://voterportal.sos.la.gov/graphical",
     "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/statewide/2024_1105_sta.xls",
-    "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls"
+    "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls",
+    "https://voterportal.sos.la.gov/static/20161108/resultsRace/Presidential",
+    "https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential"
   ],
   "loadedArtifacts": [
     {
@@ -137,6 +139,29 @@
       "caveats": [
         "Equipment context is not a vote, turnout, audit, CVR, incident, correction, recount, or litigation source and does not prove every precinct in a parish used one identical configuration."
       ]
+    },
+    {
+      "id": "la-historical-presidential-baseline",
+      "sourceTitle": "Louisiana Secretary of State official 2016 and 2020 Presidential Electors ByParish CSVs",
+      "sourceUrl": "https://voterportal.sos.la.gov/static/20161108/resultsRace/Presidential; https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential",
+      "localArtifact": "data/la-2016-general-president-by-parish.csv; data/la-2020-general-president-by-parish.csv; data/la-historical-presidential-baseline.csv; data/la-historical-presidential-baseline-summary.json",
+      "reportingGrain": "parish_county_equivalent",
+      "parserNormalizationPath": "scripts/normalize-la-historical-presidential-baseline.mjs; historicalPresidentialCsv via etl/state-configs/la.json",
+      "expectedCounts": {
+        "historicalRows": 128,
+        "parishesPerYear": 64,
+        "years": [
+          2016,
+          2020
+        ],
+        "2016TotalVotes": 2029032,
+        "2020TotalVotes": 2148062
+      },
+      "confidence": "loaded_official_historical_context",
+      "caveats": [
+        "Rows are contextual parish baselines for county-equivalent historical joins, not 2024 certified-result rows.",
+        "An official 2012 Louisiana parish presidential baseline remains uncollected."
+      ]
     }
   ],
   "sourceFindings": {
@@ -169,13 +194,23 @@
       "requestNeed": "Official statewide precinct boundary geometry or a precinct-to-parish crosswalk if subparish map overlays are required."
     },
     "historicalBaselines": {
-      "status": "not_loaded",
+      "status": "official_2016_2020_loaded_2012_missing",
       "targetYears": [
         2012,
         2016,
         2020
       ],
-      "requestNeed": "Official Louisiana presidential result artifacts for 2012, 2016, and 2020 with parish totals, source URLs, parser path, and statewide reconciliation totals before enabling historical baseline rows."
+      "loadedYears": [
+        2016,
+        2020
+      ],
+      "missingYears": [
+        2012
+      ],
+      "currentArtifact": "data/la-historical-presidential-baseline.csv",
+      "parserNormalizationPath": "scripts/normalize-la-historical-presidential-baseline.mjs",
+      "expectedRows": 128,
+      "requestNeed": "Collect and normalize an official Louisiana 2012 presidential result artifact with parish totals, source URL, parser path, and statewide reconciliation totals."
     },
     "postElectionAudit": {
       "status": "not_normalized",
@@ -200,7 +235,7 @@
     ],
     "advisoryUse": "Louisiana advisory indicators use official precinct and vote-mode President-versus-U.S.-House review rows. U.S. House is district-based, and the review rows are screening/context signals only, not claims of fraud or misconduct.",
     "productionPromotion": "Not authorized from worker branch; no native:promote or native:counts run.",
-    "currentLouisianaNativeStatus": "certified_results_review_rows_sos_turnout_loaded",
+    "currentLouisianaNativeStatus": "certified_results_review_rows_sos_turnout_2016_2020_historical_loaded",
     "turnoutUse": "Louisiana turnout uses official SOS parish post-election statistics. Qualified voters are election-eligible registrants as of the close of registration records thirty days before election day; Voted is election-level turnout, not presidential contest votes."
   },
   "gaps": [
@@ -210,9 +245,9 @@
       "remainingRisk": "Public map joins remain parish geometry only."
     },
     {
-      "artifact": "historical_presidential_baselines_2012_2016_2020",
+      "artifact": "historical_presidential_baseline_2012",
       "status": "not_loaded",
-      "remainingRisk": "Historical context remains disabled until official artifacts are collected and normalized."
+      "remainingRisk": "Official 2016 and 2020 historical context is loaded; 2012 parish historical context remains unavailable until an official artifact is collected and normalized."
     },
     {
       "artifact": "post_election_audit_rows",

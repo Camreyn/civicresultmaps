@@ -192,27 +192,31 @@
           "state": "LA",
           "branch": "state/la-data-coverage",
           "taggedRows2024": 64,
-          "matchedRows2020": 0,
-          "missingHistoricalRows": 64,
-          "sourceLeadStatus": "official historical baseline source needed",
-          "workerStatus": "ready_for_pr",
-          "prUrl": null,
-          "notes": "Louisiana parish rows should still use county:<GEOID> because Census treats parishes as county equivalents.",
+          "matchedRows2020": 64,
+          "missingHistoricalRows": 0,
+          "sourceLeadStatus": "official Louisiana Secretary of State 2016/2020 parish baselines loaded",
+          "workerStatus": "merged",
+          "prUrl": "https://github.com/Camreyn/civicresultmaps/pull/155",
+          "notes": "The official package contains 128 canonical parish/county-equivalent rows, 64 each for 2016 and 2020. Louisiana parishes correctly use county:<GEOID> tags.",
           "agentId": "019f4561-eec5-7ae1-929e-f1b13b2864f6",
           "agentNickname": "Popper",
           "assignedAt": "2026-07-09T05:38:41.270Z",
           "completedAt": "2026-07-09T05:50:38.887Z",
           "result": {
             "sourceAuthority": "Louisiana Secretary of State",
-            "sourceUrl": "https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential",
+            "sourceUrl": "https://voterportal.sos.la.gov/static/20161108/resultsRace/Presidential; https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential",
+            "historicalRows2016": 64,
             "historicalRows2020": 64,
             "matchedRowsAfterLocalImport": 64,
             "validations": [
-              "node scripts/collect-la-historical-baseline.mjs",
+              "node scripts/normalize-la-historical-presidential-baseline.mjs",
               "python -m unittest tests.python.test_louisiana_coverage_inventory",
               "python -m civic_etl.cli validate --config etl/state-configs/la.json",
               "python -m civic_etl.cli import --config etl/state-configs/la.json --out .etl/staging",
               "npm run native:report-indicators -- .etl/staging",
+              "npm.cmd run jurisdictions:coverage:2016 -- --staging-dir=.etl/staging --overlay-states=LA",
+              "npm.cmd run jurisdictions:flips:2016-2020 -- --staging-dir=.etl/staging --overlay-states=LA",
+              "npm.cmd run jurisdictions:flips:2016-2024 -- --staging-dir=.etl/staging --overlay-states=LA",
               "npm run validate:source-packages",
               "npm run validate:source-acquisition-tiers"
             ],
@@ -227,7 +231,15 @@
                 "down_ballot_outliers"
               ]
             },
-            "caveat": "Worker could not run jurisdiction flip scripts from LA worktree because that worktree package.json did not contain those scripts; coordinator should rerun from integration branch."
+            "overlayReport": {
+              "rows2016": 64,
+              "taggedRows2016": 64,
+              "matchedRows2016To2020": 64,
+              "missingComparisonRows2016To2020": 0,
+              "matchedRows2016To2024": 64,
+              "missingComparisonRows2016To2024": 0
+            },
+            "caveat": "The active normalizer emits both official years; the legacy 2020-only collector must not be used to regenerate the canonical combined artifact. Staging overlays preserve all 64 live 2020 parish rows."
           }
         },
         {
