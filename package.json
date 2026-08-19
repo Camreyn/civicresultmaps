@@ -43,6 +43,8 @@
     "etl:import:mi": "python -m civic_etl.cli import --config etl/state-configs/mi.json --out .etl/staging",
     "etl:import:mn": "python -m civic_etl.cli import --config etl/state-configs/mn.json --out .etl/staging",
     "etl:import:nc": "python -m civic_etl.cli import --config etl/state-configs/nc.json --out .etl/staging",
+    "etl:normalize:nc:turnout": "node scripts/normalize-nc-turnout.mjs",
+    "etl:normalize:nc:turnout:check": "node scripts/normalize-nc-turnout.mjs --check",
     "etl:normalize:nc:historical-review": "node scripts/normalize-nc-historical-review.mjs",
     "etl:import:nv": "python -m civic_etl.cli import --config etl/state-configs/nv.json --out .etl/staging",
     "etl:import:oh": "python -m civic_etl.cli import --config etl/state-configs/oh.json --out .etl/staging",

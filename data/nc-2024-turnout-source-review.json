@@ -13,18 +13,28 @@
       "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip",
       "localFile": "data/nc-2024-voter-stats.zip",
       "entry": "voter_stats_20241105.txt",
+      "byteCount": 6522548,
+      "sha256": "48685b14b1a58e07417fb8756778a8faf3e4d536228b4a9651d156be4a39fe6c",
+      "entryByteCount": 48726474,
+      "entrySha256": "a2472e9c4e19504f259a2624eae028c0d3844cd7b986860be36987f40c0cfdfe",
       "rows": 685049,
       "counties": 100,
       "uniqueCountyPrecinctVtdKeys": 3250,
+      "unassignedIdentityRows": 576,
       "registeredVoters": 7854464
     },
     "historyStats": {
       "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
       "localFile": "data/nc-2024-history-stats.zip",
       "entry": "history_stats_20241105.txt",
+      "byteCount": 4715895,
+      "sha256": "56305c7b7c84a2a58702e87e4a5dcd176ce50281f62b894b24af0b162a008085",
+      "entryByteCount": 88112050,
+      "entrySha256": "9360820ed58a370b767977a7a0e9adcca98cdfdc14ff7b8b8dfd3da18a55c641",
       "rows": 987529,
       "counties": 100,
       "uniqueCountyPrecinctVtdKeys": 3211,
+      "unassignedIdentityRows": 142,
       "votersWhoVoted": 5705861,
       "votingMethodTotals": {
         "C": 18215,
@@ -40,7 +50,9 @@
       "localFile": "data/nc-2024-turnout-denominator-lead.csv",
       "rows": 100,
       "votersWhoVoted": 5705861,
-      "registeredVoters": 7854464
+      "registeredVoters": 7854464,
+      "byteCount": 77198,
+      "sha256": "bab01f69f4ec47ef7c00c915bc211061ed8175d2d1a7428833620b403e98e34d"
     }
   },
   "officialPublicPageChecks": {
@@ -51,6 +63,8 @@
   },
   "eacBenchmark": {
     "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+    "byteCount": 28220,
+    "sha256": "2f6d17734e5e3da0593427943a37ae9667b6a9f956f827f311c01d6b070a99e5",
     "rows": 100,
     "ballotsCast": 5756106,
     "registeredVoters": 7854464,
@@ -61,7 +75,13 @@
   "caveats": [
     "NCSBE history_stats_20241105.zip reports voters who participated by county, precinct, voting method, and demographics; it does not contain candidate choices or ballot item results.",
     "NCSBE voter_stats_20241105.zip reports election-time registered-voter demographic counts by county and precinct; it is a denominator source, not a turnout numerator by itself.",
+    "The retained source files include 576 voter_stats rows and 142 history_stats rows with blank precinct/VTD identities; these are kept in their county aggregates under an explicit county-total sentinel and are never assigned to a precinct.",
     "The generated lead rows are county aggregates for source review and should not be used as same-grain precinct advisory inputs until precinct geometry/crosswalk and display semantics are reviewed.",
     "The statewide voter-history total is 50,245 below the EAC fallback ballots-cast total and 18,126 below the NCSBE turnout overview page's 2024 ballots-cast figure."
-  ]
+  ],
+  "replay": {
+    "command": "node scripts/normalize-nc-turnout.mjs --check",
+    "inputArtifactsHashPinned": true,
+    "outputArtifactsHashChecked": true
+  }
 }

@@ -925,7 +925,37 @@
           "sourceTitle": "North Carolina State Board of Elections 2024 General voter_stats and history_stats ZIPs",
           "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip; https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
           "localFile": "data/nc-2024-voter-stats.zip; data/nc-2024-history-stats.zip; data/nc-2024-turnout-denominator-lead.csv; data/nc-2024-turnout-source-review.json",
-          "parserHint": "Run node scripts/normalize-nc-turnout.mjs to aggregate voter_stats registered voters and history_stats voters who participated to 100 county lead rows and the source-review summary. Keep as lead only until numerator semantics are reviewed."
+          "parserHint": "Run node scripts/normalize-nc-turnout.mjs to verify pinned archive and ZIP-entry hashes, exact source row/key/method totals, and aggregate voter_stats registered voters and history_stats voters who participated to 100 county lead rows and the source-review summary. Replay without writes using node scripts/normalize-nc-turnout.mjs --check. Keep as lead only until numerator semantics are reviewed.",
+          "sourceReview": "data/nc-2024-turnout-source-review.json",
+          "replayCommand": "node scripts/normalize-nc-turnout.mjs --check",
+          "rawArtifacts": [
+            {
+              "localFile": "data/nc-2024-voter-stats.zip",
+              "byteCount": 6522548,
+              "sha256": "48685b14b1a58e07417fb8756778a8faf3e4d536228b4a9651d156be4a39fe6c",
+              "entry": "voter_stats_20241105.txt",
+              "entryByteCount": 48726474,
+              "entrySha256": "a2472e9c4e19504f259a2624eae028c0d3844cd7b986860be36987f40c0cfdfe"
+            },
+            {
+              "localFile": "data/nc-2024-history-stats.zip",
+              "byteCount": 4715895,
+              "sha256": "56305c7b7c84a2a58702e87e4a5dcd176ce50281f62b894b24af0b162a008085",
+              "entry": "history_stats_20241105.txt",
+              "entryByteCount": 88112050,
+              "entrySha256": "9360820ed58a370b767977a7a0e9adcca98cdfdc14ff7b8b8dfd3da18a55c641"
+            },
+            {
+              "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+              "byteCount": 28220,
+              "sha256": "2f6d17734e5e3da0593427943a37ae9667b6a9f956f827f311c01d6b070a99e5"
+            }
+          ],
+          "generatedLead": {
+            "localFile": "data/nc-2024-turnout-denominator-lead.csv",
+            "byteCount": 77198,
+            "sha256": "bab01f69f4ec47ef7c00c915bc211061ed8175d2d1a7428833620b403e98e34d"
+          }
         }
       },
       "expected": {

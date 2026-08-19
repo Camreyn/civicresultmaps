@@ -47,6 +47,11 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer North Carolina State Board of Elections turnout-denominator artifacts if equal or finer official detail is later sourced.",
+      "metadata": {
+        "sourceReview": "data/nc-2024-turnout-source-review.json",
+        "byteCount": 28220,
+        "sha256": "2f6d17734e5e3da0593427943a37ae9667b6a9f956f827f311c01d6b070a99e5"
+      },
       "status": "candidate"
     },
     {
@@ -58,6 +63,14 @@
       "authority": "North Carolina State Board of Elections",
       "timestampBasis": "Official NCSBE 2024 General election-time registered-voter stats ZIP linked from the voter registration data page.",
       "confidence": "Official county/precinct registered-voter denominator lead. The statewide registered-voter total matches the active EAC fallback denominator exactly, but this artifact is not a turnout numerator.",
+      "metadata": {
+        "sourceReview": "data/nc-2024-turnout-source-review.json",
+        "byteCount": 6522548,
+        "sha256": "48685b14b1a58e07417fb8756778a8faf3e4d536228b4a9651d156be4a39fe6c",
+        "entry": "voter_stats_20241105.txt",
+        "entryByteCount": 48726474,
+        "entrySha256": "a2472e9c4e19504f259a2624eae028c0d3844cd7b986860be36987f40c0cfdfe"
+      },
       "status": "loaded"
     },
     {
@@ -69,6 +82,14 @@
       "authority": "North Carolina State Board of Elections",
       "timestampBasis": "Official NCSBE 2024 General voter-history stats ZIP linked from the voter history and 2024 turnout pages.",
       "confidence": "Official grouped voter-history lead with county, precinct, voting-method, and demographic fields. Keep as a turnout lead until voter-history totals versus ballots-cast semantics are reviewed.",
+      "metadata": {
+        "sourceReview": "data/nc-2024-turnout-source-review.json",
+        "byteCount": 4715895,
+        "sha256": "56305c7b7c84a2a58702e87e4a5dcd176ce50281f62b894b24af0b162a008085",
+        "entry": "history_stats_20241105.txt",
+        "entryByteCount": 88112050,
+        "entrySha256": "9360820ed58a370b767977a7a0e9adcca98cdfdc14ff7b8b8dfd3da18a55c641"
+      },
       "status": "loaded"
     },
     {
@@ -80,6 +101,16 @@
       "authority": "North Carolina State Board of Elections",
       "timestampBasis": "Generated July 6, 2026 from official NCSBE voter_stats_20241105.zip and history_stats_20241105.zip.",
       "confidence": "Documents that NCSBE voter_stats improves denominator provenance while history_stats remains a lead because its statewide voter total is below both EAC ballots cast and the NCSBE turnout overview ballots-cast figure.",
+      "metadata": {
+        "generatedFrom": [
+          "data/nc-2024-voter-stats.zip",
+          "data/nc-2024-history-stats.zip",
+          "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv"
+        ],
+        "leadByteCount": 77198,
+        "leadSha256": "bab01f69f4ec47ef7c00c915bc211061ed8175d2d1a7428833620b403e98e34d",
+        "replayCommand": "node scripts/normalize-nc-turnout.mjs --check"
+      },
       "status": "loaded"
     },
     {
