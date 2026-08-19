@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-17T23:11:19.225Z",
+  "updatedAt": "2026-08-18T00:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2016-11-08-general",
@@ -670,7 +670,7 @@
       "programStatus": "reviewed",
       "wave": 14,
       "disposition": "partial",
-      "checkedAt": "2026-08-17T23:11:19.225Z",
+      "checkedAt": "2026-08-18T00:00:00.000Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_2_public_secondary"
@@ -712,11 +712,12 @@
         "sourceAliasResultUnits": 0
       },
       "blockers": [],
-      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
+      "nextAction": "Keep the published exact-vector subset immutable while collecting official county evidence for the 1,158 excluded source units; any expansion requires a separate source, terms, delivery, and guarded release review.",
       "notes": [
         "8,014 VEST polygons match 8,018 complete official DOS source units by unique county-qualified VTD identity and exact complete presidential candidate vector.",
         "1,158 official source units totaling 782,683 votes remain excluded, and 1,153 polygons remain reviewed no-data features.",
         "Every election-value attribute is stripped from geometry; only DOS votes can be displayed.",
+        "The reviewed partial package is public at revision 27 through immutable parent-scoped delivery.",
         "The retained official source universe contains 9,176 reporting units and 6,114,296 presidential candidate votes.",
         "Each election retains its own boundary evidence and is not treated as stable cross-election precinct geography."
       ]

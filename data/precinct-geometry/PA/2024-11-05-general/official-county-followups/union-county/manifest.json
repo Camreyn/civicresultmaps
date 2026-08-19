@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "pa-2024-union-county-official-precinct-geometry-candidate-v1",
+  "state": "PA",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "geography": {
+    "level": "precinct",
+    "parentLevel": "county",
+    "boundaryVintage": "Union County official Voting Precincts 2024-09 archive (2024-09-05 archive evidence; 2021-10-12 feature metadata)",
+    "vintageStatus": "unknown",
+    "derivationMethod": "official_export"
+  },
+  "source": {
+    "authority": "Union County, Pennsylvania, distributed by Pennsylvania Spatial Data Access (PASDA)",
+    "url": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994",
+    "retrievedAt": "2026-08-18T00:00:00.000Z",
+    "artifact": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/source-evidence.json",
+    "sha256": "e2d0221e2875c7461c0a100a68a949e524cc990350ceab2a3b5a463a335068a6",
+    "byteCount": 22059,
+    "format": "precinct-source-evidence+json",
+    "licenseOrTerms": "The retained PASDA metadata provides an as-is warranty and indemnity disclaimer but no explicit open-data license; preserve Union County/PASDA attribution and complete a terms review before public delivery."
+  },
+  "normalization": {
+    "script": "scripts/collect-pa-union-county-precinct-geometry.mjs",
+    "sourceCrs": "NAD 1983 StatePlane Pennsylvania North FIPS 3701 Feet (EPSG:2271)",
+    "servedCrs": "EPSG:4326",
+    "artifact": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/normalized/pa-2024-union-county-precincts-candidate.geojson.gz",
+    "sha256": "6a398f9f308a8df88d874bca91fdab9fcddaef808109cadccbef7cdbc2824d2b",
+    "byteCount": 287247,
+    "featureCount": 27,
+    "sourceFeatureIdFields": [
+      "CRM_FEATURE_ID"
+    ],
+    "parentIdFields": [
+      "CRM_PARENT_GEOID"
+    ]
+  },
+  "crosswalk": {
+    "status": "reviewed",
+    "resultSourceId": "pa-dos-2024-general-precinct-results",
+    "artifact": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/crosswalk/pa-2024-union-county-result-to-geometry-review.json",
+    "sha256": "1993c3245bef54b574a82739bdd9a3407f8a7d6cde58b0879626234baca8ab98",
+    "byteCount": 23088,
+    "resultUnits": 27,
+    "colorableResultUnits": 27,
+    "matchedResultUnits": 27,
+    "unmatchedResultUnits": 0,
+    "nonGeographicResultUnits": 0,
+    "sourceAliasResultUnits": 0,
+    "relationships": {
+      "oneToOne": 27,
+      "oneToMany": 0,
+      "manyToOne": 0,
+      "unmatched": 0,
+      "nonGeographic": 0,
+      "sourceAlias": 0,
+      "pendingReview": 0
+    },
+    "reviewedRelationshipRecords": 27,
+    "reviewedNoDataFeatures": 0,
+    "methods": [
+      "reviewed_name"
+    ]
+  },
+  "validation": {
+    "status": "blocked",
+    "geometryValid": true,
+    "rowLevelRenderingSafe": false,
+    "parentTotalsReconciled": true,
+    "resultTotalsReconciled": true,
+    "errors": [
+      "This reviewed package covers Union County only; statewide Pennsylvania geometry coverage remains incomplete.",
+      "An immutable parent-scoped public delivery package and guarded release review have not been completed.",
+      "The pre-election archive export and complete name match do not independently establish that the polygon boundaries were effective on Election Day.",
+      "PASDA metadata does not state an explicit open-data license; terms review is required before delivery."
+    ],
+    "warnings": [
+      "All 27 official 2024 Union County presidential result units match one unique official county polygon by the complete normalized-name universe.",
+      "Union County PRECINCTID is retained as geometry identity but is not treated as the DOS Precinct Code.",
+      "No geometry-source election value is retained or assigned; all result totals come only from the official Pennsylvania Department of State artifact."
+    ]
+  },
+  "delivery": null,
+  "caveats": [
+    "This is a complete reviewed Union County package, not a complete statewide Pennsylvania package.",
+    "The crosswalk uses a unique complete county-scoped normalized-name bijection. Union County PRECINCTID and Pennsylvania Department of State Precinct Code are different identity systems and are never equated.",
+    "Geometry-source attributes that could be mistaken for election values are stripped; displayed vote values must continue to come only from the official Pennsylvania Department of State result artifact.",
+    "The 2024 archive was exported before Election Day and its complete name universe matches the official results, but embedded feature SyncDate/ModDate values remain 2021-10-12; Election Day boundary effectiveness is not independently established.",
+    "The PASDA metadata provides an as-is warranty and indemnity disclaimer but no explicit open-data license; public delivery remains blocked pending terms review and a separate guarded release."
+  ]
+}

@@ -2,16 +2,17 @@
   "schemaVersion": 1,
   "state": "PA",
   "stateName": "Pennsylvania",
-  "reviewedAt": "2026-08-16T18:00:00.000Z",
-  "purpose": "Four-election precinct-boundary source inventory and fail-closed implementation record. It distinguishes official result authority from geometry custody, records every excluded result unit, and authorizes no public delivery or production change.",
+  "reviewedAt": "2026-08-18T00:00:00.000Z",
+  "purpose": "Four-election precinct-boundary source inventory, published-partial record, and official-county follow-up ledger. It distinguishes official result authority from geometry custody, records every excluded result unit, and keeps new candidate packages fail-closed until a separate guarded release.",
   "policy": {
     "resultAuthority": "Pennsylvania Department of State",
     "canonicalResultIdentity": "County Code plus Precinct Code",
     "vtdUse": "The county-qualified VTD field is crosswalk metadata only. It never replaces the official result identity.",
     "aggregationRule": "A polygon may display only the sum of complete official DOS source units sharing its unique county-qualified VTD when every presidential candidate value matches the geometry source's complete candidate vector exactly.",
+    "officialCountyCrosswalkRule": "An official county snapshot may supplement a reviewed election package only when election-date applicability is established and the complete county-scoped result and geometry identity universes form a unique reviewed bijection. County geometry identifiers are never silently equated with DOS Precinct Codes.",
     "allocationRule": "No vote may be estimated, proportionally distributed, spatially allocated, or copied from a geometry source.",
     "geometryValueRule": "All geometry-source election-value fields are stripped before normalization.",
-    "releaseRule": "Source-package review and merge must precede a separate guarded delivery/release change. The manifest registry remains unchanged and every Pennsylvania manifest has delivery=null."
+    "releaseRule": "The reviewed partial 2016 and 2020 packages are published through separate immutable delivery manifests. Every new county follow-up remains validation.status=blocked with delivery=null until a separately reviewed release proves package, terms, delivery, database, and rollback safety."
   },
   "elections": [
     {
@@ -50,7 +51,7 @@
       "year": 2016,
       "electionId": "2016-11-08-general",
       "manifest": "data/precinct-geometry/PA/2016-11-08-general/manifest.json",
-      "status": "reviewed_partial_candidate_delivery_blocked",
+      "status": "published_reviewed_partial",
       "officialResults": {
         "localArtifactPath": "data/pa-2016-general-election-returns-precinct.txt",
         "byteCount": 29062839,
@@ -81,13 +82,22 @@
       "excludedVotes": 782683,
       "reviewedNoDataFeatures": 1153,
       "reconciledCountyParents": 67,
-      "blocker": "The retained independent review could not fully reproduce VEST's joins. Only the exact-vector subset is accepted, and immutable delivery plus guarded release remain separate work."
+      "publicDelivery": {
+        "status": "published_reviewed_partial",
+        "registry": "data/precinct-geometry-manifests.json",
+        "publicRevision": 27,
+        "publishedFeatures": 9167,
+        "publishedResultUnits": 8014,
+        "publishedCandidateRows": 24042,
+        "publishedVotes": 5331613
+      },
+      "remainingLimitation": "The retained independent review could not fully reproduce VEST's joins. The live package therefore remains the exact-vector subset, with 1,158 official units and 782,683 votes excluded and unallocated."
     },
     {
       "year": 2020,
       "electionId": "2020-11-03-general",
       "manifest": "data/precinct-geometry/PA/2020-11-03-general/manifest.json",
-      "status": "reviewed_partial_candidate_delivery_blocked",
+      "status": "published_reviewed_partial_with_official_union_candidate",
       "officialResults": {
         "localArtifactPath": "data/pa-2020-general-election-returns-precinct.txt",
         "byteCount": 28738883,
@@ -127,13 +137,44 @@
           "reason": "No Pike result unit passed the unique county-qualified VTD and exact complete-candidate-vector rule."
         }
       ],
-      "blocker": "The exact-vector subset is incomplete statewide. Immutable delivery plus guarded release remain separate work and may not expand this crosswalk without new evidence."
+      "publicDelivery": {
+        "status": "published_reviewed_partial",
+        "registry": "data/precinct-geometry-manifests.json",
+        "publicRevision": 27,
+        "publishedFeatures": 9150,
+        "publishedResultUnits": 6805,
+        "publishedCandidateRows": 20415,
+        "publishedVotes": 5370341
+      },
+      "officialCountyFollowup": {
+        "authority": "Union County, Pennsylvania, distributed by Pennsylvania Spatial Data Access (PASDA)",
+        "sourceUrl": "https://www.pasda.psu.edu/download/unioncounty/historic/UnionCounty_VotingPrecincts/UnionCounty_VotingPrecincts202010.zip",
+        "localArtifactPath": "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/raw/pasda/UnionCounty_VotingPrecincts202010.zip",
+        "byteCount": 193925,
+        "sha256": "4dfac59077195d7eefdf29dc137d820caac14888f3290a242553efc8637df36b",
+        "manifest": "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/manifest.json",
+        "status": "reviewed_county_candidate_delivery_blocked",
+        "sourceSnapshotDate": "2020-09-24",
+        "featureMetadataDate": "2020-09-24",
+        "vintageStatus": "election_date_confirmed",
+        "normalizedFeatures": 27,
+        "matchedResultUnits": 27,
+        "officialCountyVotes": 20115,
+        "currentPublishedMappedUnits": 25,
+        "currentPublishedMappedVotes": 19077,
+        "candidateAdditionalUnits": 2,
+        "candidateAdditionalVotes": 1038,
+        "parserNormalizationPath": "scripts/collect-pa-union-county-precinct-geometry.mjs",
+        "crosswalkMethod": "complete unique county-scoped reviewed-name bijection; Union County PRECINCTID is not treated as DOS Precinct Code",
+        "delivery": null
+      },
+      "remainingLimitation": "The live exact-vector subset remains incomplete statewide. The reviewed Union County candidate can account for two currently excluded units and 1,038 votes, but it is not public and cannot expand the live crosswalk without separate terms and release review."
     },
     {
       "year": 2024,
       "electionId": "2024-11-05-general",
       "manifest": "data/precinct-geometry/PA/2024-11-05-general/manifest.json",
-      "status": "blocked",
+      "status": "blocked_statewide_with_reviewed_union_county_candidate",
       "officialResults": {
         "localArtifactPath": "data/pa-2024-general-election-returns-precinct.txt",
         "byteCount": 42907408,
@@ -161,7 +202,27 @@
       "mappedResultRows": 0,
       "excludedSourceUnits": 9187,
       "excludedVotes": 7031737,
-      "blocker": "The LRC layer reflects corrections through December 31, 2020 and does not establish the precinct configuration in effect on November 5, 2024."
+      "officialCountyFollowup": {
+        "authority": "Union County, Pennsylvania, distributed by Pennsylvania Spatial Data Access (PASDA)",
+        "sourceUrl": "https://www.pasda.psu.edu/download/unioncounty/historic/UnionCounty_VotingPrecincts/UnionCounty_VotingPrecincts202409.zip",
+        "localArtifactPath": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/raw/pasda/UnionCounty_VotingPrecincts202409.zip",
+        "byteCount": 196170,
+        "sha256": "54a9e631a5b8b6af4cfdc747081414e0a9a9d40d331966476d2e006718604c24",
+        "manifest": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/manifest.json",
+        "status": "reviewed_name_candidate_vintage_and_delivery_blocked",
+        "sourceExportDate": "2024-09-05",
+        "featureMetadataDate": "2021-10-12",
+        "vintageStatus": "unknown",
+        "normalizedFeatures": 27,
+        "matchedResultUnits": 27,
+        "officialCountyVotes": 21188,
+        "remainingStatewideSourceUnits": 9160,
+        "remainingStatewideVotes": 7010549,
+        "parserNormalizationPath": "scripts/collect-pa-union-county-precinct-geometry.mjs",
+        "crosswalkMethod": "complete unique county-scoped reviewed-name bijection; Union County PRECINCTID is not treated as DOS Precinct Code",
+        "delivery": null
+      },
+      "blocker": "The statewide LRC layer reflects corrections through December 31, 2020 and does not establish the precinct configuration in effect on November 5, 2024. The official Union County archive has a 2024-09-05 export lineage but embedded feature SyncDate/ModDate values remain 2021-10-12, so Election Day boundary effectiveness is not independently established. That candidate covers 27 units only; the other 9,160 units and 7,010,549 votes remain without reviewed election-effective geometry."
     }
   ],
   "sourceLeads": [
@@ -227,8 +288,8 @@
       "authority": "Union County through Pennsylvania Spatial Data Access",
       "sourceUrl": "https://www.pasda.psu.edu/download/unioncounty/historic/UnionCounty_VotingPrecincts/",
       "sourceType": "county historical snapshot archive",
-      "status": "promising_not_collected",
-      "role": "county-specific 2020 and 2024 archive lead pending identifier and effective-date review"
+      "status": "collected_reviewed_candidate_delivery_blocked",
+      "role": "Official Union County archives for 2020 and 2024; each has 27 polygons and a complete unique reviewed-name bijection to all 27 DOS county result units. The 2020 feature metadata confirms the pre-election vintage. The 2024 archive has a pre-election export lineage but 2021 feature metadata, so its election-date applicability remains unknown. Both packages remain delivery-null pending terms and release review."
     }
   ],
   "countyCollectionPlan": {
@@ -239,7 +300,7 @@
       "Request election-effective 2012 and 2024 precinct polygon archives and data dictionaries from all 67 county election/GIS offices.",
       "Request authoritative crosswalk fields connecting county geometry IDs to DOS County Code plus Precinct Code, including municipality, ward, district, MCD, FIPS, VTD, and split identifiers.",
       "Request 2016 and 2020 historical archives where the retained exact-vector package excludes result units, prioritizing Pike County for 2020.",
-      "Review Union County's dated archive and Bucks County's May 2024 source first, but do not infer election applicability from publication month alone.",
+      "Use the retained Union County 2020/2024 packages as the reviewed official-county pattern; continue Bucks and other county work only when election applicability, completeness, identifiers, and terms can be proven.",
       "Retain current York and DEP services only as diagnostics unless authoritative election-date applicability and an identifier crosswalk are supplied."
     ],
     "requiredResponseFields": [
@@ -258,8 +319,8 @@
   "remainingRisks": [
     "The 2016 and 2020 secondary geometry source carries an independent-review limitation; exact candidate-vector equality reduces but does not erase source-method uncertainty.",
     "The partial 2016 and 2020 packages intentionally leave material official vote totals without polygons.",
-    "No complete election-effective source is retained for 2012 or 2024.",
+    "No complete election-effective statewide source is retained for 2012 or 2024; the reviewed-name 2024 Union County candidate covers only 27 of 9,187 official source units, and its 2021 feature metadata does not independently establish November 2024 boundary effectiveness.",
     "Precinct boundaries and identifiers change over time; no package may be reused across election years without separate evidence.",
-    "No Pennsylvania package is in the public manifest registry, has immutable delivery, or changes current county-level production maps."
+    "The reviewed partial 2016 and 2020 packages are public at revision 27. The Union County follow-ups are separate candidate manifests with delivery=null and do not alter the live registry, database, Blob objects, or current 2024 county-level map."
   ]
 }

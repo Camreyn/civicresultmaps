@@ -19,6 +19,32 @@ const COVERAGE_PATHS = Object.freeze([
   [2016, "data/precinct-geometry-coverage-inventory-2016.json"],
   [2020, "data/precinct-geometry-coverage-inventory-2020.json"],
 ]);
+const COVERAGE_FOLLOWUPS = Object.freeze({
+  2020: Object.freeze({
+    officialSourceLead:
+      "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994",
+    retainedArtifacts: Object.freeze([
+      "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/source-evidence.json",
+      "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/normalized/pa-2020-union-county-precincts-candidate.geojson.gz",
+      "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/crosswalk/pa-2020-union-county-result-to-geometry-review.json",
+    ]),
+    geometry: Object.freeze({
+      manifestId:
+        "pa-2020-union-county-official-precinct-geometry-candidate-v1",
+      manifestPath:
+        "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/manifest.json",
+      featureCount: 27,
+      matchedResultUnits: 27,
+      vintageStatus: "election_date_confirmed",
+      validationStatus: "blocked",
+      delivery: null,
+    }),
+    crosswalk: Object.freeze({
+      resultUnits: 27,
+      matchedResultUnits: 27,
+    }),
+  }),
+});
 
 export function sha256(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
@@ -236,6 +262,7 @@ function recomputeCoverageSummary(value) {
 }
 
 function pennsylvaniaCoverageRow(manifest, activatedAtUtc) {
+  const followup = COVERAGE_FOLLOWUPS[manifest.election.year];
   return {
     state: "PA",
     stateName: "Pennsylvania",
@@ -250,20 +277,23 @@ function pennsylvaniaCoverageRow(manifest, activatedAtUtc) {
     resultReportingGrains: ["precinct"],
     generalOfficialSourceLeads: [
       "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+      ...(followup ? [followup.officialSourceLead] : []),
     ],
     geometry: {
-      manifestIds: [manifest.id],
-      officialSourceLeads: [],
+      manifestIds: [manifest.id, followup?.geometry.manifestId].filter(Boolean),
+      officialSourceLeads: followup ? [followup.officialSourceLead] : [],
       secondarySourceLeads: [manifest.source.url],
       retainedArtifacts: [
         manifest.source.artifact,
         manifest.normalization.artifact,
         manifest.crosswalk.artifact,
+        ...(followup?.retainedArtifacts ?? []),
       ],
       levels: [manifest.geography.level],
       vintageStatuses: [manifest.geography.vintageStatus],
       featureCount: manifest.normalization.featureCount,
       publicEligibleManifestCount: 1,
+      ...(followup ? { candidateFollowup: followup.geometry } : {}),
     },
     crosswalk: {
       resultUnits: manifest.crosswalk.resultUnits,
@@ -272,6 +302,7 @@ function pennsylvaniaCoverageRow(manifest, activatedAtUtc) {
       unmatchedResultUnits: manifest.crosswalk.unmatchedResultUnits,
       nonGeographicResultUnits: manifest.crosswalk.nonGeographicResultUnits,
       sourceAliasResultUnits: manifest.crosswalk.sourceAliasResultUnits,
+      ...(followup ? { candidateFollowup: followup.crosswalk } : {}),
     },
     blockers: [],
     nextAction:
@@ -302,13 +333,34 @@ function updateCoverage(root, manifest, relativePath, activatedAtUtc) {
     const currentEligible = Number(
       row.geometry?.publicEligibleManifestCount,
     );
+    const expectedFollowup = COVERAGE_FOLLOWUPS[manifest.election.year];
+    const expectedManifestIds = [
+      manifest.id,
+      expectedFollowup?.geometry.manifestId,
+    ].filter(Boolean);
+    const expectedRetainedArtifacts = [
+      manifest.source.artifact,
+      manifest.normalization.artifact,
+      manifest.crosswalk.artifact,
+      ...(expectedFollowup?.retainedArtifacts ?? []),
+    ];
     if (
       row.electionId !== manifest.election.id
       || row.programStatus !== "reviewed"
       || row.disposition !== "partial"
-      || !Array.isArray(row.geometry?.manifestIds)
-      || row.geometry.manifestIds.length !== 1
-      || row.geometry.manifestIds[0] !== manifest.id
+      || !semanticallyEqual(row.geometry?.manifestIds, expectedManifestIds)
+      || !semanticallyEqual(
+        row.geometry?.candidateFollowup,
+        expectedFollowup?.geometry,
+      )
+      || !semanticallyEqual(
+        row.crosswalk?.candidateFollowup,
+        expectedFollowup?.crosswalk,
+      )
+      || !semanticallyEqual(
+        row.geometry?.retainedArtifacts,
+        expectedRetainedArtifacts,
+      )
       || row.geometry.featureCount !== manifest.normalization.featureCount
       || !semanticallyEqual(
         row.geometry.levels,
@@ -335,7 +387,7 @@ function updateCoverage(root, manifest, relativePath, activatedAtUtc) {
         "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
     };
     if (currentEligible === 1) {
-      if (!semanticallyEqual(row, expectedRow)) {
+      if (!Array.isArray(row.blockers) || row.blockers.length !== 0) {
         throw new Error(relativePath + " contains a partial Pennsylvania activation");
       }
       disposition = "verified_existing";

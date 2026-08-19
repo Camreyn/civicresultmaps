@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-17T23:11:19.225Z",
+  "updatedAt": "2026-08-18T00:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2020-11-03-general",
@@ -672,7 +672,7 @@
       "programStatus": "reviewed",
       "wave": 14,
       "disposition": "partial",
-      "checkedAt": "2026-08-17T23:11:19.225Z",
+      "checkedAt": "2026-08-18T00:00:00.000Z",
       "sourceTiers": [
         "tier_1_official_export_database",
         "tier_2_public_secondary"
@@ -681,20 +681,27 @@
         "precinct"
       ],
       "generalOfficialSourceLeads": [
-        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data"
+        "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+        "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994"
       ],
       "geometry": {
         "manifestIds": [
-          "pa-2020-11-03-reviewed-precinct-geometry-v1"
+          "pa-2020-11-03-reviewed-precinct-geometry-v1",
+          "pa-2020-union-county-official-precinct-geometry-candidate-v1"
         ],
-        "officialSourceLeads": [],
+        "officialSourceLeads": [
+          "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994"
+        ],
         "secondarySourceLeads": [
           "https://election.lab.ufl.edu/dataset/pa-2020-precinct-level-election-results/"
         ],
         "retainedArtifacts": [
           "data/precinct-geometry/PA/2020-11-03-general/source-evidence.json",
           "data/precinct-geometry/PA/2020-11-03-general/normalized/pa-2020-reviewed-precinct-geometry.geojson.gz",
-          "data/precinct-geometry/PA/2020-11-03-general/crosswalk/pa-2020-result-to-geometry-review.json"
+          "data/precinct-geometry/PA/2020-11-03-general/crosswalk/pa-2020-result-to-geometry-review.json",
+          "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/source-evidence.json",
+          "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/normalized/pa-2020-union-county-precincts-candidate.geojson.gz",
+          "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/crosswalk/pa-2020-union-county-result-to-geometry-review.json"
         ],
         "levels": [
           "precinct"
@@ -703,7 +710,16 @@
           "election_date_confirmed"
         ],
         "featureCount": 9150,
-        "publicEligibleManifestCount": 1
+        "publicEligibleManifestCount": 1,
+        "candidateFollowup": {
+          "manifestId": "pa-2020-union-county-official-precinct-geometry-candidate-v1",
+          "manifestPath": "data/precinct-geometry/PA/2020-11-03-general/official-county-followups/union-county/manifest.json",
+          "featureCount": 27,
+          "matchedResultUnits": 27,
+          "vintageStatus": "election_date_confirmed",
+          "validationStatus": "blocked",
+          "delivery": null
+        }
       },
       "crosswalk": {
         "resultUnits": 6805,
@@ -711,15 +727,20 @@
         "matchedResultUnits": 6805,
         "unmatchedResultUnits": 0,
         "nonGeographicResultUnits": 0,
-        "sourceAliasResultUnits": 0
+        "sourceAliasResultUnits": 0,
+        "candidateFollowup": {
+          "resultUnits": 27,
+          "matchedResultUnits": 27
+        }
       },
       "blockers": [],
-      "nextAction": "Keep both guarded public APIs closed until the reviewed hidden load, immutable Blob publication, deployment-origin verification, and atomic database publication are complete.",
+      "nextAction": "Keep the published exact-vector subset immutable while reviewing official county expansions separately. The Union County candidate can add two source units and 1,038 votes only after PASDA terms and guarded release review.",
       "notes": [
         "6,805 VEST polygons match 6,827 complete official DOS source units by unique county-qualified VTD identity and exact complete presidential candidate vector.",
         "2,360 official source units totaling 1,545,703 votes remain excluded, and 2,345 polygons remain reviewed no-data features.",
         "Pike County (GEOID 42103) has no accepted relationship: all 18 official units totaling 32,554 votes remain excluded.",
         "Every election-value attribute is stripped from geometry; only DOS votes can be displayed.",
+        "The reviewed partial package is public at revision 27. A separate delivery-null official Union County candidate covers all 27 county units and identifies two units/1,038 votes beyond the live package.",
         "The retained official source universe contains 9,187 reporting units and 6,916,044 presidential candidate votes.",
         "Each election retains its own boundary evidence and is not treated as stable cross-election precinct geography."
       ]

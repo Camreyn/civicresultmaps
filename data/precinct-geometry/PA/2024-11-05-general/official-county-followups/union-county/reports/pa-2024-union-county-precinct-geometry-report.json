@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "state": "PA",
+  "electionId": "2024-11-05-general",
+  "generatedAt": "2026-08-18T00:00:00.000Z",
+  "disposition": "reviewed_union_county_candidate_delivery_blocked",
+  "parentGeoid": "42119",
+  "sourceFeatureCount": 27,
+  "resultUnitCount": 27,
+  "colorableResultUnits": 27,
+  "matchedResultUnits": 27,
+  "unmatchedResultUnits": 0,
+  "reviewedRelationshipRecords": 27,
+  "directIdEqualityUsed": false,
+  "officialCountyTotals": {
+    "democratic": 8015,
+    "republican": 12969,
+    "other": 204,
+    "total": 21188
+  },
+  "canonicalPackageComparison": {
+    "manifestId": "pa-2024-11-05-precinct-geometry-unavailable-v1",
+    "resultArtifact": "data/precinct-geometry/PA/2024-11-05-general/normalized/pa-2024-president-results.json.gz",
+    "resultArtifactSha256": "7b529262d0dac7991cdbdefc96348d167ee7448597d6b22a5560c7267b6cfcb0",
+    "resultArtifactByteCount": 267195,
+    "mappedResultUnits": 0,
+    "mappedTotals": {
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0
+    },
+    "excludedResultUnits": 27,
+    "excludedTotals": {
+      "democratic": 8015,
+      "republican": 12969,
+      "other": 204,
+      "total": 21188
+    },
+    "candidateAdditionalResultUnits": 27,
+    "candidateAdditionalTotals": {
+      "democratic": 8015,
+      "republican": 12969,
+      "other": 204,
+      "total": 21188
+    },
+    "candidateAdditionalRows": [
+      {
+        "sourceUnitId": "0000010",
+        "sourceDisplayName": "BUFFALO X 1 1",
+        "democratic": 344,
+        "republican": 973,
+        "other": 15,
+        "total": 1332
+      },
+      {
+        "sourceUnitId": "0000020",
+        "sourceDisplayName": "BUFFALO X 2 2",
+        "democratic": 113,
+        "republican": 351,
+        "other": 3,
+        "total": 467
+      },
+      {
+        "sourceUnitId": "0000030",
+        "sourceDisplayName": "EAST BUFFALO X 1 1",
+        "democratic": 686,
+        "republican": 584,
+        "other": 19,
+        "total": 1289
+      },
+      {
+        "sourceUnitId": "0000040",
+        "sourceDisplayName": "EAST BUFFALO X 2 2",
+        "democratic": 795,
+        "republican": 462,
+        "other": 7,
+        "total": 1264
+      },
+      {
+        "sourceUnitId": "0000050",
+        "sourceDisplayName": "EAST BUFFALO X 3 3",
+        "democratic": 664,
+        "republican": 503,
+        "other": 6,
+        "total": 1173
+      },
+      {
+        "sourceUnitId": "0000060",
+        "sourceDisplayName": "EAST BUFFALO X 4 4",
+        "democratic": 496,
+        "republican": 304,
+        "other": 2,
+        "total": 802
+      },
+      {
+        "sourceUnitId": "0000070",
+        "sourceDisplayName": "GREGG",
+        "democratic": 81,
+        "republican": 361,
+        "other": 2,
+        "total": 444
+      },
+      {
+        "sourceUnitId": "0000080",
+        "sourceDisplayName": "HARTLETON",
+        "democratic": 18,
+        "republican": 99,
+        "other": 0,
+        "total": 117
+      },
+      {
+        "sourceUnitId": "0000090",
+        "sourceDisplayName": "HARTLEY",
+        "democratic": 160,
+        "republican": 773,
+        "other": 8,
+        "total": 941
+      },
+      {
+        "sourceUnitId": "0000100",
+        "sourceDisplayName": "KELLY X 1 1",
+        "democratic": 554,
+        "republican": 824,
+        "other": 15,
+        "total": 1393
+      },
+      {
+        "sourceUnitId": "0000110",
+        "sourceDisplayName": "KELLY X 2 2",
+        "democratic": 136,
+        "republican": 227,
+        "other": 4,
+        "total": 367
+      },
+      {
+        "sourceUnitId": "0000120",
+        "sourceDisplayName": "LEWIS",
+        "democratic": 83,
+        "republican": 568,
+        "other": 6,
+        "total": 657
+      },
+      {
+        "sourceUnitId": "0000130",
+        "sourceDisplayName": "LEWISBURG W 1 1",
+        "democratic": 308,
+        "republican": 122,
+        "other": 8,
+        "total": 438
+      },
+      {
+        "sourceUnitId": "0000140",
+        "sourceDisplayName": "LEWISBURG W 2 2",
+        "democratic": 390,
+        "republican": 133,
+        "other": 4,
+        "total": 527
+      },
+      {
+        "sourceUnitId": "0000150",
+        "sourceDisplayName": "LEWISBURG W 3 3",
+        "democratic": 770,
+        "republican": 381,
+        "other": 5,
+        "total": 1156
+      },
+      {
+        "sourceUnitId": "0000160",
+        "sourceDisplayName": "LEWISBURG W 4 4",
+        "democratic": 369,
+        "republican": 277,
+        "other": 9,
+        "total": 655
+      },
+      {
+        "sourceUnitId": "0000170",
+        "sourceDisplayName": "LIMESTONE",
+        "democratic": 166,
+        "republican": 655,
+        "other": 10,
+        "total": 831
+      },
+      {
+        "sourceUnitId": "0000180",
+        "sourceDisplayName": "MIFFLINBURG X EAST EAST",
+        "democratic": 332,
+        "republican": 716,
+        "other": 8,
+        "total": 1056
+      },
+      {
+        "sourceUnitId": "0000190",
+        "sourceDisplayName": "MIFFLINBURG X WEST WEST",
+        "democratic": 242,
+        "republican": 613,
+        "other": 5,
+        "total": 860
+      },
+      {
+        "sourceUnitId": "0000200",
+        "sourceDisplayName": "NEW BERLIN",
+        "democratic": 113,
+        "republican": 323,
+        "other": 8,
+        "total": 444
+      },
+      {
+        "sourceUnitId": "0000210",
+        "sourceDisplayName": "UNION",
+        "democratic": 366,
+        "republican": 606,
+        "other": 12,
+        "total": 984
+      },
+      {
+        "sourceUnitId": "0000215",
+        "sourceDisplayName": "UNION INDEPENDENT",
+        "democratic": 22,
+        "republican": 36,
+        "other": 0,
+        "total": 58
+      },
+      {
+        "sourceUnitId": "0000220",
+        "sourceDisplayName": "WEST BUFFALO",
+        "democratic": 288,
+        "republican": 1189,
+        "other": 18,
+        "total": 1495
+      },
+      {
+        "sourceUnitId": "0000230",
+        "sourceDisplayName": "WHITE DEER X 1 1",
+        "democratic": 152,
+        "republican": 593,
+        "other": 7,
+        "total": 752
+      },
+      {
+        "sourceUnitId": "0000240",
+        "sourceDisplayName": "WHITE DEER X 2 2",
+        "democratic": 153,
+        "republican": 612,
+        "other": 11,
+        "total": 776
+      },
+      {
+        "sourceUnitId": "0000250",
+        "sourceDisplayName": "WHITE DEER X 3 3",
+        "democratic": 110,
+        "republican": 401,
+        "other": 9,
+        "total": 520
+      },
+      {
+        "sourceUnitId": "0000260",
+        "sourceDisplayName": "WHITE DEER X 4 4",
+        "democratic": 104,
+        "republican": 283,
+        "other": 3,
+        "total": 390
+      }
+    ]
+  },
+  "statewideScope": {
+    "officialSourceUnits": 9187,
+    "candidatePackageSourceUnits": 27,
+    "remainingSourceUnits": 9160,
+    "officialStatewideVotes": 7031737,
+    "candidatePackageVotes": 21188,
+    "remainingVotes": 7010549
+  },
+  "reconciliation": {
+    "status": "passed",
+    "scopes": [
+      {
+        "scopeType": "parent",
+        "scopeId": "42119",
+        "resultTotals": {
+          "democratic": 8015,
+          "republican": 12969,
+          "other": 204,
+          "total": 21188
+        },
+        "mappedTotals": {
+          "democratic": 8015,
+          "republican": 12969,
+          "other": 204,
+          "total": 21188
+        },
+        "deltas": {
+          "democratic": 0,
+          "republican": 0,
+          "other": 0,
+          "total": 0
+        }
+      }
+    ],
+    "caveat": "This reconciliation proves the reviewed Union County package only. It does not imply statewide Pennsylvania geometry coverage."
+  },
+  "votesAssignedFromGeometry": 0,
+  "delivery": null,
+  "caveats": [
+    "This is a complete reviewed Union County package, not a complete statewide Pennsylvania package.",
+    "The crosswalk uses a unique complete county-scoped normalized-name bijection. Union County PRECINCTID and Pennsylvania Department of State Precinct Code are different identity systems and are never equated.",
+    "Geometry-source attributes that could be mistaken for election values are stripped; displayed vote values must continue to come only from the official Pennsylvania Department of State result artifact.",
+    "The 2024 archive was exported before Election Day and its complete name universe matches the official results, but embedded feature SyncDate/ModDate values remain 2021-10-12; Election Day boundary effectiveness is not independently established.",
+    "The PASDA metadata provides an as-is warranty and indemnity disclaimer but no explicit open-data license; public delivery remains blocked pending terms review and a separate guarded release."
+  ]
+}

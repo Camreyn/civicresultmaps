@@ -422,7 +422,7 @@ test(
 );
 
 test(
-  "Pennsylvania coverage ledgers expose only reviewed partial years as publicly eligible",
+  "Pennsylvania coverage ledgers expose only reviewed partial years publicly while retaining fail-closed county candidates",
   () => {
     const inventories = new Map([
       [2012, "data/precinct-geometry-coverage-inventory-2012.json"],
@@ -439,7 +439,15 @@ test(
       assert.equal(row.electionId, spec.electionId);
       assert.equal(row.programStatus, "reviewed");
       assert.equal(row.disposition, spec.disposition);
-      assert.deepEqual(row.geometry.manifestIds, [spec.manifestId]);
+      const candidateManifestId = [2020, 2024].includes(spec.year)
+        ? `pa-${spec.year}-union-county-official-precinct-geometry-candidate-v1`
+        : null;
+      assert.deepEqual(
+        row.geometry.manifestIds,
+        candidateManifestId
+          ? [spec.manifestId, candidateManifestId]
+          : [spec.manifestId],
+      );
       assert.equal(row.geometry.featureCount, spec.features);
       assert.equal(
         row.geometry.publicEligibleManifestCount,
@@ -450,6 +458,20 @@ test(
         spec.safe ? spec.mappedRows : spec.sourceUnits,
       );
       assert.equal(row.crosswalk.matchedResultUnits, spec.mappedRows);
+      if (candidateManifestId) {
+        assert.equal(
+          row.geometry.candidateFollowup.manifestId,
+          candidateManifestId,
+        );
+        assert.equal(row.geometry.candidateFollowup.featureCount, 27);
+        assert.equal(row.geometry.candidateFollowup.matchedResultUnits, 27);
+        assert.equal(
+          row.geometry.candidateFollowup.vintageStatus,
+          spec.year === 2024 ? "unknown" : "election_date_confirmed",
+        );
+        assert.equal(row.geometry.candidateFollowup.validationStatus, "blocked");
+        assert.equal(row.geometry.candidateFollowup.delivery, null);
+      }
     }
   },
 );

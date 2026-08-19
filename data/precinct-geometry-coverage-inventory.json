@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-16T21:24:13.304Z",
+  "updatedAt": "2026-08-18T00:00:00.000Z",
   "purpose": "Authoritative progress ledger for election-applicable precinct, ward, VTD, and equivalent local geometry acquisition and result crosswalks.",
   "election": {
     "id": "2024-11-05-general",
@@ -680,7 +680,7 @@
       "programStatus": "reviewed",
       "wave": 14,
       "disposition": "blocked",
-      "checkedAt": "2026-08-16T18:00:00.000Z",
+      "checkedAt": "2026-08-18T00:00:00.000Z",
       "sourceTiers": [
         "tier_1_official_export_database"
       ],
@@ -689,19 +689,25 @@
       ],
       "generalOfficialSourceLeads": [
         "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
-        "https://www.redistricting.state.pa.us/maps/"
+        "https://www.redistricting.state.pa.us/maps/",
+        "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994"
       ],
       "geometry": {
         "manifestIds": [
-          "pa-2024-11-05-precinct-geometry-unavailable-v1"
+          "pa-2024-11-05-precinct-geometry-unavailable-v1",
+          "pa-2024-union-county-official-precinct-geometry-candidate-v1"
         ],
         "officialSourceLeads": [
-          "https://www.redistricting.state.pa.us/maps/"
+          "https://www.redistricting.state.pa.us/maps/",
+          "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994"
         ],
         "retainedArtifacts": [
           "data/precinct-geometry/PA/2024-11-05-general/source-evidence.json",
           "data/precinct-geometry/PA/2024-11-05-general/normalized/pa-2024-no-approved-precinct-geometry.json",
-          "data/precinct-geometry/PA/2024-11-05-general/crosswalk/pa-2024-result-to-geometry-review.json"
+          "data/precinct-geometry/PA/2024-11-05-general/crosswalk/pa-2024-result-to-geometry-review.json",
+          "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/source-evidence.json",
+          "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/normalized/pa-2024-union-county-precincts-candidate.geojson.gz",
+          "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/crosswalk/pa-2024-union-county-result-to-geometry-review.json"
         ],
         "levels": [
           "precinct"
@@ -710,7 +716,16 @@
           "unknown"
         ],
         "featureCount": 0,
-        "publicEligibleManifestCount": 0
+        "publicEligibleManifestCount": 0,
+        "candidateFollowup": {
+          "manifestId": "pa-2024-union-county-official-precinct-geometry-candidate-v1",
+          "manifestPath": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/manifest.json",
+          "featureCount": 27,
+          "matchedResultUnits": 27,
+          "vintageStatus": "unknown",
+          "validationStatus": "blocked",
+          "delivery": null
+        }
       },
       "crosswalk": {
         "resultUnits": 9187,
@@ -718,17 +733,24 @@
         "matchedResultUnits": 0,
         "unmatchedResultUnits": 9187,
         "nonGeographicResultUnits": 0,
-        "sourceAliasResultUnits": 0
+        "sourceAliasResultUnits": 0,
+        "candidateFollowup": {
+          "resultUnits": 27,
+          "matchedResultUnits": 27
+        }
       },
       "blockers": [
         "No complete independently reviewable statewide precinct-boundary edition effective for November 5, 2024 is retained.",
         "The 2021 LRC corrected VTD layer reflects updates through December 31, 2020 and is neither backcast nor forward-cast to the 2024 election.",
-        "All 9,187 official result units remain explicit and unassigned; no votes are spatially allocated."
+        "The official Union County candidate covers 27 source units and 21,188 votes only; the other 9,160 units and 7,010,549 votes remain without reviewed election-effective geometry.",
+        "The Union County archive has a 2024-09-05 export lineage, but embedded feature SyncDate/ModDate values remain 2021-10-12; Election Day boundary effectiveness is not independently established.",
+        "The Union County candidate remains delivery-null pending PASDA terms and guarded release review."
       ],
-      "nextAction": "Continue official county and state records requests for a November 5, 2024 boundary edition and crosswalk; do not substitute current VTDs or access-controlled edited voter-file geometry.",
+      "nextAction": "Continue official county and state collection for the remaining 9,160 source units, using the retained Union County candidate as the reviewed pattern; do not substitute current VTDs or release county packages without terms review.",
       "notes": [
         "The retained official DOS source universe reconciles to 7,031,737 presidential candidate votes.",
         "The deterministic 9,178-feature LRC VTD subset and its certification transcript are retained only as availability evidence and yield zero normalized delivery features.",
+        "The separate official Union County package contains 27 vote-free polygons, 27 reviewed one-to-one relationships, and 21,188 official DOS votes; it is not public.",
         "The retained official source universe contains 9,187 reporting units and 7,031,737 presidential candidate votes.",
         "Each election retains its own boundary evidence and is not treated as stable cross-election precinct geography."
       ]

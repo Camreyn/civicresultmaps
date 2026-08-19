@@ -2179,6 +2179,7 @@
         "TXT",
         "XLSX",
         "official Census and LRC Shapefile ZIP diagnostics",
+        "official Union County historical Shapefile ZIPs distributed by PASDA",
         "version-pinned VEST Shapefile ZIPs",
         "normalized vote-free GeoJSON and reviewed crosswalk JSON"
       ],
@@ -2187,6 +2188,7 @@
         "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
         "https://www.redistricting.state.pa.us/maps/",
         "https://www2.census.gov/geo/tiger/TIGER2012/VTD/tl_2012_42_vtd10.zip",
+        "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994",
         "https://election.lab.ufl.edu/dataset/pa-2016-precinct-level-election-results/",
         "https://election.lab.ufl.edu/dataset/pa-2020-precinct-level-election-results/"
       ],
@@ -2196,20 +2198,21 @@
         "precinct U.S. Senate rows",
         "county turnout",
         "official 2012/2016/2020 county historical baselines from precinct bulk rows",
-        "reviewed partial 2016 and 2020 precinct geometry/crosswalk source packages with every geometry-source vote field stripped",
-        "blocked 2012 Census VTD and 2024 LRC VTD availability diagnostics"
+        "published reviewed partial 2016 and 2020 precinct geometry/crosswalk packages with every geometry-source vote field stripped",
+        "reviewed delivery-null official Union County 2020 and 2024 candidate packages with 27 polygons and 27 result relationships each; the 2020 vintage is confirmed and the 2024 vintage is unknown",
+        "blocked 2012 Census VTD and statewide 2024 LRC VTD availability diagnostics"
       ],
       "missingFields": [
-        "complete election-effective 2012 and 2024 precinct geometry and official result crosswalks",
-        "complete 2016 and 2020 result-to-geometry coverage beyond the exact-vector subsets",
-        "immutable parent-scoped delivery and guarded activation for any reviewed package",
+        "complete election-effective 2012 and statewide 2024 precinct geometry and official result crosswalks beyond the Union County candidate",
+        "complete 2016 and 2020 result-to-geometry coverage beyond the published exact-vector subsets and reviewed Union County candidate",
+        "affirmative 2024 Union County boundary-effective-date evidence, plus terms-reviewed immutable delivery and guarded activation for new official county expansions",
         "precinct turnout denominator"
       ],
-      "parserStatus": "Native precinct review and official historical bulk baselines are loaded. scripts/collect-pa-precinct-geometry.mjs deterministically rebuilds four vote-free source packages; 2016 and 2020 retain only unique county-qualified VTD relationships with exact complete-candidate-vector equality, while 2012 and 2024 normalize zero geometry features.",
+      "parserStatus": "Native precinct review and official historical bulk baselines are loaded. scripts/collect-pa-precinct-geometry.mjs rebuilds the four canonical vote-free source packages; the reviewed partial 2016/2020 subsets are public. scripts/collect-pa-union-county-precinct-geometry.mjs separately rebuilds official 2020/2024 Union County candidates from hash-pinned PASDA archives and complete unique county-scoped name bijections, while keeping the 2024 vintage unknown because its feature metadata remains dated 2021-10-12.",
       "manualReviewBurden": "high",
       "confidence": "loaded_with_caveat",
-      "caveats": "Turnout is county-level, not precinct-level. Historical baselines are official DOS bulk context and may differ from secondary certified-summary tables where write-in reconciliation is separate. VEST supplies attributed 2016/2020 geometry only; its election-value fields are stripped and DOS remains the sole vote authority. The 2016 package excludes 1,158 official units/782,683 votes; the 2020 package excludes 2,360 units/1,545,703 votes, including every Pike County unit. The 2012 and 2024 packages remain blocked with zero normalized features. No PA geometry manifest is public or delivered.",
-      "nextAction": "Review and merge the source packages first. Then consider a separate guarded delivery change for the exact 2016/2020 subsets, while continuing 67-county archive/crosswalk collection for incomplete years and normalizing a same-grain precinct turnout denominator."
+      "caveats": "Turnout is county-level, not precinct-level. Historical baselines are official DOS bulk context and may differ from secondary certified-summary tables where write-in reconciliation is separate. VEST supplies attributed 2016/2020 geometry only; its election-value fields are stripped and DOS remains the sole vote authority. The published 2016 package excludes 1,158 official units/782,683 votes; the published 2020 package excludes 2,360 units/1,545,703 votes, including every Pike County unit. Official Union County candidates cover 27 units in 2020 and 2024, but remain delivery-null; the PASDA metadata has no explicit open-data license. The 2024 archive has a 2024-09-05 export lineage but 2021-10-12 feature metadata, so Election Day effectiveness is unknown. The canonical 2012 and statewide 2024 packages remain blocked with zero normalized features.",
+      "nextAction": "Continue election-effective official county archive/crosswalk collection, using the retained Union County candidates as the reviewed pattern. Obtain custodian or other authoritative effective-date evidence before treating the 2024 Union County geometry as election-applicable. Any county expansion requires separate terms and guarded release review; also normalize a same-grain precinct turnout denominator when ballots-cast or vote-history rows are available."
     },
     {
       "state": "RI",

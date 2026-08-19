@@ -1,0 +1,627 @@
+{
+  "schemaVersion": 1,
+  "id": "pa-2024-union-county-official-precinct-geometry-source-evidence-v1",
+  "state": "PA",
+  "election": {
+    "id": "2024-11-05-general",
+    "date": "2024-11-05",
+    "year": 2024,
+    "type": "general",
+    "office": "president"
+  },
+  "authority": "Union County, Pennsylvania, distributed by Pennsylvania Spatial Data Access (PASDA)",
+  "retrievedAt": "2026-08-18T00:00:00.000Z",
+  "sourceIndexUrl": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994",
+  "historicalArchiveUrl": "https://www.pasda.psu.edu/download/unioncounty/historic/UnionCounty_VotingPrecincts/",
+  "sourceCrs": "NAD 1983 StatePlane Pennsylvania North FIPS 3701 Feet (EPSG:2271)",
+  "servedCrs": "EPSG:4326",
+  "artifacts": [
+    {
+      "localArtifactPath": "data/precinct-geometry/PA/2024-11-05-general/official-county-followups/union-county/raw/pasda/UnionCounty_VotingPrecincts202409.zip",
+      "byteCount": 196170,
+      "sha256": "54a9e631a5b8b6af4cfdc747081414e0a9a9d40d331966476d2e006718604c24",
+      "electionYear": 2024,
+      "reportingGrain": "precinct",
+      "sourceUrl": "https://www.pasda.psu.edu/download/unioncounty/historic/UnionCounty_VotingPrecincts/UnionCounty_VotingPrecincts202409.zip",
+      "authority": "Union County, Pennsylvania, distributed by Pennsylvania Spatial Data Access (PASDA)",
+      "derivation": "Exact retained ZIP downloaded from the PASDA Union County historical voting-precinct archive.",
+      "format": "ESRI Shapefile ZIP with embedded FGDC and ArcGIS metadata",
+      "note": "Official Union County voting-precinct snapshot for 2024-09; expected 27 polygon features and the PRECINCTID, NAME, and COUNTY fields."
+    },
+    {
+      "localArtifactPath": "data/pa-2024-general-election-returns-precinct.txt",
+      "byteCount": 42907408,
+      "sha256": "34339122238fe82272c52717a4065dbd3949e00eeb98320332797853c96f3b6c",
+      "electionYear": 2024,
+      "reportingGrain": "precinct",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/er/erstat_2024_g_268768_20250129.txt",
+      "authority": "Pennsylvania Department of State",
+      "derivation": "Exact retained official election-return text parsed by the Pennsylvania precinct geometry collector.",
+      "format": "pipe-delimited TXT",
+      "note": "Official 2024 presidential result identity and vote source; all 27 Union County source units are included."
+    },
+    {
+      "localArtifactPath": "data/pa-2024-general-election-returns-readme.txt",
+      "byteCount": 4437,
+      "sha256": "b0d9e221deab9acd982982d187e4f16e7fae43d59b360b867cd89fad559eb632",
+      "electionYear": 2024,
+      "reportingGrain": "precinct",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/er/erstat_2024_g_readme.txt",
+      "authority": "Pennsylvania Department of State",
+      "derivation": "Exact retained official readme used to decode county and precinct result fields.",
+      "format": "TXT",
+      "note": "Official field and county-code documentation for the election-return artifact."
+    }
+  ],
+  "archiveInspection": {
+    "archiveMembers": [
+      "UnionCounty_VotingPrecincts202409.CPG",
+      "UnionCounty_VotingPrecincts202409.dbf",
+      "UnionCounty_VotingPrecincts202409.prj",
+      "UnionCounty_VotingPrecincts202409.sbn",
+      "UnionCounty_VotingPrecincts202409.sbx",
+      "UnionCounty_VotingPrecincts202409.shp",
+      "UnionCounty_VotingPrecincts202409.shp.xml",
+      "UnionCounty_VotingPrecincts202409.shx",
+      "UnionCounty_VotingPrecincts202409.xml"
+    ],
+    "metadataMember": "UnionCounty_VotingPrecincts202409.xml",
+    "shapefileMetadataMember": "UnionCounty_VotingPrecincts202409.shp.xml",
+    "projectionMember": "UnionCounty_VotingPrecincts202409.prj",
+    "sourceFeatureCount": 27,
+    "uniquePrecinctIdCount": 27
+  },
+  "boundaryContext": {
+    "parentGeoid": "42119",
+    "parentName": "Union County",
+    "boundarySnapshotMonth": "2024-09",
+    "sourceSnapshotDate": "2024-09-05",
+    "featureMetadataDate": "2021-10-12",
+    "vintageStatus": "unknown",
+    "electionDateApplicabilityEstablished": false,
+    "electionDateApplicabilityBasis": "The official archive has a pre-election 2024-09-05 export lineage and a complete unique 27-name universe identical to the official DOS county result units, but embedded feature SyncDate/ModDate values remain 2021-10-12; those facts do not independently prove Election Day boundary effectiveness.",
+    "metadataOrigin": "Union County, Pennsylvania",
+    "distributor": "Pennsylvania Spatial Data Access (PASDA)",
+    "licenseOrTerms": "The retained PASDA metadata provides an as-is warranty and indemnity disclaimer but no explicit open-data license; preserve Union County/PASDA attribution and complete a terms review before public delivery."
+  },
+  "resultIdentity": {
+    "sourceId": "pa-dos-2024-general-precinct-results",
+    "canonicalIdentity": "DOS County Code plus DOS Precinct Code",
+    "parentGeoid": "42119",
+    "sourceResultUnits": 27,
+    "candidateRows": 108,
+    "officialCountyTotals": {
+      "democratic": 8015,
+      "republican": 12969,
+      "other": 204,
+      "total": 21188
+    },
+    "officialStatewideResultUnits": 9187,
+    "officialStatewideTotals": {
+      "democratic": 3420865,
+      "republican": 3543041,
+      "other": 67831,
+      "total": 7031737
+    }
+  },
+  "exactNameComparison": {
+    "status": "reviewed_complete_county_bijection",
+    "geometryFeatures": 27,
+    "resultUnits": 27,
+    "matchedResultUnits": 27,
+    "geometryOnly": [],
+    "resultOnly": [],
+    "directIdMatches": 10,
+    "directIdEqualityUsed": false,
+    "documentedNormalization": "Uppercase and punctuation normalization; remove DOS structural X/W tokens; collapse consecutive duplicate DOS breakdown tokens; correct the geometry-source spelling INDEPENDANT to INDEPENDENT.",
+    "rows": [
+      {
+        "normalizedName": "BUFFALO 1",
+        "resultSourceUnitId": "0000010",
+        "resultSourceDisplayName": "BUFFALO X 1 1",
+        "resultVtdCode": "000010",
+        "geometryPrecinctId": "10",
+        "geometrySourceName": "Buffalo 1",
+        "geometryFeatureId": "pa:2024:42119:union:010"
+      },
+      {
+        "normalizedName": "BUFFALO 2",
+        "resultSourceUnitId": "0000020",
+        "resultSourceDisplayName": "BUFFALO X 2 2",
+        "resultVtdCode": "000020",
+        "geometryPrecinctId": "20",
+        "geometrySourceName": "Buffalo 2",
+        "geometryFeatureId": "pa:2024:42119:union:020"
+      },
+      {
+        "normalizedName": "EAST BUFFALO 1",
+        "resultSourceUnitId": "0000030",
+        "resultSourceDisplayName": "EAST BUFFALO X 1 1",
+        "resultVtdCode": "000030",
+        "geometryPrecinctId": "30",
+        "geometrySourceName": "East Buffalo 1",
+        "geometryFeatureId": "pa:2024:42119:union:030"
+      },
+      {
+        "normalizedName": "EAST BUFFALO 2",
+        "resultSourceUnitId": "0000040",
+        "resultSourceDisplayName": "EAST BUFFALO X 2 2",
+        "resultVtdCode": "000040",
+        "geometryPrecinctId": "40",
+        "geometrySourceName": "East Buffalo 2",
+        "geometryFeatureId": "pa:2024:42119:union:040"
+      },
+      {
+        "normalizedName": "EAST BUFFALO 3",
+        "resultSourceUnitId": "0000050",
+        "resultSourceDisplayName": "EAST BUFFALO X 3 3",
+        "resultVtdCode": "000051",
+        "geometryPrecinctId": "50",
+        "geometrySourceName": "East Buffalo 3",
+        "geometryFeatureId": "pa:2024:42119:union:050"
+      },
+      {
+        "normalizedName": "EAST BUFFALO 4",
+        "resultSourceUnitId": "0000060",
+        "resultSourceDisplayName": "EAST BUFFALO X 4 4",
+        "resultVtdCode": "000055",
+        "geometryPrecinctId": "60",
+        "geometrySourceName": "East Buffalo 4",
+        "geometryFeatureId": "pa:2024:42119:union:060"
+      },
+      {
+        "normalizedName": "GREGG",
+        "resultSourceUnitId": "0000070",
+        "resultSourceDisplayName": "GREGG",
+        "resultVtdCode": "000060",
+        "geometryPrecinctId": "80",
+        "geometrySourceName": "Gregg",
+        "geometryFeatureId": "pa:2024:42119:union:080"
+      },
+      {
+        "normalizedName": "HARTLETON",
+        "resultSourceUnitId": "0000080",
+        "resultSourceDisplayName": "HARTLETON",
+        "resultVtdCode": "000070",
+        "geometryPrecinctId": "200",
+        "geometrySourceName": "Hartleton",
+        "geometryFeatureId": "pa:2024:42119:union:200"
+      },
+      {
+        "normalizedName": "HARTLEY",
+        "resultSourceUnitId": "0000090",
+        "resultSourceDisplayName": "HARTLEY",
+        "resultVtdCode": "000080",
+        "geometryPrecinctId": "90",
+        "geometrySourceName": "Hartley",
+        "geometryFeatureId": "pa:2024:42119:union:090"
+      },
+      {
+        "normalizedName": "KELLY 1",
+        "resultSourceUnitId": "0000100",
+        "resultSourceDisplayName": "KELLY X 1 1",
+        "resultVtdCode": "000090",
+        "geometryPrecinctId": "100",
+        "geometrySourceName": "Kelly 1",
+        "geometryFeatureId": "pa:2024:42119:union:100"
+      },
+      {
+        "normalizedName": "KELLY 2",
+        "resultSourceUnitId": "0000110",
+        "resultSourceDisplayName": "KELLY X 2 2",
+        "resultVtdCode": "000100",
+        "geometryPrecinctId": "110",
+        "geometrySourceName": "Kelly 2",
+        "geometryFeatureId": "pa:2024:42119:union:110"
+      },
+      {
+        "normalizedName": "LEWIS",
+        "resultSourceUnitId": "0000120",
+        "resultSourceDisplayName": "LEWIS",
+        "resultVtdCode": "000110",
+        "geometryPrecinctId": "120",
+        "geometrySourceName": "Lewis",
+        "geometryFeatureId": "pa:2024:42119:union:120"
+      },
+      {
+        "normalizedName": "LEWISBURG 1",
+        "resultSourceUnitId": "0000130",
+        "resultSourceDisplayName": "LEWISBURG W 1 1",
+        "resultVtdCode": "000120",
+        "geometryPrecinctId": "210",
+        "geometrySourceName": "Lewisburg 1",
+        "geometryFeatureId": "pa:2024:42119:union:210"
+      },
+      {
+        "normalizedName": "LEWISBURG 2",
+        "resultSourceUnitId": "0000140",
+        "resultSourceDisplayName": "LEWISBURG W 2 2",
+        "resultVtdCode": "000130",
+        "geometryPrecinctId": "220",
+        "geometrySourceName": "Lewisburg 2",
+        "geometryFeatureId": "pa:2024:42119:union:220"
+      },
+      {
+        "normalizedName": "LEWISBURG 3",
+        "resultSourceUnitId": "0000150",
+        "resultSourceDisplayName": "LEWISBURG W 3 3",
+        "resultVtdCode": "000140",
+        "geometryPrecinctId": "230",
+        "geometrySourceName": "Lewisburg 3",
+        "geometryFeatureId": "pa:2024:42119:union:230"
+      },
+      {
+        "normalizedName": "LEWISBURG 4",
+        "resultSourceUnitId": "0000160",
+        "resultSourceDisplayName": "LEWISBURG W 4 4",
+        "resultVtdCode": "000150",
+        "geometryPrecinctId": "240",
+        "geometrySourceName": "Lewisburg 4",
+        "geometryFeatureId": "pa:2024:42119:union:240"
+      },
+      {
+        "normalizedName": "LIMESTONE",
+        "resultSourceUnitId": "0000170",
+        "resultSourceDisplayName": "LIMESTONE",
+        "resultVtdCode": "000160",
+        "geometryPrecinctId": "130",
+        "geometrySourceName": "Limestone",
+        "geometryFeatureId": "pa:2024:42119:union:130"
+      },
+      {
+        "normalizedName": "MIFFLINBURG EAST",
+        "resultSourceUnitId": "0000180",
+        "resultSourceDisplayName": "MIFFLINBURG X EAST EAST",
+        "resultVtdCode": "000170",
+        "geometryPrecinctId": "250",
+        "geometrySourceName": "Mifflinburg East",
+        "geometryFeatureId": "pa:2024:42119:union:250"
+      },
+      {
+        "normalizedName": "MIFFLINBURG WEST",
+        "resultSourceUnitId": "0000190",
+        "resultSourceDisplayName": "MIFFLINBURG X WEST WEST",
+        "resultVtdCode": "000180",
+        "geometryPrecinctId": "260",
+        "geometrySourceName": "Mifflinburg West",
+        "geometryFeatureId": "pa:2024:42119:union:260"
+      },
+      {
+        "normalizedName": "NEW BERLIN",
+        "resultSourceUnitId": "0000200",
+        "resultSourceDisplayName": "NEW BERLIN",
+        "resultVtdCode": "000190",
+        "geometryPrecinctId": "270",
+        "geometrySourceName": "New Berlin",
+        "geometryFeatureId": "pa:2024:42119:union:270"
+      },
+      {
+        "normalizedName": "UNION",
+        "resultSourceUnitId": "0000210",
+        "resultSourceDisplayName": "UNION",
+        "resultVtdCode": "000200",
+        "geometryPrecinctId": "140",
+        "geometrySourceName": "Union",
+        "geometryFeatureId": "pa:2024:42119:union:140"
+      },
+      {
+        "normalizedName": "UNION INDEPENDENT",
+        "resultSourceUnitId": "0000215",
+        "resultSourceDisplayName": "UNION INDEPENDENT",
+        "resultVtdCode": "000200",
+        "geometryPrecinctId": "150",
+        "geometrySourceName": "Union Independant",
+        "geometryFeatureId": "pa:2024:42119:union:150"
+      },
+      {
+        "normalizedName": "WEST BUFFALO",
+        "resultSourceUnitId": "0000220",
+        "resultSourceDisplayName": "WEST BUFFALO",
+        "resultVtdCode": "000210",
+        "geometryPrecinctId": "70",
+        "geometrySourceName": "West Buffalo",
+        "geometryFeatureId": "pa:2024:42119:union:070"
+      },
+      {
+        "normalizedName": "WHITE DEER 1",
+        "resultSourceUnitId": "0000230",
+        "resultSourceDisplayName": "WHITE DEER X 1 1",
+        "resultVtdCode": "000220",
+        "geometryPrecinctId": "160",
+        "geometrySourceName": "White Deer 1",
+        "geometryFeatureId": "pa:2024:42119:union:160"
+      },
+      {
+        "normalizedName": "WHITE DEER 2",
+        "resultSourceUnitId": "0000240",
+        "resultSourceDisplayName": "WHITE DEER X 2 2",
+        "resultVtdCode": "000230",
+        "geometryPrecinctId": "170",
+        "geometrySourceName": "White Deer 2",
+        "geometryFeatureId": "pa:2024:42119:union:170"
+      },
+      {
+        "normalizedName": "WHITE DEER 3",
+        "resultSourceUnitId": "0000250",
+        "resultSourceDisplayName": "WHITE DEER X 3 3",
+        "resultVtdCode": "000240",
+        "geometryPrecinctId": "180",
+        "geometrySourceName": "White Deer 3",
+        "geometryFeatureId": "pa:2024:42119:union:180"
+      },
+      {
+        "normalizedName": "WHITE DEER 4",
+        "resultSourceUnitId": "0000260",
+        "resultSourceDisplayName": "WHITE DEER X 4 4",
+        "resultVtdCode": "000250",
+        "geometryPrecinctId": "190",
+        "geometrySourceName": "White Deer 4",
+        "geometryFeatureId": "pa:2024:42119:union:190"
+      }
+    ]
+  },
+  "canonicalPackageComparison": {
+    "manifestId": "pa-2024-11-05-precinct-geometry-unavailable-v1",
+    "resultArtifact": "data/precinct-geometry/PA/2024-11-05-general/normalized/pa-2024-president-results.json.gz",
+    "resultArtifactSha256": "7b529262d0dac7991cdbdefc96348d167ee7448597d6b22a5560c7267b6cfcb0",
+    "resultArtifactByteCount": 267195,
+    "mappedResultUnits": 0,
+    "mappedTotals": {
+      "democratic": 0,
+      "republican": 0,
+      "other": 0,
+      "total": 0
+    },
+    "excludedResultUnits": 27,
+    "excludedTotals": {
+      "democratic": 8015,
+      "republican": 12969,
+      "other": 204,
+      "total": 21188
+    },
+    "candidateAdditionalResultUnits": 27,
+    "candidateAdditionalTotals": {
+      "democratic": 8015,
+      "republican": 12969,
+      "other": 204,
+      "total": 21188
+    },
+    "candidateAdditionalRows": [
+      {
+        "sourceUnitId": "0000010",
+        "sourceDisplayName": "BUFFALO X 1 1",
+        "democratic": 344,
+        "republican": 973,
+        "other": 15,
+        "total": 1332
+      },
+      {
+        "sourceUnitId": "0000020",
+        "sourceDisplayName": "BUFFALO X 2 2",
+        "democratic": 113,
+        "republican": 351,
+        "other": 3,
+        "total": 467
+      },
+      {
+        "sourceUnitId": "0000030",
+        "sourceDisplayName": "EAST BUFFALO X 1 1",
+        "democratic": 686,
+        "republican": 584,
+        "other": 19,
+        "total": 1289
+      },
+      {
+        "sourceUnitId": "0000040",
+        "sourceDisplayName": "EAST BUFFALO X 2 2",
+        "democratic": 795,
+        "republican": 462,
+        "other": 7,
+        "total": 1264
+      },
+      {
+        "sourceUnitId": "0000050",
+        "sourceDisplayName": "EAST BUFFALO X 3 3",
+        "democratic": 664,
+        "republican": 503,
+        "other": 6,
+        "total": 1173
+      },
+      {
+        "sourceUnitId": "0000060",
+        "sourceDisplayName": "EAST BUFFALO X 4 4",
+        "democratic": 496,
+        "republican": 304,
+        "other": 2,
+        "total": 802
+      },
+      {
+        "sourceUnitId": "0000070",
+        "sourceDisplayName": "GREGG",
+        "democratic": 81,
+        "republican": 361,
+        "other": 2,
+        "total": 444
+      },
+      {
+        "sourceUnitId": "0000080",
+        "sourceDisplayName": "HARTLETON",
+        "democratic": 18,
+        "republican": 99,
+        "other": 0,
+        "total": 117
+      },
+      {
+        "sourceUnitId": "0000090",
+        "sourceDisplayName": "HARTLEY",
+        "democratic": 160,
+        "republican": 773,
+        "other": 8,
+        "total": 941
+      },
+      {
+        "sourceUnitId": "0000100",
+        "sourceDisplayName": "KELLY X 1 1",
+        "democratic": 554,
+        "republican": 824,
+        "other": 15,
+        "total": 1393
+      },
+      {
+        "sourceUnitId": "0000110",
+        "sourceDisplayName": "KELLY X 2 2",
+        "democratic": 136,
+        "republican": 227,
+        "other": 4,
+        "total": 367
+      },
+      {
+        "sourceUnitId": "0000120",
+        "sourceDisplayName": "LEWIS",
+        "democratic": 83,
+        "republican": 568,
+        "other": 6,
+        "total": 657
+      },
+      {
+        "sourceUnitId": "0000130",
+        "sourceDisplayName": "LEWISBURG W 1 1",
+        "democratic": 308,
+        "republican": 122,
+        "other": 8,
+        "total": 438
+      },
+      {
+        "sourceUnitId": "0000140",
+        "sourceDisplayName": "LEWISBURG W 2 2",
+        "democratic": 390,
+        "republican": 133,
+        "other": 4,
+        "total": 527
+      },
+      {
+        "sourceUnitId": "0000150",
+        "sourceDisplayName": "LEWISBURG W 3 3",
+        "democratic": 770,
+        "republican": 381,
+        "other": 5,
+        "total": 1156
+      },
+      {
+        "sourceUnitId": "0000160",
+        "sourceDisplayName": "LEWISBURG W 4 4",
+        "democratic": 369,
+        "republican": 277,
+        "other": 9,
+        "total": 655
+      },
+      {
+        "sourceUnitId": "0000170",
+        "sourceDisplayName": "LIMESTONE",
+        "democratic": 166,
+        "republican": 655,
+        "other": 10,
+        "total": 831
+      },
+      {
+        "sourceUnitId": "0000180",
+        "sourceDisplayName": "MIFFLINBURG X EAST EAST",
+        "democratic": 332,
+        "republican": 716,
+        "other": 8,
+        "total": 1056
+      },
+      {
+        "sourceUnitId": "0000190",
+        "sourceDisplayName": "MIFFLINBURG X WEST WEST",
+        "democratic": 242,
+        "republican": 613,
+        "other": 5,
+        "total": 860
+      },
+      {
+        "sourceUnitId": "0000200",
+        "sourceDisplayName": "NEW BERLIN",
+        "democratic": 113,
+        "republican": 323,
+        "other": 8,
+        "total": 444
+      },
+      {
+        "sourceUnitId": "0000210",
+        "sourceDisplayName": "UNION",
+        "democratic": 366,
+        "republican": 606,
+        "other": 12,
+        "total": 984
+      },
+      {
+        "sourceUnitId": "0000215",
+        "sourceDisplayName": "UNION INDEPENDENT",
+        "democratic": 22,
+        "republican": 36,
+        "other": 0,
+        "total": 58
+      },
+      {
+        "sourceUnitId": "0000220",
+        "sourceDisplayName": "WEST BUFFALO",
+        "democratic": 288,
+        "republican": 1189,
+        "other": 18,
+        "total": 1495
+      },
+      {
+        "sourceUnitId": "0000230",
+        "sourceDisplayName": "WHITE DEER X 1 1",
+        "democratic": 152,
+        "republican": 593,
+        "other": 7,
+        "total": 752
+      },
+      {
+        "sourceUnitId": "0000240",
+        "sourceDisplayName": "WHITE DEER X 2 2",
+        "democratic": 153,
+        "republican": 612,
+        "other": 11,
+        "total": 776
+      },
+      {
+        "sourceUnitId": "0000250",
+        "sourceDisplayName": "WHITE DEER X 3 3",
+        "democratic": 110,
+        "republican": 401,
+        "other": 9,
+        "total": 520
+      },
+      {
+        "sourceUnitId": "0000260",
+        "sourceDisplayName": "WHITE DEER X 4 4",
+        "democratic": 104,
+        "republican": 283,
+        "other": 3,
+        "total": 390
+      }
+    ]
+  },
+  "expectedOutput": {
+    "normalizedFeatures": 27,
+    "reviewedRelationships": 27,
+    "parentScopes": 1,
+    "officialCountyTotals": {
+      "democratic": 8015,
+      "republican": 12969,
+      "other": 204,
+      "total": 21188
+    },
+    "delivery": null
+  },
+  "caveats": [
+    "This is a complete reviewed Union County package, not a complete statewide Pennsylvania package.",
+    "The crosswalk uses a unique complete county-scoped normalized-name bijection. Union County PRECINCTID and Pennsylvania Department of State Precinct Code are different identity systems and are never equated.",
+    "Geometry-source attributes that could be mistaken for election values are stripped; displayed vote values must continue to come only from the official Pennsylvania Department of State result artifact.",
+    "The 2024 archive was exported before Election Day and its complete name universe matches the official results, but embedded feature SyncDate/ModDate values remain 2021-10-12; Election Day boundary effectiveness is not independently established.",
+    "The PASDA metadata provides an as-is warranty and indemnity disclaimer but no explicit open-data license; public delivery remains blocked pending terms review and a separate guarded release."
+  ]
+}

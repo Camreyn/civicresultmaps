@@ -8380,3 +8380,78 @@ evidence against its verified top-level package.
   source units. Current services must not be backcast or forward-cast without
   affirmative vintage evidence, and excluded votes must not be spatially
   allocated.
+
+### 2026-08-18 - Pennsylvania official Union County follow-up packages
+
+- Work resumed from merged `origin/main` commit
+  `ca0db768ae2ad318dcd3b5a1e1bbfda4ab4a974d`, which contains the durable
+  Pennsylvania publication record. The live reviewed partial 2016/2020
+  release remains unchanged at public revision 27; this follow-up performs no
+  registry, database, Blob, deployment, or production mutation.
+- Union County, Pennsylvania publishes historical Voting Precincts archives
+  through PASDA. The retained 2020 archive is 193,925 bytes with SHA-256
+  `4dfac59077195d7eefdf29dc137d820caac14888f3290a242553efc8637df36b`;
+  embedded metadata identifies Union County as origin, publication month
+  2020-10, and a 2020-09-24 synchronization/modification date. The retained
+  2024 archive is 196,170 bytes with SHA-256
+  `54a9e631a5b8b6af4cfdc747081414e0a9a9d40d331966476d2e006718604c24`;
+  embedded lineage records the Union County geodatabase export on 2024-09-05,
+  but feature `SyncDate` / `ModDate` metadata remains 2021-10-12.
+  Each ZIP contains the complete nine-member Shapefile/metadata set in
+  EPSG:2271 and parses to 27 polygonal features.
+- `scripts/collect-pa-union-county-precinct-geometry.mjs` hash-verifies the
+  Union archive plus the exact DOS result/readme artifacts before any derived
+  write. It normalizes geometry to vote-free EPSG:4326, retains Union County
+  `PRECINCTID` as geometry identity, and explicitly does not treat it as the
+  DOS Precinct Code. The crosswalk uses a reviewed complete county-scoped name
+  bijection: uppercase/punctuation normalization, removal of DOS structural
+  `X`/`W` tokens, collapsed duplicate breakdown tokens, and the source spelling
+  `INDEPENDANT` normalized to `INDEPENDENT`. Both result and geometry universes
+  are unique and contain the same 27 names; only 10 raw identifiers happen to
+  agree, so direct identifier equality is neither claimed nor used.
+- The 2020 candidate contains 27 official county polygons, 27 reviewed
+  one-to-one result relationships, and all 20,115 official Union County
+  presidential votes. The immutable live 2020 package currently maps 25 of
+  those units / 19,077 votes; the candidate supplies reviewed evidence for the
+  excluded `UNION` and `UNION INDEPENDENT` units, totaling 1,038 votes. It does
+  not modify or silently expand the published crosswalk.
+- The 2024 candidate contains 27 official county polygons, 27 reviewed
+  one-to-one result relationships, and all 21,188 official Union County
+  presidential votes. Its complete name match and 2024 archive export lineage
+  do not independently establish that the 2021-dated feature boundaries were
+  effective on Election Day, so its `vintageStatus` remains `unknown`. The
+  other 9,160 statewide source units / 7,010,549 votes still lack reviewed
+  election-effective geometry. The canonical statewide 2024 LRC diagnostic
+  remains zero-feature and is not forward-cast.
+- Both follow-up manifests have a reviewed crosswalk but remain
+  `validation.status: blocked`, `rowLevelRenderingSafe: false`, and
+  `delivery: null`. PASDA metadata supplies an as-is warranty/indemnity
+  disclaimer without an explicit open-data license, so terms review and a
+  separate guarded release are required before any public use. The 2024
+  candidate also requires affirmative custodian or equivalent effective-date
+  evidence. No geometry source contributes a vote value, and no excluded vote
+  is allocated.
+- Focused contract tests validate both manifests and every retained artifact,
+  prove the 27-to-27 bijections and aggregate reconciliations, verify that the
+  canonical manifests and two-entry live PA registry are unchanged, replay all
+  derived outputs byte-identically under an alternate root, and reject wrong
+  timestamps or tampered raw archives before derived writes.
+- Independent crosswalk and release review found no P0/P1 issue and confirmed
+  that neither candidate changes production. It identified two release-safety
+  hardenings: preserve 2024 as vintage-unknown despite its archive export date,
+  and pin the exact delivery-null follow-up identity in coverage refresh and
+  activation replay. Both gates are now explicit and regression-tested; the
+  canonical 2024 ledger remains `blocked` with zero primary features rather
+  than describing the non-public candidate as a public partial package.
+- Final local validation passed: the collector and four-ledger coverage refresh
+  replayed byte-identically; `npm run test:precinct-geometry:pa` passed all 47
+  tests; `npm test`, `npm run typecheck`, and the standard Turbopack
+  `npm run build` passed; PA ETL validate/import passed with 67 result rows,
+  9,154 review rows, and 67 turnout rows; and the source-package, turnout,
+  administration, map, and provenance validators reported no failures. The
+  staging advisory report calculated 111 rows across 66 counties/areas: 58
+  `vote_share_pattern`, 52 `average_down_ballot_difference`, and one
+  `down_ballot_outliers`. These are advisory screening signals only, not proof
+  of fraud or misconduct. Production was not contacted or mutated, and current
+  production indicator counts were not rechecked for this delivery-null
+  source-package change.
