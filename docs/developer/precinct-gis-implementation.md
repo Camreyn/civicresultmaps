@@ -1,5 +1,16 @@
 # Precinct GIS Implementation Program
 
+### 2026-08-19 - South Dakota certified county-result reconciliation
+
+- The official 2024 South Dakota State Board of Canvassers certificate is retained
+  at `data/sd-2024-general-canvass-certificate.pdf` and hash-pinned by
+  `scripts/verify_sd_2024_general_canvass.py`. The verifier exactly reconciles
+  all 66 county President and U.S. House result rows to existing staging CSVs.
+  This is county-result provenance only: no precinct, ward, VTD, local
+  reporting-unit geometry, crosswalk, or map activation was added. The retained
+  ElectionID 684 turnout fields remain a denominator-timing lead, and EAC
+  turnout remains active.
+
 This is the durable execution plan and work log for election-versioned local
 geography in CivicResultMaps. Read it before changing precinct, ward, VTD,
 election-district, town, or other local-boundary collection, identity,

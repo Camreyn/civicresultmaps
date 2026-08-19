@@ -11,6 +11,7 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.inventory = json.loads(Path("data/sd-2024-data-coverage-inventory.json").read_text(encoding="utf-8-sig"))
         self.evidence = json.loads(Path("data/sd-2024-official-results-archive-evidence.json").read_text(encoding="utf-8-sig"))
         self.request_packet = json.loads(Path("data/sd-2024-official-source-request-packet.json").read_text(encoding="utf-8-sig"))
+        self.canvass = json.loads(Path("data/sd-2024-general-canvass-reconciliation.json").read_text(encoding="utf-8-sig"))
         with Path("data/sd-2024-source-request-matrix.tsv").open("r", encoding="utf-8-sig", newline="") as handle:
             self.request_rows = {row["requestId"]: row for row in csv.DictReader(handle, delimiter="\t")}
 
@@ -37,10 +38,17 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(metrics["nativeRegisteredVoters"], 690306)
         self.assertEqual(config.raw["expected"]["sources"], len(config.raw["sources"]))
         self.assertIn("sd-2024-official-source-request-packet", {source["id"] for source in config.raw["sources"]})
+        self.assertIn("sd-2024-general-canvass-certificate", {source["id"] for source in config.raw["sources"]})
+
+    def test_certified_canvass_pdf_exactly_validates_current_county_rows(self):
+        self.assertEqual(self.canvass["pdf"]["bytes"], 801624)
+        self.assertEqual(self.canvass["pdf"]["sha256"], "a9be018609c45e97c5b9b9c41d7f53dffc9c3390746486c115739e6d6d072c9c")
+        self.assertEqual(self.canvass["president"], {"rows": 66, "totals": [146859, 272081, 9982]})
+        self.assertEqual(self.canvass["usHouse"], {"rows": 66, "totals": [117818, 303630]})
 
     def test_inventory_records_official_archive_lead_and_remaining_blocker(self):
         self.assertEqual(self.inventory["state"], "SD")
-        self.assertEqual(self.inventory["checkedAt"], "2026-07-04")
+        self.assertEqual(self.inventory["checkedAt"], "2026-08-19")
         self.assertEqual(self.inventory["currentConfigStatus"]["completionDecision"], "remain_in_source_discovery_queue")
         self.assertEqual(self.inventory["currentConfigStatus"]["resultRows"], 66)
         self.assertEqual(self.inventory["currentConfigStatus"]["reviewRows"], 66)
@@ -49,13 +57,14 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         artifact_ids = {artifact["id"] for artifact in self.inventory["loadedArtifacts"]}
         self.assertIn("sd-2024-official-results-archive-evidence", artifact_ids)
         self.assertIn("sd-2024-official-source-request-packet", artifact_ids)
+        self.assertIn("sd-2024-general-canvass-certificate", artifact_ids)
         self.assertIn("ElectionID 684", self.inventory["officialSourceProbe"]["blocker"])
         self.assertIn("Statewide Results.xlsx", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
-        self.assertIn("reconcil", self.inventory["officialSourceProbe"]["blocker"])
+        self.assertIn("exactly validates", self.inventory["officialSourceProbe"]["blocker"])
         self.assertIn("2026 Primary Election", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
         self.assertEqual(self.inventory["officialSourceProbe"]["archiveProbe"]["checkedAt"], "2026-07-04")
         self.assertEqual(self.inventory["officialSourceProbe"]["wave25PublicRecheck"]["checkedAt"], "2026-07-04")
-        self.assertIn("No public certified", self.inventory["officialSourceProbe"]["wave25PublicRecheck"]["result"])
+        self.assertIn("located the official certificate", self.inventory["officialSourceProbe"]["wave25PublicRecheck"]["result"])
         self.assertIn("anti-bot bypass", self.inventory["officialSourceProbe"]["wave25PublicRecheck"]["method"])
         self.assertEqual(
             self.inventory["officialSourceProbe"]["turnoutLeadDecision"]["status"],
@@ -64,10 +73,10 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(self.inventory["officialSourceProbe"]["turnoutLeadDecision"]["officialArchiveLead"]["ballotsCast"], 436478)
         self.assertIn("ElectionID 684", self.inventory["officialSourceProbe"]["archiveProbe"]["result"])
         self.assertIn("statewide XLSX export", self.inventory["officialSourceProbe"]["archiveProbe"]["result"])
-        self.assertIn("do not reconcile", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
+        self.assertIn("exactly reconciles", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
         self.assertIn("post-election audit page", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
         self.assertEqual(self.inventory["requestPacketArtifact"], "data/sd-2024-official-source-request-packet.json")
-        self.assertIn("secondary staging coverage", " ".join(self.inventory["displayCaveats"]))
+        self.assertIn("exactly validated", " ".join(self.inventory["displayCaveats"]))
         self.assertIn("not precinct-level scatter plots", " ".join(self.inventory["displayCaveats"]))
 
     def test_official_archive_evidence_retains_ids_counts_and_reconciliation_caveat(self):
@@ -116,7 +125,7 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(audit["discrepancySummaryCount"], 14)
         self.assertTrue(all(probe["status"] == 404 for probe in self.evidence["canvassUrlProbes"]))
 
-    def test_registries_keep_sd_in_source_discovery_until_certified_artifact_is_retained(self):
+    def test_registries_keep_sd_in_source_discovery_after_certified_artifact_reconciliation(self):
         tiers = json.loads(Path("data/source-acquisition-tiers.json").read_text(encoding="utf-8-sig"))
         native = json.loads(Path("data/native-import-source-packages.json").read_text(encoding="utf-8-sig"))
 
@@ -129,16 +138,15 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(discovery["completionDecision"]["decision"], "remain_in_source_discovery_queue")
         self.assertIn("officialArchiveEvidence", discovery["availableArtifacts"])
         self.assertIn("officialStatewideExport", discovery["availableArtifacts"])
+        self.assertIn("officialCertifiedCanvass", discovery["availableArtifacts"])
         self.assertIn("officialSourceRequestPacket", discovery["availableArtifacts"])
         self.assertEqual(discovery["requestPacketArtifact"], "data/sd-2024-official-source-request-packet.json")
         self.assertEqual(discovery["expected"]["localReviewRows"], 66)
-        self.assertEqual(self.request_rows["sd-official-2024-canvass"]["priority"], "P0")
-        self.assertIn("official 2024 General Election Canvass", self.request_rows["sd-official-2024-canvass"]["sourceNeed"])
-        self.assertIn("ElectionID 684", self.request_rows["sd-official-2024-canvass"]["neededArtifact"])
-        self.assertIn("Statewide Results.xlsx", self.request_rows["sd-official-2024-canvass"]["caveat"])
-        self.assertIn("official-source-request-packet", self.request_rows["sd-official-2024-canvass"]["caveat"])
-        self.assertIn("Wave 25 normal public re-check", self.request_rows["sd-official-2024-canvass"]["caveat"])
-        self.assertIn("RaceIDs 12665/11954", self.request_rows["sd-official-2024-canvass"]["caveat"])
+        self.assertEqual(self.request_rows["sd-official-2024-canvass"]["priority"], "resolved")
+        self.assertIn("Official 2024 General Election Canvass", self.request_rows["sd-official-2024-canvass"]["sourceNeed"])
+        self.assertIn("2024GeneralElectionCanvassWithCert.pdf", self.request_rows["sd-official-2024-canvass"]["knownUrlOrLead"])
+        self.assertIn("428,922", self.request_rows["sd-official-2024-canvass"]["expectedRowsOrTotals"])
+        self.assertIn("not a direct source replacement", self.request_rows["sd-official-2024-canvass"]["caveat"])
         self.assertEqual(self.request_rows["sd-state-native-turnout"]["priority"], "P1")
         self.assertIn("GetVoterTurnoutArchive", self.request_rows["sd-state-native-turnout"]["knownUrlOrLead"])
         self.assertIn("field definitions/timing", self.request_rows["sd-state-native-turnout"]["neededArtifact"])

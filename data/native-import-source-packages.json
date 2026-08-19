@@ -4252,11 +4252,11 @@
       "state": "SD",
       "name": "South Dakota",
       "priority": 20,
-      "currentStatus": "secondary_county_staging_rows_with_official_archive_evidence_certified_canvass_still_required",
+      "currentStatus": "secondary_county_csvs_exactly_validated_by_official_certified_canvass_with_remaining_native_gaps",
       "completionDecision": {
         "checkedAt": "2026-07-04",
         "decision": "remain_in_source_discovery_queue",
-        "reason": "SD should remain outside completedNativeStates because the active President and U.S. House county rows are still generated from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. Wave 24 retained a stronger official request packet and audit-page context, but the official SD SOS ElectionID 684 statewide XLSX export is labeled unofficial and matches the lower archive map-data totals: 194 President votes and 184 U.S. House votes below the current certified-style staging totals. The official certified canvass/static export or a reconciling official payload, state-native turnout replacement review, precinct/local rows, precinct geometry, and normalized administration-context records remain unresolved."
+        "reason": "SD remains outside completedNativeStates because the current county CSVs retain secondary extraction lineage even though the retained official State Board of Canvassers certificate now exactly validates all 66 President and U.S. House rows. Compatible state-native turnout replacement semantics, official precinct/local rows, precinct geometry/crosswalks, official historical baselines, and normalized administration-context records remain unresolved."
       },
       "officialSourcePages": [
         "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
@@ -4275,7 +4275,6 @@
         "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0"
       ],
       "requiredArtifacts": [
-        "official SD SOS certified 2024 General Election Canvass and Certificate PDF/static export or an ElectionID 684 official archive/export payload that reconciles to certified county totals; the retained unofficial statewide XLSX export does not reconcile",
         "state-native county or precinct turnout and registered-voter denominator rows",
         "precinct/local President plus same-grain comparison rows if subcounty advisory coverage is pursued",
         "precinct boundary geometry or official reporting-unit crosswalk",
@@ -4284,8 +4283,8 @@
         "data/sd-2024-source-request-matrix.tsv as the current official-source request queue"
       ],
       "preferredComparisonContest": "United States Representative; current staging pairs county President with at-large U.S. House rows, with county-level and secondary-source caveats.",
-      "parserNeeded": "scripts/collect-sd-2024-county-results.mjs currently regenerates secondary county President and U.S. House CSVs for countyPresidentCsv/countyComparisonCsv. scripts/collect-sd-official-archive-evidence.mjs now retains official ElectionID 684 archive evidence, the official ResultsExport statewide XLSX workbook, official results FAQ text, post-election audit-page context, and data/sd-2024-official-source-request-packet.json. An official certified canvass/export normalizer is still needed before replacing secondary staging rows.",
-      "blocker": "Wave 24 retained official SD SOS archive ElectionID 684 through the older ResultsAjax service, the official ResultsExport.aspx?eid=684 Statewide Results.xlsx workbook, official results FAQ text, and a source-request packet. GetMapDataArchive with RaceID=0 exposes President map RaceID 12665 and U.S. House map RaceID 11954, and the XLSX has matching President/U.S. House sheets. Both official app artifacts total 428,728 President votes and 421,264 U.S. House votes, below the current certified-style staging totals by 194 and 184 votes. The workbook labels itself 2024 Unofficial General Election Results, and five likely SOS 2024 State Canvass and Certificate PDF asset paths returned 404. Current rows remain secondary staging coverage until a certified/reconciling official artifact is retained.",
+      "parserNeeded": "scripts/verify_sd_2024_general_canvass.py is the hash-pinned, fail-closed official certificate reconciliation path for the current secondary county CSVs. A direct certificate-table source parser is optional rather than necessary for row correctness; turnout-semantic, precinct/local, geometry/crosswalk, historical, and administration-context normalizers remain needed.",
+      "blocker": "The official certificate resolves county candidate-result reconciliation, but South Dakota cannot join completed native coverage without compatible official turnout/registration semantics, official precinct/local results and map/crosswalk evidence, official historical baselines, and normalized administration context. The ElectionID 684 XLSX remains labeled unofficial and totals 428,728 President votes and 421,264 U.S. House votes, so it must not replace certificate-validated rows.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "Wikipedia 2024 South Dakota presidential county table citing SD SOS canvass",
@@ -4334,6 +4333,12 @@
           "sourceUrl": "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
           "localFile": "data/sd-2024-general-statewide-results.xlsx",
           "parserHint": "Downloaded by ASP.NET Statewide Export postback in scripts/collect-sd-official-archive-evidence.mjs. The workbook is official app evidence but labels itself unofficial and totals 428,728 President votes and 421,264 U.S. House votes, matching archive map-data rather than certified-style staging totals."
+        },
+        "officialCertifiedCanvass": {
+          "sourceTitle": "South Dakota State Board of Canvassers 2024 General Election Canvass and Certificate",
+          "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+          "localFile": "data/sd-2024-general-canvass-certificate.pdf; data/sd-2024-general-canvass-reconciliation.json",
+          "parserHint": "scripts/verify_sd_2024_general_canvass.py SHA-256 pins the PDF and fail-closed verifies 66 county President (428,922) and U.S. House (421,448) rows against current staging CSVs."
         },
         "officialSourceRequestPacket": {
           "sourceTitle": "South Dakota certified-result reconciliation request packet and official audit-page context",
