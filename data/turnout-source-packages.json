@@ -868,13 +868,13 @@
       "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 497,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active ME turnout source. Wave 17 collected Maine SOS active and inactive registered/enrolled files as state-native denominator leads, but no replacement ballots-cast or voter-participation package is loaded.",
-      "nextAction": "Use data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv to pair the collected Maine SOS registered/enrolled files in data/me-official-sources with official ballots-cast or voter-participation rows before replacing the EAC fallback.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active ME turnout source. The Maine SOS active/inactive registered/enrolled files are normalized into a state-native denominator-lead CSV and EAC reconciliation summary, but no replacement ballots-cast or voter-participation package is loaded.",
+      "nextAction": "Use data/me-2024-registered-enrolled-denominator-leads-summary.json, data/me-2024-data-coverage-inventory.json, and data/me-2024-source-request-matrix.tsv to pair the normalized Maine SOS enrollment leads with official ballots-cast or voter-participation rows before replacing the EAC fallback.",
       "coverage": {
         "jurisdictionRows": 497,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/me-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 1223468,
-        "ballotsCast": 841831,
+        "ballotsCast": 842447,
         "warningRows": 8
       },
       "stateNativeLeads": [
@@ -882,11 +882,15 @@
           "sourceTitle": "Maine SOS previous enrollment data for the November 5, 2024 General/Referendum Election",
           "sourceUrl": "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
           "reportingGrain": "county_municipality_voting_district_party",
-          "artifactStatus": "collected_denominator_leads_not_loaded",
-          "caveat": "Registered/enrolled active and inactive files are denominator leads only; do not replace EAC turnout until compatible ballots-cast or voter-participation rows are collected and reconciled.",
+          "artifactStatus": "normalized_denominator_leads_not_loaded",
+          "normalizer": "scripts/normalize-me-2024-enrollment-leads.mjs",
+          "reconciliationSummary": "data/me-2024-registered-enrolled-denominator-leads-summary.json",
+          "caveat": "The normalized active/inactive enrollment files are denominator leads only; their combined statewide total is 276 below EAC registered voters, and no ballots-cast field is present. The active EAC parser excludes seven -88 ballots-cast sentinels (raw arithmetic sum 841,831; normalized total 842,447) and eight negative registration sentinels. Do not replace EAC turnout until compatible ballots-cast or voter-participation rows are collected and reconciled.",
           "localArtifacts": [
             "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
-            "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt"
+            "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt",
+            "data/me-2024-registered-enrolled-denominator-leads.csv",
+            "data/me-2024-registered-enrolled-denominator-leads-summary.json"
           ]
         }
       ]

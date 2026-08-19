@@ -1,5 +1,6 @@
 import csv
 import json
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -47,13 +48,13 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         inventory = load_json("data/me-2024-data-coverage-inventory.json")
 
         self.assertEqual(inventory["state"], "ME")
-        self.assertEqual(inventory["checkedAt"], "2026-08-13")
+        self.assertEqual(inventory["checkedAt"], "2026-08-19")
         self.assertIs(inventory["productionChecked"], False)
         self.assertEqual(inventory["repoDrift"][0]["path"], "docs/developer/index.md")
         self.assertEqual(inventory["officialSourceFindings"]["certifiedResults"]["status"], "official_excel_loaded")
         self.assertEqual(inventory["officialSourceFindings"]["sameGrainComparisonContest"]["preferredContest"], "U.S. Senate")
         self.assertEqual(inventory["officialSourceFindings"]["rankedChoiceAndCastVoteRecords"]["status"], "official_cd2_rcv_cvr_leads_identified_not_loaded")
-        self.assertEqual(inventory["officialSourceFindings"]["stateNativeTurnout"]["status"], "official_registration_denominator_artifacts_collected_not_loaded")
+        self.assertEqual(inventory["officialSourceFindings"]["stateNativeTurnout"]["status"], "official_registration_denominator_leads_normalized_not_loaded")
         self.assertEqual(inventory["officialSourceFindings"]["auditRecountCvrIncidentCorrectionLitigation"]["status"], "source_paths_documented_rows_not_loaded")
         self.assertEqual(inventory["officialSourceFindings"]["historicalBaselines"]["status"], "official_2016_2020_loaded_2012_xls_parsed_for_gis_only")
         self.assertEqual(inventory["sourceAcquisitionDecision"]["tier"], "tier_1_official_export_database")
@@ -92,7 +93,8 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(me_turnout["status"], "loaded")
         self.assertEqual(me_turnout["expectedTurnoutRows"], 497)
         self.assertIn("data/me-2024-data-coverage-inventory.json", me_turnout["nextAction"])
-        self.assertEqual(me_turnout["stateNativeLeads"][0]["artifactStatus"], "collected_denominator_leads_not_loaded")
+        self.assertEqual(me_turnout["stateNativeLeads"][0]["artifactStatus"], "normalized_denominator_leads_not_loaded")
+        self.assertEqual(me_turnout["stateNativeLeads"][0]["normalizer"], "scripts/normalize-me-2024-enrollment-leads.mjs")
 
         admin_packages = load_json("data/admin-source-packages.json")
         me_admin = next(row for row in admin_packages["stateYearStatuses"] if row["state"] == "ME")
@@ -113,6 +115,36 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         }.issubset(request_ids))
         self.assertTrue(all(row["source_authority"] for row in rows))
         self.assertTrue(all(row["parser_or_normalization_path"] for row in rows))
+
+    def test_maine_enrollment_denominator_leads_are_reproducible_and_not_active_turnout(self):
+        completed = subprocess.run(
+            ["node", "scripts/normalize-me-2024-enrollment-leads.mjs", "--check"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn("are current", completed.stdout)
+
+        with (ROOT / "data/me-2024-registered-enrolled-denominator-leads.csv").open(newline="", encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+        summary = load_json("data/me-2024-registered-enrolled-denominator-leads-summary.json")
+        self.assertEqual(len(rows), 1482)
+        self.assertEqual({row["enrollment_status"] for row in rows}, {"active", "inactive"})
+        self.assertEqual(summary["totals"]["active"]["rows"], 741)
+        self.assertEqual(summary["totals"]["active"]["total"], 1037570)
+        self.assertEqual(summary["totals"]["inactive"]["rows"], 741)
+        self.assertEqual(summary["totals"]["inactive"]["total"], 185622)
+        self.assertEqual(summary["eacFallbackReconciliation"]["eac"]["ballotsCast"], 842447)
+        self.assertEqual(summary["eacFallbackReconciliation"]["eac"]["registeredVoters"], 1223468)
+        self.assertEqual(summary["eacFallbackReconciliation"]["eac"]["rawBallotsCastSum"], 841831)
+        self.assertEqual(summary["eacFallbackReconciliation"]["eac"]["negativeBallotsCastRows"], 7)
+        self.assertEqual(summary["eacFallbackReconciliation"]["eac"]["negativeRegistrationRows"], 8)
+        self.assertEqual(summary["eacFallbackReconciliation"]["activePlusInactiveEnrollmentMinusEacRegisteredVoters"], -276)
+
+        config = load_config(ROOT / "etl/state-configs/me.json")
+        self.assertEqual(config.raw["turnout"]["sourceId"], "me-2024-eac-turnout")
+        self.assertEqual(config.raw["turnout"]["expected"]["registeredVoters"], 1223468)
 
 
 if __name__ == "__main__":

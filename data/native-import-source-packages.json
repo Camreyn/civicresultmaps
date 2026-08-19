@@ -2445,6 +2445,14 @@
           "denominator": "EAC A1a Total Reg registered voters",
           "ballotsCast": "EAC normalized ballots cast"
         },
+        "stateNativeEnrollmentDenominatorLead": {
+          "sourceTitle": "Maine SOS November 5, 2024 active/inactive registered and enrolled voter files",
+          "sourceUrl": "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
+          "localFile": "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt; data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt; data/me-2024-registered-enrolled-denominator-leads.csv; data/me-2024-registered-enrolled-denominator-leads-summary.json",
+          "level": "county_municipality_ward_or_precinct_party",
+          "denominator": "Separate active and inactive Maine SOS registration/enrollment counts as of November 5, 2024",
+          "parserHint": "Run node scripts/normalize-me-2024-enrollment-leads.mjs. The output preserves source county, municipality, W/P, CG, SS, SR, CC, and party columns; its statewide active-plus-inactive total is 1,223,192, 276 below EAC registered voters. No ballots-cast field exists, so EAC remains active turnout."
+        },
         "historicalBaseline": {
           "sourceTitle": "Maine SOS official 2016 and 2020 President workbooks; 2012 XLS retained and parsed by the separate local-geometry collector",
           "localFile": "data/me-official-sources/me-2016-president.xlsx; data/me-official-sources/me-2020-president-county-town.xlsx; data/me-official-sources/me-2012-president-county.xls; data/me-official-sources/me-2012-president-municipal.xls",
@@ -2495,7 +2503,7 @@
         "State UOCAVA is a non-geographic certified result row; it is not mapped and is excluded from town review joins.",
         "Medway/Twps, Day Block Twp, and Wesley are vote-share-only rows because the Senate workbook combines or labels those units at a different grain.",
         "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff metrics are directional source-review inputs only.",
-        "Turnout remains EAC fallback until Maine-native ballots-cast or voter-participation rows are collected and reconciled with SOS registration/enrollment files.",
+        "Turnout remains EAC fallback: the normalized Maine SOS active/inactive enrollment leads total 1,223,192, 276 below EAC registered voters, and contain no ballots-cast or voter-participation field.",
         "The official 2012 municipal XLS is parsed by the local-geometry collector, but five rows totaling eight votes lack unique geometry and the official archive is not election-date-confirmed; 2012 remains blocked.",
         "Reviewed 2016, 2020, and 2024 local-reporting-unit geometry/crosswalk candidates reconcile all official SOS local votes but remain fail-closed pending immutable delivery and production review.",
         "Maine local results are not uniformly precinct-grain. Town totals are never duplicated across wards or proportionally allocated.",
