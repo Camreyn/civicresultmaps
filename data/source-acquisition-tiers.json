@@ -2273,7 +2273,9 @@
       "exportFormats": [
         "official CSV download",
         "Election History table export",
-        "official 2020 historical President CSV download",
+        "Election History Voter Statistics contest export",
+        "official 2012 historical President CSV download",
+        "official 2016 and 2020 historical President CSV downloads",
         "normalized historical baseline CSV",
         "historical contest CSV",
         "reviewed election-specific precinct GeoJSON/Shapefile packages"
@@ -2281,6 +2283,7 @@
       "sourceUrls": [
         "https://electionhistory.scvotes.gov/",
         "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+        "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
         "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false",
         "https://sc.elstats.civera.com/api/download_contest/5292_table.csv?split_party=false",
         "https://sc.elstats.civera.com/api/download_contest/9112_table.csv?split_party=false",
@@ -2291,6 +2294,8 @@
       "exampleUrls": [
         "https://electionhistory.scvotes.gov/contest/7131",
         "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+        "https://electionhistory.scvotes.gov/contest/7075",
+        "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
         "https://electionhistory.scvotes.gov/contest/1974",
         "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false"
       ],
@@ -2300,9 +2305,11 @@
         "official VREMS county voter-history turnout and printed-list registration rows",
         "official VREMS precinct/polling-place locator export",
         "EAC turnout fallback retained as a benchmark",
+        "official Election History 2024 General Voter Statistics state/county/precinct export retained as a candidate registration and election-level ballots source",
+        "official 2012 county presidential historical baseline rows normalized from the SC Elections Database contest CSV",
         "official 2020 county presidential historical baseline rows from the SC Elections Database contest CSV",
         "official 2016 county presidential historical baseline rows",
-        "official 2020 county presidential historical baseline rows",
+        "hash-pinned historical source artifacts and statewide reconciliation summaries",
         "reviewed 2016, 2020, and 2024 precinct geometry and official-result crosswalks without vote allocation",
         "blocked 2012 RFA-origin candidate geometry and official precinct-result evidence"
       ],
@@ -2311,13 +2318,13 @@
         "election-date, affirmative-reuse, and official crosswalk proof for 2012 geometry",
         "statewide same-office comparison contest",
         "active-registered-voter denominator artifact at the same grain as precinct results",
-        "official 2012 county or county-equivalent presidential baseline normalized into ETL"
+        "reviewed semantic equivalence of Election History Voter Statistics registration/ballots fields to active VREMS voter-history rows before any turnout-source replacement"
       ],
-      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads; historical 2016 and 2020 county baselines normalized from official Election History contest CSVs; county turnout uses normalized SC VREMS voter-history rows; scripts/build-sc-reviewed-precincts.mjs deterministically rebuilds all four precinct source packages",
+      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads; scripts/normalize-sc-election-history-voter-statistics.mjs retains and hash-pins Voter Statistics contest 7075 as a candidate source with an explicit county reconciliation to active VREMS; historical 2012, 2016, and 2020 county baselines normalize from official Election History contest CSVs; county turnout uses normalized SC VREMS voter-history rows; scripts/build-sc-reviewed-precincts.mjs deterministically rebuilds all four precinct source packages",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening. SC VREMS turnout denominators are printed registration-list counts that include active voters plus some inactive voters for the selected election. VEST and NYT supply attributed geometry only; their vote fields are stripped and the South Carolina Election Commission CSVs remain the sole result authority. The 2012 archive is post-election and has no retained affirmative derivative terms or reviewed crosswalk.",
-      "nextAction": "Build immutable county-scoped delivery and guarded release tooling for reviewed 2016, 2020, and 2024 packages; obtain election-date geometry/reuse/crosswalk evidence for 2012; and normalize audit/CVR/incident/recount/litigation rows."
+      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening. The Election History Voter Statistics contest 7075 export reports 2,566,404 election-level ballots and 3,451,344 registered voters across 46 counties, while active SC VREMS reports 2,553,185 participating voters and 3,851,930 printed-list registrants; no active/inactive breakdown is exposed in the candidate export, so VREMS remains active and warning-required. VEST and NYT supply attributed geometry only; their vote fields are stripped and the South Carolina Election Commission CSVs remain the sole result authority. The 2012 geometry archive is post-election and has no retained affirmative derivative terms or reviewed crosswalk, but the independent official 2012 county baseline is now loaded. The retained historical source bytes and SHA-256 values are recorded in data/sc-historical-presidential-baseline-summary.json. A 2026-08-19 review proved the apparent 2016 drift was checkout line-ending conversion only: the repository blob, endpoint content, and all contest totals were identical. Byte-preservation attributes now keep the current 132,795-byte LF response stable.",
+      "nextAction": "Build immutable county-scoped delivery and guarded release tooling for reviewed 2016, 2020, and 2024 packages; obtain election-date geometry/reuse/crosswalk evidence for 2012; resolve the Election History/VREMS denominator and ballots semantics before considering any turnout-source change; and normalize audit/CVR/incident/recount/litigation rows."
     },
     {
       "state": "SD",

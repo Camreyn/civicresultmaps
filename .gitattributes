@@ -110,6 +110,12 @@
 /data/precinct-geometry/SC/**/*.zip -diff
 /data/precinct-geometry/SC/**/*.gz -diff
 
+# Preserve hash-pinned South Carolina Election History source exports byte-for-byte.
+/data/sc-2012-president-9112.csv -text whitespace=-trailing-space,-space-before-tab
+/data/sc-2016-president-5292.csv -text whitespace=-trailing-space,-space-before-tab
+/data/sc-2020-president-1974.csv -text whitespace=-trailing-space,-space-before-tab
+/data/sc-2024-election-history/voter-statistics-7075.csv -text whitespace=-trailing-space,-space-before-tab
+
 # Preserve every hash-pinned Wisconsin local-reporting source and derivative byte-for-byte.
 /data/precinct-geometry/WI/** -text whitespace=-trailing-space,-space-before-tab
 /data/precinct-geometry/WI/**/*.zip -diff

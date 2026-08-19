@@ -1236,7 +1236,26 @@
         "registeredVoters": 3851930,
         "ballotsCast": 2553185,
         "warningRows": 46
-      }
+      },
+      "candidateSources": [
+        {
+          "sourceTitle": "SC Elections Database 2024 General Voter Statistics contest 7075",
+          "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+          "localFile": "data/sc-2024-election-history/voter-statistics-7075.csv",
+          "parser": "scripts/normalize-sc-election-history-voter-statistics.mjs",
+          "status": "candidate",
+          "reportingLevel": "state/county/precinct",
+          "normalizedFile": "data/sc-2024-election-history/voter-statistics-7075-county.csv",
+          "reconciliationFile": "data/sc-2024-election-history/voter-statistics-7075-vs-vrems-reconciliation.json",
+          "expected": {
+            "countyRows": 46,
+            "ballotsCast": 2566404,
+            "registeredVoters": 3451344
+          },
+          "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+          "disposition": "candidate_not_loaded; active VREMS remains"
+        }
+      ]
     },
     {
       "state": "SD",
@@ -1604,6 +1623,25 @@
         "Turnout is county-level, not precinct-level.",
         "The SC VREMS source page says registration numbers include voters printed on election lists: all active voters plus some inactive voters. Rows are warning-required and should not be treated as active-registration denominators.",
         "The VREMS statewide summary includes an unassigned/null-county row with 2 registered voters and 1 participating voter; the normalized artifact keeps only the 46 county rows for joins."
+      ],
+      "candidateSources": [
+        {
+          "sourceTitle": "SC Elections Database 2024 General Voter Statistics contest 7075",
+          "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+          "localFile": "data/sc-2024-election-history/voter-statistics-7075.csv",
+          "parser": "scripts/normalize-sc-election-history-voter-statistics.mjs",
+          "status": "candidate",
+          "reportingLevel": "state/county/precinct",
+          "normalizedFile": "data/sc-2024-election-history/voter-statistics-7075-county.csv",
+          "reconciliationFile": "data/sc-2024-election-history/voter-statistics-7075-vs-vrems-reconciliation.json",
+          "expected": {
+            "countyRows": 46,
+            "ballotsCast": 2566404,
+            "registeredVoters": 3451344
+          },
+          "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+          "disposition": "candidate_not_loaded; active VREMS remains"
+        }
       ]
     },
     {

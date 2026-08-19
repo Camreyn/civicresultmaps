@@ -1,4 +1,5 @@
-﻿import fs from "node:fs";
+import { createHash } from "node:crypto";
+import fs from "node:fs";
 import path from "node:path";
 
 const repoRoot = process.cwd();
@@ -8,12 +9,24 @@ const summaryPath = path.join(dataDir, "sc-historical-presidential-baseline-summ
 
 const SOURCES = [
   {
+    year: 2012,
+    id: "sc-2012-election-history-president",
+    contestId: "9112",
+    url: "https://sc.elstats.civera.com/api/download_contest/9112_table.csv?split_party=false",
+    localFile: path.join(dataDir, "sc-2012-president-9112.csv"),
+    expected: { rowCount: 46, dem: 865941, rep: 1071645, other: 26532, total: 1964118 },
+    byteCount: 116772,
+    sha256: "26d5c6aa23b1f6c259f2178c20114c82027acbb586d487047d99483dff89a33c",
+  },
+  {
     year: 2016,
     id: "sc-2016-election-history-president",
     contestId: "5292",
     url: "https://sc.elstats.civera.com/api/download_contest/5292_table.csv?split_party=false",
     localFile: path.join(dataDir, "sc-2016-president-5292.csv"),
     expected: { rowCount: 46, dem: 855373, rep: 1155389, other: 92265, total: 2103027 },
+    byteCount: 132795,
+    sha256: "cb2e118c354f87becf12883aafd40a7de83a1026be82516d13c6247b0122e42f",
   },
   {
     year: 2020,
@@ -22,11 +35,23 @@ const SOURCES = [
     url: "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false",
     localFile: path.join(dataDir, "sc-2020-president-1974.csv"),
     expected: { rowCount: 46, dem: 1091541, rep: 1385103, other: 36685, total: 2513329 },
+    byteCount: 119261,
+    sha256: "c57495268aa7c38e8e880caa1aca799eb2ace174c0a3770b4b1f471962453ba7",
   },
 ];
 
-function intText(value) {
-  return Number(String(value ?? "").replace(/[^0-9-]/g, "")) || 0;
+function sha256(bytes) {
+  return createHash("sha256").update(bytes).digest("hex");
+}
+
+function intText(value, context) {
+  const text = String(value ?? "").trim();
+  if (!text) return 0;
+  const normalized = text.replaceAll(",", "");
+  if (!/^-?\d+$/.test(normalized)) {
+    throw new Error(`Invalid integer in ${context}: ${JSON.stringify(text)}`);
+  }
+  return Number(normalized);
 }
 
 function csvCell(value) {
@@ -75,6 +100,9 @@ function parseCsv(text) {
     row.push(cell);
     rows.push(row);
   }
+  if (quoted) {
+    throw new Error("Unterminated quoted field in South Carolina source CSV");
+  }
   return rows.filter((item) => item.some((value) => value !== ""));
 }
 
@@ -91,9 +119,30 @@ async function downloadSource(source) {
   if (!response.ok) {
     throw new Error(`Failed to download ${source.url}: ${response.status} ${response.statusText}`);
   }
+  const bytes = Buffer.from(await response.arrayBuffer());
+  const actual = { byteCount: bytes.length, sha256: sha256(bytes) };
+  const expected = { byteCount: source.byteCount, sha256: source.sha256 };
+  if (actual.byteCount !== expected.byteCount || actual.sha256 !== expected.sha256) {
+    throw new Error(`South Carolina ${source.year} source drifted: ${JSON.stringify({ expected, actual })}`);
+  }
   const tmpFile = `${source.localFile}.tmp-${process.pid}`;
-  fs.writeFileSync(tmpFile, Buffer.from(await response.arrayBuffer()));
+  fs.mkdirSync(path.dirname(source.localFile), { recursive: true });
+  fs.writeFileSync(tmpFile, bytes);
   fs.renameSync(tmpFile, source.localFile);
+  return actual;
+}
+
+function readSourceArtifact(source) {
+  if (!fs.existsSync(source.localFile)) {
+    throw new Error(`Missing retained South Carolina ${source.year} source: ${source.localFile}`);
+  }
+  const bytes = fs.readFileSync(source.localFile);
+  const actual = { byteCount: bytes.length, sha256: sha256(bytes) };
+  const expected = { byteCount: source.byteCount, sha256: source.sha256 };
+  if (actual.byteCount !== expected.byteCount || actual.sha256 !== expected.sha256) {
+    throw new Error(`Retained South Carolina ${source.year} source drifted: ${JSON.stringify({ expected, actual })}`);
+  }
+  return actual;
 }
 
 function countyDisplayMap() {
@@ -134,13 +183,13 @@ function parseHistoricalRows(source, counties) {
     const rawCounty = String(row[1] ?? "").trim();
     const county = counties.get(rawCounty.toLowerCase());
     if (!county) {
-      continue;
+      throw new Error(`Unknown ${source.year} South Carolina county: ${rawCounty}`);
     }
     let dem = 0;
     let rep = 0;
     let other = 0;
     for (const column of voteColumns) {
-      const votes = intText(row[column.index]);
+      const votes = intText(row[column.index], `${source.year} ${rawCounty} ${column.candidate}`);
       if (column.party === "democratic") {
         dem += votes;
       } else if (column.party === "republican") {
@@ -148,6 +197,10 @@ function parseHistoricalRows(source, counties) {
       } else {
         other += votes;
       }
+    }
+    const total = intText(row[totalVotesColumn.index], `${source.year} ${rawCounty} Total Votes Cast`);
+    if (dem + rep + other !== total) {
+      throw new Error(`${source.year} ${rawCounty} candidate votes do not reconcile: ${dem + rep + other} != ${total}`);
     }
     output.push({
       state: "SC",
@@ -159,7 +212,7 @@ function parseHistoricalRows(source, counties) {
       dem_votes: dem,
       rep_votes: rep,
       other_votes: other,
-      total_votes: intText(row[totalVotesColumn.index]),
+      total_votes: total,
       source_url: source.url,
     });
   }
@@ -193,15 +246,17 @@ function assertSummary(source, rows) {
 const counties = countyDisplayMap();
 const allRows = [];
 const summary = {
-  generatedAt: new Date().toISOString(),
+  generatedAt: "2026-08-19T00:00:00.000Z",
   authority: "South Carolina Election Commission",
   parser: "scripts/normalize-sc-historical-presidential-baseline.mjs",
-  caveat: "Official South Carolina Elections Database 2016 and 2020 presidential contest CSVs normalized to county baselines. 2012 remains uncollected.",
+  caveat: "Official South Carolina Elections Database 2012, 2016, and 2020 presidential contest CSVs normalized to county baselines. County rows are historical context and not 2024 certified-result rows.",
   sources: [],
 };
 
 for (const source of SOURCES) {
-  await downloadSource(source);
+  const artifact = process.argv.includes("--download")
+    ? await downloadSource(source)
+    : readSourceArtifact(source);
   const rows = parseHistoricalRows(source, counties);
   const totals = assertSummary(source, rows);
   allRows.push(...rows);
@@ -216,6 +271,8 @@ for (const source of SOURCES) {
     repVotes: totals.rep,
     otherVotes: totals.other,
     totalVotes: totals.total,
+    byteCount: artifact.byteCount,
+    sha256: artifact.sha256,
   });
 }
 

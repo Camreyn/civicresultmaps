@@ -968,7 +968,7 @@
       "state": "SC",
       "name": "South Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_precinct_review_state_turnout_2016_2020_historical_reviewed_precinct_gis_2016_2020_2024_2012_blocked",
+      "nativeReadiness": "complete_county_map_precinct_review_state_turnout_2012_2016_2020_historical_reviewed_precinct_gis_2016_2020_2024_2012_blocked",
       "authority": "South Carolina Election Commission",
       "configFile": "etl/state-configs/sc.json",
       "legacyReferenceBundle": "data/sc-app-data.js",
@@ -995,6 +995,32 @@
           "denominator": "Printed registration-list voters from VREMS totalRegistered",
           "ballotsCast": "VREMS totalVoting participating voters"
         },
+        "voterStatisticsCandidate": {
+          "sourceTitle": "South Carolina Elections Database official 2024 General Election Voter Statistics contest 7075",
+          "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+          "queryInterfaceUrl": "https://electionhistory.scvotes.gov/search",
+          "sourceRequestFile": "data/sc-2024-election-history/voter-statistics-7075-request.json",
+          "localFile": "data/sc-2024-election-history/voter-statistics-7075.csv",
+          "normalizedFile": "data/sc-2024-election-history/voter-statistics-7075-county.csv",
+          "reconciliationFile": "data/sc-2024-election-history/voter-statistics-7075-vs-vrems-reconciliation.json",
+          "parser": "scripts/normalize-sc-election-history-voter-statistics.mjs",
+          "status": "candidate",
+          "level": "state/county/precinct source; county normalized candidate",
+          "contestId": "7075",
+          "electionId": "58",
+          "sourceRows": {
+            "state": 1,
+            "county": 46,
+            "precinct": 2446
+          },
+          "expected": {
+            "ballotsCast": 2566404,
+            "registeredVoters": 3451344
+          },
+          "byteCount": 81664,
+          "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+          "disposition": "candidate_not_loaded; active turnout remains SC VREMS"
+        },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
           "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2745%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -1017,14 +1043,38 @@
           ]
         },
         "historicalBaseline": {
-          "sourceTitle": "South Carolina Elections Database official 2016 and 2020 presidential contest CSVs normalized to county baselines",
+          "sourceTitle": "South Carolina Elections Database official 2012, 2016, and 2020 presidential contest CSVs normalized to county baselines",
           "sourceUrl": "https://electionhistory.scvotes.gov/",
           "localFile": "data/sc-historical-presidential-baseline.csv",
-          "parserHint": "Run scripts/normalize-sc-historical-presidential-baseline.mjs; aggregate county rows by party from official contest CSV downloads 5292 and 1974.",
-          "rowCount": 92,
+          "parserHint": "Run scripts/normalize-sc-historical-presidential-baseline.mjs; hash-pinned retained source files aggregate county rows by party from official contest CSV downloads 9112, 5292, and 1974.",
+          "rowCount": 138,
           "years": [
+            2012,
             2016,
             2020
+          ],
+          "sourceArtifacts": [
+            {
+              "year": 2012,
+              "contestId": "9112",
+              "localFile": "data/sc-2012-president-9112.csv",
+              "byteCount": 116772,
+              "sha256": "26d5c6aa23b1f6c259f2178c20114c82027acbb586d487047d99483dff89a33c"
+            },
+            {
+              "year": 2016,
+              "contestId": "5292",
+              "localFile": "data/sc-2016-president-5292.csv",
+              "byteCount": 132795,
+              "sha256": "cb2e118c354f87becf12883aafd40a7de83a1026be82516d13c6247b0122e42f"
+            },
+            {
+              "year": 2020,
+              "contestId": "1974",
+              "localFile": "data/sc-2020-president-1974.csv",
+              "byteCount": 119261,
+              "sha256": "c57495268aa7c38e8e880caa1aca799eb2ace174c0a3770b4b1f471962453ba7"
+            }
           ]
         }
       },
@@ -1037,15 +1087,15 @@
         "other": 35941,
         "localReviewRows": 2401,
         "turnoutRows": 46,
-        "historicalBaselineRows": 92
+        "historicalBaselineRows": 138
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_dropoff_district_based",
         "turnoutMode": "sc_vrems_county_voter_history_warning_required",
-        "historicalBaselineMode": "official_sc_elections_database_2016_2020_county_baseline_context",
-        "historicalMode": "official_election_history_county_csv_2016_2020_2012_missing",
+        "historicalBaselineMode": "official_sc_elections_database_2012_2016_2020_county_baseline_context",
+        "historicalMode": "official_election_history_county_csv_2012_2016_2020_loaded",
         "precinctGeometryMode": "reviewed_secondary_geometry_official_result_values_2016_2020_2024_2012_blocked"
       },
       "caveats": [
@@ -1055,8 +1105,10 @@
         "Reviewed precinct geometry and official-result crosswalks exist for 2016, 2020, and 2024 but remain outside production until immutable delivery and guarded activation are complete.",
         "VEST and NYT supply attributed geometry only; their vote fields are stripped and all displayable values come from official South Carolina Election Commission exports.",
         "The 2012 RFA-origin archive remains blocked because its post-election vintage, derivative terms, and result crosswalk are unresolved.",
-        "Official 2016 and 2020 county historical baselines are normalized from South Carolina Elections Database presidential contest CSVs and resolve to Census county FIPS tags.",
-        "Official 2012 county historical baseline has not been normalized yet."
+        "Official 2012, 2016, and 2020 county historical baselines are normalized from South Carolina Elections Database presidential contest CSVs and resolve to Census county FIPS tags.",
+        "Official 2012 county historical baseline is now normalized from contest 9112 and independently reconciles to 1,964,118 presidential votes; the blocked 2012 precinct-geometry candidate remains separate.",
+        "Election History Voter Statistics contest 7075 is retained as a hash-pinned candidate: 2,566,404 ballots and 3,451,344 registered across 46 counties versus active VREMS 2,553,185 and 3,851,930. Its source-level reconciliation is documented, but it does not replace active VREMS.",
+        "The retained historical source bytes and SHA-256 values are recorded in data/sc-historical-presidential-baseline-summary.json. A 2026-08-19 review proved the apparent 2016 drift was checkout line-ending conversion only: the repository blob, endpoint content, and all contest totals were identical. Byte-preservation attributes now keep the current 132,795-byte LF response stable."
       ]
     },
     {
