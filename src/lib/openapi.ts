@@ -40,6 +40,7 @@ export function buildOpenApiDocument() {
     tags: [
       { name: "Comparisons", description: "Canonical county election comparisons" },
       { name: "Counties", description: "County registry, search, and profiles" },
+      { name: "Districts", description: "Plan-vintage district boundary measurements and explicit comparability guards" },
       { name: "Releases", description: "Immutable result, equipment, and security release metadata and bulk downloads" },
       { name: "Equipment", description: "Source-linked certified configurations, change records, and evidence gaps" },
       { name: "Platform", description: "Existing state, source, and coverage endpoints" },
@@ -294,6 +295,27 @@ export function buildOpenApiDocument() {
           summary: "Get this OpenAPI 3.1 document",
           responses: {
             "200": { description: "OpenAPI document.", content: { "application/json": { schema: { type: "object" } } } },
+          },
+        },
+      },
+      "/api/district-compactness": {
+        get: {
+          tags: ["Districts"],
+          operationId: "listDistrictCompactness",
+          summary: "List advisory compactness measurements for official 2024 district plans",
+          description: "Returns Polsby-Popper and convex-hull ratios plus detailed-versus-1:500,000 resolution sensitivity. These shape measurements do not score gerrymandering, intent, legality, representation, or election integrity.",
+          parameters: [
+            { name: "state", in: "query", schema: { type: "string", pattern: "^[A-Z]{2}$" } },
+            { name: "geography", in: "query", schema: { type: "string", enum: ["congressional", "state_upper", "state_lower"] } },
+            { name: "stability", in: "query", schema: { type: "string", enum: ["stable", "resolution_sensitive"] } },
+            { name: "q", in: "query", schema: { type: "string", maxLength: 100 } },
+            { name: "sort", in: "query", schema: { type: "string", enum: ["polsby_asc", "polsby_desc", "hull_asc", "resolution_difference_desc", "state_asc"], default: "polsby_asc" } },
+            { name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 500, default: 100 } },
+            { name: "offset", in: "query", schema: { type: "integer", minimum: 0, default: 0 } },
+          ],
+          responses: {
+            "200": { description: "Plan-vintage district compactness rows with methodology and result-join status." },
+            "400": errorResponse,
           },
         },
       },
