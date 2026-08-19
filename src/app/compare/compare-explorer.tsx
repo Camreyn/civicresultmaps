@@ -15,11 +15,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./compare.module.css";
 
-const yearPairs = [
-  { from: 2016, label: "2016 → 2020", to: 2020 },
-  { from: 2016, label: "2016 → 2024", to: 2024 },
-  { from: 2020, label: "2020 → 2024", to: 2024 },
-] as const;
+const comparisonYears = [2016, 2020, 2024] as const;
 
 const directions = [
   { label: "All comparable counties", value: "all" },
@@ -337,7 +333,9 @@ function normalizeCoverage(value: unknown): ComparisonCoverage {
 function normalizePair(fromValue?: string, toValue?: string) {
   const from = Number(fromValue);
   const to = Number(toValue);
-  return yearPairs.find((pair) => pair.from === from && pair.to === to) ?? yearPairs[2];
+  const hasFrom = comparisonYears.some((year) => year === from);
+  const hasTo = comparisonYears.some((year) => year === to);
+  return hasFrom && hasTo && from < to ? { from, to } : { from: 2020, to: 2024 };
 }
 
 function normalizeDirectionFilter(value?: string): DirectionFilter {
@@ -734,14 +732,6 @@ export function CompareExplorer({ initialState }: { initialState: CompareInitial
     return `/api/flips?${params.toString()}`;
   }, [apiParameters]);
 
-  function setPair(value: string) {
-    const [nextFrom, nextTo] = value.split("-").map(Number);
-    const pair = normalizePair(String(nextFrom), String(nextTo));
-    setFromYear(pair.from);
-    setToYear(pair.to);
-    setSelectedFips(null);
-  }
-
   function handleSort(column: SortKey) {
     if (sort === column) {
       setOrder((current) => current === "asc" ? "desc" : "asc");
@@ -783,9 +773,33 @@ export function CompareExplorer({ initialState }: { initialState: CompareInitial
     <div className={styles.explorer}>
       <section className={styles.controls} aria-label="Comparison filters">
         <label>
-          <span>Election pair</span>
-          <select value={`${fromYear}-${toYear}`} onChange={(event) => setPair(event.target.value)}>
-            {yearPairs.map((pair) => <option key={pair.label} value={`${pair.from}-${pair.to}`}>{pair.label}</option>)}
+          <span>Start year</span>
+          <select
+            aria-label="Comparison start year"
+            onChange={(event) => {
+              setFromYear(Number(event.target.value));
+              setSelectedFips(null);
+            }}
+            value={fromYear}
+          >
+            {comparisonYears.map((year) => (
+              <option disabled={year >= toYear} key={year} value={year}>{year}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>End year</span>
+          <select
+            aria-label="Comparison end year"
+            onChange={(event) => {
+              setToYear(Number(event.target.value));
+              setSelectedFips(null);
+            }}
+            value={toYear}
+          >
+            {comparisonYears.map((year) => (
+              <option disabled={year <= fromYear} key={year} value={year}>{year}</option>
+            ))}
           </select>
         </label>
         <label>
