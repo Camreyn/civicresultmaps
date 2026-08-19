@@ -8455,3 +8455,25 @@ evidence against its verified top-level package.
   of fraud or misconduct. Production was not contacted or mutated, and current
   production indicator counts were not rechecked for this delivery-null
   source-package change.
+
+### 2026-08-19 - Hawaii 2012 historical-result baseline
+
+- Retained the Hawaii Office of Elections certified 2012 General Election
+  `summary.txt` and precinct/split `media.txt` source exports. The detail
+  source provides source-context `Reg_voters`, `Ballots`, and vote-method
+  fields, but those fields do not establish a turnout denominator and do not
+  alter the active 2024 Hawaii turnout package.
+- The historical normalizer now emits five canonical county/county-equivalent
+  President rows for 2012, using the reviewed pre-reapportionment district
+  ranges and precinct 13-09 / split ID 78 for Kalawao `county:15005`. It
+  rejects changed county tuples, statewide totals, or its 476-vote overseas
+  non-geographic exclusion.
+- The 2012 crosswalk evidence is year-specific: the Office/Reapportionment
+  Commission March 2012 county map series establishes the district ranges;
+  the Office's May 2012 Molokai map draws the Maui-Kalawao boundary with
+  13-09 on the Kalawao side. The four official 2012 county summary PDFs also
+  reconcile after the Maui-administered total is split into Maui and Kalawao.
+  All nine evidence PDFs are retained locally and hash-pinned by the normalizer.
+- This is a result-baseline change only. Hawaii's election-effective 2012
+  precinct geometry and a reviewed result-to-feature crosswalk remain absent;
+  no precinct geography is activated or eligible for public delivery.

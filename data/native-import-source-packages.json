@@ -2970,7 +2970,7 @@
       "state": "HI",
       "name": "Hawaii",
       "priority": 11,
-      "nativeReadiness": "complete_five_county_map_precinct_split_review_state_native_turnout_2016_2020_historical_context",
+      "nativeReadiness": "complete_five_county_map_precinct_split_review_state_native_turnout_2012_2016_2020_historical_context",
       "authority": "Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/hi.json",
       "artifacts": {
@@ -3018,15 +3018,16 @@
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or precinct-uniformity proof."
         },
         "historicalBaseline": {
-          "sourceTitle": "Hawaii Office of Elections 2016 and 2020 General Election summary/detail text exports",
-          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
-          "localFile": "data/hi-historical-presidential-baseline.csv",
+          "sourceTitle": "Hawaii Office of Elections 2012, 2016, and 2020 General Election summary/detail text exports",
+          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2012/general/summary.txt; https://files.hawaii.gov/elections/files/results/2012/general/media.txt; https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
+          "localFile": "data/hi-2012-general-summary.txt; data/hi-2012-general-precinct-detail.txt; data/hi-historical-presidential-baseline.csv; data/hi-historical-presidential-baseline-summary.json",
           "level": "county",
           "years": [
+            2012,
             2016,
             2020
           ],
-          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs emits five county/county-equivalent rows per year. Precinct 13-09 is pinned to county:15005 with exact 2016/2020 vote tuples, Maui residuals, and statewide-zero-delta gates."
+          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs emits five county/county-equivalent rows per year. Precinct 13-09 is pinned to county:15005 with exact 2012/2016/2020 vote tuples, Maui residuals, and statewide gates; the 2012 476-vote overseas non-geographic President total is fail-closed and never assigned to a county."
         }
       },
       "expected": {
@@ -3038,14 +3039,14 @@
         "other": 9996,
         "localReviewRows": 467,
         "turnoutRows": 4,
-        "historicalBaselineRows": 10
+        "historicalBaselineRows": 15
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_senate_precinct_split_nonzero_numbered_units",
         "turnoutMode": "official_hawaii_office_registration_turnout_statistics_county_rows",
-        "historicalBaselineMode": "official_2016_2020_five_county_baseline_with_kalawao_15005",
+        "historicalBaselineMode": "official_2012_2016_2020_five_county_baseline_with_kalawao_15005_and_2012_overseas_exclusion",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
       },
       "caveats": [
@@ -3054,10 +3055,10 @@
         "Active turnout uses four Hawaii Office election-county rows. The source table does not split Kalawao turnout or registration, so no denominator is invented for FIPS 15005.",
         "County geometry is loaded; full precinct boundaries/crosswalks are not loaded.",
         "Advisory review rows are public-interest source-review inputs only, not findings of fraud or misconduct.",
-        "Official 2012 historical baselines and normalized administration-context rows remain missing."
+        "The 2012 detail export's registration and ballot fields remain source context only: their timing and scope are not used to replace the active 2024 turnout denominator. Normalized administration-context rows remain missing."
       ],
       "legacyReferenceBundle": "data/hi-2024-data-coverage-inventory.json",
-      "nextAction": "Collect official 2012 historical rows, complete precinct geometry/crosswalks if subcounty overlays are pursued, and normalize administration context."
+      "nextAction": "Complete precinct geometry/crosswalks if subcounty overlays are pursued, and normalize administration context."
     },
     {
       "state": "NM",
