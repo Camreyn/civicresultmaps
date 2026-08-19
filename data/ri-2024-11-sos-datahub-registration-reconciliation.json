@@ -1,0 +1,511 @@
+{
+  "generatedBy": "scripts/normalize-ri-registration-datahub.mjs",
+  "sourceAuthority": "Rhode Island Department of State, Secretary of State Data Hub",
+  "reportUrl": "https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
+  "queryEndpoint": "https://wabi-us-gov-virginia-api.analysis.usgovcloudapi.net/public/reports/querydata?synchronous=true",
+  "resourceKey": "ca3ba28c-538b-4cb2-a312-ec2421293ed6",
+  "modelId": 594856,
+  "asOfDate": "2024-11-01",
+  "semantics": "The official report's CumulativeVoterRegistrationData rows are grouped by city/town, precinct, party, and STATUS. Report duplicate-disposition filters are reproduced exactly. This is a registration denominator lead only; it contains no compatible ballots-cast or voter-participation field and does not replace active EAC turnout.",
+  "rawArtifact": {
+    "path": "data/ri-2024-11-sos-datahub-registration-query.json",
+    "bytes": 813618,
+    "sha256": "729050b4d504b3ebb01893d2996b80453e33aadef1ef9738de2ee55a789f2cc4",
+    "request": {
+      "version": "1.0.0",
+      "queries": [
+        {
+          "Query": {
+            "Commands": [
+              {
+                "SemanticQueryDataShapeCommand": {
+                  "Query": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "c",
+                        "Entity": "CumulativeVoterRegistrationData",
+                        "Type": 0
+                      }
+                    ],
+                    "Select": [
+                      {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "c"
+                            }
+                          },
+                          "Property": "Precinct_District_xwalk.City"
+                        },
+                        "Name": "cityTown"
+                      },
+                      {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "c"
+                            }
+                          },
+                          "Property": "Precinct_District_xwalk.PRECINCT"
+                        },
+                        "Name": "precinct"
+                      },
+                      {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "c"
+                            }
+                          },
+                          "Property": "PARTY"
+                        },
+                        "Name": "party"
+                      },
+                      {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "c"
+                            }
+                          },
+                          "Property": "STATUS"
+                        },
+                        "Name": "status"
+                      },
+                      {
+                        "Aggregation": {
+                          "Expression": {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "c"
+                                }
+                              },
+                              "Property": "Voter Registration "
+                            }
+                          },
+                          "Function": 0
+                        },
+                        "Name": "registeredVoters"
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "c"
+                                    }
+                                  },
+                                  "Property": "Date "
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "datetime'2024-11-01T00:00:00'"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "Condition": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "c"
+                                    }
+                                  },
+                                  "Property": "Precinct_District_xwalk.DUP_KeepRemoveDirection"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'ignore'"
+                                  }
+                                }
+                              ],
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'keep'"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "Condition": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "c"
+                                    }
+                                  },
+                                  "Property": "Precinct_District_xwalk.DUP_KeepRemoveDirection.1"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'ignore'"
+                                  }
+                                }
+                              ],
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'keep'"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "OrderBy": [
+                      {
+                        "Direction": 1,
+                        "Expression": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "Precinct_District_xwalk.City"
+                          }
+                        }
+                      },
+                      {
+                        "Direction": 1,
+                        "Expression": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "Precinct_District_xwalk.PRECINCT"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "Binding": {
+                    "Primary": {
+                      "Groupings": [
+                        {
+                          "Projections": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                          ]
+                        }
+                      ]
+                    },
+                    "DataReduction": {
+                      "DataVolume": 6,
+                      "Primary": {
+                        "Window": {
+                          "Count": 10000
+                        }
+                      }
+                    },
+                    "Version": 1
+                  },
+                  "ExecutionMetricsKind": 1
+                }
+              }
+            ]
+          },
+          "ApplicationContext": {
+            "DatasetId": "22953ce3-6fdb-46b4-a4a6-06e0cfe79c87"
+          }
+        }
+      ],
+      "cancelQueries": [],
+      "modelId": 594856
+    }
+  },
+  "output": {
+    "path": "data/ri-2024-11-sos-datahub-registration-precinct.csv",
+    "rows": 3838,
+    "cityTowns": 39,
+    "totalsByStatus": {
+      "Active": 732308,
+      "Inactive": 57201,
+      "Pending": 3360
+    },
+    "total": 792869
+  },
+  "eacComparison": {
+    "eacRows": 39,
+    "eacRegistered": 792075,
+    "dataHubAllStatusRegistered": 792869,
+    "delta": 794,
+    "rows": [
+      {
+        "cityTown": "Barrington",
+        "dataHubRegistered": 14373,
+        "eacRegistered": 14357,
+        "delta": 16
+      },
+      {
+        "cityTown": "Bristol",
+        "dataHubRegistered": 16112,
+        "eacRegistered": 16095,
+        "delta": 17
+      },
+      {
+        "cityTown": "Burrillville",
+        "dataHubRegistered": 12860,
+        "eacRegistered": 12856,
+        "delta": 4
+      },
+      {
+        "cityTown": "Central Falls",
+        "dataHubRegistered": 8588,
+        "eacRegistered": 8565,
+        "delta": 23
+      },
+      {
+        "cityTown": "Charlestown",
+        "dataHubRegistered": 7298,
+        "eacRegistered": 7297,
+        "delta": 1
+      },
+      {
+        "cityTown": "Coventry",
+        "dataHubRegistered": 28634,
+        "eacRegistered": 28620,
+        "delta": 14
+      },
+      {
+        "cityTown": "Cranston",
+        "dataHubRegistered": 61209,
+        "eacRegistered": 61195,
+        "delta": 14
+      },
+      {
+        "cityTown": "Cumberland",
+        "dataHubRegistered": 27713,
+        "eacRegistered": 27699,
+        "delta": 14
+      },
+      {
+        "cityTown": "East Greenwich",
+        "dataHubRegistered": 11522,
+        "eacRegistered": 11518,
+        "delta": 4
+      },
+      {
+        "cityTown": "East Providence",
+        "dataHubRegistered": 36077,
+        "eacRegistered": 36082,
+        "delta": -5
+      },
+      {
+        "cityTown": "Exeter",
+        "dataHubRegistered": 5650,
+        "eacRegistered": 5647,
+        "delta": 3
+      },
+      {
+        "cityTown": "Foster",
+        "dataHubRegistered": 4024,
+        "eacRegistered": 4022,
+        "delta": 2
+      },
+      {
+        "cityTown": "Glocester",
+        "dataHubRegistered": 8946,
+        "eacRegistered": 8937,
+        "delta": 9
+      },
+      {
+        "cityTown": "Hopkinton",
+        "dataHubRegistered": 7021,
+        "eacRegistered": 7020,
+        "delta": 1
+      },
+      {
+        "cityTown": "Jamestown",
+        "dataHubRegistered": 5059,
+        "eacRegistered": 5048,
+        "delta": 11
+      },
+      {
+        "cityTown": "Johnston",
+        "dataHubRegistered": 24278,
+        "eacRegistered": 24277,
+        "delta": 1
+      },
+      {
+        "cityTown": "Lincoln",
+        "dataHubRegistered": 17918,
+        "eacRegistered": 17919,
+        "delta": -1
+      },
+      {
+        "cityTown": "Little Compton",
+        "dataHubRegistered": 3330,
+        "eacRegistered": 3326,
+        "delta": 4
+      },
+      {
+        "cityTown": "Middletown",
+        "dataHubRegistered": 11943,
+        "eacRegistered": 11924,
+        "delta": 19
+      },
+      {
+        "cityTown": "Narragansett",
+        "dataHubRegistered": 12571,
+        "eacRegistered": 12542,
+        "delta": 29
+      },
+      {
+        "cityTown": "New Shoreham",
+        "dataHubRegistered": 1180,
+        "eacRegistered": 1180,
+        "delta": 0
+      },
+      {
+        "cityTown": "Newport",
+        "dataHubRegistered": 15284,
+        "eacRegistered": 15250,
+        "delta": 34
+      },
+      {
+        "cityTown": "North Kingstown",
+        "dataHubRegistered": 23808,
+        "eacRegistered": 23776,
+        "delta": 32
+      },
+      {
+        "cityTown": "North Providence",
+        "dataHubRegistered": 25741,
+        "eacRegistered": 25736,
+        "delta": 5
+      },
+      {
+        "cityTown": "North Smithfield",
+        "dataHubRegistered": 10273,
+        "eacRegistered": 10268,
+        "delta": 5
+      },
+      {
+        "cityTown": "Pawtucket",
+        "dataHubRegistered": 46656,
+        "eacRegistered": 46646,
+        "delta": 10
+      },
+      {
+        "cityTown": "Portsmouth",
+        "dataHubRegistered": 14833,
+        "eacRegistered": 14806,
+        "delta": 27
+      },
+      {
+        "cityTown": "Providence",
+        "dataHubRegistered": 112038,
+        "eacRegistered": 111683,
+        "delta": 355
+      },
+      {
+        "cityTown": "Richmond",
+        "dataHubRegistered": 6867,
+        "eacRegistered": 6847,
+        "delta": 20
+      },
+      {
+        "cityTown": "Scituate",
+        "dataHubRegistered": 9077,
+        "eacRegistered": 9075,
+        "delta": 2
+      },
+      {
+        "cityTown": "Smithfield",
+        "dataHubRegistered": 16000,
+        "eacRegistered": 15989,
+        "delta": 11
+      },
+      {
+        "cityTown": "South Kingstown",
+        "dataHubRegistered": 22502,
+        "eacRegistered": 22492,
+        "delta": 10
+      },
+      {
+        "cityTown": "Tiverton",
+        "dataHubRegistered": 13423,
+        "eacRegistered": 13424,
+        "delta": -1
+      },
+      {
+        "cityTown": "Warren",
+        "dataHubRegistered": 8866,
+        "eacRegistered": 8853,
+        "delta": 13
+      },
+      {
+        "cityTown": "Warwick",
+        "dataHubRegistered": 67489,
+        "eacRegistered": 67437,
+        "delta": 52
+      },
+      {
+        "cityTown": "West Greenwich",
+        "dataHubRegistered": 5482,
+        "eacRegistered": 5478,
+        "delta": 4
+      },
+      {
+        "cityTown": "West Warwick",
+        "dataHubRegistered": 22297,
+        "eacRegistered": 22308,
+        "delta": -11
+      },
+      {
+        "cityTown": "Westerly",
+        "dataHubRegistered": 19370,
+        "eacRegistered": 19358,
+        "delta": 12
+      },
+      {
+        "cityTown": "Woonsocket",
+        "dataHubRegistered": 26557,
+        "eacRegistered": 26523,
+        "delta": 34
+      }
+    ]
+  },
+  "caveat": "2024-11-01 is the closest monthly report snapshot to the November 5, 2024 General Election. The report's default page filters to Active status, but this artifact retains Active, Inactive, and Pending separately; no status combination is represented as election turnout."
+}

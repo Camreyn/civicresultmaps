@@ -2720,7 +2720,7 @@
       "name": "Rhode Island",
       "priority": 14,
       "nativeReadiness": "loaded_county_map_review_eac_turnout_official_2012_2016_2020_historical_promotion_reconciled",
-      "authority": "Rhode Island Board of Elections; U.S. Election Assistance Commission",
+      "authority": "Rhode Island Board of Elections; Rhode Island Department of State; U.S. Election Assistance Commission",
       "configFile": "etl/state-configs/ri.json",
       "artifacts": {
         "presidentialCountyResults": {
@@ -2743,6 +2743,12 @@
           "localFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
           "level": "jurisdiction",
           "denominator": "EAC A1a Total Reg registered voters"
+        },
+        "registrationDenominatorLead": {
+          "sourceTitle": "Rhode Island Secretary of State Data Hub 2024-11-01 registration lead",
+          "sourceUrl": "https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
+          "localFile": "data/ri-2024-11-sos-datahub-registration-query.json; data/ri-2024-11-sos-datahub-registration-precinct.csv; data/ri-2024-11-sos-datahub-registration-reconciliation.json",
+          "parserHint": "Run node scripts/normalize-ri-registration-datahub.mjs. The normalizer reproduces the public Power BI query and duplicate-disposition filters, hash-pins the raw response, and writes 3,838 city/town-precinct-party-status rows: 732,308 Active, 57,201 Inactive, 3,360 Pending, and 792,869 all-status registrations. It has no compatible ballots-cast field, so EAC turnout remains active."
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb Rhode Island county geography",
@@ -2791,7 +2797,7 @@
       "caveats": [
         "The explicit finalized 2024 root member reconciles exactly to posted statewide President and U.S. Senate buckets; normalization fails closed on any mismatch and emits no reconciliation row.",
         "Review rows are advisory context only and exclude zero-vote Limited rows and presidential-only rows.",
-        "Turnout remains EAC fallback.",
+        "Turnout remains EAC fallback. The official SOS Data Hub 2024-11-01 registration lead retains status-separated city/town-and-precinct rows, totals 792,869 all-status registrations (794 above EAC), and includes no compatible ballots-cast or voter-participation field.",
         "County maps use official city/town-to-county aggregation; finer geometry/crosswalks remain missing.",
         "Official 2012, 2016, and 2020 history is aggregated to five county tags per year plus unforced Federal Precincts. The fail-closed read-only audit accepts replacing 86 live rows with 18 staged rows (a 68-row reduction): every statewide and county/Federal vote bucket has zero delta, all years remain present, and canonical flip reporting identifies Kent County as the sole RI red-to-blue flip for 2016-to-2020 and 2016-to-2024. Acceptance does not itself authorize production promotion.",
         "Normalized audit/recount/CVR/incident/correction/litigation rows are not loaded."
