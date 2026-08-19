@@ -2507,7 +2507,7 @@
       "state": "CO",
       "name": "Colorado",
       "priority": 11,
-      "nativeReadiness": "complete_county_map_county_review_state_native_turnout_2016_2020_historical_with_clarity_gap_caveat",
+      "nativeReadiness": "complete_county_map_county_review_state_native_turnout_2012_2016_2020_historical_with_clarity_gap_caveat",
       "authority": "Colorado Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
       "configFile": "etl/state-configs/co.json",
       "artifacts": {
@@ -2553,11 +2553,11 @@
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
         },
         "historicalBaseline": {
-          "sourceTitle": "Colorado Historical Election Data 2016 and 2020 General President contest CSVs",
-          "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/4436; https://historicalelectiondata.coloradosos.gov/contest/3640",
-          "localFile": "data/co-2016-general-president-list.csv; data/co-2020-general-president-list.csv; data/co-historical-presidential-baseline.csv; data/co-historical-presidential-baseline-summary.json",
+          "sourceTitle": "Colorado Historical Election Data 2012, 2016, and 2020 General President contest CSVs",
+          "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/5017; https://historicalelectiondata.coloradosos.gov/contest/4436; https://historicalelectiondata.coloradosos.gov/contest/3640",
+          "localFile": "data/co-2012-general-president-list.csv; data/co-2016-general-president-list.csv; data/co-2020-general-president-list.csv; data/co-historical-presidential-baseline.csv; data/co-historical-presidential-baseline-summary.json",
           "level": "county",
-          "parserHint": "Run node scripts/normalize-co-historical-presidential-baseline.mjs. The normalized historicalPresidentialCsv emits 128 county rows across 2016 and 2020. 2016 totals: Clinton 1,338,870; Trump 1,202,484; Other 238,893; Total 2,780,247. 2020 totals: Biden 1,804,352; Trump 1,364,607; Other 88,021; Total 3,256,980. Official 2012 Colorado baselines remain missing."
+          "parserHint": "Run node scripts/normalize-co-historical-presidential-baseline.mjs. The normalized historicalPresidentialCsv emits 192 county rows across 2012, 2016, and 2020. 2012 totals: Obama 1,323,102; Romney 1,185,243; Other 61,177; Total 2,569,522. 2016 totals: Clinton 1,338,870; Trump 1,202,484; Other 238,893; Total 2,780,247. 2020 totals: Biden 1,804,352; Trump 1,364,607; Other 88,021; Total 3,256,980."
         }
       },
       "expected": {
@@ -2571,7 +2571,7 @@
         "turnoutRows": 64,
         "registeredVoters": 4583280,
         "ballotsCast": 3241155,
-        "historicalBaselineRows": 128
+        "historicalBaselineRows": 192
       },
       "validationStatus": {
         "localArtifactsPresent": true,
@@ -2579,14 +2579,14 @@
         "reviewMode": "county_president_vs_cu_regent_at_large",
         "turnoutMode": "historical_election_data_county_voter_statistics_active_with_eac_clarity_reconciliation",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized",
-        "historicalBaselineMode": "official_2020_historical_election_data_county_context_2012_2016_missing"
+        "historicalBaselineMode": "official_2012_2016_2020_historical_election_data_county_context"
       },
       "caveats": [
         "Loaded Clarity presidential county candidate rows total 3,190,873 votes, 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source.",
         "Review rows are county-level President-versus-CU-Regent-at-large comparisons, not precinct scatter plots.",
         "County geometry is loaded; precinct boundaries/crosswalks are not loaded.",
         "Active turnout uses official Historical Election Data county voter-statistics rows. Total Voters equals Active Voters plus Inactive Voters and matches the former EAC denominator; Total Ballots Cast is 401 above EAC fallback and 35 above the Clarity ElectionVoterTurnout lead.",
-        "Official 2016 and 2020 county presidential historical baseline rows are loaded from Colorado Historical Election Data; official 2012 historical baselines and normalized Colorado audit, CVR availability, recount, incident, correction, or litigation rows are not loaded."
+        "Official 2012, 2016, and 2020 county presidential historical baseline rows are loaded from Colorado Historical Election Data; normalized Colorado audit, CVR availability, recount, incident, correction, or litigation rows are not loaded."
       ],
       "legacyReferenceBundle": "data/co-2024-clarity-detailxml.zip"
     },

@@ -34,6 +34,12 @@ class ColoradoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(native["metrics"]["nativeColoradoClarityTurnoutRows"], 64)
         self.assertEqual(native["metrics"]["nativeColoradoClarityBallotsCastLead"], 3241120)
         self.assertEqual(native["metrics"]["nativeColoradoClarityTotalVotersLead"], 4058938)
+        self.assertEqual(len(native["historicalRows"]), 192)
+        self.assertEqual(sorted({row["electionYear"] for row in native["historicalRows"]}), [2012, 2016, 2020])
+        self.assertEqual(
+            sum(row["totalVotes"] for row in native["historicalRows"] if row["electionYear"] == 2012),
+            2569522,
+        )
         self.assertTrue(any(row["coverageMode"] == "presidentVsRegent" for row in native["reviewRows"]))
 
         sources = {source["id"]: source for source in artifact["sources"]}
@@ -49,7 +55,7 @@ class ColoradoCoverageInventoryTests(unittest.TestCase):
         confirmed = {artifact["id"]: artifact for artifact in inventory["confirmedArtifacts"]}
         findings = {finding["topic"]: finding for finding in inventory["sourceFindings"]}
 
-        self.assertEqual(inventory["status"], "official_clarity_county_native_turnout_loaded")
+        self.assertEqual(inventory["status"], "official_clarity_county_native_turnout_historical_loaded")
         self.assertEqual(confirmed["co-2024-clarity-detailxml-endpoint"]["expectedRowsOrTotals"]["presidentialLoadedCountyVotes"], 3190873)
         self.assertEqual(confirmed["co-2024-clarity-detailxml-endpoint"]["expectedRowsOrTotals"]["knownWriteInOrAbstractGap"], 1872)
         self.assertEqual(confirmed["co-2024-regent-at-large-comparison-lead"]["expectedRowsOrTotals"]["contestTotalVotes"], 2930776)
@@ -57,6 +63,8 @@ class ColoradoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(findings["stateNativeTurnout"]["status"], "official_state_native_turnout_loaded")
         self.assertEqual(confirmed["co-2024-historical-voter-statistics"]["expectedRowsOrTotals"]["ballotsCast"], 3241155)
         self.assertEqual(confirmed["co-2024-historical-voter-statistics"]["expectedRowsOrTotals"]["totalVoters"], 4583280)
+        self.assertEqual(confirmed["co-historical-presidential-baseline"]["expectedRowsOrTotals"]["historicalRows"], 192)
+        self.assertEqual(findings["historicalBaselines"]["status"], "official_2012_2016_2020_county_baselines_loaded")
 
         tiers = self.load_json("data/source-acquisition-tiers.json")
         co_tier = next(row for row in tiers["states"] if row["state"] == "CO" and row["scope"] == "statewide")
@@ -65,6 +73,7 @@ class ColoradoCoverageInventoryTests(unittest.TestCase):
         self.assertIn("official Historical Election Data voter-statistics CSV", co_tier["exportFormats"])
         self.assertIn("loaded county CU Regent at-large comparison rows from the same endpoint", co_tier["availableFields"])
         self.assertIn("official state-native county turnout and active-plus-inactive registered-voter denominator rows from Historical Election Data voter statistics", co_tier["availableFields"])
+        self.assertNotIn("official 2012 county or county-equivalent presidential baseline normalized into ETL", co_tier["missingFields"])
 
         native_packages = self.load_json("data/native-import-source-packages.json")
         self.assertIn("CO", native_packages["completedNativeStates"])
@@ -72,6 +81,7 @@ class ColoradoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(co_package["expected"]["localReviewRows"], 64)
         self.assertEqual(co_package["expected"]["ballotsCast"], 3241155)
         self.assertEqual(co_package["expected"]["registeredVoters"], 4583280)
+        self.assertEqual(co_package["expected"]["historicalBaselineRows"], 192)
         self.assertIn("Regent", co_package["artifacts"]["localReviewRows"]["comparisonContest"])
 
 

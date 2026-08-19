@@ -51,6 +51,7 @@ Caveat: the secondary contextual 2016 presidential baseline totals 2,604,657 vot
 - County result source: committed official Colorado SOS Clarity 2024 General Election detail XML ZIP at `data/co-2024-clarity-detailxml.zip`
 - Local review source: the same Clarity ZIP, pairing county Presidential Electors rows with county CU Regent at-large rows because Colorado had no 2024 U.S. Senate race
 - Current active turnout source: official Colorado Historical Election Data 2024 General Voting Statistics county rows normalized into `data/co-2024-historical-voter-statistics-turnout.csv`; raw export and reconciliation summary are retained at `data/co-2024-historical-voter-statistics.csv` and `data/co-2024-historical-voter-statistics-summary.json`
+- Historical baseline source: official Colorado Historical Election Data 2012, 2016, and 2020 General President contest exports normalized by `scripts/normalize-co-historical-presidential-baseline.mjs` into 192 county rows at `data/co-historical-presidential-baseline.csv`
 - Coverage inventory: `data/co-2024-data-coverage-inventory.json`
 - Source request matrix: `data/co-2024-source-request-matrix.tsv`
 - County boundary: `data/co-counties.geojson`
@@ -58,7 +59,7 @@ Caveat: the secondary contextual 2016 presidential baseline totals 2,604,657 vot
 
 Wave 18 loads 64 county Presidential Electors rows from the official Clarity detail XML with 1,728,159 Harris votes, 1,377,441 Trump votes, 85,273 loaded other-candidate votes, and 3,190,873 loaded county presidential votes. The prior Abstract/certified-total lead is 3,192,745 votes, leaving a 1,872-vote unallocated gap that should not be assigned to counties without an official source. The same XML loads 64 county CU Regent at-large comparison rows. The Wave 1 CO turnout follow-up verified the Historical Election Data voter-statistics download and replaced EAC fallback for active turnout: 64 county rows, 3,241,155 Total Ballots Cast, and 4,583,280 Total Voters. Total Voters equals Active Voters plus Inactive Voters in every county and matches the prior EAC registered-voter denominator. Total Ballots Cast is 401 above EAC fallback and 35 above the Clarity ElectionVoterTurnout ballotsCast lead, so retain that reconciliation caveat.
 
-Remaining gaps are a write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, official precinct/local result rows or CVR-derived aggregates for subcounty advisory coverage, precinct geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized risk-limiting audit, CVR availability, recount, correction, incident, litigation, custody, ballot-manifest, tabulator-log, and EMS-log records. Current advisory rows are county-level source-review inputs only, not findings.
+Remaining gaps are a write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, official precinct/local result rows or CVR-derived aggregates for subcounty advisory coverage, precinct geometry/crosswalks, and normalized risk-limiting audit, CVR availability, recount, correction, incident, litigation, custody, ballot-manifest, tabulator-log, and EMS-log records. Current advisory rows are county-level source-review inputs only, not findings.
 
 ## Florida Wave 19 Precinct Review Upgrade
 

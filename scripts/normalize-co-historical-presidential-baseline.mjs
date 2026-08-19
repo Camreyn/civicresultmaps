@@ -7,6 +7,24 @@ const repoRoot = path.resolve(__dirname, "..");
 
 const CONTESTS = [
   {
+    year: 2012,
+    electionDate: "2012-11-06",
+    contestId: "5017",
+    electionId: "22",
+    sourceUrl: "https://historicalelectiondata.coloradosos.gov/contest/5017",
+    downloadUrl: "https://historicalelectiondata.coloradosos.gov/api/download_contest/5017_list.csv?split_party=false",
+    rawOut: path.join(repoRoot, "data", "co-2012-general-president-list.csv"),
+    demPrefix: "Barack Obama",
+    repPrefix: "Mitt Romney",
+    expected: {
+      rows: 64,
+      totalVotes: 2569522,
+      demVotes: 1323102,
+      repVotes: 1185243,
+      otherVotes: 61177,
+    },
+  },
+  {
     year: 2016,
     electionDate: "2016-11-08",
     contestId: "4436",
@@ -255,10 +273,9 @@ const summary = {
   contests: summaries,
   expected: summarize(allRows),
   caveats: [
-    "The Historical Election Data exports are official Colorado Secretary of State data for the 2016 and 2020 General Election President contests.",
+    "The Historical Election Data exports are official Colorado Secretary of State data for the 2012, 2016, and 2020 General Election President contests.",
     "The normalizer uses county rows with blank vote_channel values and excludes Total Votes Cast and Total Ballots Cast pseudocandidate rows.",
     "Rows are county historical baseline context for jurisdictionTag flip joins, not 2024 certified-result rows.",
-    "Official 2012 Colorado historical presidential baselines remain uncollected in this pass.",
   ],
 };
 
@@ -267,10 +284,17 @@ await writeFile(
   LEGACY_2020_SUMMARY_OUT,
   `${JSON.stringify({
     ...summary,
+    sourceUrls: summaries.filter((item) => item.year === 2020).map((item) => item.sourceUrl),
+    localRawCsvs: summaries.filter((item) => item.year === 2020).map((item) => item.localRawCsv),
     localNormalizedCsv: "data/co-2020-historical-presidential-baseline.csv",
     contests: summaries.filter((item) => item.year === 2020),
     expected: summaries.find((item) => item.year === 2020).expected,
-    caveats: summary.caveats,
+    caveats: [
+      "This legacy artifact contains only the official Colorado Secretary of State 2020 General Election President contest.",
+      "The normalizer uses county rows with blank vote_channel values and excludes Total Votes Cast and Total Ballots Cast pseudocandidate rows.",
+      "Rows are county historical baseline context for jurisdictionTag flip joins, not 2024 certified-result rows.",
+      "Use data/co-historical-presidential-baseline.csv for the combined 2012, 2016, and 2020 package.",
+    ],
   }, null, 2)}\n`,
   "utf8",
 );
