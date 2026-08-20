@@ -34,6 +34,9 @@ patterns, generated state registries, and validation expectations.
 - [Election equipment evidence workflow](docs/equipment-evidence-workflow.md) -
   immutable source revisions, evidence scopes, editorial states, schematic fidelity,
   and staging-to-production gates.
+- [District compactness explorer](docs/developer/district-compactness.md) -
+  plan-vintage Census sources, shape calculations, resolution guards, and the
+  explicit boundary against unsupported election-result or intent claims.
 
 ## Stack
 
@@ -56,6 +59,7 @@ patterns, generated state registries, and validation expectations.
 - `GET /api/review-rows?state=WI&year=2024`
 - `GET /api/turnout?state=WI&year=2024`
 - `GET /api/historical-baselines?state=WI`
+- `GET /api/district-compactness?state=NC&geography=congressional`
 
 Public reads are enabled. Admin writes, source updates, and production data
 promotion are intentionally private and CI-gated.

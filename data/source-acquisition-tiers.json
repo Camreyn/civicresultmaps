@@ -612,6 +612,7 @@
         "precinct U.S. House comparison rows from the same official media export",
         "county turnout from EAC fallback",
         "official 2012/2016/2020 county historical presidential baselines from Georgia SOS media exports",
+        "official 2012/2016/2020 county registration and ballots-cast leads from SOS General Election archives",
         "county equipment context from Verified Voting Verifier",
         "official President vote-method candidate groupResults from SOS media export",
         "documented turnout/registration exclusion review at data/ga-2024-turnout-vote-method-source-review.json",
@@ -622,7 +623,7 @@
         "precinct boundary geometry",
         "normalized official audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export; official county historical baseline CSV generated from 2012/2016/2020 SOS media exports; scripts/normalize-ga-historical-review.mjs generates 318 historicalReviewCsv county President-versus-U.S.-Senate rows for 2016 and 2020 with exact statewide reconciliation; scripts/report-ga-turnout-vote-method-source-review.mjs documents that SOS vote-method groupResults are candidate-result splits and not a turnout replacement",
+      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export; official county historical baseline CSV generated from 2012/2016/2020 SOS media exports; scripts/normalize-ga-historical-archive-registration.mjs hash-verifies official SOS General Election archives and parses 159 county summary CSVs per year, reconciling presidential candidate totals to the JSON baselines while retaining registration/ballots-cast only as historical leads; scripts/normalize-ga-historical-review.mjs generates 318 historicalReviewCsv county President-versus-U.S.-Senate rows for 2016 and 2020 with exact statewide reconciliation; scripts/report-ga-turnout-vote-method-source-review.mjs documents that SOS vote-method groupResults are candidate-result splits and not a turnout replacement",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings. Of 2,684 nonzero presidential precinct review rows, 2,637 have comparable two-party U.S. House rows, 8 have one-sided House comparison coverage, and 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts. Turnout remains EAC fallback and precinct geometry/admin evidence are not loaded. Historical rows are official county-level SOS media-export baselines for context only; the 2020 media export reports the original November general-election export total and should not be mixed with separate recount tables without reconciliation. The historical advisory package contains 159 canonical county rows for each of 2016 and 2020. The 2016 rows reconcile to 4,092,373 presidential votes and 3,897,792 Senate votes; the 2020 rows reconcile to 4,998,482 presidential votes and 4,952,175 regular Senate votes. The 2020 comparison is the regular US Senate (Perdue) contest from the original November general election before the runoff; the Loeffler special election is excluded. The selected historical county contest options expose no precinct-result rows, and advisory signals can reflect candidate, contest, split-ticket, and participation differences rather than misconduct. The July 5, 2026 vote-method source review found official President groupResults by Election Day, Absentee by Mail, Provisional, and Advanced Voting, but no registered-voter denominator or election-level ballots-cast field; EAC turnout remains active.",
@@ -641,7 +642,7 @@
         "official certified PDF reports",
         "EAC fallback turnout CSV",
         "GeoJSON county geometry",
-        "official 2016/2020 certified historical text exports"
+        "official 2012/2016/2020 certified historical text exports"
       ],
       "sourceUrls": [
         "https://elections.hawaii.gov/election-results/",
@@ -649,6 +650,8 @@
         "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
         "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
         "https://elections.hawaii.gov/resources/maps/geographic-information-systems-gis-files/",
+        "https://files.hawaii.gov/elections/files/results/2012/general/summary.txt",
+        "https://files.hawaii.gov/elections/files/results/2012/general/media.txt",
         "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt",
         "https://files.hawaii.gov/elections/files/results/2016/general/media.txt",
         "https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
@@ -669,29 +672,27 @@
         "county geometry",
         "equipment context from Verified Voting",
         "official 2024 recount/provisional/security/source-request paths documented in coverage inventory",
-        "official Hawaii Office 2020 county historical presidential baseline rows with county:<GEOID> tags",
         "official county presidential rows aggregated from the Office of Elections precinct/split text export",
         "official precinct/split President rows for 467 nonzero numbered precinct/split units",
         "official precinct/split U.S. Senate comparison rows for all 467 nonzero President review units",
         "official precinct/split registered-voter and ballots fields in precinct detail text retained as turnout lead context",
         "state-native turnout and registration table lead",
         "supplemental county equipment context",
-        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags",
-        "Kalawao County FIPS 15005 result rows for 2016, 2020, and 2024 from exact precinct 13-09"
+        "official 2012, 2016, and 2020 county presidential historical baseline rows with county:<GEOID> tags",
+        "2012 precinct/split registration, ballots, and vote-method fields retained as timing-caveated source context",
+        "Kalawao County FIPS 15005 result rows for 2012, 2016, 2020, and 2024 from exact precinct 13-09"
       ],
       "missingFields": [
         "precinct boundary geometry or official precinct_splitId crosswalk",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows",
-        "reconciled state-native turnout replacement for active EAC fallback",
         "official 2024 precinct boundary geometry or precinct_splitId crosswalk",
-        "normalized audit, recount, CVR availability, incident, correction, and litigation rows",
-        "official 2012 county or county-equivalent presidential baseline normalized into ETL"
+        "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeHawaiiOfficeText emits five 2024 county/county-equivalent President rows, 467 review rows, and four state-native turnout rows; the historical normalizer emits five rows each for 2016 and 2020. Exact Kalawao and Maui residual tuples fail closed.",
+      "parserStatus": "nativeHawaiiOfficeText emits five 2024 county/county-equivalent President rows, 467 review rows, and four state-native turnout rows; the historical normalizer emits five rows each for 2012, 2016, and 2020. Exact Kalawao and Maui residual tuples, statewide totals, and the 2012 476-vote overseas exclusion fail closed.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "Official map and boundary evidence identify precinct 13-09 as Kalawao County FIPS 15005. The Hawaii Office turnout table still has only four election-county rows, so no Kalawao turnout denominator is invented. Full precinct geometry remains unloaded.",
-      "nextAction": "Collect official 2012 Hawaii historical baseline rows, precinct geometry/crosswalks if subcounty overlays are pursued, and normalized audit/CVR/recount/incident/correction/litigation records."
+      "nextAction": "Collect election-effective precinct geometry/crosswalks if subcounty overlays are pursued, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "IA",
@@ -2221,13 +2222,14 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_geometry_admin_context",
       "tier": "tier_1_official_export_database",
-      "reportingGrain": "county_aggregated_city_town_federal_and_reporting_unit_review",
+      "reportingGrain": "county_aggregated_city_town_federal_reporting_unit_review_and_city_town_precinct_party_status_registration",
       "exportFormats": [
         "official long-format ZIP",
         "official short-format ZIP",
         "statewide JSON",
         "normalized CSV",
         "EAC fallback turnout CSV",
+        "official SOS Data Hub Power BI registration query and normalized city/town-precinct status rows",
         "promotion reconciliation JSON"
       ],
       "sourceUrls": [
@@ -2237,7 +2239,8 @@
         "https://www.ri.gov/election/results/2020/general_election/data/rigen2020l.zip",
         "https://www.ri.gov/election/results/2024/general_election/data/rigen2024l.zip",
         "https://rigov.s3.amazonaws.com/election/results/2024/general_election/statewide.json",
-        "https://www.eac.gov/research-and-data/studies-and-reports"
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://datahub.sos.ri.gov/RegisteredVoter.aspx/"
       ],
       "exampleUrls": [
         "https://www.ri.gov/election/results/2024/general_election/data/rigen2024l.zip",
@@ -2247,20 +2250,21 @@
         "official finalized-root 2024 city/town presidential rows aggregated to five county result-map rows plus unforced Federal Precincts",
         "official same-key President-versus-U.S.-Senate review rows from the finalized BOE long-format root member",
         "EAC fallback turnout rows",
+        "official SOS Data Hub 2024-11-01 city/town-and-precinct registration denominator lead with Active, Inactive, and Pending statuses",
         "official finalized-root 2012, 2016, and 2020 city/town presidential rows aggregated to five canonical county tags per year plus unforced Federal Precincts",
         "county geometry and supplemental equipment context",
         "fail-closed live-versus-staging historical promotion reconciliation with per-year, per-county, tag, vote-total, and display-path differences"
       ],
       "missingFields": [
-        "state-native turnout and registration denominator rows",
+        "state-native ballots-cast or voter-participation rows compatible with the SOS Data Hub registration lead",
         "result-ready city/town or precinct geometry/crosswalk for finer overlays",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "scripts/normalize-ri-boe-results.mjs reads explicit finalized root members from the official 2012, 2016, 2020, and 2024 BOE long-format ZIPs, rejects sanitized non-root entries, requires exact President and Senate statewide bucket reconciliation, emits six 2024 result rows, 444 review rows, and 18 county-plus-Federal historical rows; nativeRhodeIslandBoeCsv loads the normalized artifacts. scripts/audit-ri-historical-promotion.mjs then fails closed unless the live API and staging preserve all years and every official vote bucket while resolving to five canonical county tags plus unforced Federal Precincts.",
+      "parserStatus": "scripts/normalize-ri-boe-results.mjs reads explicit finalized root members from the official 2012, 2016, 2020, and 2024 BOE long-format ZIPs, rejects sanitized non-root entries, requires exact President and Senate statewide bucket reconciliation, emits six 2024 result rows, 444 review rows, and 18 county-plus-Federal historical rows; nativeRhodeIslandBoeCsv loads the normalized artifacts. scripts/normalize-ri-registration-datahub.mjs reproduces and hash-pins the official public Power BI registration query and emits 3,838 status-separated city/town-precinct-party rows as a denominator lead. scripts/audit-ri-historical-promotion.mjs then fails closed unless the live API and staging preserve all years and every official vote bucket while resolving to five canonical county tags plus unforced Federal Precincts.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The explicit finalized 2024 long-format root member reconciles exactly to posted statewide President and U.S. Senate bucket totals; no synthetic reconciliation row is emitted. Review rows exclude zero-vote Limited rows and presidential-only rows. Federal Precincts remain non-geographic and unforced. Turnout remains EAC fallback. The read-only promotion audit accepted reducing 86 live rows to 18 staged rows (a 68-row reduction) by aggregating 2012/2016 municipal rows to counties: all 2012/2016/2020 statewide and canonical county/Federal vote buckets have zero delta, 2020 display rows are unchanged, and production promotion remains a separate coordinator action.",
-      "nextAction": "Collect state-native turnout denominators and finer city/town or precinct geometry/crosswalks, and normalize audit/CVR/recount/incident/correction/litigation records. Preserve the accepted historical-promotion reconciliation as the pre-promotion guard."
+      "caveats": "The explicit finalized 2024 long-format root member reconciles exactly to posted statewide President and U.S. Senate bucket totals; no synthetic reconciliation row is emitted. Review rows exclude zero-vote Limited rows and presidential-only rows. Federal Precincts remain non-geographic and unforced. EAC turnout remains active; the SOS Data Hub 2024-11-01 registration lead is status-separated, has no compatible ballots-cast field, and totals 794 above EAC. The read-only promotion audit accepted reducing 86 live rows to 18 staged rows (a 68-row reduction) by aggregating 2012/2016 municipal rows to counties: all 2012/2016/2020 statewide and canonical county/Federal vote buckets have zero delta, 2020 display rows are unchanged, and production promotion remains a separate coordinator action.",
+      "nextAction": "Collect state-native ballots-cast or voter-participation rows compatible with the SOS Data Hub registration lead, pursue finer city/town or precinct geometry/crosswalks, and normalize audit/CVR/recount/incident/correction/litigation records. Preserve the accepted historical-promotion reconciliation as the pre-promotion guard."
     },
     {
       "state": "SC",
