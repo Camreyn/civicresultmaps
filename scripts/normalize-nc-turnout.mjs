@@ -376,8 +376,8 @@ function buildTurnoutLeadCsv(voterStats, historyStats) {
     };
   });
 
-  const csv = [headers.join(","), ...records.map((record) => headers.map((header) => csvEscape(record[header])).join(","))].join("\r\n");
-  return { records, csv: `${csv}\r\n` };
+  const csv = [headers.join(","), ...records.map((record) => headers.map((header) => csvEscape(record[header])).join(","))].join("\n");
+  return { records, csv: `${csv}\n` };
 }
 
 function outputArtifact(filePath, text) {
