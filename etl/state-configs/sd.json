@@ -24,7 +24,7 @@
       "parser": "countyPresidentCsv",
       "authority": "Wikipedia county table citing South Dakota Secretary of State 2024 General Election Canvass and Certificate",
       "timestampBasis": "County table collected by scripts/collect-sd-2024-county-results.mjs on the worker branch; the page cites the South Dakota Secretary of State canvass dated November 12, 2024.",
-      "confidence": "Secondary normalized county table used as caveated certified-style staging coverage. Wave 23 retained the official ElectionID 684 statewide XLSX export, but that official app export is labeled unofficial and totals 428,728 presidential votes, 194 below these certified-style rows. Statewide staging totals remain 428,922 presidential votes: 272,081 Trump, 146,859 Harris, and 9,982 Other.",
+      "confidence": "Secondary normalized county table with every one of its 66 county values exactly validated by the retained official State Board of Canvassers certificate through scripts/verify_sd_2024_general_canvass.py. ElectionID 684 statewide XLSX remains an unofficial lower-total app export (428,728 President) and is not a replacement. Statewide staging totals are 428,922: 272,081 Trump, 146,859 Harris, and 9,982 Other.",
       "status": "candidate"
     },
     {
@@ -35,7 +35,7 @@
       "parser": "countyComparisonCsv",
       "authority": "Wikipedia county table citing South Dakota Secretary of State 2024 General Election Canvass and Certificate",
       "timestampBasis": "County table collected by scripts/collect-sd-2024-county-results.mjs on the worker branch; the page cites the South Dakota Secretary of State canvass dated November 12, 2024.",
-      "confidence": "Secondary normalized county table used as caveated comparison coverage. Wave 23 retained the official ElectionID 684 statewide XLSX export, but that official app export is labeled unofficial and totals 421,264 U.S. House votes, 184 below these certified-style rows. U.S. House staging totals remain 421,448 votes: 303,630 Republican and 117,818 Democratic.",
+      "confidence": "Secondary normalized county table with every one of its 66 county values exactly validated by the retained official State Board of Canvassers certificate through scripts/verify_sd_2024_general_canvass.py. ElectionID 684 statewide XLSX remains an unofficial lower-total app export (421,264 U.S. House) and is not a replacement. Staging totals are 421,448: 303,630 Republican and 117,818 Democratic.",
       "status": "candidate"
     },
     {
@@ -48,6 +48,19 @@
       "timestampBasis": "Retained by scripts/collect-sd-official-archive-evidence.mjs on 2026-07-03; workbook labels itself 2024 Unofficial General Election Results and downloads as Statewide Results.xlsx.",
       "confidence": "Official app export evidence only. The workbook has 66 county rows for President and U.S. House and reconciles to the official archive map-data totals, but remains 194 President votes and 184 U.S. House votes below the certified-style staging totals. Do not use as certified replacement unless SOS confirms these are final certified rows or provides a reconciling canvass/export.",
       "status": "candidate"
+    },
+    {
+      "id": "sd-2024-general-canvass-certificate",
+      "category": "Official certified 2024 General Election county canvass",
+      "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+      "localFile": "data/sd-2024-general-canvass-certificate.pdf; data/sd-2024-general-canvass-reconciliation.json",
+      "parser": "scripts/verify_sd_2024_general_canvass.py",
+      "authority": "South Dakota Secretary of State State Board of Canvassers",
+      "timestampBasis": "State Board certificate for the November 5, 2024 General Election, retained August 19, 2026.",
+      "confidence": "The certified PDF's 66 county President and at-large U.S. House candidate rows exactly validate the existing county staging values: President 428,922 (Trump 272,081; Harris 146,859; Other 9,982), House 421,448 (Republican 303,630; Democratic 117,818).",
+      "status": "loaded",
+      "sha256": "a9be018609c45e97c5b9b9c41d7f53dffc9c3390746486c115739e6d6d072c9c",
+      "byteCount": 801624
     },
     {
       "id": "sd-county-geometry",
@@ -100,7 +113,7 @@
   "expected": {
     "jurisdictions": 66,
     "resultRows": 66,
-    "sources": 7,
+    "sources": 8,
     "geometryFeatures": 66,
     "stateTotal": 428922,
     "trump": 272081,
@@ -142,6 +155,6 @@
     "sourceId": "sd-2024-us-house-wikipedia-county",
     "comparisonContest": "United States Representative",
     "coverageMode": "presidentVsUSHouse",
-    "warning": "South Dakota review rows are county-level President-versus-at-large-U.S.-House comparisons from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. Wave 23 retained the official SD SOS ElectionID 684 statewide XLSX export from ResultsExport.aspx?eid=684, but that official app export is labeled unofficial and matches the lower archive map-data totals rather than the current certified-style staging totals. These rows remain caveated staging/source-review coverage and are not precinct-level vote-share scatter plots."
+    "warning": "South Dakota review rows are county-level President-versus-at-large-U.S.-House comparisons. The generated CSV values are exactly validated against the retained official State Board of Canvassers certificate, but retain secondary extraction lineage; ElectionID 684 XLSX is labeled unofficial and lower-total. These rows are not precinct-level vote-share scatter plots."
   }
 }

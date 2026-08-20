@@ -17,6 +17,9 @@
       "data/ri-2024-general-president-senate-review.csv",
       "data/ri-historical-presidential-baseline.csv",
       "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
+      "data/ri-2024-11-sos-datahub-registration-query.json",
+      "data/ri-2024-11-sos-datahub-registration-precinct.csv",
+      "data/ri-2024-11-sos-datahub-registration-reconciliation.json",
       "data/ri-historical-promotion-reconciliation.json"
     ],
     "expectedRows": {
@@ -100,20 +103,29 @@
       "caveat": "U.S. Senate is the preferred statewide comparison contest. The explicit finalized root ZIP member exactly matches posted statewide JSON; 39 presidential-only rows and 14 zero-vote same-key rows are not included in the 444 nonzero paired review rows."
     },
     "stateNativeTurnout": {
-      "status": "eac_fallback_loaded_state_native_turnout_not_collected",
-      "sourceAuthority": "U.S. Election Assistance Commission; Rhode Island Board of Elections",
+      "status": "eac_fallback_active_sos_registration_denominator_lead_loaded",
+      "sourceAuthority": "U.S. Election Assistance Commission; Rhode Island Board of Elections; Rhode Island Department of State",
       "sourceUrls": [
         "https://www.eac.gov/research-and-data/studies-and-reports",
-        "https://www.ri.gov/election/results/2024/general_election/data/"
+        "https://www.ri.gov/election/results/2024/general_election/data/",
+        "https://datahub.sos.ri.gov/RegisteredVoter.aspx/"
       ],
-      "reportingGrain": "EAC jurisdiction fallback currently active; BOE results files do not provide a verified registered-voter denominator replacement.",
+      "reportingGrain": "EAC jurisdiction fallback remains active; official SOS Data Hub rows are city/town-plus-precinct, party, and registration status.",
       "observedOfficialTotals": {
         "eacFallbackRows": 39,
         "eacFallbackBallotsCast": 522164,
-        "eacFallbackRegisteredVoters": 792075
+        "eacFallbackRegisteredVoters": 792075,
+        "dataHubAsOfDate": "2024-11-01",
+        "dataHubRows": 3838,
+        "dataHubCityTowns": 39,
+        "dataHubActive": 732308,
+        "dataHubInactive": 57201,
+        "dataHubPending": 3360,
+        "dataHubAllStatusRegistered": 792869,
+        "dataHubMinusEacRegistered": 794
       },
-      "parserNeeded": "Keep eacTurnoutCsv active until a Rhode Island-native ballots-cast plus registered-voter denominator artifact is collected, parsed, and reconciled.",
-      "caveat": "The RI BOE result ZIP/JSON files are result sources, not a complete turnout denominator replacement unless registration-denominator fields are confirmed in the data description or a separate official artifact."
+      "parserNeeded": "scripts/normalize-ri-registration-datahub.mjs reproduces the official public Power BI query, hash-pins its response, and retains status-separated city/town-and-precinct registration rows. Keep eacTurnoutCsv active until compatible official ballots-cast or voter-participation semantics are collected and reconciled.",
+      "caveat": "The 2024-11-01 snapshot is the closest monthly Data Hub date to the General Election. Its default report page filters Active voters, while the normalized denominator lead preserves Active, Inactive, and Pending separately. It includes no compatible ballots-cast or voter-participation field, and its all-status registration total is 794 above EAC."
     },
     "geometryAndCrosswalk": {
       "status": "county_result_map_available_precinct_or_city_town_crosswalk_needed",
@@ -236,7 +248,7 @@
   "remainingRisks": [
     "The official 2020 and 2024 ZIPs retain earlier nested setup/results snapshots alongside finalized root members; the parser must continue requiring the explicit finalized root entries.",
     "Review rows exclude 14 zero-vote same-key rows and 39 presidential-only rows that lack a same-key U.S. Senate comparison.",
-    "EAC fallback turnout is active; no Rhode Island-native registered-voter denominator replacement is normalized.",
+    "EAC fallback turnout is active. The SOS Data Hub 2024-11-01 registration lead is normalized at city/town-and-precinct grain but includes no compatible ballots-cast or voter-participation field; its 792,869 all-status registrations are 794 above EAC, so it is not an active-turnout replacement.",
     "County map rows are generated from official city/town totals; city/town, precinct, district, mail, early-vote, and polling-place labels still need geometry/crosswalk review before finer map overlays are enabled.",
     "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
     "All advisory indicator rows are source-review calculations, not findings of fraud or misconduct."

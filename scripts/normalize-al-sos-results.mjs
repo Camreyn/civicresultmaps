@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 import JSZip from "jszip";
 import XLSX from "xlsx";
 
@@ -60,6 +61,19 @@ function countyFromArchiveName(name) {
 function normalizeCountyName(name) {
   const county = text(name);
   return ["ST CLAIR", "STCLAIR", "ST. CLAIR"].includes(county.toUpperCase()) ? "St. Clair" : county;
+}
+
+export function countyLookupKey(name) {
+  return text(name).toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+function positiveInteger(value, label) {
+  const normalized = typeof value === "number" ? value : text(value).replace(/,/g, "");
+  const parsed = typeof normalized === "number" ? normalized : /^\d+$/.test(normalized) ? Number(normalized) : Number.NaN;
+  if (!Number.isSafeInteger(parsed) || parsed <= 0) {
+    throw new Error(`${label} must be a positive integer; received ${JSON.stringify(value)}`);
+  }
+  return parsed;
 }
 
 function csvCell(value) {
@@ -223,16 +237,44 @@ function historicalRowsFromMatrix(parsed, sourceId, sourceUrl) {
   }));
 }
 
-function parseActiveVotersByCounty(sheetName = "November") {
-  const workbook = XLSX.readFile(resolveRepo(sources.activeVotersWorkbook));
-  const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "" });
+export function activeVotersByCountyFromRows(rows) {
   const output = new Map();
   for (const row of rows.slice(3)) {
     const county = text(row[0]);
     if (!county || county.toUpperCase() === "TOTAL") continue;
-    output.set(county, number(row[1]));
+    const key = countyLookupKey(county);
+    if (output.has(key)) throw new Error(`Duplicate ALVR county key after normalization: ${county}`);
+    output.set(key, positiveInteger(row[1], `November ALVR active-voter value for ${county}`));
   }
   return output;
+}
+
+function parseActiveVotersByCounty(sheetName = "November") {
+  const workbook = XLSX.readFile(resolveRepo(sources.activeVotersWorkbook));
+  const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "" });
+  return activeVotersByCountyFromRows(rows);
+}
+
+export function buildTurnoutLeadRows(counties, activeVoters) {
+  const rows = counties.map((row) => ({
+    state: "AL",
+    election_year: 2024,
+    jurisdiction_name: row.county,
+    ballots_cast_from_precinct_zip: row.ballotsCast,
+    november_active_registered_voters: activeVoters.get(countyLookupKey(row.county)) ?? "",
+    source_month: "November 2024",
+    ballots_source_url: urls.currentZip,
+    denominator_source_url: urls.activeVotersWorkbook,
+    notes:
+      "State-native turnout lead only; active ETL keeps EAC fallback until SOS Total Ballots Cast PDF and ALVR denominator timing are reconciled.",
+  }));
+  const missingActiveVoterCounties = rows
+    .filter((row) => row.november_active_registered_voters === "")
+    .map((row) => row.jurisdiction_name);
+  if (missingActiveVoterCounties.length) {
+    throw new Error(`Missing November ALVR active-voter values for: ${missingActiveVoterCounties.join(", ")}`);
+  }
+  return rows;
 }
 
 async function main() {
@@ -304,6 +346,8 @@ async function main() {
     historical.sort((a, b) => a.election_year - b.election_year || a.jurisdiction_name.localeCompare(b.jurisdiction_name)),
   );
 
+  const turnoutLeadRows = buildTurnoutLeadRows(current.counties, activeVoters);
+
   writeCsv(
     outputs.turnoutLead,
     [
@@ -317,24 +361,20 @@ async function main() {
       "denominator_source_url",
       "notes",
     ],
-    current.counties.map((row) => ({
-      state: "AL",
-      election_year: 2024,
-      jurisdiction_name: row.county,
-      ballots_cast_from_precinct_zip: row.ballotsCast,
-      november_active_registered_voters: activeVoters.get(row.county.toUpperCase()) ?? "",
-      source_month: "November 2024",
-      ballots_source_url: urls.currentZip,
-      denominator_source_url: urls.activeVotersWorkbook,
-      notes:
-        "State-native turnout lead only; active ETL keeps EAC fallback until SOS Total Ballots Cast PDF and ALVR denominator timing are reconciled.",
-    })),
+    turnoutLeadRows,
   );
 
   const summary = {
     presidentRows: current.counties.length,
     reviewRows: current.metrics.reviewRows,
     turnoutLeadRows: current.counties.length,
+    turnoutLeadMetrics: {
+      ballotsCast: turnoutLeadRows.reduce((sum, row) => sum + row.ballots_cast_from_precinct_zip, 0),
+      novemberActiveRegisteredVoters: turnoutLeadRows.reduce(
+        (sum, row) => sum + row.november_active_registered_voters,
+        0,
+      ),
+    },
     historicalRows: historical.length,
     currentMetrics: current.metrics,
     historicalMetrics: {
@@ -349,7 +389,9 @@ async function main() {
   console.log(JSON.stringify(summary, null, 2));
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

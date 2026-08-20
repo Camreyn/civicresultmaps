@@ -1203,19 +1203,40 @@
       "sourceLevel": "jurisdiction",
       "denominatorType": "registeredVoters",
       "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "sourceTitle": "EAC fallback turnout rows plus Rhode Island SOS Data Hub registration lead",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports; https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
       "localFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 39,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Use data/ri-2024-data-coverage-inventory.json and data/ri-2024-source-request-matrix.tsv to confirm whether BOE data description or a separate official Rhode Island artifact contains ballots-cast plus registered-voter denominator fields; keep EAC fallback active until denominator timing and semantics are reviewed.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active. The Rhode Island Department of State Data Hub 2024-11-01 registration snapshot is retained as a status-separated denominator lead, but it has no compatible ballots-cast or voter-participation field.",
+      "nextAction": "Collect Rhode Island state-native ballots-cast or voter-participation rows compatible with the 2024-11-01 SOS Data Hub registration snapshot; keep EAC fallback active until timing and semantics are reconciled.",
       "coverage": {
         "jurisdictionRows": 39,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ri-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 792075,
         "ballotsCast": 522164,
-        "warningRows": 0
+        "warningRows": 0,
+        "stateNativeLead": {
+          "sourceTitle": "Rhode Island Department of State Data Hub November 2024 Registered Voters",
+          "sourceUrl": "https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
+          "asOfDate": "2024-11-01",
+          "reportingGrain": "city_town_precinct_party_status",
+          "localFiles": [
+            "data/ri-2024-11-sos-datahub-registration-query.json",
+            "data/ri-2024-11-sos-datahub-registration-precinct.csv",
+            "data/ri-2024-11-sos-datahub-registration-reconciliation.json"
+          ],
+          "parser": "scripts/normalize-ri-registration-datahub.mjs",
+          "status": "loaded_denominator_lead_not_active_turnout",
+          "rows": 3838,
+          "cityTowns": 39,
+          "active": 732308,
+          "inactive": 57201,
+          "pending": 3360,
+          "allStatuses": 792869,
+          "minusEacRegistered": 794,
+          "caveat": "The Data Hub snapshot has no compatible ballots-cast or voter-participation field, so it does not replace active EAC turnout."
+        }
       }
     },
     {

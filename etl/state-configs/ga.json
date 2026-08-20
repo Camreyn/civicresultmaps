@@ -128,6 +128,17 @@
       "status": "documented_exclusion"
     },
     {
+      "id": "ga-historical-archive-registration-leads",
+      "category": "Official historical county registration and ballots-cast leads",
+      "url": "https://sos.ga.gov/page/historical-elections-results",
+      "localFile": "data/ga-official-historical-archives; data/ga-historical-registration-turnout-leads.csv; data/ga-historical-archive-source-review.json",
+      "parser": "scripts/normalize-ga-historical-archive-registration.mjs",
+      "authority": "Georgia Secretary of State",
+      "timestampBasis": "Official 2012, 2016, and 2020 General Election archive ZIPs retained with SHA-256 pins and parsed county summary CSV members.",
+      "confidence": "Official county summary registration and ballots-cast fields reconcile presidential candidate totals exactly to existing official JSON baselines. They remain historical denominator leads only because archive-only timing and EAC semantic compatibility are not established.",
+      "status": "documented_exclusion"
+    },
+    {
       "id": "ga-2024-data-coverage-inventory",
       "category": "Georgia data coverage and source-gap inventory",
       "url": "https://results.sos.ga.gov/",
@@ -176,7 +187,7 @@
   "expected": {
     "jurisdictions": 159,
     "resultRows": 159,
-    "sources": 11,
+    "sources": 12,
     "stateTotal": 5250066,
     "trump": 2663117,
     "harris": 2548017,
