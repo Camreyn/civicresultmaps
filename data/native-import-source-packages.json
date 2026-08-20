@@ -1672,6 +1672,13 @@
           "denominator": "EAC registered voters",
           "ballotsCast": "EAC normalized ballots cast"
         },
+        "historicalRegistrationLeads": {
+          "sourceTitle": "Georgia SOS 2012, 2016, and 2020 General Election county summary archives",
+          "sourceUrl": "https://sos.ga.gov/page/historical-elections-results",
+          "localFile": "data/ga-official-historical-archives; data/ga-historical-registration-turnout-leads.csv; data/ga-historical-archive-source-review.json",
+          "level": "county",
+          "parserHint": "Run node scripts/normalize-ga-historical-archive-registration.mjs. It hash-verifies three official archive ZIPs, parses 159 nested county summary CSVs per year, and requires exact county presidential reconciliation to the existing SOS JSON baseline before emitting 477 registration/ballots-cast lead rows."
+        },
         "historicalBaseline": {
           "sourceTitle": "Georgia SOS official historical media exports",
           "sourceUrl": "https://results.sos.ga.gov/",
@@ -1721,6 +1728,7 @@
         "localReviewRows": 2684,
         "turnoutRows": 159,
         "historicalBaselineRows": 477,
+        "historicalRegistrationLeadRows": 477,
         "historicalReviewRows": 318,
         "historicalReviewRowsByYear": {
           "2016": 159,
@@ -1731,7 +1739,7 @@
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_with_district_caveats",
-        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_after_sos_vote_method_review",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_historical_archive_leads",
         "historicalMode": "official_sos_media_export_county_baselines",
         "historicalReviewMode": "official_sos_county_president_vs_us_senate_2016_2020"
       },
@@ -1745,9 +1753,10 @@
         "The 2020 historical advisory comparison uses the regular US Senate (Perdue) contest from the original November general export before the runoff; the Loeffler special election is excluded. The selected county contest options contain no precinct-result rows, so the package must not be described as precinct historical coverage.",
         "Historical advisory indicators are review signals only; candidate differences, contest differences, split-ticket voting, and participation differences can explain broad patterns and the rows are not findings of misconduct.",
         "The July 5, 2026 Georgia vote-method source review confirms official SOS groupResults are candidate-result splits, not turnout/registration denominator rows; EAC turnout remains active until a state-native turnout artifact is collected."
+        ,"Official 2012, 2016, and 2020 archive registration and ballots-cast fields are historical county leads only: the archive does not establish registration timing or compatible active-turnout semantics, so they do not replace EAC 2024 turnout."
       ],
       "legacyReferenceBundle": "data/ga-app-data.js",
-      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, official 2016 and 2020 county historical advisory rows, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
+      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, exact-reconciled historical county registration/ballots-cast leads, official 2016 and 2020 county historical advisory rows, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are Georgia-native 2024 turnout/registration denominator rows with documented timing/semantics, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
     },
     {
       "state": "KS",

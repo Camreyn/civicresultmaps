@@ -8513,3 +8513,13 @@ evidence against its verified top-level package.
 - This is a result-baseline change only. Hawaii's election-effective 2012
   precinct geometry and a reviewed result-to-feature crosswalk remain absent;
   no precinct geography is activated or eligible for public delivery.
+
+### 2026-08-19 - Georgia historical archive registration leads
+
+- The hash-pinned Georgia SOS 2012, 2016, and 2020 General Election archives
+  each contain 159 nested county summary CSVs. President candidate rows
+  reconcile exactly to the retained official JSON county baselines; registration
+  and ballots-cast values are retained as historical county leads only.
+- This does not activate precinct geometry or replace active EAC turnout:
+  archive-only registration timing and turnout-definition compatibility remain
+  unproven.
