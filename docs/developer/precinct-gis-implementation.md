@@ -8455,3 +8455,39 @@ evidence against its verified top-level package.
   of fraud or misconduct. Production was not contacted or mutated, and current
   production indicator counts were not rechecked for this delivery-null
   source-package change.
+
+### 2026-08-19 - National 2024 district compactness candidate
+
+- A source-driven national district-shape pipeline now targets the U.S. Census
+  Bureau's January 1, 2024 plan vintage: 119th congressional districts and
+  2024 state legislative upper/lower districts. Six ArcGIS GeoJSON collections
+  pair detailed TIGERweb boundaries with the corresponding official 1:500,000
+  layers. The collector paginates by `GEOID`, verifies counts before any write,
+  retains deterministic gzip artifacts, and pins compressed/uncompressed
+  SHA-256 values plus generated-output hashes.
+- The detailed services contain 15 explicit `districts not defined`
+  placeholders: three congressional, six upper-chamber, and six lower-
+  chamber areas. They remain preserved in source evidence and the exclusion
+  ledger but are not presented as district plans. The candidate therefore
+  contains 7,272 real rows: 441 congressional, 1,958 upper-chamber, and 4,873
+  lower-chamber districts.
+- Geometry calculations preserve multipart features and holes. Spherical area
+  is checked against Census `AREALAND + AREAWATER`; perimeter uses Haversine
+  boundary length; convex-hull ratio uses a district-centered Lambert
+  azimuthal equal-area projection. Polsby-Popper is `4*pi*area/perimeter^2`.
+  Synthetic tests cover holes, non-square shapes, and antimeridian handling.
+- Every real detailed feature is compared by the same plan-vintage `GEOID` to
+  its 1:500,000 counterpart. A row is `stable` only when Polsby-Popper differs
+  by no more than 20% and convex-hull ratio by no more than 10%; all other rows
+  are visibly `resolution_sensitive`. These are conservative screening guards,
+  not claims of statistical significance.
+- The explorer and API label all metrics advisory. Compactness is not treated
+  as a score of gerrymandering, partisan intent, legality, representation,
+  election integrity, fraud, or misconduct. Election-result relationships are
+  deliberately `not_calculated`: no nationwide certified result set has yet
+  been proven to share these exact plan identities, and the comparison helper
+  rejects mismatched plan vintages and geography types.
+- This is a code/data candidate only. No precinct registry, election-result
+  database, immutable public geometry delivery, deployment, or production
+  state is changed. Reproduction and public-surface verification are recorded
+  in `docs/developer/district-compactness.md`.

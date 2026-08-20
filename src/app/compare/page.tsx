@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowLeft, Database, MapPinned } from "lucide-react";
+import { ArrowLeft, Database, MapPinned, Ruler } from "lucide-react";
 import { BrandMark } from "../brand-mark";
 import { CompareExplorer, type CompareInitialState } from "./compare-explorer";
 import styles from "./compare.module.css";
@@ -55,6 +55,10 @@ export default async function ComparePage({ searchParams }: PageProps) {
           <a href="/readiness">
             <Database aria-hidden size={15} />
             Data readiness
+          </a>
+          <a href="/district-compactness">
+            <Ruler aria-hidden size={15} />
+            District compactness
           </a>
           <span className={styles.domain}>civicresultmaps.org</span>
         </nav>
