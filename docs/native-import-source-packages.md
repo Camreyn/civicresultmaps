@@ -626,12 +626,12 @@ Expected staging validation: 9 certified-SOV tagged result rows, 169 SOV-Preside
 - Result/review parser: nativeHawaiiOfficeText in civic_etl/native.py
 - Current results: five county/county-equivalent rows totaling 516,701 votes
 - Kalawao: official precinct 13-09 maps to county:15005; 2024 has 15 Harris, 3 Trump, 0 Other, total 18
-- Historical results: five canonical rows each for 2016 and 2020; Kalawao is 14/1/5/20 in 2016 and 23/1/0/24 in 2020
+- Historical results: five canonical rows each for 2012, 2016, and 2020; Kalawao is 25/2/0/27 in 2012, 14/1/5/20 in 2016, and 23/1/0/24 in 2020
 - Review: 467 nonzero President-versus-U.S.-Senate precinct/split rows
 - Turnout: four official Hawaii Office election-county rows; the source has no separate Kalawao registration or turnout denominator, so none is invented
 - Geometry: all five county/county-equivalent polygons are loaded; full precinct geometry remains unavailable
 
-Official HD 13 and statewide precinct-boundary documents identify precinct 13-09 as Kalawao. The current and historical parsers fail closed on exact Kalawao vote tuples, Maui residuals, row counts, and statewide totals. Remaining work is official 2012 history, complete precinct geometry/crosswalks, and normalized administration context. Advisory rows are source-review signals only, not findings.
+Official HD 13 and statewide precinct-boundary documents identify precinct 13-09 as Kalawao. For 2012 specifically, nine supporting Office/Reapportionment Commission PDFs are retained and hash-pinned: four March 2012 county map sheets pin the year-specific House-district ranges; the Office's Molokai compilation contains the May 2012 map drawing the Maui-Kalawao boundary with 13-09 on the Kalawao side; and four certified election-county summaries independently reconcile after Kalawao is separated from Maui's administrative total. Their paths, URLs, byte counts, hashes, reporting grains, and roles are recorded in `data/hi-historical-presidential-baseline-summary.json`. The official 2012 detail export carries 253 precinct/split IDs, including split 78 for Kalawao, plus 476 overseas non-geographic President votes; the normalizer preserves those overseas votes outside the five county rows. Its `Reg_voters` and `Ballots` fields are retained only as timing-caveated source context and do not replace active 2024 turnout. The current and historical parsers fail closed on evidence hashes, exact Kalawao vote tuples, Maui residuals, election-county summaries, row counts, statewide totals, and the 2012 non-geographic exclusion. Remaining work is complete precinct geometry/crosswalks and normalized administration context. Advisory rows are source-review signals only, not findings.
 
 ## North Dakota Wave 18 Native Activation
 

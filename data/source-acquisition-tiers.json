@@ -642,7 +642,7 @@
         "official certified PDF reports",
         "EAC fallback turnout CSV",
         "GeoJSON county geometry",
-        "official 2016/2020 certified historical text exports"
+        "official 2012/2016/2020 certified historical text exports"
       ],
       "sourceUrls": [
         "https://elections.hawaii.gov/election-results/",
@@ -650,6 +650,8 @@
         "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
         "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
         "https://elections.hawaii.gov/resources/maps/geographic-information-systems-gis-files/",
+        "https://files.hawaii.gov/elections/files/results/2012/general/summary.txt",
+        "https://files.hawaii.gov/elections/files/results/2012/general/media.txt",
         "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt",
         "https://files.hawaii.gov/elections/files/results/2016/general/media.txt",
         "https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
@@ -670,29 +672,27 @@
         "county geometry",
         "equipment context from Verified Voting",
         "official 2024 recount/provisional/security/source-request paths documented in coverage inventory",
-        "official Hawaii Office 2020 county historical presidential baseline rows with county:<GEOID> tags",
         "official county presidential rows aggregated from the Office of Elections precinct/split text export",
         "official precinct/split President rows for 467 nonzero numbered precinct/split units",
         "official precinct/split U.S. Senate comparison rows for all 467 nonzero President review units",
         "official precinct/split registered-voter and ballots fields in precinct detail text retained as turnout lead context",
         "state-native turnout and registration table lead",
         "supplemental county equipment context",
-        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags",
-        "Kalawao County FIPS 15005 result rows for 2016, 2020, and 2024 from exact precinct 13-09"
+        "official 2012, 2016, and 2020 county presidential historical baseline rows with county:<GEOID> tags",
+        "2012 precinct/split registration, ballots, and vote-method fields retained as timing-caveated source context",
+        "Kalawao County FIPS 15005 result rows for 2012, 2016, 2020, and 2024 from exact precinct 13-09"
       ],
       "missingFields": [
         "precinct boundary geometry or official precinct_splitId crosswalk",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows",
-        "reconciled state-native turnout replacement for active EAC fallback",
         "official 2024 precinct boundary geometry or precinct_splitId crosswalk",
-        "normalized audit, recount, CVR availability, incident, correction, and litigation rows",
-        "official 2012 county or county-equivalent presidential baseline normalized into ETL"
+        "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeHawaiiOfficeText emits five 2024 county/county-equivalent President rows, 467 review rows, and four state-native turnout rows; the historical normalizer emits five rows each for 2016 and 2020. Exact Kalawao and Maui residual tuples fail closed.",
+      "parserStatus": "nativeHawaiiOfficeText emits five 2024 county/county-equivalent President rows, 467 review rows, and four state-native turnout rows; the historical normalizer emits five rows each for 2012, 2016, and 2020. Exact Kalawao and Maui residual tuples, statewide totals, and the 2012 476-vote overseas exclusion fail closed.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "Official map and boundary evidence identify precinct 13-09 as Kalawao County FIPS 15005. The Hawaii Office turnout table still has only four election-county rows, so no Kalawao turnout denominator is invented. Full precinct geometry remains unloaded.",
-      "nextAction": "Collect official 2012 Hawaii historical baseline rows, precinct geometry/crosswalks if subcounty overlays are pursued, and normalized audit/CVR/recount/incident/correction/litigation records."
+      "nextAction": "Collect election-effective precinct geometry/crosswalks if subcounty overlays are pursued, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "IA",

@@ -132,3 +132,8 @@
 # Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
 /data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
 /public/equipment/**/*.glb -text -diff
+
+# Preserve hash-pinned Census district geometry collections byte-for-byte.
+/data/district-compactness/*.gz -text -diff
+/data/district-compactness/*.json text eol=lf
+/data/district-compactness/*.csv text eol=lf
