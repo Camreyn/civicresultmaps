@@ -692,12 +692,13 @@ Expected validation: 17 certified result rows including State UOCAVA, 16 county 
 ## Rhode Island Wave 17 Native Activation
 
 - Config: `etl/state-configs/ri.json`
-- Authority: Rhode Island Board of Elections; U.S. Election Assistance Commission
+- Authority: Rhode Island Board of Elections; Rhode Island Department of State; U.S. Election Assistance Commission
 - Official artifacts: finalized long-format ZIPs for 2012, 2016, 2020, and 2024; the 2024 posted statewide JSON remains the exact-total cross-check
 - Normalizer: `scripts/normalize-ri-boe-results.mjs` reads only the explicit finalized root member, rejects sanitized non-root ZIP paths, and fails closed unless President and U.S. Senate candidate buckets match posted totals exactly
 - Current output: `data/ri-2024-general-president-city-town.csv` contains five county-map rows plus unforced Federal Precincts; `data/ri-2024-general-president-senate-review.csv` contains 444 same-key reporting-unit review rows
 - Historical output: `data/ri-historical-presidential-baseline.csv` contains 18 rows—five canonical county tags plus unforced Federal Precincts for each of 2012, 2016, and 2020
 - Turnout: active ETL remains EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/ri-2024-eac-turnout.csv`
+- Registration lead: `scripts/normalize-ri-registration-datahub.mjs` reproduces the Department of State Data Hub's public Power BI query for the closest monthly snapshot, 2024-11-01, and retains 3,838 city/town–precinct–party–status rows: 732,308 Active, 57,201 Inactive, and 3,360 Pending (792,869 all statuses). The all-status total is 794 above EAC; the report has no compatible ballots-cast field, so EAC remains active.
 
 Expected staging validation: 6 President result rows, 444 review rows, 39 EAC fallback turnout rows, 18 historical rows, and exact posted 2024 totals of 513,386 President votes (285,156 Harris; 214,406 Trump; 13,824 Other) and 491,948 U.S. Senate votes. No synthetic reconciliation row is emitted.
 
@@ -705,7 +706,7 @@ Promotion acceptance (July 10, 2026): `scripts/audit-ri-historical-promotion.mjs
 
 The audit reconciles Democratic, Republican, Other, and total votes with zero delta statewide and in every county/Federal Precincts bucket for all three years. Live 2012 and 2016 each have only three tagged rows, because Bristol, Newport, and Providence municipality labels inherited same-named county tags; staging has all five complete county aggregates per year. The Historical tab, API, and export will therefore change 2012/2016 display grain from 39 municipalities plus Federal Precincts to five counties plus Federal Precincts. The 2020 display names and totals are unchanged. Canonical flip reporting has five matched county tags and identifies Kent County as Rhode Island's sole red-to-blue flip for both 2016-to-2020 and 2016-to-2024; Rhode Island has no 2020-to-2024 county flip.
 
-Remaining gaps are state-native turnout/registration denominators, finer city/town or precinct geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are source-review calculations only, not findings.
+Remaining gaps are state-native ballots-cast or voter-participation rows compatible with the loaded SOS registration lead, finer city/town or precinct geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are source-review calculations only, not findings.
 ## Delaware Wave 17 Native Activation
 
 - Config: `etl/state-configs/de.json`

@@ -17,6 +17,17 @@
       "status": "loaded"
     },
     {
+      "id": "ri-2024-11-sos-datahub-registration",
+      "category": "Official Secretary of State Data Hub precinct registration denominator lead",
+      "url": "https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
+      "localFile": "data/ri-2024-11-sos-datahub-registration-query.json; data/ri-2024-11-sos-datahub-registration-precinct.csv; data/ri-2024-11-sos-datahub-registration-reconciliation.json",
+      "parser": "scripts/normalize-ri-registration-datahub.mjs",
+      "authority": "Rhode Island Department of State, Secretary of State Data Hub",
+      "timestampBasis": "Official Power BI CumulativeVoterRegistrationData query for the 2024-11-01 monthly snapshot, the closest retained report month to the November 5, 2024 General Election; raw response is byte/SHA-256 pinned.",
+      "confidence": "Reproducible city/town-and-precinct registration rows retaining Active (732,308), Inactive (57,201), and Pending (3,360) statuses separately. The 792,869 all-status total is 794 above EAC's 792,075; no compatible ballots-cast or voter-participation field is supplied, so this remains a denominator lead and EAC turnout remains active.",
+      "status": "loaded"
+    },
+    {
       "id": "ri-2024-boe-data-description",
       "category": "Rhode Island BOE election-result data description",
       "url": "https://www.ri.gov/election/results/20220819_data_description.pdf",
@@ -153,7 +164,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Rhode Island turnout rows still use EAC 2024 V2 city/town jurisdiction fallback rows until a state-native registered-voter denominator artifact is collected and reconciled.",
+    "notes": "Rhode Island turnout rows remain EAC 2024 V2 city/town jurisdiction fallback rows. The official SOS Data Hub 2024-11-01 city/town-and-precinct registration lead retains Active, Inactive, and Pending status rows separately and is 794 all-status registrations above EAC; it has no compatible ballots-cast or voter-participation field, so it does not replace EAC turnout.",
     "warningRequired": false,
     "expected": {
       "rowCount": 39,
@@ -188,7 +199,7 @@
   "expected": {
     "jurisdictions": 6,
     "resultRows": 6,
-    "sources": 11,
+    "sources": 12,
     "stateTotal": 513386,
     "trump": 214406,
     "harris": 285156,

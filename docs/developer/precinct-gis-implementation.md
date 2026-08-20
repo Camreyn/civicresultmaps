@@ -8523,3 +8523,16 @@ evidence against its verified top-level package.
 - This does not activate precinct geometry or replace active EAC turnout:
   archive-only registration timing and turnout-definition compatibility remain
   unproven.
+
+### 2026-08-19 - Rhode Island SOS Data Hub registration denominator lead
+
+- `scripts/normalize-ri-registration-datahub.mjs` reproduces the official
+  Secretary of State Data Hub's public Power BI request for the closest monthly
+  snapshot to the 2024 General Election, November 1. It hash-pins the raw
+  response and preserves all city/town-plus-precinct party and status rows; it
+  does not join results to geometry or activate a local map layer.
+- The source reports 732,308 Active, 57,201 Inactive, and 3,360 Pending
+  registrations across 39 city/towns. Its all-status total is 792,869, 794
+  above EAC's 792,075. Because the report supplies no compatible ballots-cast
+  or voter-participation field, it remains a status-separated denominator lead;
+  active EAC turnout and all RI geometry gates are unchanged.
