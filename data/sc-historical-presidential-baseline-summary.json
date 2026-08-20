@@ -1,9 +1,23 @@
 {
-  "generatedAt": "2026-07-11T02:01:41.992Z",
+  "generatedAt": "2026-08-19T00:00:00.000Z",
   "authority": "South Carolina Election Commission",
   "parser": "scripts/normalize-sc-historical-presidential-baseline.mjs",
-  "caveat": "Official South Carolina Elections Database 2016 and 2020 presidential contest CSVs normalized to county baselines. 2012 remains uncollected.",
+  "caveat": "Official South Carolina Elections Database 2012, 2016, and 2020 presidential contest CSVs normalized to county baselines. County rows are historical context and not 2024 certified-result rows.",
   "sources": [
+    {
+      "id": "sc-2012-election-history-president",
+      "year": 2012,
+      "contestId": "9112",
+      "url": "https://sc.elstats.civera.com/api/download_contest/9112_table.csv?split_party=false",
+      "localFile": "data/sc-2012-president-9112.csv",
+      "rowCount": 46,
+      "demVotes": 865941,
+      "repVotes": 1071645,
+      "otherVotes": 26532,
+      "totalVotes": 1964118,
+      "byteCount": 116772,
+      "sha256": "26d5c6aa23b1f6c259f2178c20114c82027acbb586d487047d99483dff89a33c"
+    },
     {
       "id": "sc-2016-election-history-president",
       "year": 2016,
@@ -14,7 +28,9 @@
       "demVotes": 855373,
       "repVotes": 1155389,
       "otherVotes": 92265,
-      "totalVotes": 2103027
+      "totalVotes": 2103027,
+      "byteCount": 132795,
+      "sha256": "cb2e118c354f87becf12883aafd40a7de83a1026be82516d13c6247b0122e42f"
     },
     {
       "id": "sc-2020-election-history-president",
@@ -26,13 +42,16 @@
       "demVotes": 1091541,
       "repVotes": 1385103,
       "otherVotes": 36685,
-      "totalVotes": 2513329
+      "totalVotes": 2513329,
+      "byteCount": 119261,
+      "sha256": "c57495268aa7c38e8e880caa1aca799eb2ace174c0a3770b4b1f471962453ba7"
     }
   ],
   "output": {
     "localFile": "data/sc-historical-presidential-baseline.csv",
-    "rowCount": 92,
+    "rowCount": 138,
     "years": [
+      2012,
       2016,
       2020
     ]
