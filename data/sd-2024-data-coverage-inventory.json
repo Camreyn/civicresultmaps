@@ -1,7 +1,7 @@
 {
   "state": "SD",
   "stateName": "South Dakota",
-  "checkedAt": "2026-07-04",
+  "checkedAt": "2026-08-19",
   "currentConfigStatus": {
     "activeParser": "countyPresidentCsv+countyComparisonCsv+eacTurnoutCsv+historicalPresidentialCsv",
     "resultRows": 66,
@@ -10,9 +10,20 @@
     "historicalBaselineRows": 198,
     "geometryFeatures": 66,
     "completionDecision": "remain_in_source_discovery_queue",
-    "reason": "South Dakota has reproducible county-level staging rows for President and at-large U.S. House, plus retained official SD SOS archive/export evidence identifying 2024 General ElectionID 684 and a Wave 24 official request packet. The official app export is labeled 2024 Unofficial General Election Results and matches the archive map-data totals, which are 194 President votes and 184 U.S. House votes below the current certified-style staging totals. Wave 24 additionally confirmed the official results FAQ directs users to SOS Elections for certified results after county and state canvass certification, retained a request packet with the SOS public-records path, and summarized the official 2024 General post-election audit page. The Wave 25 normal public re-check did not locate a certified canvass PDF/static export or another reconciling official payload, so one still needs to be retained before SD is listed as completed native coverage."
+    "reason": "South Dakota now retains the official 2024 General Election State Canvass and Certificate PDF and a reproducible verifier that exactly reconciles all 66 county President and U.S. House rows to current staging. ElectionID 684 remains an explicitly unofficial, lower-total archive/export and its turnout fields remain a denominator-timing lead. South Dakota remains incomplete pending official precinct/local results, compatible turnout/registration semantics, geometry/crosswalks, and normalized administration context."
   },
   "loadedArtifacts": [
+    {
+      "id": "sd-2024-general-canvass-certificate",
+      "sourceTitle": "South Dakota Secretary of State 2024 General Election Canvass and Certificate",
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+      "localFile": "data/sd-2024-general-canvass-certificate.pdf; data/sd-2024-general-canvass-reconciliation.json",
+      "parser": "scripts/verify_sd_2024_general_canvass.py",
+      "authority": "South Dakota Secretary of State State Board of Canvassers",
+      "reportingGrain": "county",
+      "expectedCounts": {"presidentRows": 66, "presidentTotalVotes": 428922, "usHouseRows": 66, "usHouseTotalVotes": 421448},
+      "caveat": "The certificate validates county candidate results but has no turnout/registration fields; it does not activate ElectionID 684 turnout rows."
+    },
     {
       "id": "sd-2024-president-wikipedia-county",
       "sourceTitle": "Wikipedia 2024 South Dakota presidential county table citing SD SOS canvass",
@@ -198,14 +209,14 @@
       "The older official SD results service identifies ElectionID 684 as the 2024 General Election candidate archive: GetCandidates returns Trump, Harris, Oliver, Kennedy, Dusty Johnson, and Sheryl Johnson federal markers.",
       "GetMapDataArchive with ElectionID 684, Type=SWR, Category=CTY, and RaceID=0 returns county map-data rows for 2024 federal races, including President map RaceID 12665 and U.S. House map RaceID 11954.",
       "GetVoterTurnoutArchive with ElectionID 684 returns 66 county turnout rows and is retained as a state-native turnout lead, but it is not active until denominator timing and replacement semantics are reviewed.",
-      "The official archive map-data totals do not reconcile to the current certified-style staging totals, so the official canvass PDF/static export or another reconciling official archive export remains the blocker.",
+      "The official ElectionID 684 archive remains lower than the certified county totals, but the retained State Canvass and Certificate PDF exactly reconciles the current 66-county President and U.S. House staging rows.",
       "The retained official statewide XLSX export labels itself 2024 Unofficial General Election Results and reconciles to the lower ElectionID 684 map-data totals, not to the certified-style staging totals.",
       "ElectionTerminology.aspx?eid=684 states that Election Night results are unofficial and that official certified results are available from SOS Elections after the 66 County Canvass Boards and State Canvass Board canvass and certify results.",
       "The official 2024 General post-election audit page lists 66 county rows, 83 linked audit certificate URLs, and 14 counties with discrepancy summary text. This is retained as administration context, not as a certified result source.",
-      "Wave 24 tested five likely 2024 State Canvass and Certificate PDF paths under the SOS 2024 election-information assets tree; all returned 404, so the request packet keeps the public-records and county-auditor request path as the next official step.",
-      "Wave 25 normal public re-check found no certified canvass/static export or reconciling ElectionID 684 payload through ordinary SOS/electionresults pages, public search, the public-records portal, or county-auditor directory."
+      "Wave 24 tested five likely 2024 State Canvass and Certificate PDF paths under the SOS 2024 election-information assets tree; all returned 404.",
+      "Wave 26 found the retained official certificate through the SOS 2024 Election History page and verifies its county tables deterministically in scripts/verify_sd_2024_general_canvass.py."
     ],
-    "blocker": "Use the identified official SD SOS archive ElectionID 684, retained ResultsExport XLSX, official results FAQ text, and Wave 24 source-request packet as concrete follow-up evidence, but obtain the official 2024 General Election Canvass and Certificate PDF/static export or another official payload that reconciles to certified county President and U.S. House totals before promoting SD to completed official-native coverage. The retained ElectionID 684 map-data and statewide XLSX export totals are 428,728 President votes and 421,264 U.S. House votes, which are 194 and 184 votes below the current certified-style staging totals.",
+    "blocker": "The retained official State Canvass and Certificate PDF exactly validates all current 66-county President and U.S. House values. South Dakota still needs direct official precinct/local result exports, compatible turnout-registration field semantics, precinct geometry/crosswalk evidence, official historical baselines, and normalized administration context before it can be treated as completed official-native coverage. The retained ElectionID 684 map-data and statewide XLSX remain unofficial lower-total evidence (428,728 President; 421,264 U.S. House).",
     "archiveProbe": {
       "checkedAt": "2026-07-04",
       "method": "Queried the archived official SD ResultsAjax service and retained candidate, statewide county map-data, turnout archive evidence, and the official ResultsExport.aspx?eid=684 statewide XLSX workbook for 2024 General ElectionID 684.",
@@ -234,8 +245,8 @@
         "https://vip.sdsos.gov/CountyAuditors.aspx",
         "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
       ],
-      "result": "No public certified 2024 General Election State Canvass and Certificate PDF/static export or reconciling official ElectionID 684 payload was found. The public official ElectionID 684 export shell still presents Unofficial Results General Election November 5, 2024, and the FAQ still directs users to SOS Elections for official certified results after county and state canvass certification.",
-      "nextStep": "Use the public-records request path and county-auditor directory with the retained ElectionID 684 evidence to request the certified canvass/export, county canvass abstracts, and any write-in or canvass-adjustment rows explaining the 194 President and 184 U.S. House vote deltas."
+      "result": "The ElectionID 684 export shell presents Unofficial Results General Election November 5, 2024, and the FAQ directs users to SOS Elections for certified results after county and state canvass certification. Wave 26 then located the official certificate on the SOS Election History page and hash-pinned it locally.",
+      "nextStep": "Use the retained certificate and lower ElectionID 684 evidence only for their documented result roles; pursue compatible county or precinct turnout/registration fields and official precinct/local exports with crosswalk or geometry evidence."
     },
     "turnoutLeadDecision": {
       "status": "retain_as_denominator_timing_lead_only",
@@ -256,7 +267,7 @@
     }
   },
   "displayCaveats": [
-    "County result and review rows remain caveated secondary staging coverage until the official SD SOS certified canvass/export or a reconciling official archive payload is retained; the retained official XLSX export is labeled unofficial and matches lower app/archive totals.",
+    "Current 66-county President and U.S. House staging values are exactly validated against the retained official State Canvass and Certificate PDF. The generated county CSVs retain their secondary extraction lineage rather than becoming a direct certificate-table parser.",
     "Review rows are county-level President-versus-at-large-U.S.-House comparisons, not precinct-level scatter plots.",
     "Turnout uses EAC jurisdiction fallback rows. The official ElectionID 684 turnout archive is retained as a state-native lead only until denominator timing and replacement semantics are reviewed.",
     "Historical baselines are contextual secondary county tables for 2012, 2016, and 2020.",
