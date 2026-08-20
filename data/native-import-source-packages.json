@@ -1672,6 +1672,13 @@
           "denominator": "EAC registered voters",
           "ballotsCast": "EAC normalized ballots cast"
         },
+        "historicalRegistrationLeads": {
+          "sourceTitle": "Georgia SOS 2012, 2016, and 2020 General Election county summary archives",
+          "sourceUrl": "https://sos.ga.gov/page/historical-elections-results",
+          "localFile": "data/ga-official-historical-archives; data/ga-historical-registration-turnout-leads.csv; data/ga-historical-archive-source-review.json",
+          "level": "county",
+          "parserHint": "Run node scripts/normalize-ga-historical-archive-registration.mjs. It hash-verifies three official archive ZIPs, parses 159 nested county summary CSVs per year, and requires exact county presidential reconciliation to the existing SOS JSON baseline before emitting 477 registration/ballots-cast lead rows."
+        },
         "historicalBaseline": {
           "sourceTitle": "Georgia SOS official historical media exports",
           "sourceUrl": "https://results.sos.ga.gov/",
@@ -1721,6 +1728,7 @@
         "localReviewRows": 2684,
         "turnoutRows": 159,
         "historicalBaselineRows": 477,
+        "historicalRegistrationLeadRows": 477,
         "historicalReviewRows": 318,
         "historicalReviewRowsByYear": {
           "2016": 159,
@@ -1731,7 +1739,7 @@
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_with_district_caveats",
-        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_after_sos_vote_method_review",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_historical_archive_leads",
         "historicalMode": "official_sos_media_export_county_baselines",
         "historicalReviewMode": "official_sos_county_president_vs_us_senate_2016_2020"
       },
@@ -1745,9 +1753,10 @@
         "The 2020 historical advisory comparison uses the regular US Senate (Perdue) contest from the original November general export before the runoff; the Loeffler special election is excluded. The selected county contest options contain no precinct-result rows, so the package must not be described as precinct historical coverage.",
         "Historical advisory indicators are review signals only; candidate differences, contest differences, split-ticket voting, and participation differences can explain broad patterns and the rows are not findings of misconduct.",
         "The July 5, 2026 Georgia vote-method source review confirms official SOS groupResults are candidate-result splits, not turnout/registration denominator rows; EAC turnout remains active until a state-native turnout artifact is collected."
+        ,"Official 2012, 2016, and 2020 archive registration and ballots-cast fields are historical county leads only: the archive does not establish registration timing or compatible active-turnout semantics, so they do not replace EAC 2024 turnout."
       ],
       "legacyReferenceBundle": "data/ga-app-data.js",
-      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, official 2016 and 2020 county historical advisory rows, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
+      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, exact-reconciled historical county registration/ballots-cast leads, official 2016 and 2020 county historical advisory rows, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are Georgia-native 2024 turnout/registration denominator rows with documented timing/semantics, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
     },
     {
       "state": "KS",
@@ -2976,7 +2985,7 @@
       "state": "HI",
       "name": "Hawaii",
       "priority": 11,
-      "nativeReadiness": "complete_five_county_map_precinct_split_review_state_native_turnout_2016_2020_historical_context",
+      "nativeReadiness": "complete_five_county_map_precinct_split_review_state_native_turnout_2012_2016_2020_historical_context",
       "authority": "Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/hi.json",
       "artifacts": {
@@ -3024,15 +3033,16 @@
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or precinct-uniformity proof."
         },
         "historicalBaseline": {
-          "sourceTitle": "Hawaii Office of Elections 2016 and 2020 General Election summary/detail text exports",
-          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
-          "localFile": "data/hi-historical-presidential-baseline.csv",
+          "sourceTitle": "Hawaii Office of Elections 2012, 2016, and 2020 General Election summary/detail text exports",
+          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2012/general/summary.txt; https://files.hawaii.gov/elections/files/results/2012/general/media.txt; https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
+          "localFile": "data/hi-2012-general-summary.txt; data/hi-2012-general-precinct-detail.txt; data/hi-historical-presidential-baseline.csv; data/hi-historical-presidential-baseline-summary.json",
           "level": "county",
           "years": [
+            2012,
             2016,
             2020
           ],
-          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs emits five county/county-equivalent rows per year. Precinct 13-09 is pinned to county:15005 with exact 2016/2020 vote tuples, Maui residuals, and statewide-zero-delta gates."
+          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs emits five county/county-equivalent rows per year. Precinct 13-09 is pinned to county:15005 with exact 2012/2016/2020 vote tuples, Maui residuals, and statewide gates; the 2012 476-vote overseas non-geographic President total is fail-closed and never assigned to a county."
         }
       },
       "expected": {
@@ -3044,14 +3054,14 @@
         "other": 9996,
         "localReviewRows": 467,
         "turnoutRows": 4,
-        "historicalBaselineRows": 10
+        "historicalBaselineRows": 15
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_senate_precinct_split_nonzero_numbered_units",
         "turnoutMode": "official_hawaii_office_registration_turnout_statistics_county_rows",
-        "historicalBaselineMode": "official_2016_2020_five_county_baseline_with_kalawao_15005",
+        "historicalBaselineMode": "official_2012_2016_2020_five_county_baseline_with_kalawao_15005_and_2012_overseas_exclusion",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
       },
       "caveats": [
@@ -3060,10 +3070,10 @@
         "Active turnout uses four Hawaii Office election-county rows. The source table does not split Kalawao turnout or registration, so no denominator is invented for FIPS 15005.",
         "County geometry is loaded; full precinct boundaries/crosswalks are not loaded.",
         "Advisory review rows are public-interest source-review inputs only, not findings of fraud or misconduct.",
-        "Official 2012 historical baselines and normalized administration-context rows remain missing."
+        "The 2012 detail export's registration and ballot fields remain source context only: their timing and scope are not used to replace the active 2024 turnout denominator. Normalized administration-context rows remain missing."
       ],
       "legacyReferenceBundle": "data/hi-2024-data-coverage-inventory.json",
-      "nextAction": "Collect official 2012 historical rows, complete precinct geometry/crosswalks if subcounty overlays are pursued, and normalize administration context."
+      "nextAction": "Complete precinct geometry/crosswalks if subcounty overlays are pursued, and normalize administration context."
     },
     {
       "state": "NM",

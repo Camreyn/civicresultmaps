@@ -83,6 +83,28 @@
       "status": "candidate"
     },
     {
+      "id": "hi-2012-general-summary",
+      "category": "Official 2012 General Election statewide summary text export",
+      "url": "https://files.hawaii.gov/elections/files/results/2012/general/summary.txt",
+      "localFile": "data/hi-2012-general-summary.txt",
+      "parser": "hawaiiOfficeTextHistoricalSummary",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Certified 2012 General Election text file linked from the Hawaii Office of Elections results page; last updated November 21, 2012 at 4:00 am.",
+      "confidence": "Official statewide certified summary cross-check for 2012 President totals. Registration and ballot fields remain source context only; they are not used to replace active 2024 turnout rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "hi-2012-general-precinct-detail",
+      "category": "Official 2012 General Election statewide precinct detail text export",
+      "url": "https://files.hawaii.gov/elections/files/results/2012/general/media.txt",
+      "localFile": "data/hi-2012-general-precinct-detail.txt",
+      "parser": "hawaiiOfficeTextHistoricalDetail",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Certified 2012 General Election text file linked from the Hawaii Office of Elections results page; last updated November 21, 2012 at 4:00 am.",
+      "confidence": "Official precinct/split export with Reg_voters, Ballots, and vote-method fields. The historical normalizer aggregates five county/county-equivalent President rows using reviewed pre-reapportionment district ranges, pins precinct 13-09 split ID 78 to Kalawao FIPS 15005, and excludes 476 overseas non-geographic President votes rather than assigning them to a county. Registration and ballot fields are source context only, not a turnout-denominator replacement.",
+      "status": "loaded"
+    },
+    {
       "id": "hi-2016-general-summary",
       "category": "Official 2016 General Election statewide summary text export",
       "url": "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt",
@@ -128,13 +150,13 @@
     },
     {
       "id": "hi-historical-presidential-baseline",
-      "category": "Official Hawaii 2016 and 2020 county presidential historical baseline rows",
-      "url": "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
+      "category": "Official Hawaii 2012, 2016, and 2020 county presidential historical baseline rows",
+      "url": "https://files.hawaii.gov/elections/files/results/2012/general/summary.txt; https://files.hawaii.gov/elections/files/results/2012/general/media.txt; https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2016/general/media.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
       "localFile": "data/hi-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
       "authority": "Hawaii Office of Elections",
       "timestampBasis": "Normalized by scripts/normalize-hi-historical-presidential-baseline.mjs from official Hawaii summary/detail text exports.",
-      "confidence": "Official five-row county/county-equivalent historical baselines per year for jurisdictionTag flip joins. The normalizer applies explicit 2016/2020 pre-reapportionment district ranges, splits precinct 13-09 into Kalawao FIPS 15005, and fails closed on every county tuple and statewide total.",
+      "confidence": "Official five-row county/county-equivalent historical baselines per year for jurisdictionTag flip joins. The normalizer applies explicit 2012/2016/2020 pre-reapportionment district ranges, splits precinct 13-09 into Kalawao FIPS 15005, preserves 2012 overseas votes as non-geographic, and fails closed on every county tuple, statewide total, and non-geographic exclusion.",
       "status": "loaded"
     }
   ],
@@ -146,8 +168,20 @@
     "reportingGrain": "county_and_county_equivalent_from_precinct_split",
     "countyCrosswalk": "2024 Hawaii numbered precinct names map House districts 01-08 to Hawaii County, 09-14 to Maui County except precinct 13-09, 15-17 to Kauai County, and 18-51 to Honolulu County. Official precinct 13-09 (split IDs 78 and 487) is pinned to Kalawao County FIPS 15005.",
     "crosswalkEvidenceUrls": [
+      "https://elections.hawaii.gov/about-us/boards-and-commissions/reapportionment/reapportionment-map/",
+      "https://files.hawaii.gov/elections/files/maps/reapportionmentmaps/HawaiiUnit_MinorRevision_3_30_2012.pdf",
+      "https://files.hawaii.gov/elections/files/maps/reapportionmentmaps/MauiUnit_MinorRevision_3_30_2012.pdf",
+      "https://files.hawaii.gov/elections/files/maps/reapportionmentmaps/KauaiUnit_MinorRevision_3_30_2012.pdf",
+      "https://files.hawaii.gov/elections/files/maps/reapportionmentmaps/OahuUnit_MinorRevision_3_30_2012.pdf",
+      "https://files.hawaii.gov/elections/files/maps/electionmaps/compilations/County%20of%20Maui%20-%20All.pdf",
       "https://files.hawaii.gov/elections/files/maps/Election2024Maps/HD_13.pdf",
       "https://files.hawaii.gov/elections/files/maps/precincttext/Precinct-Boundary-Descriptions-Statewide.pdf"
+    ],
+    "reconciliationEvidenceUrls": [
+      "https://files.hawaii.gov/elections/files/results/2012/general/coh.pdf",
+      "https://files.hawaii.gov/elections/files/results/2012/general/com.pdf",
+      "https://files.hawaii.gov/elections/files/results/2012/general/cok.pdf",
+      "https://files.hawaii.gov/elections/files/results/2012/general/cch.pdf"
     ],
     "kalawaoPrecinct": {
       "precinctName": "13-09",
@@ -202,14 +236,14 @@
   "expected": {
     "jurisdictions": 5,
     "resultRows": 5,
-    "sources": 12,
+    "sources": 14,
     "stateTotal": 516701,
     "trump": 193661,
     "harris": 313044,
     "other": 9996,
     "reviewRows": 467,
     "turnoutRows": 4,
-    "historicalBaselineRows": 10
+    "historicalBaselineRows": 15
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -222,10 +256,11 @@
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
     "sourceId": "hi-historical-presidential-baseline",
-    "warning": "Hawaii historical baseline rows are official 2016 and 2020 Office of Elections President results aggregated with reviewed year-specific pre-reapportionment district ranges: 01-07 Hawaii, 08-13 Maui, 14-16 Kauai, and 17-51 Honolulu. Precinct 13-09 split ID 78 is separated from Maui and pinned to Kalawao FIPS 15005. Every county tuple and statewide total is asserted. Official 2012 county presidential baselines remain uncollected.",
+    "warning": "Hawaii historical baseline rows are official 2012, 2016, and 2020 Office of Elections President results aggregated with reviewed year-specific pre-reapportionment district ranges: 01-07 Hawaii, 08-13 Maui, 14-16 Kauai, and 17-51 Honolulu. Precinct 13-09 split ID 78 is separated from Maui and pinned to Kalawao FIPS 15005. The 2012 export includes 476 overseas non-geographic President votes, which remain unassigned to county rows. Every county tuple, statewide total, and 2012 non-geographic exclusion is asserted.",
     "expected": {
-      "rowCount": 10,
+      "rowCount": 15,
       "years": [
+        2012,
         2016,
         2020
       ]
@@ -235,6 +270,13 @@
       "https://files.hawaii.gov/elections/files/maps/precincttext/Precinct-Boundary-Descriptions-Statewide.pdf"
     ],
     "districtRangesByYear": {
+      "2012": {
+        "01-07": "Hawaii County",
+        "08-13": "Maui County except precinct 13-09",
+        "13-09": "Kalawao County",
+        "14-16": "Kauai County",
+        "17-51": "Honolulu County"
+      },
       "2016": {
         "01-07": "Hawaii County",
         "08-13": "Maui County except precinct 13-09",

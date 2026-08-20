@@ -114,6 +114,29 @@
       "confidence": "loaded_official_historical_context"
     },
     {
+      "id": "ga-historical-archive-registration-leads",
+      "sourceAuthority": "Georgia Secretary of State",
+      "sourceUrl": "https://sos.ga.gov/page/historical-elections-results",
+      "localPath": "data/ga-official-historical-archives/ga-2012-general-election.zip; data/ga-official-historical-archives/ga-2016-general-election.zip; data/ga-official-historical-archives/ga-2020-general-election.zip; data/ga-historical-registration-turnout-leads.csv; data/ga-historical-archive-source-review.json",
+      "electionYear": "2012,2016,2020",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/normalize-ga-historical-archive-registration.mjs; hash-pins the three official ZIPs, reads 159 nested county summary.csv artifacts per year, and fail-closes unless every county presidential candidate tuple exactly reconciles to data/ga-historical-presidential-baseline.csv",
+      "expectedCounts": {
+        "rows": 477,
+        "countySummaryArchivesPerYear": 159,
+        "totals": {
+          "2012": { "registeredVoters": 5428349, "ballotsCast": 3919156, "presidentVotes": 3897839 },
+          "2016": { "registeredVoters": 5443046, "ballotsCast": 4165405, "presidentVotes": 4092373 },
+          "2020": { "registeredVoters": 6995285, "ballotsCast": 5026684, "presidentVotes": 4998482 }
+        }
+      },
+      "caveats": [
+        "County summary registration and ballots-cast values repeat across each contest candidate; the normalizer requires a single value across presidential rows before retaining each county lead.",
+        "The archive alone does not establish registration timing or compatible active-turnout semantics, so these are historical source context and do not replace EAC 2024 turnout."
+      ],
+      "confidence": "official_historical_context_exact_results_reconciliation"
+    },
+    {
       "id": "ga-2024-equipment-context",
       "sourceAuthority": "Verified Voting Verifier",
       "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/13",
@@ -221,6 +244,7 @@
   ],
   "confidenceNotes": [
     "Official 2024 result/review rows and official 2012/2016/2020 county historical baselines are loaded from Georgia SOS media exports.",
+    "Official SOS 2012/2016/2020 General Election archives provide exact-reconciled county registration and ballots-cast leads, but their timing and compatibility with the active EAC turnout definition are not established.",
     "Current Georgia advisory indicators remain public-interest screening outputs only; they are not proof of fraud or misconduct.",
     "Next source step is Georgia-native turnout/registration denominator collection and precinct boundary/crosswalk collection, followed by county/state requests for detailed audit, CVR, recount, incident, correction, and custody records.",
     "A July 5, 2026 source review confirmed Georgia SOS vote-method groupResults are candidate-result splits, not turnout/registration denominator rows; EAC turnout remains active."

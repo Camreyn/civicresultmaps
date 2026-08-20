@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "district-compactness-v1",
+  "generatedAt": "2026-08-19T18:00:00.000Z",
+  "planEffectiveDate": "2024-01-01",
+  "rowCount": 7272,
+  "countsByGeography": {
+    "congressional": 441,
+    "state_upper": 1958,
+    "state_lower": 4873
+  },
+  "stabilityCounts": {
+    "resolution_sensitive": 496,
+    "stable": 6776
+  },
+  "excludedUndefinedDistrictCount": 15,
+  "excludedUndefinedDistricts": [
+    {
+      "geoid": "09ZZ",
+      "geographyType": "congressional",
+      "name": "Congressional Districts not defined"
+    },
+    {
+      "geoid": "17ZZ",
+      "geographyType": "congressional",
+      "name": "Congressional Districts not defined"
+    },
+    {
+      "geoid": "33ZZ",
+      "geographyType": "congressional",
+      "name": "Congressional Districts not defined"
+    },
+    {
+      "geoid": "09ZZZ",
+      "geographyType": "state_upper",
+      "name": "State Senate Districts not defined"
+    },
+    {
+      "geoid": "17ZZZ",
+      "geographyType": "state_upper",
+      "name": "State Senate Districts not defined"
+    },
+    {
+      "geoid": "22ZZZ",
+      "geographyType": "state_upper",
+      "name": "State Senate Districts not defined"
+    },
+    {
+      "geoid": "33ZZZ",
+      "geographyType": "state_upper",
+      "name": "State Senate Districts not defined"
+    },
+    {
+      "geoid": "55ZZZ",
+      "geographyType": "state_upper",
+      "name": "State Senate Districts not defined"
+    },
+    {
+      "geoid": "72ZZZ",
+      "geographyType": "state_upper",
+      "name": "State Senate Districts not defined"
+    },
+    {
+      "geoid": "09ZZZ",
+      "geographyType": "state_lower",
+      "name": "State House Districts not defined"
+    },
+    {
+      "geoid": "17ZZZ",
+      "geographyType": "state_lower",
+      "name": "State House Districts not defined"
+    },
+    {
+      "geoid": "25ZZZ",
+      "geographyType": "state_lower",
+      "name": "State House Districts not defined"
+    },
+    {
+      "geoid": "33ZZZ",
+      "geographyType": "state_lower",
+      "name": "State House Districts not defined"
+    },
+    {
+      "geoid": "55ZZZ",
+      "geographyType": "state_lower",
+      "name": "State House Districts not defined"
+    },
+    {
+      "geoid": "72ZZZ",
+      "geographyType": "state_lower",
+      "name": "State House Districts not defined"
+    }
+  ],
+  "maximumCensusAreaRelativeDifference": 0.007131,
+  "advisoryOnly": true,
+  "caveat": "Compactness measures shape, not partisan intent, legal compliance, representational quality, or election integrity.",
+  "resultRelationshipStatus": "not_calculated"
+}
