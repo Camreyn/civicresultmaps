@@ -7,7 +7,7 @@ import styles from "../platform-pages.module.css";
 
 export const metadata: Metadata = {
   title: "Public API",
-  description: "Civic Result Maps API documentation for county search, profiles, election comparisons, releases, and bulk downloads.",
+  description: "Civic Result Maps API documentation for county data, plan-vintage district shape metrics, releases, and bulk downloads.",
   alternates: { canonical: "/developers" },
 };
 
@@ -21,6 +21,7 @@ const endpoints = [
   ["GET", "/api/v1/releases/{releaseId}/download", "Product-specific immutable ZIP"],
   ["GET", "/api/v1/equipment-systems", "Feature-gated equipment catalog summaries"],
   ["GET", "/api/v1/equipment-systems/{slug}", "One source-linked equipment dossier"],
+  ["GET", "/api/district-compactness", "Advisory 2024 district shape metrics and resolution guards"],
 ] as const;
 
 export default function DevelopersPage() {
