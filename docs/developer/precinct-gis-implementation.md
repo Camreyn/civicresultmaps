@@ -8547,3 +8547,23 @@ evidence against its verified top-level package.
   above EAC's 792,075. Because the report supplies no compatible ballots-cast
   or voter-participation field, it remains a status-separated denominator lead;
   active EAC turnout and all RI geometry gates are unchanged.
+
+### 2026-08-19 - Florida official historical county baseline
+
+- The retained Florida Department of State 2012, 2016, and 2020 General
+  Election precinct ZIPs now generate a separate county historical baseline
+  through `scripts/normalize-fl-historical-presidential-baseline.mjs`. The
+  normalizer verifies the existing byte/SHA-256 pins, resolves every source
+  county through the reviewed 67-county GEOID map, and fails closed on 67
+  county aggregates and the exact candidate totals for each year. The 2016
+  source review also records the exact 21 Palm Beach identities whose same-
+  candidate, same-vote rows repeat under alternate polling-location labels;
+  107 duplicate rows are counted once. These historical totals are exact ZIP
+  aggregates but have not been independently reconciled against a separately
+  retained certified historical county or statewide canvass artifact.
+- This change is result-only historical context. It does not create, activate,
+  or infer historical precinct geometry; Florida's 2012 geometry remains
+  blocked and the guarded 2016/2020/2024 release is unchanged. ZIP
+  registered-voter values remain dated source context only because no
+  compatible election-level ballots-cast semantics are retained; active
+  turnout remains the EAC fallback.

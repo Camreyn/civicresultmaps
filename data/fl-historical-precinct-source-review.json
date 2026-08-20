@@ -1,0 +1,167 @@
+{
+  "generatedBy": "scripts/normalize-fl-historical-presidential-baseline.mjs",
+  "sourceId": "fl-historical-presidential-dos-precinct-zips",
+  "sourceAuthority": "Florida Department of State, Division of Elections",
+  "rowCount": 201,
+  "sources": [
+    {
+      "year": 2012,
+      "sourceUrl": "https://dos.fl.gov/media/697204/precinctlevelelectionresults2012gen.zip",
+      "localFile": "data/precinct-geometry/FL/2012-11-06-general/raw/florida-dos/fl-2012-general-precinct-results.zip",
+      "sourcePin": {
+        "bytes": 5085954,
+        "sha256": "97a7c28ef2b5cbfed449b32c43f0abd29b4914728ac32daf2a73ae8597456ca0"
+      },
+      "archiveRule": "All county result members are parsed; recount-named members contain no presidential-contest rows and are retained but contribute no baseline votes.",
+      "duplicateCandidateRule": null,
+      "schema": {
+        "delimiter": "tab",
+        "fieldCount": 19,
+        "countyCode": 0,
+        "countyName": 1,
+        "precinct": 5,
+        "registeredVoters": 7,
+        "contestName": 11,
+        "candidateName": 14,
+        "candidateParty": 15,
+        "candidateVotes": 18
+      },
+      "expected": {
+        "countyRows": 67,
+        "sourceUnits": 6319,
+        "presidentSourceRows": 73925,
+        "duplicateCandidateRows": 0,
+        "dem": 4236647,
+        "rep": 4162600,
+        "other": 93089,
+        "total": 8492336
+      },
+      "registrationContext": {
+        "sourceField": "registeredVoters",
+        "aggregate": 16377020,
+        "ambiguousSourceUnitCount": 0,
+        "caveat": "Registration is retained only as an election-date precinct-export field. These ZIPs do not supply compatible election-level ballots-cast semantics, so this context does not replace active EAC turnout rows."
+      },
+      "independentCertifiedReconciliation": {
+        "status": "not_performed_no_separate_artifact_retained",
+        "caveat": "These totals are self-consistent exact aggregates of the hash-pinned official DOS precinct ZIP. They have not been independently reconciled against a separately retained certified historical county or statewide canvass artifact."
+      }
+    },
+    {
+      "year": 2016,
+      "sourceUrl": "https://dos.fl.gov/media/697454/precinctlevelelectionresults2016gen.zip",
+      "localFile": "data/precinct-geometry/FL/2016-11-08-general/raw/florida-dos/fl-2016-general-precinct-results.zip",
+      "sourcePin": {
+        "bytes": 4952971,
+        "sha256": "0d9b6ee46f9c5b4399b8909a3df91d8cc270c0b8daaf0589e515c69160d35657"
+      },
+      "archiveRule": "All county result members are parsed; recount-named members contain no presidential-contest rows and are retained but contribute no baseline votes.",
+      "duplicateCandidateRule": {
+        "countyCode": "PAL",
+        "sourceUnitIds": [
+          "1173",
+          "1189",
+          "1247",
+          "2081",
+          "2083",
+          "2097",
+          "2116",
+          "2126",
+          "4129",
+          "5003",
+          "5007",
+          "5018",
+          "5055",
+          "5112",
+          "5113",
+          "5115",
+          "5117",
+          "5119",
+          "6029",
+          "6207",
+          "7149"
+        ],
+        "sourceUnitCount": 21,
+        "discardedRowCount": 107,
+        "criterion": "For these reviewed Palm Beach source identities only, a repeated row is discarded only when its candidate/category and vote value exactly match the row already retained under the alternate polling-location label.",
+        "rationale": "The official 2016 archive repeats the same candidate rows for 21 Palm Beach precinct identities under two polling-location labels; counting both would duplicate votes."
+      },
+      "schema": {
+        "delimiter": "tab",
+        "fieldCount": 19,
+        "countyCode": 0,
+        "countyName": 1,
+        "precinct": 5,
+        "registeredVoters": 7,
+        "contestName": 11,
+        "candidateName": 14,
+        "candidateParty": 15,
+        "candidateVotes": 18
+      },
+      "expected": {
+        "countyRows": 67,
+        "sourceUnits": 5870,
+        "presidentSourceRows": 51337,
+        "duplicateCandidateRows": 107,
+        "dem": 4504403,
+        "rep": 4617476,
+        "other": 376214,
+        "total": 9498093
+      },
+      "registrationContext": {
+        "sourceField": "registeredVoters",
+        "aggregate": null,
+        "ambiguousSourceUnitCount": 66,
+        "caveat": "Registration is retained only as an election-date precinct-export field. These ZIPs do not supply compatible election-level ballots-cast semantics, so this context does not replace active EAC turnout rows."
+      },
+      "independentCertifiedReconciliation": {
+        "status": "not_performed_no_separate_artifact_retained",
+        "caveat": "These totals are self-consistent exact aggregates of the hash-pinned official DOS precinct ZIP. They have not been independently reconciled against a separately retained certified historical county or statewide canvass artifact."
+      }
+    },
+    {
+      "year": 2020,
+      "sourceUrl": "https://fldoswebumbracoprod.blob.core.windows.net/media/703763/2020-general-election-rev.zip",
+      "localFile": "data/precinct-geometry/FL/2020-11-03-general/raw/florida-dos/fl-2020-general-precinct-results.zip",
+      "sourcePin": {
+        "bytes": 4531765,
+        "sha256": "6bc043f551c4100ebcf8537f7fd7d547a1ba992c7cd6f11d2ccc0e9aedab7034"
+      },
+      "archiveRule": "All county result members are parsed; recount-named members contain no presidential-contest rows and are retained but contribute no baseline votes.",
+      "duplicateCandidateRule": null,
+      "schema": {
+        "delimiter": "tab",
+        "fieldCount": 19,
+        "countyCode": 0,
+        "countyName": 1,
+        "precinct": 5,
+        "registeredVoters": 7,
+        "contestName": 11,
+        "candidateName": 14,
+        "candidateParty": 15,
+        "candidateVotes": 18
+      },
+      "expected": {
+        "countyRows": 67,
+        "sourceUnits": 6097,
+        "presidentSourceRows": 60970,
+        "duplicateCandidateRows": 0,
+        "dem": 5297036,
+        "rep": 5668716,
+        "other": 125092,
+        "total": 11090844
+      },
+      "registrationContext": {
+        "sourceField": "registeredVoters",
+        "aggregate": 14069165,
+        "ambiguousSourceUnitCount": 0,
+        "caveat": "Registration is retained only as an election-date precinct-export field. These ZIPs do not supply compatible election-level ballots-cast semantics, so this context does not replace active EAC turnout rows."
+      },
+      "independentCertifiedReconciliation": {
+        "status": "not_performed_no_separate_artifact_retained",
+        "caveat": "These totals are self-consistent exact aggregates of the hash-pinned official DOS precinct ZIP. They have not been independently reconciled against a separately retained certified historical county or statewide canvass artifact."
+      }
+    }
+  ],
+  "caveat": "County historical rows are exact aggregates of the retained official precinct ZIP candidate rows. They have not been independently reconciled against a separately retained certified historical county or statewide canvass artifact. They are historical context, not replacements for Florida's 2024 certified county-detail result source. Precinct geometry remains outside this baseline package."
+}

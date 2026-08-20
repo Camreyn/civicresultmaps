@@ -1917,7 +1917,7 @@
       "state": "FL",
       "name": "Florida",
       "priority": 19,
-      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_secondary_historical_with_precinct_zip_caveat",
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_official_historical_with_precinct_zip_caveat",
       "authority": "Florida Department of State; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/fl.json",
       "artifacts": {
@@ -1955,6 +1955,12 @@
           "sourceUrl": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
           "localFile": "data/precinct-geometry/FL",
           "parserHint": "scripts/collect-fl-precinct-geometry.mjs hash-pins and replays official 2012/2016/2020/2024 presidential result universes, vote-free election-specific geometry, and reviewed crosswalks. Geometry is complete for guarded 2016/2020/2024 release; 2012 remains unavailable and excluded from release candidates."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Florida Department of State official 2012/2016/2020 General Election precinct ZIP county aggregates",
+          "sourceUrl": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+          "localFile": "data/precinct-geometry/FL/2012-11-06-general/raw/florida-dos/fl-2012-general-precinct-results.zip; data/precinct-geometry/FL/2016-11-08-general/raw/florida-dos/fl-2016-general-precinct-results.zip; data/precinct-geometry/FL/2020-11-03-general/raw/florida-dos/fl-2020-general-precinct-results.zip; data/fl-historical-presidential-baseline.csv; data/fl-historical-precinct-source-review.json",
+          "parserHint": "Run node --experimental-strip-types scripts/normalize-fl-historical-presidential-baseline.mjs. It verifies all three pinned DOS ZIPs, aggregates President candidate rows by reviewed county GEOID, writes 201 historical county rows, and fails closed on the per-year 67-county and vote-total assertions."
         }
       },
       "expected": {
@@ -1973,7 +1979,7 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_senate_precinct_location_zip",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_registration_lead",
-        "historicalBaselineMode": "secondary_county_context_2012_2016_2020"
+        "historicalBaselineMode": "official_dos_precinct_zip_county_context_2012_2016_2020"
       },
       "caveats": [
         "Certified Florida county map totals remain anchored to the official county detail table, not the precinct ZIP.",
@@ -1982,7 +1988,7 @@
         "Reviewed precinct geometry and official-result relationships for 2016, 2020, and 2024 are publicly delivered at production revision 25 through the guarded, hash-pinned release; 2012 remains outside production.",
         "No complete election-effective statewide 2012 precinct boundary edition is retained, so 2012 remains fail-closed and no result is assigned to Census VTD geometry.",
         "The 2016/2020 VEST and 2024 New York Times geometry sources are secondary presentation geometry with explicit attribution and terms; Florida Department of State exports remain the sole displayed vote source.",
-        "Historical baselines are secondary county context rows and not 2024 certified data."
+        "Historical baselines are official DOS precinct-ZIP-derived county aggregates used as historical context, not replacements for 2024 certified county-detail data. They have not been independently reconciled against a separately retained certified historical county or statewide canvass artifact. The ZIP registration field is retained only as dated source context: no compatible election-level ballots-cast semantics are available, so active turnout remains EAC fallback."
       ],
       "legacyReferenceBundle": "data/fl-app-data.js"
     },
