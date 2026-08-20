@@ -51,6 +51,7 @@
 /data/nc-historical-review-rows.csv text eol=lf
 
 # Keep normalized North Carolina turnout review artifacts byte-stable across platforms.
+/data/eac-2024-state-turnout/nc-2024-eac-turnout.csv text eol=crlf
 /data/nc-2024-turnout-denominator-lead.csv text eol=lf
 /data/nc-2024-turnout-source-review.json text eol=lf
 
