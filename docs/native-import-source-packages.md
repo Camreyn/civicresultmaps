@@ -682,7 +682,7 @@ The official SOS mapdata API masks many small candidate counts with `*`. The NM 
 - County/non-geographic result source: `data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx`, collected from the official Maine SOS corrected final President by County/Town workbook
 - Local review source: `data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx`
 - Comparison contest: U.S. Senate, same official county/town source family, with 509 same-grain town comparisons and 3 vote-share-only town rows where Senate grain differs
-- Turnout source: EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/me-2024-eac-turnout.csv`; Maine SOS active/inactive registered-enrolled files are collected in `data/me-official-sources/` as denominator leads but are not turnout replacements
+- Turnout source: EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/me-2024-eac-turnout.csv`; `scripts/normalize-me-2024-enrollment-leads.mjs` preserves Maine SOS active/inactive enrollment source keys and party fields in `data/me-2024-registered-enrolled-denominator-leads.csv` with a statewide EAC reconciliation summary. The 1,223,192 active-plus-inactive enrollment total is 276 below EAC registration and contains no ballots-cast field, so it is not a turnout replacement.
 - Historical baseline source: official Maine SOS 2016 and 2020 President workbooks loaded for 34 county/non-geographic rows; official 2012 county and municipal XLS files are collected but blocked pending legacy `.xls` support or conversion
 - County boundary: `data/me-counties.geojson`; State UOCAVA is non-geographic and is excluded from county map joins
 - Coverage/admin inventory: `data/me-2024-data-coverage-inventory.json`

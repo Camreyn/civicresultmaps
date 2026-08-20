@@ -2,8 +2,8 @@
   "state": "ME",
   "stateName": "Maine",
   "electionYear": 2024,
-  "checkedAt": "2026-08-13",
-  "checkedBy": "Maine local-reporting geometry review",
+  "checkedAt": "2026-08-19",
+  "checkedBy": "Maine enrollment-denominator normalization",
   "productionChecked": false,
   "repoDrift": [
     {
@@ -90,7 +90,7 @@
       "caveat": "These CD2 ballot-ranking exports do not substitute for statewide President-versus-U.S.-Senate review rows."
     },
     "stateNativeTurnout": {
-      "status": "official_registration_denominator_artifacts_collected_not_loaded",
+      "status": "official_registration_denominator_leads_normalized_not_loaded",
       "sourceAuthority": "Maine Secretary of State",
       "sourceUrls": [
         "https://www.maine.gov/sos/elections-voting/voter-data",
@@ -104,11 +104,13 @@
         "ballotsCast": 842447,
         "registeredVoters": 1223468
       },
-      "parserNeeded": "Active/inactive registered-enrolled text files are collected as denominator leads, but turnout remains EAC fallback until compatible official ballots-cast or voter-participation rows are collected and reconciled.",
-      "caveat": "The 11/5/2024 registered/enrolled active and inactive files are denominator leads, not complete turnout replacements by themselves. The submitted current and previous enrollment pages were rechecked July 6, 2026; they continue to support denominator leads, not a ballots-cast turnout replacement.",
+      "parserNeeded": "scripts/normalize-me-2024-enrollment-leads.mjs now normalizes the active/inactive text files into a documented CSV and statewide EAC reconciliation summary. Turnout remains EAC fallback until compatible official ballots-cast or voter-participation rows are collected and reconciled.",
+      "caveat": "The 11/5/2024 registered/enrolled active and inactive files normalize to 1,037,570 active and 185,622 inactive enrollment records. Their combined 1,223,192 total is 276 below the EAC registered-voter total, but that statewide comparison does not establish compatible jurisdiction grain or ballots-cast semantics. The submitted current and previous enrollment pages continue to support denominator leads, not a ballots-cast turnout replacement.",
       "localArtifacts": [
         "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
-        "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt"
+        "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt",
+        "data/me-2024-registered-enrolled-denominator-leads.csv",
+        "data/me-2024-registered-enrolled-denominator-leads-summary.json"
       ]
     },
     "geometryAndCrosswalk": {
@@ -202,7 +204,7 @@
     "State UOCAVA is non-geographic: it is included in certified totals but not mapped or used in town review joins.",
     "Three President town rows remain vote-share-only because the Senate workbook grain differs: Medway/Twps, Day Block Twp, and Wesley.",
     "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff fields are directional source-review inputs only.",
-    "Turnout remains EAC fallback; collected Maine SOS active/inactive registered-enrolled files are denominator leads only until compatible ballots-cast or voter-participation rows are collected.",
+    "Turnout remains EAC fallback; normalized Maine SOS active/inactive registered-enrolled files are denominator leads only until compatible ballots-cast or voter-participation rows are collected.",
     "Reviewed local-reporting geometry/crosswalk candidates are not public until immutable delivery, database loading, and production activation are reviewed.",
     "The 2012 municipal XLS is parsed for GIS, but five rows totaling eight votes lack unique geometry and the MGGG secondary reconstruction lacks confirmed exact official election-date applicability and explicit derivative redistribution permission.",
     "Maine's source units are a mix of towns, plantations, townships, voting districts, and combined units; they must not be described as uniform precincts.",

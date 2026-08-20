@@ -16,6 +16,12 @@
 /data/mo-2024-general-turnout-county.csv text eol=lf
 /data/mo-historical-presidential-county-baseline.csv text eol=lf
 
+# Preserve official Maine enrollment source bytes while keeping canonical outputs deterministic.
+/data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt text eol=crlf
+/data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt text eol=crlf
+/data/me-2024-registered-enrolled-denominator-leads.csv text eol=lf
+/data/me-2024-registered-enrolled-denominator-leads-summary.json text eol=lf
+
 # Keep Oklahoma historical normalization inputs and outputs byte-stable.
 /data/ok-counties.geojson text eol=lf
 /data/ok-historical-presidential-baseline.csv text eol=lf

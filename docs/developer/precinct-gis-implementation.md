@@ -7362,6 +7362,28 @@ evidence against its verified top-level package.
   or misconduct. Production was neither promoted nor queried for indicator
   counts in this collection task.
 
+### 2026-08-19 - Maine enrollment-denominator normalization
+
+- `scripts/normalize-me-2024-enrollment-leads.mjs` now reproducibly parses the
+  Maine Secretary of State November 5, 2024 active and inactive registered/
+  enrolled text files. It validates the raw layout and row totals, rejects
+  duplicate source identities, preserves `COUNTY`, `MUNICIPALITY`, `W/P`,
+  `CG`, `SS`, `SR`, `CC`, and `D`/`G`/`L`/`NL`/`R`/`U` party fields, and writes
+  `data/me-2024-registered-enrolled-denominator-leads.csv` plus a hash-pinned
+  reconciliation summary.
+
+- The generated rows are registration/enrollment denominator leads, not
+  geometry or local-result joins: each file has 741 source rows; active
+  enrollment totals 1,037,570; inactive totals 185,622; combined enrollment
+  totals 1,223,192. That is 276 below the 1,223,468 EAC registered-voter total.
+  The source has no ballots-cast, voter-history, or voter-participation field,
+  and the municipality/ward-or-precinct keys are not force-joined to EAC
+  jurisdiction rows or local-reporting-unit geometry.
+
+- Maine's active turnout contract therefore remains the 497-row EAC fallback.
+  No geometry, crosswalk, database, Blob, deployment, or production state was
+  changed by this denominator-only normalization.
+
 ### 2026-08-13 - Maine guarded three-election local release tooling
 
 - The application publication contract now maps Maine specifically to

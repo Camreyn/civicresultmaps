@@ -1239,7 +1239,7 @@
         "official county/town U.S. Senate comparison Excel rows loaded",
         "official presidential congressional-district Excel artifact retained for split-electoral-vote context",
         "official EAC fallback turnout rows loaded",
-        "official Maine SOS active/inactive registered-enrolled denominator leads collected",
+        "official Maine SOS active/inactive registered-enrolled denominator leads normalized with statewide EAC reconciliation",
         "county geometry",
         "county equipment context",
         "official 2016 and 2020 county historical baselines loaded",
@@ -1255,10 +1255,10 @@
         "native historical-baseline integration for the parsed 2012 legacy XLS rows",
         "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeMaineSosCountyTownXlsx loads official 2024 county/town and comparison rows plus 2016/2020 county baselines. scripts/collect-me-local-reporting-geometry.mjs separately parses the official statewide local result workbooks for all four years, builds reviewed one-to-one local geometry/crosswalk candidates, strips secondary vote attributes, and keeps every package blocked until delivery review.",
+      "parserStatus": "nativeMaineSosCountyTownXlsx loads official 2024 county/town and comparison rows plus 2016/2020 county baselines. scripts/normalize-me-2024-enrollment-leads.mjs deterministically normalizes the official active/inactive enrollment text files and records a statewide EAC denominator comparison without changing active turnout. scripts/collect-me-local-reporting-geometry.mjs separately parses the official statewide local result workbooks for all four years, builds reviewed one-to-one local geometry/crosswalk candidates, strips secondary vote attributes, and keeps every package blocked until delivery review.",
       "manualReviewBurden": "low",
       "confidence": "loaded_with_caveat",
-      "caveats": "Maine's statewide presidential workbooks mix towns, plantations, townships, voting districts, and combined units, so the geometry is labeled local reporting unit rather than precinct. No town total is copied to multiple ward polygons. The 2012 candidate is partial: five rows totaling eight votes remain excluded, the MGGG reconstruction is secondary, its exact official November 2012 boundary edition is unconfirmed, and no explicit derivative redistribution permission was located. State UOCAVA remains non-geographic. Turnout remains EAC fallback.",
+      "caveats": "Maine's statewide presidential workbooks mix towns, plantations, townships, voting districts, and combined units, so the geometry is labeled local reporting unit rather than precinct. No town total is copied to multiple ward polygons. The enrollment normalizer preserves SOS source labels for CG/SS/SR/CC without inferring their meanings; the 1,223,192 active-plus-inactive enrollment total is 276 below EAC registered voters and has no ballots-cast field, so turnout remains EAC fallback. The 2012 candidate is partial: five rows totaling eight votes remain excluded, the MGGG reconstruction is secondary, its exact official November 2012 boundary edition is unconfirmed, and no explicit derivative redistribution permission was located. State UOCAVA remains non-geographic.",
       "nextAction": "Build and review immutable delivery/production tooling for the complete 2016, 2020, and 2024 local-reporting-unit candidates. Keep 2012 blocked while seeking the five missing boundaries plus an official election-date replacement or explicit MGGG derivative permission; also collect compatible Maine-native turnout and normalized administration records."
     },
     {
