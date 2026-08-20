@@ -1,5 +1,6 @@
 import csv
 import json
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -15,9 +16,11 @@ def load_json(path):
 class RhodeIslandCoverageInventoryTests(unittest.TestCase):
     def setUp(self):
         self.inventory = load_json("data/ri-2024-data-coverage-inventory.json")
+        self.registration_reconciliation = load_json("data/ri-2024-11-sos-datahub-registration-reconciliation.json")
         self.promotion_reconciliation = load_json("data/ri-historical-promotion-reconciliation.json")
         self.source_tier = next(row for row in load_json("data/source-acquisition-tiers.json")["states"] if row["state"] == "RI")
         self.native_package = next(row for row in load_json("data/native-import-source-packages.json")["states"] if row["state"] == "RI")
+        self.turnout_package = next(row for row in load_json("data/turnout-source-packages.json")["stateYearStatuses"] if row["state"] == "RI")
         with (ROOT / "data/ri-2024-source-request-matrix.tsv").open(encoding="utf-8-sig", newline="") as handle:
             self.request_rows = {row["request_id"]: row for row in csv.DictReader(handle, delimiter="\t")}
 
@@ -70,6 +73,7 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(sources["ri-2024-general-president-city-town"]["parser"], "countyPresidentCsv")
         self.assertEqual(sources["ri-2024-general-president-senate-review"]["parser"], "localComparisonCsv")
         self.assertEqual(sources["ri-historical-promotion-reconciliation"]["status"], "loaded")
+        self.assertEqual(sources["ri-2024-11-sos-datahub-registration"]["status"], "loaded")
         self.assertEqual(sources["ri-2024-data-coverage-inventory"]["status"], "candidate")
 
     def test_inventory_records_loaded_boe_rows_and_remaining_blockers(self):
@@ -79,6 +83,7 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(findings["certifiedResults"]["observedOfficialTotals"]["statewidePresidentTotal"], 513386)
         self.assertEqual(findings["sameGrainComparisonContest"]["observedOfficialTotals"]["statewideSenateTotal"], 491948)
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialTotals"]["eacFallbackRows"], 39)
+        self.assertEqual(findings["stateNativeTurnout"]["status"], "eac_fallback_active_sos_registration_denominator_lead_loaded")
         self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2012, 2016, 2020])
         self.assertEqual(findings["historicalBaselines"]["loadedRows"], 18)
         self.assertIn("Federal Precincts", findings["historicalBaselines"]["notes"])
@@ -88,6 +93,34 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         self.assertFalse(findings["historicalBaselines"]["promotionAcceptance"]["promotionAuthorized"])
         self.assertEqual(findings["auditRecountCvrIncidentCorrectionLitigation"]["status"], "request_paths_documented_not_loaded")
         self.assertIn("not findings", self.inventory["remainingRisks"][-1])
+
+    def test_sos_data_hub_registration_lead_is_pinned_and_does_not_replace_eac_turnout(self):
+        completed = subprocess.run(
+            ["node", "scripts/normalize-ri-registration-datahub.mjs", "--check"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn("artifacts are current", completed.stdout)
+        summary = self.registration_reconciliation
+        self.assertEqual(summary["asOfDate"], "2024-11-01")
+        self.assertEqual(summary["rawArtifact"]["bytes"], 813618)
+        self.assertEqual(summary["rawArtifact"]["sha256"], "729050b4d504b3ebb01893d2996b80453e33aadef1ef9738de2ee55a789f2cc4")
+        self.assertEqual(summary["output"]["rows"], 3838)
+        self.assertEqual(summary["output"]["cityTowns"], 39)
+        self.assertEqual(summary["output"]["totalsByStatus"], {"Active": 732308, "Inactive": 57201, "Pending": 3360})
+        self.assertEqual(summary["output"]["total"], 792869)
+        self.assertEqual(summary["eacComparison"]["eacRows"], 39)
+        self.assertEqual(summary["eacComparison"]["delta"], 794)
+        self.assertIn("does not replace active EAC turnout", summary["semantics"])
+        self.assertIn("Rhode Island Department of State", self.inventory["officialSourceFindings"]["stateNativeTurnout"]["sourceAuthority"])
+        self.assertIn("Rhode Island Department of State", self.native_package["authority"])
+        self.assertIn("city_town_precinct_party_status", self.source_tier["reportingGrain"])
+        lead = self.turnout_package["coverage"]["stateNativeLead"]
+        self.assertEqual(lead["status"], "loaded_denominator_lead_not_active_turnout")
+        self.assertEqual(lead["rows"], 3838)
+        self.assertEqual(lead["allStatuses"], 792869)
+        self.assertEqual(lead["minusEacRegistered"], 794)
 
     def test_historical_promotion_reconciliation_is_fail_closed_and_matches_staging(self):
         reconciliation = self.promotion_reconciliation
@@ -153,7 +186,7 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
     def test_request_matrix_tracks_remaining_ri_work(self):
         self.assertEqual(self.request_rows["ri-2024-certified-results-zip"]["status"], "loaded_finalized_root_member")
         self.assertEqual(self.request_rows["ri-2024-us-senate-review"]["status"], "loaded_finalized_root_member")
-        self.assertEqual(self.request_rows["ri-2024-state-native-turnout"]["status"], "state_native_source_not_loaded")
+        self.assertEqual(self.request_rows["ri-2024-state-native-turnout"]["status"], "registration_lead_loaded_eac_active")
         self.assertEqual(self.request_rows["ri-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
 
 

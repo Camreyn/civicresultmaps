@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "district-compactness-source-manifest-v1",
+  "retrievedAt": "2026-08-19T18:00:00.000Z",
+  "planEffectiveDate": "2024-01-01",
+  "sourceAuthority": "U.S. Census Bureau",
+  "sourceContextUrls": [
+    "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2024.html",
+    "https://www.census.gov/programs-surveys/decennial-census/about/rdo/congressional-districts.119th_Congress.html",
+    "https://www.census.gov/programs-surveys/decennial-census/about/rdo/state-legislative-district.2024.html"
+  ],
+  "parser": "scripts/collect-district-compactness.mjs",
+  "expectedRowCount": 7272,
+  "sources": [
+    {
+      "authority": "U.S. Census Bureau TIGERweb",
+      "electionCycle": 2024,
+      "featureCount": 444,
+      "geographyType": "congressional",
+      "localPath": "data/district-compactness/raw-congressional-detailed.geojson.gz",
+      "collectionMethod": "ArcGIS GeoJSON query paginated by GEOID in 50-feature pages",
+      "planEffectiveDate": "2024-01-01",
+      "rawBytes": 93401180,
+      "rawSha256": "7a974d38d420eac12c82b961c6d0abee513b9692286f82fb60139ffb398c929f",
+      "compressedBytes": 25859673,
+      "compressedSha256": "8d02738af0ed5998d2f78aebdb5ac21fa4875ab1b210fe86b156521193ccb722",
+      "reportingGrain": "congressional",
+      "resolution": "detailed",
+      "sourcePageUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/54",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/54/query?f=geojson&geometryPrecision=6&orderByFields=GEOID+ASC&outFields=GEOID%2CSTATE%2CNAME%2CBASENAME%2CAREALAND%2CAREAWATER%2CCD119&outSR=4326&returnGeometry=true&where=1%3D1"
+    },
+    {
+      "authority": "U.S. Census Bureau TIGERweb",
+      "electionCycle": 2024,
+      "featureCount": 441,
+      "geographyType": "congressional",
+      "localPath": "data/district-compactness/raw-congressional-generalized_500k.geojson.gz",
+      "collectionMethod": "ArcGIS GeoJSON query paginated by GEOID in 500-feature pages",
+      "planEffectiveDate": "2024-01-01",
+      "rawBytes": 14772303,
+      "rawSha256": "1b5da1245697ebfa962a892e33a3a3be8c3608c02b17c9b86996a76b5df04664",
+      "compressedBytes": 4560951,
+      "compressedSha256": "58c7b1549e13d423a751ab0926a657eac78342e4c25f6229fe4cce0e9bda1bf1",
+      "reportingGrain": "congressional",
+      "resolution": "generalized_500k",
+      "sourcePageUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/Generalized_ACS2024/Legislative/MapServer/5",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/Generalized_ACS2024/Legislative/MapServer/5/query?f=geojson&geometryPrecision=6&orderByFields=GEOID+ASC&outFields=GEOID%2CSTATE%2CNAME%2CBASENAME%2CAREALAND%2CAREAWATER%2CCD119&outSR=4326&returnGeometry=true&where=1%3D1"
+    },
+    {
+      "authority": "U.S. Census Bureau TIGERweb",
+      "electionCycle": 2024,
+      "featureCount": 1964,
+      "geographyType": "state_upper",
+      "localPath": "data/district-compactness/raw-state_upper-detailed.geojson.gz",
+      "collectionMethod": "ArcGIS GeoJSON query paginated by GEOID in 100-feature pages",
+      "planEffectiveDate": "2024-01-01",
+      "rawBytes": 192883907,
+      "rawSha256": "3a63b67685bfa5a3974345512ad86704a30ddcc150944c9f7e4e1d5ae386e9f4",
+      "compressedBytes": 52888903,
+      "compressedSha256": "6840cde14154cf8376ca7cc7cd742255de6979330980090f46edf91a5d7dc85a",
+      "reportingGrain": "state_upper",
+      "resolution": "detailed",
+      "sourcePageUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/56",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/56/query?f=geojson&geometryPrecision=6&orderByFields=GEOID+ASC&outFields=GEOID%2CSTATE%2CNAME%2CBASENAME%2CAREALAND%2CAREAWATER%2CSLDU&outSR=4326&returnGeometry=true&where=1%3D1"
+    },
+    {
+      "authority": "U.S. Census Bureau TIGERweb",
+      "electionCycle": 2024,
+      "featureCount": 1960,
+      "geographyType": "state_upper",
+      "localPath": "data/district-compactness/raw-state_upper-generalized_500k.geojson.gz",
+      "collectionMethod": "ArcGIS GeoJSON query paginated by GEOID in 500-feature pages",
+      "planEffectiveDate": "2024-01-01",
+      "rawBytes": 25033742,
+      "rawSha256": "fc16fb7dddb029cfbcf0b3884dd22c79ac9fd99787dc4dafc3d56faad3f220df",
+      "compressedBytes": 7306662,
+      "compressedSha256": "2e57a580410a8a7f4f7a81fe27a3372983611c4df1d0920916ea1e52c83083b0",
+      "reportingGrain": "state_upper",
+      "resolution": "generalized_500k",
+      "sourcePageUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/Generalized_ACS2024/Legislative/MapServer/8",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/Generalized_ACS2024/Legislative/MapServer/8/query?f=geojson&geometryPrecision=6&orderByFields=GEOID+ASC&outFields=GEOID%2CSTATE%2CNAME%2CBASENAME%2CAREALAND%2CAREAWATER%2CSLDU&outSR=4326&returnGeometry=true&where=1%3D1"
+    },
+    {
+      "authority": "U.S. Census Bureau TIGERweb",
+      "electionCycle": 2024,
+      "featureCount": 4879,
+      "geographyType": "state_lower",
+      "localPath": "data/district-compactness/raw-state_lower-detailed.geojson.gz",
+      "collectionMethod": "ArcGIS GeoJSON query paginated by GEOID in 250-feature pages",
+      "planEffectiveDate": "2024-01-01",
+      "rawBytes": 281442676,
+      "rawSha256": "b8a4e9acea580cd33d144e48bba2a8e33193100bca0a2f5ceae577a435b60512",
+      "compressedBytes": 76774571,
+      "compressedSha256": "d66ce702d1683c8796de2a55f2fb0a272c190b998934287cd0e43c72ef01c4e7",
+      "reportingGrain": "state_lower",
+      "resolution": "detailed",
+      "sourcePageUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/58",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2024/MapServer/58/query?f=geojson&geometryPrecision=6&orderByFields=GEOID+ASC&outFields=GEOID%2CSTATE%2CNAME%2CBASENAME%2CAREALAND%2CAREAWATER%2CSLDL&outSR=4326&returnGeometry=true&where=1%3D1"
+    },
+    {
+      "authority": "U.S. Census Bureau TIGERweb",
+      "electionCycle": 2024,
+      "featureCount": 4874,
+      "geographyType": "state_lower",
+      "localPath": "data/district-compactness/raw-state_lower-generalized_500k.geojson.gz",
+      "collectionMethod": "ArcGIS GeoJSON query paginated by GEOID in 500-feature pages",
+      "planEffectiveDate": "2024-01-01",
+      "rawBytes": 35840636,
+      "rawSha256": "03e3f9c565e3ce814b91b07bdd4a49ea5164d07001293dfbc6547071d14f3126",
+      "compressedBytes": 9965332,
+      "compressedSha256": "5c2f3be4619c72ab042ac666d026506a17d75ad0c7693da64c395e6198dc03a3",
+      "reportingGrain": "state_lower",
+      "resolution": "generalized_500k",
+      "sourcePageUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/Generalized_ACS2024/Legislative/MapServer/9",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/Generalized_ACS2024/Legislative/MapServer/9/query?f=geojson&geometryPrecision=6&orderByFields=GEOID+ASC&outFields=GEOID%2CSTATE%2CNAME%2CBASENAME%2CAREALAND%2CAREAWATER%2CSLDL&outSR=4326&returnGeometry=true&where=1%3D1"
+    }
+  ],
+  "outputs": [
+    {
+      "localPath": "data/district-compactness/district-compactness.json",
+      "bytes": 8106291,
+      "sha256": "82011b48431ae8fdf974b6d90d3e99662efb0a1b0236ee26671bdd2d85b050a0"
+    },
+    {
+      "localPath": "data/district-compactness/district-compactness.csv",
+      "bytes": 1462717,
+      "sha256": "6834bfee0891b07be71a482910716b86c400126d3efe1b8c326ee672a66793a5"
+    },
+    {
+      "localPath": "data/district-compactness/summary.json",
+      "bytes": 2558,
+      "sha256": "a5ca8f308c09f2b800f2a7f2fc8e5c38a49a44e51528eccd66d505955de608aa"
+    }
+  ],
+  "caveats": [
+    "Metrics are advisory descriptions of boundary shape, not estimates of gerrymandering severity, intent, legality, or election integrity.",
+    "Fifteen detailed Census placeholder areas labeled as districts not defined are retained in source artifacts but excluded from metrics because they are not district plans.",
+    "Coastlines, islands, holes, enclaves, and source simplification affect perimeter-based measures.",
+    "Election-result relationships are withheld until certified results can be joined to the same district plan vintage."
+  ]
+}

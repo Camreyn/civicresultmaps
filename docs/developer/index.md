@@ -34,6 +34,11 @@ For the guarded Pennsylvania partial 2016/2020 precinct release, exact Departmen
 
 For the feature-gated election-equipment catalog, immutable source revisions, editorial lifecycle, version semantics, 3D fidelity rules, and publication gates, read [`docs/equipment-evidence-workflow.md`](../equipment-evidence-workflow.md).
 
+For official 2024 congressional and state-legislative shape measurements,
+source retention, Polsby-Popper and convex-hull methods, resolution-stability
+guards, and the prohibition on mismatched result joins, read
+[`docs/developer/district-compactness.md`](district-compactness.md).
+
 ## Coordinator Protocol
 
 When coordinating state workers:

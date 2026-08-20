@@ -1,3 +1,4 @@
+import csv
 import unittest
 from dataclasses import replace
 import zipfile
@@ -1362,6 +1363,18 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(review["comparisonDemVotes"], 111)
         self.assertEqual(review["comparisonRepVotes"], 255)
         self.assertIn("district-based", native["metrics"]["nativeReviewWarning"])
+
+        with Path("data/al-2024-turnout-denominator-lead.csv").open(encoding="utf-8", newline="") as handle:
+            turnout_lead = list(csv.DictReader(handle))
+        self.assertEqual(len(turnout_lead), 67)
+        self.assertTrue(all(row["november_active_registered_voters"] for row in turnout_lead))
+        self.assertEqual(
+            sum(int(row["november_active_registered_voters"]) for row in turnout_lead),
+            3880115,
+        )
+        st_clair = next(row for row in turnout_lead if row["jurisdiction_name"] == "St. Clair")
+        self.assertEqual(st_clair["november_active_registered_voters"], "72796")
+
     def test_idaho_county_president_csv_builds_results_with_county_review_rows(self):
         config = load_config("etl/state-configs/id.json")
         report = validate_config(config)

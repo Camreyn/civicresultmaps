@@ -1,5 +1,16 @@
 # Precinct GIS Implementation Program
 
+### 2026-08-19 - South Dakota certified county-result reconciliation
+
+- The official 2024 South Dakota State Board of Canvassers certificate is retained
+  at `data/sd-2024-general-canvass-certificate.pdf` and hash-pinned by
+  `scripts/verify_sd_2024_general_canvass.py`. The verifier exactly reconciles
+  all 66 county President and U.S. House result rows to existing staging CSVs.
+  This is county-result provenance only: no precinct, ward, VTD, local
+  reporting-unit geometry, crosswalk, or map activation was added. The retained
+  ElectionID 684 turnout fields remain a denominator-timing lead, and EAC
+  turnout remains active.
+
 This is the durable execution plan and work log for election-versioned local
 geography in CivicResultMaps. Read it before changing precinct, ward, VTD,
 election-district, town, or other local-boundary collection, identity,
@@ -8455,6 +8466,87 @@ evidence against its verified top-level package.
   of fraud or misconduct. Production was not contacted or mutated, and current
   production indicator counts were not rechecked for this delivery-null
   source-package change.
+
+### 2026-08-19 - National 2024 district compactness candidate
+
+- A source-driven national district-shape pipeline now targets the U.S. Census
+  Bureau's January 1, 2024 plan vintage: 119th congressional districts and
+  2024 state legislative upper/lower districts. Six ArcGIS GeoJSON collections
+  pair detailed TIGERweb boundaries with the corresponding official 1:500,000
+  layers. The collector paginates by `GEOID`, verifies counts before any write,
+  retains deterministic gzip artifacts, and pins compressed/uncompressed
+  SHA-256 values plus generated-output hashes.
+- The detailed services contain 15 explicit `districts not defined`
+  placeholders: three congressional, six upper-chamber, and six lower-
+  chamber areas. They remain preserved in source evidence and the exclusion
+  ledger but are not presented as district plans. The candidate therefore
+  contains 7,272 real rows: 441 congressional, 1,958 upper-chamber, and 4,873
+  lower-chamber districts.
+- Geometry calculations preserve multipart features and holes. Spherical area
+  is checked against Census `AREALAND + AREAWATER`; perimeter uses Haversine
+  boundary length; convex-hull ratio uses a district-centered Lambert
+  azimuthal equal-area projection. Polsby-Popper is `4*pi*area/perimeter^2`.
+  Synthetic tests cover holes, non-square shapes, and antimeridian handling.
+- Every real detailed feature is compared by the same plan-vintage `GEOID` to
+  its 1:500,000 counterpart. A row is `stable` only when Polsby-Popper differs
+  by no more than 20% and convex-hull ratio by no more than 10%; all other rows
+  are visibly `resolution_sensitive`. These are conservative screening guards,
+  not claims of statistical significance.
+- The explorer and API label all metrics advisory. Compactness is not treated
+  as a score of gerrymandering, partisan intent, legality, representation,
+  election integrity, fraud, or misconduct. Election-result relationships are
+  deliberately `not_calculated`: no nationwide certified result set has yet
+  been proven to share these exact plan identities, and the comparison helper
+  rejects mismatched plan vintages and geography types.
+- This is a code/data candidate only. No precinct registry, election-result
+  database, immutable public geometry delivery, deployment, or production
+  state is changed. Reproduction and public-surface verification are recorded
+  in `docs/developer/district-compactness.md`.
+
+### 2026-08-19 - Hawaii 2012 historical-result baseline
+
+- Retained the Hawaii Office of Elections certified 2012 General Election
+  `summary.txt` and precinct/split `media.txt` source exports. The detail
+  source provides source-context `Reg_voters`, `Ballots`, and vote-method
+  fields, but those fields do not establish a turnout denominator and do not
+  alter the active 2024 Hawaii turnout package.
+- The historical normalizer now emits five canonical county/county-equivalent
+  President rows for 2012, using the reviewed pre-reapportionment district
+  ranges and precinct 13-09 / split ID 78 for Kalawao `county:15005`. It
+  rejects changed county tuples, statewide totals, or its 476-vote overseas
+  non-geographic exclusion.
+- The 2012 crosswalk evidence is year-specific: the Office/Reapportionment
+  Commission March 2012 county map series establishes the district ranges;
+  the Office's May 2012 Molokai map draws the Maui-Kalawao boundary with
+  13-09 on the Kalawao side. The four official 2012 county summary PDFs also
+  reconcile after the Maui-administered total is split into Maui and Kalawao.
+  All nine evidence PDFs are retained locally and hash-pinned by the normalizer.
+- This is a result-baseline change only. Hawaii's election-effective 2012
+  precinct geometry and a reviewed result-to-feature crosswalk remain absent;
+  no precinct geography is activated or eligible for public delivery.
+
+### 2026-08-19 - Georgia historical archive registration leads
+
+- The hash-pinned Georgia SOS 2012, 2016, and 2020 General Election archives
+  each contain 159 nested county summary CSVs. President candidate rows
+  reconcile exactly to the retained official JSON county baselines; registration
+  and ballots-cast values are retained as historical county leads only.
+- This does not activate precinct geometry or replace active EAC turnout:
+  archive-only registration timing and turnout-definition compatibility remain
+  unproven.
+
+### 2026-08-19 - Rhode Island SOS Data Hub registration denominator lead
+
+- `scripts/normalize-ri-registration-datahub.mjs` reproduces the official
+  Secretary of State Data Hub's public Power BI request for the closest monthly
+  snapshot to the 2024 General Election, November 1. It hash-pins the raw
+  response and preserves all city/town-plus-precinct party and status rows; it
+  does not join results to geometry or activate a local map layer.
+- The source reports 732,308 Active, 57,201 Inactive, and 3,360 Pending
+  registrations across 39 city/towns. Its all-status total is 792,869, 794
+  above EAC's 792,075. Because the report supplies no compatible ballots-cast
+  or voter-participation field, it remains a status-separated denominator lead;
+  active EAC turnout and all RI geometry gates are unchanged.
 
 ### 2026-08-19 - Florida official historical county baseline
 

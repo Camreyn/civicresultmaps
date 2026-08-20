@@ -1,0 +1,30 @@
+{
+  "sourceAuthority": "South Dakota Secretary of State State Board of Canvassers",
+  "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+  "localPdf": "data/sd-2024-general-canvass-certificate.pdf",
+  "pdf": {
+    "bytes": 801624,
+    "sha256": "a9be018609c45e97c5b9b9c41d7f53dffc9c3390746486c115739e6d6d072c9c"
+  },
+  "election": {
+    "date": "2024-11-05",
+    "type": "General"
+  },
+  "certification": "The PDF certificate states that the attached returns are a true and correct record of votes certified to the Secretary of State.",
+  "president": {
+    "rows": 66,
+    "totals": [
+      146859,
+      272081,
+      9982
+    ]
+  },
+  "usHouse": {
+    "rows": 66,
+    "totals": [
+      117818,
+      303630
+    ]
+  },
+  "caveat": "The certificate validates county candidate totals, not the ElectionID 684 turnout/registration fields. EAC remains the active turnout source until compatible certified voter-participation and registration rows are collected."
+}
