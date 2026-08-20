@@ -1,0 +1,123 @@
+{
+  "state": "ME",
+  "electionYear": 2024,
+  "asOfDate": "2024-11-05",
+  "authority": "Maine Secretary of State",
+  "sourceTitle": "Maine SOS previous enrollment data for the November 5, 2024 General/Referendum Election",
+  "normalizer": "scripts/normalize-me-2024-enrollment-leads.mjs",
+  "normalizedArtifact": "data/me-2024-registered-enrolled-denominator-leads.csv",
+  "sourceLayout": {
+    "rawHeader": [
+      "COUNTY",
+      "MUNICIPALITY",
+      "W/P",
+      "CG",
+      "SS",
+      "SR",
+      "CC",
+      "D",
+      "G",
+      "L",
+      "NL",
+      "R",
+      "U",
+      "TOTAL"
+    ],
+    "preservedKeys": [
+      "COUNTY",
+      "MUNICIPALITY",
+      "W/P",
+      "CG",
+      "SS",
+      "SR",
+      "CC"
+    ],
+    "partyColumns": [
+      "D",
+      "G",
+      "L",
+      "NL",
+      "R",
+      "U"
+    ],
+    "caveat": "CG, SS, SR, and CC are preserved using the SOS source-header labels; this normalizer does not expand or infer their meanings."
+  },
+  "inputs": [
+    {
+      "status": "active",
+      "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Reg%20%26%20Enr%20as%20of%2011-5-24%20txt%20%28A%29.txt",
+      "localFile": "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
+      "expected": {
+        "sha256": "4099ebfdfe5c81b341f6dff4f227e93e7ee7ca23962ee41b629bb5d3bdcb5353",
+        "bytes": 39325,
+        "rows": 741,
+        "total": 1037570
+      },
+      "sha256": "4099ebfdfe5c81b341f6dff4f227e93e7ee7ca23962ee41b629bb5d3bdcb5353",
+      "bytes": 39325,
+      "rows": 741
+    },
+    {
+      "status": "inactive",
+      "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Reg%20%26%20Enr%20as%20of%2011-5-24%20txt%20%28I%29.txt",
+      "localFile": "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt",
+      "expected": {
+        "sha256": "d01421f400bfd7ae5dfc2b22400830ade62434bd966f34e7b7729a31ef04f3c9",
+        "bytes": 35890,
+        "rows": 741,
+        "total": 185622
+      },
+      "sha256": "d01421f400bfd7ae5dfc2b22400830ade62434bd966f34e7b7729a31ef04f3c9",
+      "bytes": 35890,
+      "rows": 741
+    }
+  ],
+  "totals": {
+    "active": {
+      "rows": 741,
+      "partyTotals": {
+        "D": 357063,
+        "G": 37458,
+        "L": 6085,
+        "NL": 17011,
+        "R": 310267,
+        "U": 309686
+      },
+      "total": 1037570
+    },
+    "inactive": {
+      "rows": 741,
+      "partyTotals": {
+        "D": 52342,
+        "G": 8936,
+        "L": 101,
+        "NL": 74,
+        "R": 37914,
+        "U": 86255
+      },
+      "total": 185622
+    }
+  },
+  "eacFallbackReconciliation": {
+    "eac": {
+      "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+      "rows": 497,
+      "usableRegistrationRows": 489,
+      "usableBallotsCastRows": 490,
+      "negativeRegistrationRows": 8,
+      "negativeBallotsCastRows": 7,
+      "rawBallotsCastSum": 841831,
+      "rawRegisteredVotersSum": 1222753,
+      "ballotsCast": 842447,
+      "registeredVoters": 1223468
+    },
+    "activeEnrollmentMinusEacRegisteredVoters": -185898,
+    "activePlusInactiveEnrollmentMinusEacRegisteredVoters": -276,
+    "caveat": "This is a statewide denominator comparison only. Maine SOS enrollment counts are not election-level ballots cast or voter participation, and their municipality/ward-or-precinct rows are not joined to EAC jurisdiction rows. The active EAC turnout package remains configured until compatible official ballots-cast or voter-participation data is collected and reconciled."
+  },
+  "caveats": [
+    "Active and inactive enrollment files are separate Maine SOS denominator leads, not turnout rows.",
+    "No ballots-cast, voter-history, or voter-participation field is present in these source files.",
+    "These records are not map geometry and are not joined to local-reporting-unit geometry or certified result rows."
+  ]
+}

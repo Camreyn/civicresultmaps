@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "state": "SC",
+  "election": {
+    "year": 2024,
+    "date": "2024-11-05",
+    "type": "General",
+    "electionId": "58",
+    "contestId": "7075",
+    "office": "Voting Statistics"
+  },
+  "sourceAuthority": "South Carolina Election Commission",
+  "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+  "queryInterfaceUrl": "https://electionhistory.scvotes.gov/search",
+  "localRawCsv": "data/sc-2024-election-history/voter-statistics-7075.csv",
+  "localNormalizedCsv": "data/sc-2024-election-history/voter-statistics-7075-county.csv",
+  "localRequestJson": "data/sc-2024-election-history/voter-statistics-7075-request.json",
+  "parserOrNormalizationPath": "scripts/normalize-sc-election-history-voter-statistics.mjs",
+  "rawArtifact": {
+    "byteCount": 81664,
+    "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94"
+  },
+  "reportingGrain": {
+    "sourceRows": "state, county, and precinct",
+    "normalizedRows": "county",
+    "normalizedRowCount": 46
+  },
+  "sourceRows": {
+    "state": 1,
+    "county": 46,
+    "precinct": 2446
+  },
+  "sourceTotals": {
+    "state": {
+      "totalVotesCast": 0,
+      "ballotsCast": 2566404,
+      "registeredVoters": 3451344
+    },
+    "county": {
+      "totalVotesCast": 0,
+      "ballotsCast": 2566404,
+      "registeredVoters": 3451344
+    },
+    "precinct": {
+      "totalVotesCast": 0,
+      "ballotsCast": 2566404,
+      "registeredVoters": 3451344
+    }
+  },
+  "reconciliation": {
+    "grain": {
+      "electionHistorySource": "state/county/precinct",
+      "normalizedCandidate": "county",
+      "vremsActive": "county"
+    },
+    "timing": {
+      "electionHistory": "2024-11-05 General election event (electionId 58)",
+      "vrems": "2024 General voter-history election-list statistics for the same election event",
+      "unresolved": "The retained Election History export and VREMS artifact do not expose a common snapshot/publication timestamp proving denominator equivalence."
+    },
+    "inactiveTreatment": {
+      "electionHistory": "No active/inactive registration breakdown is present in the retained export.",
+      "vrems": "The source page describes printed-list registration counts as all active voters plus some inactive voters printed for the selected election.",
+      "resolution": "Semantic equivalence is unresolved; preserve VREMS as active warning-required turnout and keep Election History as candidate_not_loaded."
+    },
+    "matchedCountyRows": 46,
+    "electionHistory": {
+      "countyRows": 46,
+      "ballotsCast": 2566404,
+      "registeredVoters": 3451344
+    },
+    "vremsActive": {
+      "sourceId": "sc-2024-vrems-turnout",
+      "localFile": "data/sc-2024-vrems-turnout.csv",
+      "sourceSha256": "6d754aac43af58e1848e81f712676ac5cd427b1565842f1e77e5bd71672c6e36",
+      "countyRows": 46,
+      "ballotsCast": 2553185,
+      "registeredVoters": 3851930
+    },
+    "deltas": {
+      "ballotsCast": 13219,
+      "registeredVoters": -400586
+    },
+    "disposition": "candidate_not_loaded",
+    "activeTurnoutSourceId": "sc-2024-vrems-turnout"
+  },
+  "provenance": {
+    "queryInterfaceUrl": "https://electionhistory.scvotes.gov/search",
+    "electionHistoryDownloadUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+    "electionHistoryRequestFile": "data/sc-2024-election-history/voter-statistics-7075-request.json",
+    "electionHistoryRawSha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+    "vremsSourceUrl": "https://vrems.scvotes.sc.gov/Statistics/VoterHistoryResults",
+    "vremsLocalFile": "data/sc-2024-vrems-turnout.csv",
+    "vremsRawSha256": "6d754aac43af58e1848e81f712676ac5cd427b1565842f1e77e5bd71672c6e36"
+  },
+  "caveats": [
+    "The official Election History Voter Statistics export labels fields Total Ballots Cast and Registered Voters and provides no active/inactive breakdown in the retained CSV.",
+    "The candidate export reports 2,566,404 ballots and 3,451,344 registered voters across 46 counties; active VREMS reports 2,553,185 participating voters and 3,851,930 printed-list registrants.",
+    "The 13,219-ballot and -400,586-registration differences are source/timing/denominator reconciliation gaps, not a basis for silently replacing VREMS. VREMS documents that its printed-list count includes active voters plus some inactive voters printed for the selected election.",
+    "Total Ballots Cast is election-level turnout context, not presidential contest votes. The candidate source is not used for advisory indicators or native turnout rows."
+  ]
+}

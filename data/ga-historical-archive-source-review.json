@@ -1,0 +1,80 @@
+{
+  "generatedBy": "scripts/normalize-ga-historical-archive-registration.mjs",
+  "sourceAuthority": "Georgia Secretary of State",
+  "rows": 477,
+  "archives": [
+    {
+      "year": 2012,
+      "sourceUrl": "https://sos.ga.gov/sites/default/files/2026-04/november_6_2012_-_general_election.zip",
+      "localFile": "data/ga-official-historical-archives/ga-2012-general-election.zip",
+      "bytes": 6222683,
+      "sha256": "bfdace1714247ec71d11557085a5558034b30b284d3942b8c7ee40c89783fa5a",
+      "countySummaryArchives": 159,
+      "schema": [
+        "contest name",
+        "choice name",
+        "total votes",
+        "registered voters",
+        "ballots cast"
+      ],
+      "totals": {
+        "ballotsCast": 3919156,
+        "dem": 1773827,
+        "other": 45324,
+        "registeredVoters": 5428349,
+        "rep": 2078688,
+        "total": 3897839
+      },
+      "caveat": "County summary fields are repeated for each contest candidate. Ballots cast is election-level county context but the archive does not prove statewide denominator timing or reconcile it to active EAC turnout; retain as a lead only."
+    },
+    {
+      "year": 2016,
+      "sourceUrl": "https://sos.ga.gov/sites/default/files/2026-04/november_8_2016_-_general_election.zip",
+      "localFile": "data/ga-official-historical-archives/ga-2016-general-election.zip",
+      "bytes": 7136382,
+      "sha256": "dc71926f86ea614c51295cc64ad16f514cc352103b037b3b94229f7a24a5843f",
+      "countySummaryArchives": 159,
+      "schema": [
+        "contest name",
+        "choice name",
+        "total votes",
+        "registered voters",
+        "ballots cast"
+      ],
+      "totals": {
+        "ballotsCast": 4165405,
+        "dem": 1877963,
+        "other": 125306,
+        "registeredVoters": 5443046,
+        "rep": 2089104,
+        "total": 4092373
+      },
+      "caveat": "County summary fields are repeated for each contest candidate. Ballots cast is election-level county context but the archive does not prove statewide denominator timing or reconcile it to active EAC turnout; retain as a lead only."
+    },
+    {
+      "year": 2020,
+      "sourceUrl": "https://sos.ga.gov/sites/default/files/2026-04/november_3_2020_-_general_election.zip",
+      "localFile": "data/ga-official-historical-archives/ga-2020-general-election.zip",
+      "bytes": 8924732,
+      "sha256": "ab4b87d8d565612e13a8333255c31bf90f177a5fa23c98c680a20576acf06f47",
+      "countySummaryArchives": 159,
+      "schema": [
+        "contest name",
+        "choice name",
+        "total votes",
+        "registered voters",
+        "ballots cast"
+      ],
+      "totals": {
+        "ballotsCast": 5026684,
+        "dem": 2474507,
+        "other": 62138,
+        "registeredVoters": 6995285,
+        "rep": 2461837,
+        "total": 4998482
+      },
+      "caveat": "County summary fields are repeated for each contest candidate. Ballots cast is election-level county context but the archive does not prove statewide denominator timing or reconcile it to active EAC turnout; retain as a lead only."
+    }
+  ],
+  "turnoutCaveat": "These historical county registration and ballots-cast fields are not activated as turnout because the archive alone does not establish compatibility with EAC reporting definitions or registration timing."
+}

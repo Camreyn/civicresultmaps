@@ -69,8 +69,15 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(sum(row["trump"] for row in kalawao_review), 3)
 
         historical = native["historicalRows"]
-        self.assertEqual(len(historical), 10)
+        self.assertEqual(len(historical), 15)
         expected_historical = {
+            2012: {
+                "Hawaii County": ("county:15001", 47224, 14753, 1477, 63454),
+                "Honolulu County": ("county:15003", 204349, 88461, 3932, 296742),
+                "Kalawao County": ("county:15005", 25, 2, 0, 27),
+                "Kauai County": ("county:15007", 18641, 6121, 610, 25372),
+                "Maui County": ("county:15009", 36027, 11600, 999, 48626),
+            },
             2016: {
                 "Hawaii County": ("county:15001", 41259, 17501, 6107, 64867),
                 "Honolulu County": ("county:15003", 175696, 90326, 19768, 285790),
@@ -98,7 +105,7 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
                 )
 
         historical_ranges = config.raw["historicalBaselines"]["districtRangesByYear"]
-        for year in ("2016", "2020"):
+        for year in ("2012", "2016", "2020"):
             self.assertEqual(historical_ranges[year]["01-07"], "Hawaii County")
             self.assertEqual(historical_ranges[year]["08-13"], "Maui County except precinct 13-09")
             self.assertEqual(historical_ranges[year]["13-09"], "Kalawao County")
@@ -108,6 +115,8 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(sources["hi-2024-general-summary"]["status"], "loaded")
         self.assertEqual(sources["hi-2024-general-precinct-detail"]["status"], "loaded")
         self.assertEqual(sources["hi-2024-general-turnout"]["status"], "loaded")
+        self.assertEqual(sources["hi-2012-general-summary"]["status"], "loaded")
+        self.assertEqual(sources["hi-2012-general-precinct-detail"]["status"], "loaded")
         self.assertEqual(sources["hi-2024-eac-turnout"]["status"], "candidate")
         self.assertEqual(sources["hi-2024-data-coverage-inventory"]["status"], "candidate")
 
@@ -161,6 +170,37 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
                 for row in senate_precinct
             ),
             501763,
+        )
+
+    def test_hawaii_2012_historical_baseline_preserves_overseas_votes_as_non_geographic(self):
+        summary = list(csv.DictReader(Path("data/hi-2012-general-summary.txt").read_text(encoding="utf-8-sig").splitlines()))
+        detail = list(csv.DictReader(Path("data/hi-2012-general-precinct-detail.txt").read_text(encoding="utf-8-sig").splitlines()))
+        historical = list(csv.DictReader(Path("data/hi-historical-presidential-baseline.csv").read_text(encoding="utf-8-sig").splitlines()))
+        baseline_summary = self.load_json("data/hi-historical-presidential-baseline-summary.json")
+
+        president_summary = [row for row in summary if row["Contest ID"] == "1"]
+        president_detail = [row for row in detail if row["Contest_id"] == "1"]
+        overseas = [row for row in president_detail if row["Precinct_Name"] in {"Overseas 1", "Overseas 2"}]
+        kalawao = [row for row in president_detail if row["Precinct_Name"] == "13-09"]
+        historical_2012 = [row for row in historical if row["election_year"] == "2012"]
+
+        self.assertEqual(sum(int(row["Total Votes"]) for row in president_summary), 434697)
+        self.assertEqual({row["precinct_splitId"] for row in kalawao}, {"78"})
+        self.assertEqual(sum(int(row["Absentee_votes"]) + int(row["Early_votes"]) + int(row["Election_Votes"]) for row in kalawao), 27)
+        self.assertEqual(sum(int(row["Absentee_votes"]) + int(row["Early_votes"]) + int(row["Election_Votes"]) for row in overseas), 476)
+        self.assertEqual(len(historical_2012), 5)
+        self.assertEqual(sum(int(row["total_votes"]) for row in historical_2012), 434221)
+        summary_2012 = next(row for row in baseline_summary["sources"] if row["year"] == 2012)
+        self.assertEqual(summary_2012["electionCountyTotals"]["Maui County"]["total"], 48653)
+        self.assertEqual(summary_2012["electionCountyTotals"]["Hawaii County"]["total"], 63454)
+        self.assertIn("MauiUnit_MinorRevision_3_30_2012.pdf", " ".join(summary_2012["crosswalkEvidenceUrls"]))
+        self.assertEqual(len(summary_2012["reconciliationEvidenceUrls"]), 4)
+        self.assertEqual(len(summary_2012["evidenceArtifacts"]), 9)
+        self.assertTrue(all(len(row["sha256"]) == 64 for row in summary_2012["evidenceArtifacts"]))
+        self.assertTrue(all(Path(row["localFile"]).is_file() for row in summary_2012["evidenceArtifacts"]))
+        self.assertEqual(
+            next(row for row in historical_2012 if row["jurisdiction_name"] == "Kalawao County")["jurisdiction_tag"],
+            "county:15005",
         )
 
     def test_hawaii_official_turnout_rows_replace_eac_fallback(self):

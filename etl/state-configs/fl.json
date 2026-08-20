@@ -105,14 +105,14 @@
       "status": "loaded"
     },
     {
-      "id": "fl-historical-presidential-wikipedia-county",
-      "category": "Historical county presidential baseline rows",
-      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Florida",
+      "id": "fl-historical-presidential-dos-precinct-zips",
+      "category": "Official historical precinct ZIP county aggregates",
+      "url": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
       "localFile": "data/fl-historical-presidential-baseline.csv",
-      "parser": "historicalPresidentialCsv",
-      "authority": "Wikipedia county presidential tables with state election office source footnotes",
-      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 20, 2026.",
-      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Florida Division of Elections or other election-result sources where available.",
+      "parser": "scripts/normalize-fl-historical-presidential-baseline.mjs",
+      "authority": "Florida Department of State, Division of Elections",
+      "timestampBasis": "Official 2012, 2016, and 2020 General Election precinct ZIPs retained with immutable byte/SHA-256 pins; source review records the exact direct URLs, schemas, and totals.",
+      "confidence": "Reproducible county-qualified aggregation of retained official Department of State presidential candidate rows. No separate certified historical county or statewide canvass artifact is retained for independent reconciliation. The three ZIPs remain historical context and do not replace the 2024 certified county-detail source or activate historical geometry.",
       "status": "loaded"
     }
   ],
@@ -145,8 +145,8 @@
   },
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
-    "sourceId": "fl-historical-presidential-wikipedia-county",
-    "warning": "Florida historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "sourceId": "fl-historical-presidential-dos-precinct-zips",
+    "warning": "Florida historical baseline rows are county-qualified aggregates of the retained official Department of State 2012, 2016, and 2020 precinct ZIP candidate rows. They have not been independently reconciled against a separately retained certified historical county or statewide canvass artifact. They are historical context, not replacements for the 2024 certified county-detail source; no historical precinct geometry is activated.",
     "expected": {
       "rowCount": 201,
       "years": [
