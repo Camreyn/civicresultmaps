@@ -244,10 +244,10 @@
         },
         {
           "state": "CO",
-          "branch": "state/co-2012-data-coverage",
+          "branch": "state/co-data-coverage",
           "taggedRows2024": 64,
-          "matchedRows2020": 64,
-          "missingHistoricalRows": 0,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 64,
           "sourceLeadStatus": "official 2012/2016/2020 Colorado Secretary of State Historical Election Data baselines loaded",
           "workerStatus": "ready_for_pr",
           "prUrl": "https://github.com/Camreyn/civicresultmaps/pull/293",
