@@ -107,8 +107,11 @@ class LouisianaCoverageInventoryTests(unittest.TestCase):
             for entry in wave["states"]
             if entry["state"] == "LA"
         )
-        self.assertEqual(coverage_la["matchedRows2020"], 64)
-        self.assertEqual(coverage_la["missingHistoricalRows"], 0)
+        # Wave assignment fields preserve the initial gap snapshot; the result
+        # block records the completed local import and overlay outcome.
+        self.assertEqual(coverage_la["matchedRows2020"], 0)
+        self.assertEqual(coverage_la["missingHistoricalRows"], 64)
+        self.assertEqual(coverage_la["result"]["matchedRowsAfterLocalImport"], 64)
         self.assertIn(
             "node scripts/normalize-la-historical-presidential-baseline.mjs",
             coverage_la["result"]["validations"],
@@ -125,7 +128,8 @@ class LouisianaCoverageInventoryTests(unittest.TestCase):
             for entry in wave["states"]
             if entry["state"] == "LA"
         )
-        self.assertEqual(coverage_2016_la["missingExpectedTags2016"], 0)
+        self.assertEqual(coverage_2016_la["missingExpectedTags2016"], 64)
+        self.assertEqual(coverage_2016_la["overlaySummary"]["missingExpectedTags2016"], 0)
         self.assertEqual(coverage_2016_la["overlaySummary"]["matchedRows2016To2024"], 64)
 
 
