@@ -1,7 +1,7 @@
 {
   "code": "CO",
   "name": "Colorado",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Colorado Secretary of State; U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
   "turnoutOnly": false,
@@ -73,6 +73,17 @@
       "status": "candidate"
     },
     {
+      "id": "co-2012-general-president-list",
+      "category": "Official Colorado 2012 General President Historical Election Data contest CSV",
+      "url": "https://historicalelectiondata.coloradosos.gov/contest/5017",
+      "localFile": "data/co-2012-general-president-list.csv",
+      "parser": "coloradoHistoricalElectionDataContestCsv",
+      "authority": "Colorado Secretary of State",
+      "timestampBasis": "Historical Election Data 2012 General President contest, contest_id 5017 and election_id 22.",
+      "confidence": "Official Colorado Secretary of State Historical Election Data list export retained as the raw source for 2012 county presidential baseline normalization.",
+      "status": "loaded"
+    },
+    {
       "id": "co-2016-general-president-list",
       "category": "Official Colorado 2016 General President Historical Election Data contest CSV",
       "url": "https://historicalelectiondata.coloradosos.gov/contest/4436",
@@ -96,13 +107,13 @@
     },
     {
       "id": "co-historical-presidential-baseline",
-      "category": "Official Colorado 2016 and 2020 county presidential historical baseline rows",
-      "url": "https://historicalelectiondata.coloradosos.gov/contest/4436; https://historicalelectiondata.coloradosos.gov/contest/3640",
+      "category": "Official Colorado 2012, 2016, and 2020 county presidential historical baseline rows",
+      "url": "https://historicalelectiondata.coloradosos.gov/contest/5017; https://historicalelectiondata.coloradosos.gov/contest/4436; https://historicalelectiondata.coloradosos.gov/contest/3640",
       "localFile": "data/co-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
       "authority": "Colorado Secretary of State",
-      "timestampBasis": "Normalized by scripts/normalize-co-historical-presidential-baseline.mjs from official Historical Election Data 2016 and 2020 General President contest list exports.",
-      "confidence": "Official county-level 2016 and 2020 presidential baseline rows for 64 Colorado counties. Rows are contextual historical baselines used for county:<GEOID> flip joins; 2012 remains uncollected.",
+      "timestampBasis": "Normalized by scripts/normalize-co-historical-presidential-baseline.mjs from official Historical Election Data 2012, 2016, and 2020 General President contest list exports.",
+      "confidence": "Official county-level 2012, 2016, and 2020 presidential baseline rows for 64 Colorado counties per year. Rows are contextual historical baselines used for county:<GEOID> flip joins.",
       "status": "loaded"
     }
   ],
@@ -123,7 +134,7 @@
   "expected": {
     "jurisdictions": 64,
     "resultRows": 64,
-    "sources": 9,
+    "sources": 10,
     "geometryFeatures": 64,
     "stateTotal": 3190873,
     "trump": 1377441,
@@ -131,7 +142,7 @@
     "other": 85273,
     "reviewRows": 64,
     "turnoutRows": 64,
-    "historicalBaselineRows": 128
+    "historicalBaselineRows": 192
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -160,10 +171,11 @@
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
     "sourceId": "co-historical-presidential-baseline",
-    "warning": "Colorado historical baseline rows are official county-level 2016 and 2020 General Election President results from Colorado Secretary of State Historical Election Data contest exports. Use them as contextual baseline rows for jurisdictionTag county flip joins, not as 2024 certified data. Official 2012 county presidential baselines remain uncollected.",
+    "warning": "Colorado historical baseline rows are official county-level 2012, 2016, and 2020 General Election President results from Colorado Secretary of State Historical Election Data contest exports. Use them as contextual baseline rows for jurisdictionTag county flip joins, not as 2024 certified data.",
     "expected": {
-      "rowCount": 128,
+      "rowCount": 192,
       "years": [
+        2012,
         2016,
         2020
       ]

@@ -192,13 +192,23 @@
           "missingExpectedTags2016": 64,
           "unresolvedRows2016": 0,
           "workerStatus": "merged",
-          "notes": "Loaded official Colorado Secretary of State Historical Election Data 2016 and 2020 President contest CSVs into a combined 128-row county baseline; 2012 remains missing.",
+          "notes": "Loaded official Colorado Secretary of State Historical Election Data 2012, 2016, and 2020 President contest CSVs into a combined 192-row county baseline. The CO staging overlay resolves all 64 expected 2016 county tags.",
           "localStatus": "implemented",
           "validation": [
             "node scripts/normalize-co-historical-presidential-baseline.mjs",
             "python -m unittest tests.python.test_colorado_coverage_inventory",
-            "python -m civic_etl.cli validate --config etl/state-configs/co.json"
-          ]
+            "python -m civic_etl.cli validate --config etl/state-configs/co.json",
+            "npm.cmd run jurisdictions:coverage:2016 -- --staging-dir=.etl/staging --overlay-states=CO",
+            "npm.cmd run jurisdictions:flips:2016-2020 -- --staging-dir=.etl/staging --overlay-states=CO",
+            "npm.cmd run jurisdictions:flips:2016-2024 -- --staging-dir=.etl/staging --overlay-states=CO"
+          ],
+          "overlaySummary": {
+            "rows2016": 64,
+            "taggedRows2016": 64,
+            "missingExpectedTags2016": 0,
+            "matchedRows2016To2020": 64,
+            "matchedRows2016To2024": 64
+          }
         }
       ]
     },

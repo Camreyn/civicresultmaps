@@ -1,11 +1,9 @@
 {
   "sourceAuthority": "Colorado Secretary of State",
   "sourceUrls": [
-    "https://historicalelectiondata.coloradosos.gov/contest/4436",
     "https://historicalelectiondata.coloradosos.gov/contest/3640"
   ],
   "localRawCsvs": [
-    "data/co-2016-general-president-list.csv",
     "data/co-2020-general-president-list.csv"
   ],
   "localNormalizedCsv": "data/co-2020-historical-presidential-baseline.csv",
@@ -37,9 +35,9 @@
     "totalVotes": 3256980
   },
   "caveats": [
-    "The Historical Election Data exports are official Colorado Secretary of State data for the 2016 and 2020 General Election President contests.",
+    "This legacy artifact contains only the official Colorado Secretary of State 2020 General Election President contest.",
     "The normalizer uses county rows with blank vote_channel values and excludes Total Votes Cast and Total Ballots Cast pseudocandidate rows.",
     "Rows are county historical baseline context for jurisdictionTag flip joins, not 2024 certified-result rows.",
-    "Official 2012 Colorado historical presidential baselines remain uncollected in this pass."
+    "Use data/co-historical-presidential-baseline.csv for the combined 2012, 2016, and 2020 package."
   ]
 }

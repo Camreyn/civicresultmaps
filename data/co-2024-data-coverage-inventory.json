@@ -2,8 +2,8 @@
   "state": "CO",
   "stateName": "Colorado",
   "electionYear": 2024,
-  "checkedAt": "2026-07-05",
-  "status": "official_clarity_county_native_turnout_loaded",
+  "checkedAt": "2026-08-19",
+  "status": "official_clarity_county_native_turnout_historical_loaded",
   "productionChecked": false,
   "repoDrift": [],
   "displayPathChecked": "Colorado native staging now emits county result rows, county President-versus-CU-Regent review rows, and state-native Historical Election Data county turnout rows. Public app/API display would flow through src/app/page.tsx, src/lib/api, /api/results, /api/coverage, /api/sources, /api/native-source-packages, /api/source-acquisition-tiers, and /api/turnout after human-reviewed promotion. Production promotion and production API checks were not run from this worker branch.",
@@ -12,6 +12,9 @@
     "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
     "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
     "https://historicalelectiondata.coloradosos.gov/search?",
+    "https://historicalelectiondata.coloradosos.gov/contest/5017",
+    "https://historicalelectiondata.coloradosos.gov/contest/4436",
+    "https://historicalelectiondata.coloradosos.gov/contest/3640",
     "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
     "https://www.sos.state.co.us/pubs/elections/VotingSystems/",
     "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
@@ -111,6 +114,47 @@
       ]
     },
     {
+      "id": "co-historical-presidential-baseline",
+      "sourceAuthority": "Colorado Secretary of State",
+      "sourceTitle": "Colorado Historical Election Data 2012, 2016, and 2020 General President contest CSVs",
+      "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/5017; https://historicalelectiondata.coloradosos.gov/contest/4436; https://historicalelectiondata.coloradosos.gov/contest/3640",
+      "localPath": "data/co-2012-general-president-list.csv; data/co-2016-general-president-list.csv; data/co-2020-general-president-list.csv; data/co-historical-presidential-baseline.csv; data/co-historical-presidential-baseline-summary.json",
+      "status": "loaded_official_historical_county_baselines",
+      "parserNormalizationPath": "scripts/normalize-co-historical-presidential-baseline.mjs generates historicalPresidentialCsv rows for etl/state-configs/co.json",
+      "reportingGrain": "county",
+      "expectedRowsOrTotals": {
+        "historicalRows": 192,
+        "countiesPerYear": 64,
+        "years": [
+          2012,
+          2016,
+          2020
+        ],
+        "2012": {
+          "demVotes": 1323102,
+          "repVotes": 1185243,
+          "otherVotes": 61177,
+          "totalVotes": 2569522
+        },
+        "2016": {
+          "demVotes": 1338870,
+          "repVotes": 1202484,
+          "otherVotes": 238893,
+          "totalVotes": 2780247
+        },
+        "2020": {
+          "demVotes": 1804352,
+          "repVotes": 1364607,
+          "otherVotes": 88021,
+          "totalVotes": 3256980
+        }
+      },
+      "caveats": [
+        "Historical baseline rows use county records with blank vote-channel values and exclude Total Votes Cast and Total Ballots Cast pseudocandidate rows.",
+        "Rows are contextual county baselines for historical comparisons, not 2024 certified-result rows."
+      ]
+    },
+    {
       "id": "co-2024-eac-turnout-fallback",
       "sourceAuthority": "U.S. Election Assistance Commission",
       "sourceTitle": "EAC 2024 EAVS V2 Colorado jurisdiction turnout benchmark",
@@ -186,10 +230,10 @@
     },
     {
       "topic": "historicalBaselines",
-      "status": "official_abstract_source_path_identified_not_loaded",
-      "bestSourceUrl": "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
-      "finding": "Colorado SOS Abstract of Votes Cast is the official historical lead for 2020, 2016, and 2012 county presidential baselines.",
-      "blocker": "The SOS abstract directory returned 403/transport access errors to this scripted worker, and exact downloadable historical artifacts were not collected or parsed."
+      "status": "official_2012_2016_2020_county_baselines_loaded",
+      "bestSourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
+      "finding": "Official Colorado Historical Election Data contest exports are retained and normalized to 192 county presidential baseline rows: 64 each for 2012, 2016, and 2020.",
+      "blocker": "No historical county-baseline blocker remains for 2012, 2016, or 2020."
     },
     {
       "topic": "geometryAndCrosswalks",
@@ -211,11 +255,10 @@
     "Collect an official write-in-inclusive Abstract artifact or source note that allocates the 1,872 presidential-vote gap before representing CO county rows as complete certified totals.",
     "If advisory accuracy below county level is required, request official county detail reports, precinct-level SOV exports, CVR-derived precinct aggregates, or a precinct/result crosswalk from Colorado SOS or county election offices.",
     "Keep Historical Election Data turnout active and retain EAC/Clarity reconciliation caveats; normalize precinct voter-stat rows only after matching precinct result rows and geometry/crosswalks are collected.",
-    "Collect official 2020, 2016, and 2012 Colorado SOS Abstract of Votes Cast county presidential artifacts before enabling historicalBaseline for CO.",
     "Collect or request official 2024 risk-limiting audit selection/outcome files, CVR availability statements, recount/correction/incident/litigation records, ballot manifests, and custody/log artifacts before adding normalized administration rows."
   ],
   "remainingRisks": [
-    "Colorado now has county-level native result, President-versus-Regent review, and state-native county turnout rows, but no precinct/local candidate rows, precinct geometry/crosswalks, historical baselines, audit, CVR, incident, correction, recount, or litigation rows are loaded by this pass.",
+    "Colorado now has county-level native result, President-versus-Regent review, state-native county turnout, and official 2012/2016/2020 county historical rows, but no precinct/local candidate rows, precinct geometry/crosswalks, audit, CVR, incident, correction, recount, or litigation rows are loaded.",
     "Loaded Clarity presidential county candidate rows are 1,872 votes below the prior Abstract/certified-total lead, likely write-in or abstract-only scope; this remains unallocated and caveated.",
     "County-level President-versus-Regent review is a coarse source-review screen, not precinct scatter-plot coverage.",
     "The current evidence records source availability and data gaps only. It is not evidence of fraud or misconduct."

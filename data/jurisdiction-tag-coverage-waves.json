@@ -248,17 +248,19 @@
           "taggedRows2024": 64,
           "matchedRows2020": 0,
           "missingHistoricalRows": 64,
-          "sourceLeadStatus": "official 2012/2016/2020 historical baselines remain documented as missing",
+          "sourceLeadStatus": "official 2012/2016/2020 Colorado Secretary of State Historical Election Data baselines loaded",
           "workerStatus": "ready_for_pr",
-          "prUrl": null,
-          "notes": "Coordinate with existing Colorado turnout/historical-voter-statistics work to avoid shared-file conflicts.",
+          "prUrl": "https://github.com/Camreyn/civicresultmaps/pull/293",
+          "notes": "The combined official package contains 192 canonical county rows: 64 each for 2012, 2016, and 2020. The CO staging overlay preserves all 64 live 2020 county tags and adds complete 2012/2016 coverage.",
           "agentId": "019f4562-36a9-7f03-9046-67d36bbbc49e",
           "agentNickname": "Confucius",
           "assignedAt": "2026-07-09T05:38:41.270Z",
           "completedAt": "2026-07-09T05:51:56.965Z",
           "result": {
             "sourceAuthority": "Colorado Secretary of State Historical Election Data",
-            "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/3640",
+            "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/5017; https://historicalelectiondata.coloradosos.gov/contest/4436; https://historicalelectiondata.coloradosos.gov/contest/3640",
+            "historicalRows2012": 64,
+            "historicalRows2016": 64,
             "historicalRows2020": 64,
             "matchedRowsAfterLocalImport": 64,
             "localMissingAfterImport": 0,
@@ -277,6 +279,9 @@
               "npm run native:report-indicators -- .etl/staging",
               "npm run jurisdictions:validate",
               "npm run jurisdictions:flips",
+              "npm.cmd run jurisdictions:coverage:2016 -- --staging-dir=.etl/staging --overlay-states=CO",
+              "npm.cmd run jurisdictions:flips:2016-2020 -- --staging-dir=.etl/staging --overlay-states=CO",
+              "npm.cmd run jurisdictions:flips:2016-2024 -- --staging-dir=.etl/staging --overlay-states=CO",
               "npm run validate:source-packages",
               "npm run validate:source-acquisition-tiers"
             ],
@@ -289,7 +294,15 @@
                 "county_down_ballot_distribution"
               ]
             },
-            "caveat": "Live production flip report still shows CO as missing until branch is merged and data is promoted. Existing dirty CO turnout/config/docs changes did not block the worker."
+            "overlayReport": {
+              "rows2016": 64,
+              "taggedRows2016": 64,
+              "matchedRows2016To2020": 64,
+              "missingComparisonRows2016To2020": 0,
+              "matchedRows2016To2024": 64,
+              "missingComparisonRows2016To2024": 0
+            },
+            "caveat": "The staging-overlay reports include an explicit CO overlay and show no lost live 2020 year or county row. Production remains unchanged until a separate reviewed promotion after merge."
           }
         }
       ]
