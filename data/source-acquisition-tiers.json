@@ -1033,7 +1033,7 @@
       "stateName": "Louisiana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "dataFamily": "results_review_turnout_historical_geometry_equipment_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct_vote_mode_and_parish",
       "exportFormats": [
@@ -1043,10 +1043,8 @@
         "normalized SOS parish turnout CSV",
         "EAC benchmark turnout CSV",
         "Census TIGERweb GeoJSON",
-        "official 2020 SOS precinct CSV historical baseline",
-        "normalized 2020 historical baseline CSV",
-        "EAC fallback turnout CSV",
-        "Louisiana SOS historical ByParish presidential CSV endpoints"
+        "Louisiana SOS historical 2016 and 2020 ByParish presidential CSV endpoints",
+        "normalized official 2016 and 2020 historical baseline CSV"
       ],
       "sourceUrls": [
         "https://voterportal.sos.la.gov/static/",
@@ -1069,23 +1067,20 @@
         "official precinct and vote-mode U.S. House comparison rows where same-grain keys align",
         "official SOS parish post-election qualified-voter and voted turnout rows",
         "EAC benchmark turnout rows",
-        "official 2020 parish presidential historical baseline rows",
+        "official 2016 and 2020 parish presidential historical baseline rows",
         "parish geometry",
         "parish equipment context from Verified Voting Verifier",
-        "data/la-2024-data-coverage-inventory.json coverage inventory",
-        "EAC fallback turnout rows",
-        "official 2016 and 2020 parish presidential historical baseline rows"
+        "data/la-2024-data-coverage-inventory.json coverage inventory"
       ],
       "missingFields": [
         "precinct boundary geometry or precinct-to-parish crosswalks",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows",
-        "state-native turnout denominator rows",
         "official 2012 county or county-equivalent presidential baseline normalized into ETL"
       ],
       "parserStatus": "louisianaSosPrecinctCsvDirectory loads official parish President result rows and precinct/vote-mode President-versus-U.S.-House review rows; scripts/normalize-la-post-election-statistics.mjs generates active SOS parish turnout rows; scripts/normalize-la-historical-presidential-baseline.mjs loads official 2016 and 2020 parish historical presidential baselines; EAC is retained as a benchmark.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Louisiana uses parishes rather than counties. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context, not same-office statewide comparison rows. EAC turnout remains a fallback until state-native denominator artifacts are collected. Official 2016 and 2020 parish presidential historical baselines are loaded; official 2012 remains missing.",
+      "caveats": "Louisiana uses parishes rather than counties. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context, not same-office statewide comparison rows. Active turnout uses official SOS parish post-election statistics; EAC remains a benchmark only. Official 2016 and 2020 parish presidential historical baselines are loaded; official 2012 remains missing.",
       "nextAction": "Collect precinct boundary geometry/crosswalks, an official 2012 historical baseline artifact, and normalized audit/CVR/incident/correction/recount/litigation records."
     },
     {

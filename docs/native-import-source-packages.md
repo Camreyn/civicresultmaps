@@ -565,13 +565,14 @@ Source-artifact validation: 29 county President rows, 29 county geometry feature
 - Local review source: `data/la-2024-general-election-results`
 - Comparison contest: U.S. House by district, matched at parish/ward/precinct/vote-mode keys where available
 - Turnout source: official Louisiana SOS parish post-election statistics normalized into `data/la-2024-post-election-statistics-turnout.csv` from `data/la-2024-post-election-statistics-statewide.xls` and `data/la-2024-post-election-statistics-parish.xls` by `scripts/normalize-la-post-election-statistics.mjs`; EAC remains a retained benchmark
+- Historical baseline source: official Louisiana SOS 2016 and 2020 Presidential Electors ByParish CSVs normalized by `scripts/normalize-la-historical-presidential-baseline.mjs` into 128 parish county-equivalent rows at `data/la-historical-presidential-baseline.csv`
 - Parish boundary: `data/la-counties.geojson`
 - Coverage/admin inventory: `data/la-2024-data-coverage-inventory.json`
 - Equipment context: `data/la-2024-equipment-context.csv` from Verified Voting, context only
 
-Expected validation: 64 parish result rows, 64 parish geometry features, 3,885 precinct/vote-mode review rows, 64 SOS turnout rows, 2,021,164 Voted turnout, 3,046,375 qualified voters, 2,006,975 presidential votes, 1,208,505 Trump votes, 766,870 Harris votes, and 31,600 other presidential votes.
+Expected validation: 64 parish result rows, 64 parish geometry features, 3,885 precinct/vote-mode review rows, 64 SOS turnout rows, 128 official historical baseline rows, 2,021,164 Voted turnout, 3,046,375 qualified voters, 2,006,975 presidential votes, 1,208,505 Trump votes, 766,870 Harris votes, and 31,600 other presidential votes.
 
-Caveats: Louisiana uses parishes rather than counties, and current map joins are parish-level. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context rather than same-office statewide comparison rows. SOS turnout uses qualified voters as of the close of registration records thirty days before the election and election-level Voted counts, not presidential contest votes; the retained EAC benchmark is 424 voters and one registered/qualified voter higher statewide. Precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized official audit/CVR/incident/correction/recount/litigation rows remain source-collection gaps. Current advisory rows are public-interest screening inputs only, not findings.
+Caveats: Louisiana uses parishes rather than counties, and current map joins are parish-level. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context rather than same-office statewide comparison rows. SOS turnout uses qualified voters as of the close of registration records thirty days before the election and election-level Voted counts, not presidential contest votes; the retained EAC benchmark is 424 voters and one registered/qualified voter higher statewide. Precinct boundary geometry/crosswalks, the official 2012 historical baseline, and normalized official audit/CVR/incident/correction/recount/litigation rows remain source-collection gaps. Current advisory rows are public-interest screening inputs only, not findings.
 
 ## Alabama Wave 17 Native ETL Activation
 
