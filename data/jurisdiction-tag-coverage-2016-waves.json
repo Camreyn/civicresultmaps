@@ -173,8 +173,18 @@
           "validation": [
             "node scripts/normalize-la-historical-presidential-baseline.mjs",
             "python -m unittest tests.python.test_louisiana_coverage_inventory",
-            "python -m civic_etl.cli validate --config etl/state-configs/la.json"
-          ]
+            "python -m civic_etl.cli validate --config etl/state-configs/la.json",
+            "npm.cmd run jurisdictions:coverage:2016 -- --staging-dir=.etl/staging --overlay-states=LA",
+            "npm.cmd run jurisdictions:flips:2016-2020 -- --staging-dir=.etl/staging --overlay-states=LA",
+            "npm.cmd run jurisdictions:flips:2016-2024 -- --staging-dir=.etl/staging --overlay-states=LA"
+          ],
+          "overlaySummary": {
+            "rows2016": 64,
+            "taggedRows2016": 64,
+            "missingExpectedTags2016": 0,
+            "matchedRows2016To2020": 64,
+            "matchedRows2016To2024": 64
+          }
         },
         {
           "state": "CO",

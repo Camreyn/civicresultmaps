@@ -54,10 +54,10 @@
       "category": "Official 2024 registered/enrolled active voter denominator lead",
       "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Reg%20%26%20Enr%20as%20of%2011-5-24%20txt%20%28A%29.txt",
       "localFile": "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
-      "parser": "maineRegisteredEnrolledTextReference",
+      "parser": "normalize-me-2024-enrollment-leads.mjs",
       "authority": "Maine Secretary of State",
       "timestampBasis": "Maine SOS previous enrollment data as of November 5, 2024; collected July 2, 2026.",
-      "confidence": "State-native active registered/enrolled denominator lead only. Not a turnout replacement without compatible official ballots-cast or voter-participation rows.",
+      "confidence": "State-native active registered/enrolled denominator lead normalized with the inactive file into a reviewable CSV and EAC reconciliation summary. Not a turnout replacement without compatible official ballots-cast or voter-participation rows.",
       "status": "candidate"
     },
     {
@@ -65,10 +65,21 @@
       "category": "Official 2024 registered/enrolled inactive voter denominator lead",
       "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Reg%20%26%20Enr%20as%20of%2011-5-24%20txt%20%28I%29.txt",
       "localFile": "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt",
-      "parser": "maineRegisteredEnrolledTextReference",
+      "parser": "normalize-me-2024-enrollment-leads.mjs",
       "authority": "Maine Secretary of State",
       "timestampBasis": "Maine SOS previous enrollment data as of November 5, 2024; collected July 2, 2026.",
-      "confidence": "State-native inactive registered/enrolled denominator lead only. Not a turnout replacement without compatible official ballots-cast or voter-participation rows.",
+      "confidence": "State-native inactive registered/enrolled denominator lead normalized with the active file into a reviewable CSV and EAC reconciliation summary. Not a turnout replacement without compatible official ballots-cast or voter-participation rows.",
+      "status": "candidate"
+    },
+    {
+      "id": "me-2024-registered-enrolled-denominator-leads",
+      "category": "Normalized Maine SOS active/inactive enrollment denominator leads",
+      "url": "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
+      "localFile": "data/me-2024-registered-enrolled-denominator-leads.csv; data/me-2024-registered-enrolled-denominator-leads-summary.json",
+      "parser": "normalize-me-2024-enrollment-leads.mjs",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Maine SOS active and inactive registered/enrolled files as of November 5, 2024; deterministic normalization in this repository.",
+      "confidence": "Preserves SOS county, municipality, W/P, CG, SS, SR, CC, and party fields. The generated summary compares statewide enrollment totals to EAC but does not establish turnout-replacement semantics.",
       "status": "candidate"
     },
     {
@@ -166,7 +177,7 @@
   "expected": {
     "jurisdictions": 497,
     "resultRows": 17,
-    "sources": 13,
+    "sources": 14,
     "geometryFeatures": 16,
     "stateTotal": 831375,
     "trump": 377977,

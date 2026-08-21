@@ -160,10 +160,12 @@ function candidateCategory(candidate, party) {
   return "other";
 }
 
-const REVIEWED_2016_PAL_DUPLICATE_IDS = new Set([
+export const FLORIDA_REVIEWED_2016_PAL_DUPLICATE_IDS = Object.freeze([
   "1173", "1189", "1247", "2081", "2083", "2097", "2116", "2126", "4129", "5003", "5007",
   "5018", "5055", "5112", "5113", "5115", "5117", "5119", "6029", "6207", "7149",
 ]);
+
+const REVIEWED_2016_PAL_DUPLICATE_IDS = new Set(FLORIDA_REVIEWED_2016_PAL_DUPLICATE_IDS);
 
 function rawResultKey(countyCode, sourceUnitId) {
   return clean(countyCode).toUpperCase() + "|" + canonicalFloridaPrecinctId(sourceUnitId);

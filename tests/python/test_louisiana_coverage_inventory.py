@@ -15,6 +15,7 @@ class LouisianaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(config["expected"]["resultRows"], 64)
         self.assertEqual(config["expected"]["reviewRows"], 3885)
         self.assertEqual(config["expected"]["turnoutRows"], 64)
+        self.assertEqual(config["expected"]["historicalBaselineRows"], 128)
         self.assertEqual(sources["la-2024-sos-precinct-csv-results"]["authority"], "Louisiana Secretary of State")
         self.assertEqual(sources["la-2024-sos-precinct-csv-results"]["parser"], "louisianaSosPrecinctCsvDirectory")
         self.assertEqual(sources["la-2024-data-coverage-inventory"]["localFile"], "data/la-2024-data-coverage-inventory.json")
@@ -42,10 +43,13 @@ class LouisianaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(artifacts["la-2024-eac-turnout"]["expectedCounts"]["registeredVoters"], 3046376)
         self.assertEqual(artifacts["la-county-geometry"]["expectedCounts"]["geometryFeatures"], 64)
         self.assertEqual(artifacts["la-2024-equipment-context"]["confidence"], "loaded_context_only")
+        self.assertEqual(artifacts["la-historical-presidential-baseline"]["expectedCounts"]["historicalRows"], 128)
 
         self.assertEqual(findings["stateNativeTurnout"]["status"], "loaded_sos_post_election_statistics_active")
         self.assertEqual(findings["stateNativeTurnout"]["eacBenchmarkDelta"]["ballotsCastSosMinusEac"], -424)
         self.assertEqual(findings["historicalBaselines"]["targetYears"], [2012, 2016, 2020])
+        self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2016, 2020])
+        self.assertEqual(findings["historicalBaselines"]["missingYears"], [2012])
         self.assertEqual(findings["postElectionAudit"]["status"], "not_normalized")
         self.assertEqual(findings["cvrAvailability"]["status"], "not_loaded")
         self.assertIn("not claims of fraud or misconduct", inventory["displayApiCaveats"]["advisoryUse"])
@@ -72,6 +76,7 @@ class LouisianaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(tier["tier"], "tier_2_official_dashboard_endpoint")
         self.assertIn("official precinct and vote-mode President rows", tier["availableFields"])
         self.assertIn("official SOS parish post-election qualified-voter and voted turnout rows", tier["availableFields"])
+        self.assertNotIn("state-native turnout denominator rows", tier["missingFields"])
         self.assertIn("normalize-la-post-election-statistics", tier["parserStatus"])
 
         self.assertIn("LA", native_packages["completedNativeStates"])
@@ -79,6 +84,7 @@ class LouisianaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(native_la["expected"]["localReviewRows"], 3885)
         self.assertEqual(native_la["artifacts"]["localReviewRows"]["comparisonContest"], "U.S. House")
         self.assertIn("post-election turnout statistics", native_la["artifacts"]["turnout"]["sourceTitle"])
+        self.assertEqual(native_la["validationStatus"]["historicalBaselineMode"], "official_2016_2020_sos_parish_context_2012_missing")
         self.assertIn("data/la-2024-data-coverage-inventory.json", " ".join(native_la["caveats"]))
 
         turnout_la = next(entry for entry in turnout_packages["stateYearStatuses"] if entry["state"] == "LA")
@@ -93,6 +99,38 @@ class LouisianaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(admin_la["audit"]["status"], "needs_data")
         self.assertEqual(admin_la["cvr"]["status"], "needs_data")
         self.assertEqual(admin_la["incidents"]["status"], "needs_data")
+
+        coverage_waves = self.load_json("data/jurisdiction-tag-coverage-waves.json")
+        coverage_la = next(
+            entry
+            for wave in coverage_waves["waves"]
+            for entry in wave["states"]
+            if entry["state"] == "LA"
+        )
+        # Wave assignment fields preserve the initial gap snapshot; the result
+        # block records the completed local import and overlay outcome.
+        self.assertEqual(coverage_la["matchedRows2020"], 0)
+        self.assertEqual(coverage_la["missingHistoricalRows"], 64)
+        self.assertEqual(coverage_la["result"]["matchedRowsAfterLocalImport"], 64)
+        self.assertIn(
+            "node scripts/normalize-la-historical-presidential-baseline.mjs",
+            coverage_la["result"]["validations"],
+        )
+        self.assertNotIn(
+            "node scripts/collect-la-historical-baseline.mjs",
+            coverage_la["result"]["validations"],
+        )
+
+        coverage_2016_waves = self.load_json("data/jurisdiction-tag-coverage-2016-waves.json")
+        coverage_2016_la = next(
+            entry
+            for wave in coverage_2016_waves["waves"]
+            for entry in wave["states"]
+            if entry["state"] == "LA"
+        )
+        self.assertEqual(coverage_2016_la["missingExpectedTags2016"], 64)
+        self.assertEqual(coverage_2016_la["overlaySummary"]["missingExpectedTags2016"], 0)
+        self.assertEqual(coverage_2016_la["overlaySummary"]["matchedRows2016To2024"], 64)
 
 
 if __name__ == "__main__":

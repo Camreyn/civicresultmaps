@@ -1,5 +1,8 @@
+import csv
 import unittest
 from dataclasses import replace
+import hashlib
+import subprocess
 import zipfile
 import json
 from pathlib import Path
@@ -281,10 +284,53 @@ class PipelineTests(unittest.TestCase):
         self.assertIn("nc-2024-ncsbe-history-stats", source_ids)
         self.assertIn("nc-2024-turnout-source-review", source_ids)
         turnout_review = json.loads(Path("data/nc-2024-turnout-source-review.json").read_text(encoding="utf-8"))
+        native_package = next(
+            row
+            for row in json.loads(Path("data/native-import-source-packages.json").read_text(encoding="utf-8"))["states"]
+            if row["state"] == "NC"
+        )
+        turnout_package = next(
+            row
+            for row in json.loads(Path("data/turnout-source-packages.json").read_text(encoding="utf-8"))["stateYearStatuses"]
+            if row["state"] == "NC" and row["year"] == 2024
+        )
+        self.assertEqual(
+            native_package["artifacts"]["turnoutDenominatorLead"]["generatedLead"]["sha256"],
+            turnout_review["sourceArtifacts"]["turnoutDenominatorLead"]["sha256"],
+        )
+        self.assertEqual(
+            turnout_package["coverage"]["stateNativeLead"]["rawArtifacts"][0]["sha256"],
+            turnout_review["sourceArtifacts"]["voterStats"]["sha256"],
+        )
         self.assertEqual(turnout_review["sourceArtifacts"]["voterStats"]["registeredVoters"], 7854464)
+        self.assertEqual(turnout_review["sourceArtifacts"]["voterStats"]["byteCount"], 6522548)
+        self.assertEqual(turnout_review["sourceArtifacts"]["voterStats"]["unassignedIdentityRows"], 576)
+        self.assertEqual(
+            turnout_review["sourceArtifacts"]["voterStats"]["sha256"],
+            "48685b14b1a58e07417fb8756778a8faf3e4d536228b4a9651d156be4a39fe6c",
+        )
         self.assertEqual(turnout_review["sourceArtifacts"]["historyStats"]["votersWhoVoted"], 5705861)
+        self.assertEqual(turnout_review["sourceArtifacts"]["historyStats"]["byteCount"], 4715895)
+        self.assertEqual(turnout_review["sourceArtifacts"]["historyStats"]["unassignedIdentityRows"], 142)
+        self.assertEqual(
+            turnout_review["sourceArtifacts"]["historyStats"]["sha256"],
+            "56305c7b7c84a2a58702e87e4a5dcd176ce50281f62b894b24af0b162a008085",
+        )
         self.assertEqual(turnout_review["eacBenchmark"]["ncsbeRegisteredMinusEacRegistered"], 0)
         self.assertEqual(turnout_review["eacBenchmark"]["ncsbeHistoryMinusEacBallotsCast"], -50245)
+        self.assertEqual(config.raw["turnout"]["sourceId"], "nc-2024-eac-turnout")
+        self.assertEqual(turnout_review["replay"]["command"], "node scripts/normalize-nc-turnout.mjs --check")
+        self.assertEqual(
+            hashlib.sha256(Path("data/nc-2024-turnout-denominator-lead.csv").read_bytes()).hexdigest(),
+            turnout_review["sourceArtifacts"]["turnoutDenominatorLead"]["sha256"],
+        )
+        replay = subprocess.run(
+            ["node", "scripts/normalize-nc-turnout.mjs", "--check"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(replay.returncode, 0, replay.stderr or replay.stdout)
         self.assertIn("Do not replace active EAC fallback turnout yet", turnout_review["replacementDecision"])
         self.assertTrue(any(row["coverageMode"] == "presidentVsGovernor" for row in artifact["native"]["reviewRows"]))
 
@@ -1362,6 +1408,18 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(review["comparisonDemVotes"], 111)
         self.assertEqual(review["comparisonRepVotes"], 255)
         self.assertIn("district-based", native["metrics"]["nativeReviewWarning"])
+
+        with Path("data/al-2024-turnout-denominator-lead.csv").open(encoding="utf-8", newline="") as handle:
+            turnout_lead = list(csv.DictReader(handle))
+        self.assertEqual(len(turnout_lead), 67)
+        self.assertTrue(all(row["november_active_registered_voters"] for row in turnout_lead))
+        self.assertEqual(
+            sum(int(row["november_active_registered_voters"]) for row in turnout_lead),
+            3880115,
+        )
+        st_clair = next(row for row in turnout_lead if row["jurisdiction_name"] == "St. Clair")
+        self.assertEqual(st_clair["november_active_registered_voters"], "72796")
+
     def test_idaho_county_president_csv_builds_results_with_county_review_rows(self):
         config = load_config("etl/state-configs/id.json")
         report = validate_config(config)

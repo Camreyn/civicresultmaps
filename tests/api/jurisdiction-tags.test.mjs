@@ -123,13 +123,13 @@ test("jurisdiction tag schema and API surface are wired", () => {
 
 test("combined historical county artifacts resolve uniquely to canonical tags", () => {
   const artifacts = [
-    { file: "data/de-historical-presidential-baseline.csv", rowsPerYear: 3, state: "DE" },
-    { file: "data/md-historical-presidential-baseline.csv", rowsPerYear: 24, state: "MD" },
-    { file: "data/mt-historical-presidential-baseline.csv", rowsPerYear: 56, state: "MT" },
-    { file: "data/nj-historical-presidential-baseline.csv", rowsPerYear: 21, state: "NJ" },
-    { file: "data/sc-historical-presidential-baseline.csv", rowsPerYear: 46, state: "SC" },
-    { file: "data/vt-historical-presidential-baseline.csv", rowsPerYear: 14, state: "VT" },
-    { file: "data/wa-historical-presidential-baseline.csv", rowsPerYear: 39, state: "WA" },
+    { file: "data/de-historical-presidential-baseline.csv", rowsPerYear: 3, state: "DE", years: [2016, 2020] },
+    { file: "data/md-historical-presidential-baseline.csv", rowsPerYear: 24, state: "MD", years: [2016, 2020] },
+    { file: "data/mt-historical-presidential-baseline.csv", rowsPerYear: 56, state: "MT", years: [2016, 2020] },
+    { file: "data/nj-historical-presidential-baseline.csv", rowsPerYear: 21, state: "NJ", years: [2016, 2020] },
+    { file: "data/sc-historical-presidential-baseline.csv", rowsPerYear: 46, state: "SC", years: [2012, 2016, 2020] },
+    { file: "data/vt-historical-presidential-baseline.csv", rowsPerYear: 14, state: "VT", years: [2016, 2020] },
+    { file: "data/wa-historical-presidential-baseline.csv", rowsPerYear: 39, state: "WA", years: [2016, 2020] },
   ];
 
   for (const artifact of artifacts) {
@@ -162,10 +162,14 @@ test("combined historical county artifacts resolve uniquely to canonical tags", 
       tagsByYear.set(year, yearTags);
     }
 
-    assert.deepEqual(Array.from(tagsByYear.keys()).sort(), [2016, 2020]);
-    assert.equal(tagsByYear.get(2016).size, artifact.rowsPerYear);
-    assert.equal(tagsByYear.get(2020).size, artifact.rowsPerYear);
-    assert.deepEqual(Array.from(tagsByYear.get(2016)).sort(), Array.from(tagsByYear.get(2020)).sort());
+    assert.deepEqual(Array.from(tagsByYear.keys()).sort(), artifact.years);
+    for (const year of artifact.years) {
+      assert.equal(tagsByYear.get(year).size, artifact.rowsPerYear);
+    }
+    const referenceTags = Array.from(tagsByYear.get(artifact.years[0])).sort();
+    for (const year of artifact.years.slice(1)) {
+      assert.deepEqual(referenceTags, Array.from(tagsByYear.get(year)).sort());
+    }
   }
 });
 

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "sourceAuthority": "South Carolina Election Commission",
+  "queryInterfaceUrl": "https://electionhistory.scvotes.gov/search",
+  "searchFilters": {
+    "global": {
+      "years": {
+        "from": 2024,
+        "to": 2024
+      }
+    },
+    "ballotQuestions": {
+      "text": "",
+      "types": [],
+      "number": "",
+      "divisions": []
+    },
+    "contests": {
+      "candidates": [],
+      "divisions": [],
+      "offices": []
+    },
+    "specialElectionsOnly": false,
+    "voterStats": true,
+    "stages": []
+  },
+  "selectedVoterStatistic": {
+    "contestId": "7075",
+    "electionId": "58",
+    "electionDate": "2024-11-05",
+    "electionType": "General",
+    "office": "Voting Statistics",
+    "division": "State > County > Precinct"
+  },
+  "downloadUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+  "localFile": "data/sc-2024-election-history/voter-statistics-7075.csv",
+  "byteCount": 81664,
+  "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+  "note": "The search UI's Voter Statistics toggle is recorded as voterStats=true; the selected 2024 General statewide statistic is contest 7075."
+}

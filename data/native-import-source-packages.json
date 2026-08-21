@@ -925,7 +925,37 @@
           "sourceTitle": "North Carolina State Board of Elections 2024 General voter_stats and history_stats ZIPs",
           "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip; https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
           "localFile": "data/nc-2024-voter-stats.zip; data/nc-2024-history-stats.zip; data/nc-2024-turnout-denominator-lead.csv; data/nc-2024-turnout-source-review.json",
-          "parserHint": "Run node scripts/normalize-nc-turnout.mjs to aggregate voter_stats registered voters and history_stats voters who participated to 100 county lead rows and the source-review summary. Keep as lead only until numerator semantics are reviewed."
+          "parserHint": "Run node scripts/normalize-nc-turnout.mjs to verify pinned archive and ZIP-entry hashes, exact source row/key/method totals, and aggregate voter_stats registered voters and history_stats voters who participated to 100 county lead rows and the source-review summary. Replay without writes using node scripts/normalize-nc-turnout.mjs --check. Keep as lead only until numerator semantics are reviewed.",
+          "sourceReview": "data/nc-2024-turnout-source-review.json",
+          "replayCommand": "node scripts/normalize-nc-turnout.mjs --check",
+          "rawArtifacts": [
+            {
+              "localFile": "data/nc-2024-voter-stats.zip",
+              "byteCount": 6522548,
+              "sha256": "48685b14b1a58e07417fb8756778a8faf3e4d536228b4a9651d156be4a39fe6c",
+              "entry": "voter_stats_20241105.txt",
+              "entryByteCount": 48726474,
+              "entrySha256": "a2472e9c4e19504f259a2624eae028c0d3844cd7b986860be36987f40c0cfdfe"
+            },
+            {
+              "localFile": "data/nc-2024-history-stats.zip",
+              "byteCount": 4715895,
+              "sha256": "56305c7b7c84a2a58702e87e4a5dcd176ce50281f62b894b24af0b162a008085",
+              "entry": "history_stats_20241105.txt",
+              "entryByteCount": 88112050,
+              "entrySha256": "9360820ed58a370b767977a7a0e9adcca98cdfdc14ff7b8b8dfd3da18a55c641"
+            },
+            {
+              "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+              "byteCount": 28220,
+              "sha256": "2f6d17734e5e3da0593427943a37ae9667b6a9f956f827f311c01d6b070a99e5"
+            }
+          ],
+          "generatedLead": {
+            "localFile": "data/nc-2024-turnout-denominator-lead.csv",
+            "byteCount": 77097,
+            "sha256": "02e9c6f4686eeb232ca5b1342a7b4fba1e12a74c9a2f7af0d0d4f820717d8ec7"
+          }
         }
       },
       "expected": {
@@ -968,7 +998,7 @@
       "state": "SC",
       "name": "South Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_precinct_review_state_turnout_2016_2020_historical_reviewed_precinct_gis_2016_2020_2024_2012_blocked",
+      "nativeReadiness": "complete_county_map_precinct_review_state_turnout_2012_2016_2020_historical_reviewed_precinct_gis_2016_2020_2024_2012_blocked",
       "authority": "South Carolina Election Commission",
       "configFile": "etl/state-configs/sc.json",
       "legacyReferenceBundle": "data/sc-app-data.js",
@@ -995,6 +1025,32 @@
           "denominator": "Printed registration-list voters from VREMS totalRegistered",
           "ballotsCast": "VREMS totalVoting participating voters"
         },
+        "voterStatisticsCandidate": {
+          "sourceTitle": "South Carolina Elections Database official 2024 General Election Voter Statistics contest 7075",
+          "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+          "queryInterfaceUrl": "https://electionhistory.scvotes.gov/search",
+          "sourceRequestFile": "data/sc-2024-election-history/voter-statistics-7075-request.json",
+          "localFile": "data/sc-2024-election-history/voter-statistics-7075.csv",
+          "normalizedFile": "data/sc-2024-election-history/voter-statistics-7075-county.csv",
+          "reconciliationFile": "data/sc-2024-election-history/voter-statistics-7075-vs-vrems-reconciliation.json",
+          "parser": "scripts/normalize-sc-election-history-voter-statistics.mjs",
+          "status": "candidate",
+          "level": "state/county/precinct source; county normalized candidate",
+          "contestId": "7075",
+          "electionId": "58",
+          "sourceRows": {
+            "state": 1,
+            "county": 46,
+            "precinct": 2446
+          },
+          "expected": {
+            "ballotsCast": 2566404,
+            "registeredVoters": 3451344
+          },
+          "byteCount": 81664,
+          "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+          "disposition": "candidate_not_loaded; active turnout remains SC VREMS"
+        },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
           "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2745%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -1017,14 +1073,38 @@
           ]
         },
         "historicalBaseline": {
-          "sourceTitle": "South Carolina Elections Database official 2016 and 2020 presidential contest CSVs normalized to county baselines",
+          "sourceTitle": "South Carolina Elections Database official 2012, 2016, and 2020 presidential contest CSVs normalized to county baselines",
           "sourceUrl": "https://electionhistory.scvotes.gov/",
           "localFile": "data/sc-historical-presidential-baseline.csv",
-          "parserHint": "Run scripts/normalize-sc-historical-presidential-baseline.mjs; aggregate county rows by party from official contest CSV downloads 5292 and 1974.",
-          "rowCount": 92,
+          "parserHint": "Run scripts/normalize-sc-historical-presidential-baseline.mjs; hash-pinned retained source files aggregate county rows by party from official contest CSV downloads 9112, 5292, and 1974.",
+          "rowCount": 138,
           "years": [
+            2012,
             2016,
             2020
+          ],
+          "sourceArtifacts": [
+            {
+              "year": 2012,
+              "contestId": "9112",
+              "localFile": "data/sc-2012-president-9112.csv",
+              "byteCount": 116772,
+              "sha256": "26d5c6aa23b1f6c259f2178c20114c82027acbb586d487047d99483dff89a33c"
+            },
+            {
+              "year": 2016,
+              "contestId": "5292",
+              "localFile": "data/sc-2016-president-5292.csv",
+              "byteCount": 132795,
+              "sha256": "cb2e118c354f87becf12883aafd40a7de83a1026be82516d13c6247b0122e42f"
+            },
+            {
+              "year": 2020,
+              "contestId": "1974",
+              "localFile": "data/sc-2020-president-1974.csv",
+              "byteCount": 119261,
+              "sha256": "c57495268aa7c38e8e880caa1aca799eb2ace174c0a3770b4b1f471962453ba7"
+            }
           ]
         }
       },
@@ -1037,15 +1117,15 @@
         "other": 35941,
         "localReviewRows": 2401,
         "turnoutRows": 46,
-        "historicalBaselineRows": 92
+        "historicalBaselineRows": 138
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_dropoff_district_based",
         "turnoutMode": "sc_vrems_county_voter_history_warning_required",
-        "historicalBaselineMode": "official_sc_elections_database_2016_2020_county_baseline_context",
-        "historicalMode": "official_election_history_county_csv_2016_2020_2012_missing",
+        "historicalBaselineMode": "official_sc_elections_database_2012_2016_2020_county_baseline_context",
+        "historicalMode": "official_election_history_county_csv_2012_2016_2020_loaded",
         "precinctGeometryMode": "reviewed_secondary_geometry_official_result_values_2016_2020_2024_2012_blocked"
       },
       "caveats": [
@@ -1055,8 +1135,10 @@
         "Reviewed precinct geometry and official-result crosswalks exist for 2016, 2020, and 2024 but remain outside production until immutable delivery and guarded activation are complete.",
         "VEST and NYT supply attributed geometry only; their vote fields are stripped and all displayable values come from official South Carolina Election Commission exports.",
         "The 2012 RFA-origin archive remains blocked because its post-election vintage, derivative terms, and result crosswalk are unresolved.",
-        "Official 2016 and 2020 county historical baselines are normalized from South Carolina Elections Database presidential contest CSVs and resolve to Census county FIPS tags.",
-        "Official 2012 county historical baseline has not been normalized yet."
+        "Official 2012, 2016, and 2020 county historical baselines are normalized from South Carolina Elections Database presidential contest CSVs and resolve to Census county FIPS tags.",
+        "Official 2012 county historical baseline is now normalized from contest 9112 and independently reconciles to 1,964,118 presidential votes; the blocked 2012 precinct-geometry candidate remains separate.",
+        "Election History Voter Statistics contest 7075 is retained as a hash-pinned candidate: 2,566,404 ballots and 3,451,344 registered across 46 counties versus active VREMS 2,553,185 and 3,851,930. Its source-level reconciliation is documented, but it does not replace active VREMS.",
+        "The retained historical source bytes and SHA-256 values are recorded in data/sc-historical-presidential-baseline-summary.json. A 2026-08-19 review proved the apparent 2016 drift was checkout line-ending conversion only: the repository blob, endpoint content, and all contest totals were identical. Byte-preservation attributes now keep the current 132,795-byte LF response stable."
       ]
     },
     {
@@ -1672,6 +1754,13 @@
           "denominator": "EAC registered voters",
           "ballotsCast": "EAC normalized ballots cast"
         },
+        "historicalRegistrationLeads": {
+          "sourceTitle": "Georgia SOS 2012, 2016, and 2020 General Election county summary archives",
+          "sourceUrl": "https://sos.ga.gov/page/historical-elections-results",
+          "localFile": "data/ga-official-historical-archives; data/ga-historical-registration-turnout-leads.csv; data/ga-historical-archive-source-review.json",
+          "level": "county",
+          "parserHint": "Run node scripts/normalize-ga-historical-archive-registration.mjs. It hash-verifies three official archive ZIPs, parses 159 nested county summary CSVs per year, and requires exact county presidential reconciliation to the existing SOS JSON baseline before emitting 477 registration/ballots-cast lead rows."
+        },
         "historicalBaseline": {
           "sourceTitle": "Georgia SOS official historical media exports",
           "sourceUrl": "https://results.sos.ga.gov/",
@@ -1721,6 +1810,7 @@
         "localReviewRows": 2684,
         "turnoutRows": 159,
         "historicalBaselineRows": 477,
+        "historicalRegistrationLeadRows": 477,
         "historicalReviewRows": 318,
         "historicalReviewRowsByYear": {
           "2016": 159,
@@ -1731,7 +1821,7 @@
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_with_district_caveats",
-        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_after_sos_vote_method_review",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_historical_archive_leads",
         "historicalMode": "official_sos_media_export_county_baselines",
         "historicalReviewMode": "official_sos_county_president_vs_us_senate_2016_2020"
       },
@@ -1745,9 +1835,10 @@
         "The 2020 historical advisory comparison uses the regular US Senate (Perdue) contest from the original November general export before the runoff; the Loeffler special election is excluded. The selected county contest options contain no precinct-result rows, so the package must not be described as precinct historical coverage.",
         "Historical advisory indicators are review signals only; candidate differences, contest differences, split-ticket voting, and participation differences can explain broad patterns and the rows are not findings of misconduct.",
         "The July 5, 2026 Georgia vote-method source review confirms official SOS groupResults are candidate-result splits, not turnout/registration denominator rows; EAC turnout remains active until a state-native turnout artifact is collected."
+        ,"Official 2012, 2016, and 2020 archive registration and ballots-cast fields are historical county leads only: the archive does not establish registration timing or compatible active-turnout semantics, so they do not replace EAC 2024 turnout."
       ],
       "legacyReferenceBundle": "data/ga-app-data.js",
-      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, official 2016 and 2020 county historical advisory rows, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
+      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, exact-reconciled historical county registration/ballots-cast leads, official 2016 and 2020 county historical advisory rows, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are Georgia-native 2024 turnout/registration denominator rows with documented timing/semantics, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
     },
     {
       "state": "KS",
@@ -1908,7 +1999,7 @@
       "state": "FL",
       "name": "Florida",
       "priority": 19,
-      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_secondary_historical_with_precinct_zip_caveat",
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_official_historical_with_precinct_zip_caveat",
       "authority": "Florida Department of State; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/fl.json",
       "artifacts": {
@@ -1946,6 +2037,12 @@
           "sourceUrl": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
           "localFile": "data/precinct-geometry/FL",
           "parserHint": "scripts/collect-fl-precinct-geometry.mjs hash-pins and replays official 2012/2016/2020/2024 presidential result universes, vote-free election-specific geometry, and reviewed crosswalks. Geometry is complete for guarded 2016/2020/2024 release; 2012 remains unavailable and excluded from release candidates."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Florida Department of State official 2012/2016/2020 General Election precinct ZIP county aggregates",
+          "sourceUrl": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+          "localFile": "data/precinct-geometry/FL/2012-11-06-general/raw/florida-dos/fl-2012-general-precinct-results.zip; data/precinct-geometry/FL/2016-11-08-general/raw/florida-dos/fl-2016-general-precinct-results.zip; data/precinct-geometry/FL/2020-11-03-general/raw/florida-dos/fl-2020-general-precinct-results.zip; data/fl-historical-presidential-baseline.csv; data/fl-historical-precinct-source-review.json",
+          "parserHint": "Run node --experimental-strip-types scripts/normalize-fl-historical-presidential-baseline.mjs. It verifies all three pinned DOS ZIPs, aggregates President candidate rows by reviewed county GEOID, writes 201 historical county rows, and fails closed on the per-year 67-county and vote-total assertions."
         }
       },
       "expected": {
@@ -1964,7 +2061,7 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_senate_precinct_location_zip",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_registration_lead",
-        "historicalBaselineMode": "secondary_county_context_2012_2016_2020"
+        "historicalBaselineMode": "official_dos_precinct_zip_county_context_2012_2016_2020"
       },
       "caveats": [
         "Certified Florida county map totals remain anchored to the official county detail table, not the precinct ZIP.",
@@ -1973,7 +2070,7 @@
         "Reviewed precinct geometry and official-result relationships for 2016, 2020, and 2024 are publicly delivered at production revision 25 through the guarded, hash-pinned release; 2012 remains outside production.",
         "No complete election-effective statewide 2012 precinct boundary edition is retained, so 2012 remains fail-closed and no result is assigned to Census VTD geometry.",
         "The 2016/2020 VEST and 2024 New York Times geometry sources are secondary presentation geometry with explicit attribution and terms; Florida Department of State exports remain the sole displayed vote source.",
-        "Historical baselines are secondary county context rows and not 2024 certified data."
+        "Historical baselines are official DOS precinct-ZIP-derived county aggregates used as historical context, not replacements for 2024 certified county-detail data. They have not been independently reconciled against a separately retained certified historical county or statewide canvass artifact. The ZIP registration field is retained only as dated source context: no compatible election-level ballots-cast semantics are available, so active turnout remains EAC fallback."
       ],
       "legacyReferenceBundle": "data/fl-app-data.js"
     },
@@ -2402,7 +2499,7 @@
         "reviewMode": "president_vs_us_house_precinct_vote_mode",
         "turnoutMode": "sos_post_election_statistics_parish_turnout",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized",
-        "historicalBaselineMode": "official_2020_sos_parish_context_2012_2016_missing"
+        "historicalBaselineMode": "official_2016_2020_sos_parish_context_2012_missing"
       },
       "caveats": [
         "Louisiana uses parishes rather than counties; package fields named countyRows/countyBoundary represent parish rows and parish geometry for validator compatibility.",
@@ -2444,6 +2541,14 @@
           "level": "jurisdiction",
           "denominator": "EAC A1a Total Reg registered voters",
           "ballotsCast": "EAC normalized ballots cast"
+        },
+        "stateNativeEnrollmentDenominatorLead": {
+          "sourceTitle": "Maine SOS November 5, 2024 active/inactive registered and enrolled voter files",
+          "sourceUrl": "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
+          "localFile": "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt; data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt; data/me-2024-registered-enrolled-denominator-leads.csv; data/me-2024-registered-enrolled-denominator-leads-summary.json",
+          "level": "county_municipality_ward_or_precinct_party",
+          "denominator": "Separate active and inactive Maine SOS registration/enrollment counts as of November 5, 2024",
+          "parserHint": "Run node scripts/normalize-me-2024-enrollment-leads.mjs. The output preserves source county, municipality, W/P, CG, SS, SR, CC, and party columns; its statewide active-plus-inactive total is 1,223,192, 276 below EAC registered voters. No ballots-cast field exists, so EAC remains active turnout."
         },
         "historicalBaseline": {
           "sourceTitle": "Maine SOS official 2016 and 2020 President workbooks; 2012 XLS retained and parsed by the separate local-geometry collector",
@@ -2495,7 +2600,7 @@
         "State UOCAVA is a non-geographic certified result row; it is not mapped and is excluded from town review joins.",
         "Medway/Twps, Day Block Twp, and Wesley are vote-share-only rows because the Senate workbook combines or labels those units at a different grain.",
         "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff metrics are directional source-review inputs only.",
-        "Turnout remains EAC fallback until Maine-native ballots-cast or voter-participation rows are collected and reconciled with SOS registration/enrollment files.",
+        "Turnout remains EAC fallback: the normalized Maine SOS active/inactive enrollment leads total 1,223,192, 276 below EAC registered voters, and contain no ballots-cast or voter-participation field.",
         "The official 2012 municipal XLS is parsed by the local-geometry collector, but five rows totaling eight votes lack unique geometry and the official archive is not election-date-confirmed; 2012 remains blocked.",
         "Reviewed 2016, 2020, and 2024 local-reporting-unit geometry/crosswalk candidates reconcile all official SOS local votes but remain fail-closed pending immutable delivery and production review.",
         "Maine local results are not uniformly precinct-grain. Town totals are never duplicated across wards or proportionally allocated.",
@@ -2720,7 +2825,7 @@
       "name": "Rhode Island",
       "priority": 14,
       "nativeReadiness": "loaded_county_map_review_eac_turnout_official_2012_2016_2020_historical_promotion_reconciled",
-      "authority": "Rhode Island Board of Elections; U.S. Election Assistance Commission",
+      "authority": "Rhode Island Board of Elections; Rhode Island Department of State; U.S. Election Assistance Commission",
       "configFile": "etl/state-configs/ri.json",
       "artifacts": {
         "presidentialCountyResults": {
@@ -2743,6 +2848,12 @@
           "localFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
           "level": "jurisdiction",
           "denominator": "EAC A1a Total Reg registered voters"
+        },
+        "registrationDenominatorLead": {
+          "sourceTitle": "Rhode Island Secretary of State Data Hub 2024-11-01 registration lead",
+          "sourceUrl": "https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
+          "localFile": "data/ri-2024-11-sos-datahub-registration-query.json; data/ri-2024-11-sos-datahub-registration-precinct.csv; data/ri-2024-11-sos-datahub-registration-reconciliation.json",
+          "parserHint": "Run node scripts/normalize-ri-registration-datahub.mjs. The normalizer reproduces the public Power BI query and duplicate-disposition filters, hash-pins the raw response, and writes 3,838 city/town-precinct-party-status rows: 732,308 Active, 57,201 Inactive, 3,360 Pending, and 792,869 all-status registrations. It has no compatible ballots-cast field, so EAC turnout remains active."
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb Rhode Island county geography",
@@ -2791,7 +2902,7 @@
       "caveats": [
         "The explicit finalized 2024 root member reconciles exactly to posted statewide President and U.S. Senate buckets; normalization fails closed on any mismatch and emits no reconciliation row.",
         "Review rows are advisory context only and exclude zero-vote Limited rows and presidential-only rows.",
-        "Turnout remains EAC fallback.",
+        "Turnout remains EAC fallback. The official SOS Data Hub 2024-11-01 registration lead retains status-separated city/town-and-precinct rows, totals 792,869 all-status registrations (794 above EAC), and includes no compatible ballots-cast or voter-participation field.",
         "County maps use official city/town-to-county aggregation; finer geometry/crosswalks remain missing.",
         "Official 2012, 2016, and 2020 history is aggregated to five county tags per year plus unforced Federal Precincts. The fail-closed read-only audit accepts replacing 86 live rows with 18 staged rows (a 68-row reduction): every statewide and county/Federal vote bucket has zero delta, all years remain present, and canonical flip reporting identifies Kent County as the sole RI red-to-blue flip for 2016-to-2020 and 2016-to-2024. Acceptance does not itself authorize production promotion.",
         "Normalized audit/recount/CVR/incident/correction/litigation rows are not loaded."
@@ -2970,7 +3081,7 @@
       "state": "HI",
       "name": "Hawaii",
       "priority": 11,
-      "nativeReadiness": "complete_five_county_map_precinct_split_review_state_native_turnout_2016_2020_historical_context",
+      "nativeReadiness": "complete_five_county_map_precinct_split_review_state_native_turnout_2012_2016_2020_historical_context",
       "authority": "Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/hi.json",
       "artifacts": {
@@ -3018,15 +3129,16 @@
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or precinct-uniformity proof."
         },
         "historicalBaseline": {
-          "sourceTitle": "Hawaii Office of Elections 2016 and 2020 General Election summary/detail text exports",
-          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
-          "localFile": "data/hi-historical-presidential-baseline.csv",
+          "sourceTitle": "Hawaii Office of Elections 2012, 2016, and 2020 General Election summary/detail text exports",
+          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2012/general/summary.txt; https://files.hawaii.gov/elections/files/results/2012/general/media.txt; https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
+          "localFile": "data/hi-2012-general-summary.txt; data/hi-2012-general-precinct-detail.txt; data/hi-historical-presidential-baseline.csv; data/hi-historical-presidential-baseline-summary.json",
           "level": "county",
           "years": [
+            2012,
             2016,
             2020
           ],
-          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs emits five county/county-equivalent rows per year. Precinct 13-09 is pinned to county:15005 with exact 2016/2020 vote tuples, Maui residuals, and statewide-zero-delta gates."
+          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs emits five county/county-equivalent rows per year. Precinct 13-09 is pinned to county:15005 with exact 2012/2016/2020 vote tuples, Maui residuals, and statewide gates; the 2012 476-vote overseas non-geographic President total is fail-closed and never assigned to a county."
         }
       },
       "expected": {
@@ -3038,14 +3150,14 @@
         "other": 9996,
         "localReviewRows": 467,
         "turnoutRows": 4,
-        "historicalBaselineRows": 10
+        "historicalBaselineRows": 15
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_senate_precinct_split_nonzero_numbered_units",
         "turnoutMode": "official_hawaii_office_registration_turnout_statistics_county_rows",
-        "historicalBaselineMode": "official_2016_2020_five_county_baseline_with_kalawao_15005",
+        "historicalBaselineMode": "official_2012_2016_2020_five_county_baseline_with_kalawao_15005_and_2012_overseas_exclusion",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
       },
       "caveats": [
@@ -3054,10 +3166,10 @@
         "Active turnout uses four Hawaii Office election-county rows. The source table does not split Kalawao turnout or registration, so no denominator is invented for FIPS 15005.",
         "County geometry is loaded; full precinct boundaries/crosswalks are not loaded.",
         "Advisory review rows are public-interest source-review inputs only, not findings of fraud or misconduct.",
-        "Official 2012 historical baselines and normalized administration-context rows remain missing."
+        "The 2012 detail export's registration and ballot fields remain source context only: their timing and scope are not used to replace the active 2024 turnout denominator. Normalized administration-context rows remain missing."
       ],
       "legacyReferenceBundle": "data/hi-2024-data-coverage-inventory.json",
-      "nextAction": "Collect official 2012 historical rows, complete precinct geometry/crosswalks if subcounty overlays are pursued, and normalize administration context."
+      "nextAction": "Complete precinct geometry/crosswalks if subcounty overlays are pursued, and normalize administration context."
     },
     {
       "state": "NM",
@@ -4252,11 +4364,11 @@
       "state": "SD",
       "name": "South Dakota",
       "priority": 20,
-      "currentStatus": "secondary_county_staging_rows_with_official_archive_evidence_certified_canvass_still_required",
+      "currentStatus": "secondary_county_csvs_exactly_validated_by_official_certified_canvass_with_remaining_native_gaps",
       "completionDecision": {
         "checkedAt": "2026-07-04",
         "decision": "remain_in_source_discovery_queue",
-        "reason": "SD should remain outside completedNativeStates because the active President and U.S. House county rows are still generated from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. Wave 24 retained a stronger official request packet and audit-page context, but the official SD SOS ElectionID 684 statewide XLSX export is labeled unofficial and matches the lower archive map-data totals: 194 President votes and 184 U.S. House votes below the current certified-style staging totals. The official certified canvass/static export or a reconciling official payload, state-native turnout replacement review, precinct/local rows, precinct geometry, and normalized administration-context records remain unresolved."
+        "reason": "SD remains outside completedNativeStates because the current county CSVs retain secondary extraction lineage even though the retained official State Board of Canvassers certificate now exactly validates all 66 President and U.S. House rows. Compatible state-native turnout replacement semantics, official precinct/local rows, precinct geometry/crosswalks, official historical baselines, and normalized administration-context records remain unresolved."
       },
       "officialSourcePages": [
         "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
@@ -4275,7 +4387,6 @@
         "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0"
       ],
       "requiredArtifacts": [
-        "official SD SOS certified 2024 General Election Canvass and Certificate PDF/static export or an ElectionID 684 official archive/export payload that reconciles to certified county totals; the retained unofficial statewide XLSX export does not reconcile",
         "state-native county or precinct turnout and registered-voter denominator rows",
         "precinct/local President plus same-grain comparison rows if subcounty advisory coverage is pursued",
         "precinct boundary geometry or official reporting-unit crosswalk",
@@ -4284,8 +4395,8 @@
         "data/sd-2024-source-request-matrix.tsv as the current official-source request queue"
       ],
       "preferredComparisonContest": "United States Representative; current staging pairs county President with at-large U.S. House rows, with county-level and secondary-source caveats.",
-      "parserNeeded": "scripts/collect-sd-2024-county-results.mjs currently regenerates secondary county President and U.S. House CSVs for countyPresidentCsv/countyComparisonCsv. scripts/collect-sd-official-archive-evidence.mjs now retains official ElectionID 684 archive evidence, the official ResultsExport statewide XLSX workbook, official results FAQ text, post-election audit-page context, and data/sd-2024-official-source-request-packet.json. An official certified canvass/export normalizer is still needed before replacing secondary staging rows.",
-      "blocker": "Wave 24 retained official SD SOS archive ElectionID 684 through the older ResultsAjax service, the official ResultsExport.aspx?eid=684 Statewide Results.xlsx workbook, official results FAQ text, and a source-request packet. GetMapDataArchive with RaceID=0 exposes President map RaceID 12665 and U.S. House map RaceID 11954, and the XLSX has matching President/U.S. House sheets. Both official app artifacts total 428,728 President votes and 421,264 U.S. House votes, below the current certified-style staging totals by 194 and 184 votes. The workbook labels itself 2024 Unofficial General Election Results, and five likely SOS 2024 State Canvass and Certificate PDF asset paths returned 404. Current rows remain secondary staging coverage until a certified/reconciling official artifact is retained.",
+      "parserNeeded": "scripts/verify_sd_2024_general_canvass.py is the hash-pinned, fail-closed official certificate reconciliation path for the current secondary county CSVs. A direct certificate-table source parser is optional rather than necessary for row correctness; turnout-semantic, precinct/local, geometry/crosswalk, historical, and administration-context normalizers remain needed.",
+      "blocker": "The official certificate resolves county candidate-result reconciliation, but South Dakota cannot join completed native coverage without compatible official turnout/registration semantics, official precinct/local results and map/crosswalk evidence, official historical baselines, and normalized administration context. The ElectionID 684 XLSX remains labeled unofficial and totals 428,728 President votes and 421,264 U.S. House votes, so it must not replace certificate-validated rows.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "Wikipedia 2024 South Dakota presidential county table citing SD SOS canvass",
@@ -4334,6 +4445,12 @@
           "sourceUrl": "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
           "localFile": "data/sd-2024-general-statewide-results.xlsx",
           "parserHint": "Downloaded by ASP.NET Statewide Export postback in scripts/collect-sd-official-archive-evidence.mjs. The workbook is official app evidence but labels itself unofficial and totals 428,728 President votes and 421,264 U.S. House votes, matching archive map-data rather than certified-style staging totals."
+        },
+        "officialCertifiedCanvass": {
+          "sourceTitle": "South Dakota State Board of Canvassers 2024 General Election Canvass and Certificate",
+          "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+          "localFile": "data/sd-2024-general-canvass-certificate.pdf; data/sd-2024-general-canvass-reconciliation.json",
+          "parserHint": "scripts/verify_sd_2024_general_canvass.py SHA-256 pins the PDF and fail-closed verifies 66 county President (428,922) and U.S. House (421,448) rows against current staging CSVs."
         },
         "officialSourceRequestPacket": {
           "sourceTitle": "South Dakota certified-result reconciliation request packet and official audit-page context",

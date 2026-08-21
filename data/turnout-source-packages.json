@@ -309,7 +309,37 @@
           "ncsbeHistoryVotersWhoVoted": 5705861,
           "ncsbeHistoryMinusEacBallotsCast": -50245,
           "ncsbeRegisteredMinusEacRegistered": 0,
-          "ncsbeHistoryMinusOverviewBallotsCast": -18126
+          "ncsbeHistoryMinusOverviewBallotsCast": -18126,
+          "sourceReview": "data/nc-2024-turnout-source-review.json",
+          "replayCommand": "node scripts/normalize-nc-turnout.mjs --check",
+          "rawArtifacts": [
+            {
+              "localFile": "data/nc-2024-voter-stats.zip",
+              "byteCount": 6522548,
+              "sha256": "48685b14b1a58e07417fb8756778a8faf3e4d536228b4a9651d156be4a39fe6c",
+              "entry": "voter_stats_20241105.txt",
+              "entryByteCount": 48726474,
+              "entrySha256": "a2472e9c4e19504f259a2624eae028c0d3844cd7b986860be36987f40c0cfdfe"
+            },
+            {
+              "localFile": "data/nc-2024-history-stats.zip",
+              "byteCount": 4715895,
+              "sha256": "56305c7b7c84a2a58702e87e4a5dcd176ce50281f62b894b24af0b162a008085",
+              "entry": "history_stats_20241105.txt",
+              "entryByteCount": 88112050,
+              "entrySha256": "9360820ed58a370b767977a7a0e9adcca98cdfdc14ff7b8b8dfd3da18a55c641"
+            },
+            {
+              "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+              "byteCount": 28220,
+              "sha256": "2f6d17734e5e3da0593427943a37ae9667b6a9f956f827f311c01d6b070a99e5"
+            }
+          ],
+          "generatedLead": {
+            "localFile": "data/nc-2024-turnout-denominator-lead.csv",
+            "byteCount": 77097,
+            "sha256": "02e9c6f4686eeb232ca5b1342a7b4fba1e12a74c9a2f7af0d0d4f820717d8ec7"
+          }
         }
       }
     },
@@ -868,13 +898,13 @@
       "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 497,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active ME turnout source. Wave 17 collected Maine SOS active and inactive registered/enrolled files as state-native denominator leads, but no replacement ballots-cast or voter-participation package is loaded.",
-      "nextAction": "Use data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv to pair the collected Maine SOS registered/enrolled files in data/me-official-sources with official ballots-cast or voter-participation rows before replacing the EAC fallback.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active ME turnout source. The Maine SOS active/inactive registered/enrolled files are normalized into a state-native denominator-lead CSV and EAC reconciliation summary, but no replacement ballots-cast or voter-participation package is loaded.",
+      "nextAction": "Use data/me-2024-registered-enrolled-denominator-leads-summary.json, data/me-2024-data-coverage-inventory.json, and data/me-2024-source-request-matrix.tsv to pair the normalized Maine SOS enrollment leads with official ballots-cast or voter-participation rows before replacing the EAC fallback.",
       "coverage": {
         "jurisdictionRows": 497,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/me-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 1223468,
-        "ballotsCast": 841831,
+        "ballotsCast": 842447,
         "warningRows": 8
       },
       "stateNativeLeads": [
@@ -882,11 +912,15 @@
           "sourceTitle": "Maine SOS previous enrollment data for the November 5, 2024 General/Referendum Election",
           "sourceUrl": "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
           "reportingGrain": "county_municipality_voting_district_party",
-          "artifactStatus": "collected_denominator_leads_not_loaded",
-          "caveat": "Registered/enrolled active and inactive files are denominator leads only; do not replace EAC turnout until compatible ballots-cast or voter-participation rows are collected and reconciled.",
+          "artifactStatus": "normalized_denominator_leads_not_loaded",
+          "normalizer": "scripts/normalize-me-2024-enrollment-leads.mjs",
+          "reconciliationSummary": "data/me-2024-registered-enrolled-denominator-leads-summary.json",
+          "caveat": "The normalized active/inactive enrollment files are denominator leads only; their combined statewide total is 276 below EAC registered voters, and no ballots-cast field is present. The active EAC parser excludes seven -88 ballots-cast sentinels (raw arithmetic sum 841,831; normalized total 842,447) and eight negative registration sentinels. Do not replace EAC turnout until compatible ballots-cast or voter-participation rows are collected and reconciled.",
           "localArtifacts": [
             "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
-            "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt"
+            "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt",
+            "data/me-2024-registered-enrolled-denominator-leads.csv",
+            "data/me-2024-registered-enrolled-denominator-leads-summary.json"
           ]
         }
       ]
@@ -1199,19 +1233,40 @@
       "sourceLevel": "jurisdiction",
       "denominatorType": "registeredVoters",
       "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "sourceTitle": "EAC fallback turnout rows plus Rhode Island SOS Data Hub registration lead",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports; https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
       "localFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 39,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Use data/ri-2024-data-coverage-inventory.json and data/ri-2024-source-request-matrix.tsv to confirm whether BOE data description or a separate official Rhode Island artifact contains ballots-cast plus registered-voter denominator fields; keep EAC fallback active until denominator timing and semantics are reviewed.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active. The Rhode Island Department of State Data Hub 2024-11-01 registration snapshot is retained as a status-separated denominator lead, but it has no compatible ballots-cast or voter-participation field.",
+      "nextAction": "Collect Rhode Island state-native ballots-cast or voter-participation rows compatible with the 2024-11-01 SOS Data Hub registration snapshot; keep EAC fallback active until timing and semantics are reconciled.",
       "coverage": {
         "jurisdictionRows": 39,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ri-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 792075,
         "ballotsCast": 522164,
-        "warningRows": 0
+        "warningRows": 0,
+        "stateNativeLead": {
+          "sourceTitle": "Rhode Island Department of State Data Hub November 2024 Registered Voters",
+          "sourceUrl": "https://datahub.sos.ri.gov/RegisteredVoter.aspx/",
+          "asOfDate": "2024-11-01",
+          "reportingGrain": "city_town_precinct_party_status",
+          "localFiles": [
+            "data/ri-2024-11-sos-datahub-registration-query.json",
+            "data/ri-2024-11-sos-datahub-registration-precinct.csv",
+            "data/ri-2024-11-sos-datahub-registration-reconciliation.json"
+          ],
+          "parser": "scripts/normalize-ri-registration-datahub.mjs",
+          "status": "loaded_denominator_lead_not_active_turnout",
+          "rows": 3838,
+          "cityTowns": 39,
+          "active": 732308,
+          "inactive": 57201,
+          "pending": 3360,
+          "allStatuses": 792869,
+          "minusEacRegistered": 794,
+          "caveat": "The Data Hub snapshot has no compatible ballots-cast or voter-participation field, so it does not replace active EAC turnout."
+        }
       }
     },
     {
@@ -1236,7 +1291,26 @@
         "registeredVoters": 3851930,
         "ballotsCast": 2553185,
         "warningRows": 46
-      }
+      },
+      "candidateSources": [
+        {
+          "sourceTitle": "SC Elections Database 2024 General Voter Statistics contest 7075",
+          "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+          "localFile": "data/sc-2024-election-history/voter-statistics-7075.csv",
+          "parser": "scripts/normalize-sc-election-history-voter-statistics.mjs",
+          "status": "candidate",
+          "reportingLevel": "state/county/precinct",
+          "normalizedFile": "data/sc-2024-election-history/voter-statistics-7075-county.csv",
+          "reconciliationFile": "data/sc-2024-election-history/voter-statistics-7075-vs-vrems-reconciliation.json",
+          "expected": {
+            "countyRows": 46,
+            "ballotsCast": 2566404,
+            "registeredVoters": 3451344
+          },
+          "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+          "disposition": "candidate_not_loaded; active VREMS remains"
+        }
+      ]
     },
     {
       "state": "SD",
@@ -1604,6 +1678,25 @@
         "Turnout is county-level, not precinct-level.",
         "The SC VREMS source page says registration numbers include voters printed on election lists: all active voters plus some inactive voters. Rows are warning-required and should not be treated as active-registration denominators.",
         "The VREMS statewide summary includes an unassigned/null-county row with 2 registered voters and 1 participating voter; the normalized artifact keeps only the 46 county rows for joins."
+      ],
+      "candidateSources": [
+        {
+          "sourceTitle": "SC Elections Database 2024 General Voter Statistics contest 7075",
+          "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7075_table.csv?split_party=false",
+          "localFile": "data/sc-2024-election-history/voter-statistics-7075.csv",
+          "parser": "scripts/normalize-sc-election-history-voter-statistics.mjs",
+          "status": "candidate",
+          "reportingLevel": "state/county/precinct",
+          "normalizedFile": "data/sc-2024-election-history/voter-statistics-7075-county.csv",
+          "reconciliationFile": "data/sc-2024-election-history/voter-statistics-7075-vs-vrems-reconciliation.json",
+          "expected": {
+            "countyRows": 46,
+            "ballotsCast": 2566404,
+            "registeredVoters": 3451344
+          },
+          "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
+          "disposition": "candidate_not_loaded; active VREMS remains"
+        }
       ]
     },
     {
