@@ -1559,7 +1559,7 @@
         "official 2024 post-election audit PDF lead",
         "official NCSBE 2024 voter_stats registered-voter denominator lead",
         "official NCSBE 2024 history_stats voter-history turnout lead",
-        "generated county turnout-denominator lead and source-review summary",
+        "generated county turnout-denominator lead and source-review summary with pinned raw/archive hashes and replay check",
         "official 2016 county President-versus-U.S.-Senate historical advisory rows aggregated from all 3,209 source reporting-unit keys across 100 canonical county tags",
         "official 2020 same-grain President-versus-U.S.-Senate historical advisory rows for 2,662 Real Precinct=Y county/precinct keys across 100 county tags",
         "reviewed 2012 VTD geometry and exact official precinct-sorted presidential crosswalk for 2,692 geographic units",
@@ -1573,7 +1573,7 @@
         "guarded database and immutable delivery release for the reviewed 2012, 2016, and 2020 local geometry packages",
         "normalized audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native county certified package loaded; scripts/build-nc-reviewed-precincts.mjs hash-pins and replays four local-boundary packages without vote allocation: 2012 official precinct-sorted VTD rows joined to MGGG/NCGA geometry, 2016 exact official NCSBE geometry IDs, 2020 official NCSBE geometry plus four documented official supplements, and a fail-closed 2024 candidate plus three unconfirmed supplements; historical advisory and turnout normalizers remain unchanged",
+      "parserStatus": "native county certified package loaded; scripts/build-nc-reviewed-precincts.mjs hash-pins and replays four local-boundary packages without vote allocation: 2012 official precinct-sorted VTD rows joined to MGGG/NCGA geometry, 2016 exact official NCSBE geometry IDs, 2020 official NCSBE geometry plus four documented official supplements, and a fail-closed 2024 candidate plus three unconfirmed supplements; scripts/normalize-nc-turnout.mjs now hash-pins both NCSBE ZIPs, their extracted entries, and the EAC benchmark, rejects malformed numeric/row data, asserts exact source counts, and supports a no-write --check replay",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
       "caveats": "Certified county totals aggregate all official reporting units. Local geometry never receives administrative, absentee, early-vote, provisional, transfer, or other no-geometry totals. The 2012 VTD analysis export reassigns accepted absentee/provisional ballots to residential VTDs and adds statutory statistical noise; it is official NCSBE analysis data rather than the certified canvass presentation, and MGGG ODbL/DBCL terms apply to geometry. The 2016 package maps 2,704 official precinct identities and keeps 505 result-only units separate. The 2020 package maps all 2,662 Real Precinct=Y units after four official-source topology repairs and keeps 403 Real Precinct=N units separate. The 2024 candidate maps all 2,658 Real Precinct=Y units and preserves one no-data feature, but public rendering remains blocked because three restored subprecinct polygons lack November 5 applicability confirmation. Each election retains its own boundary vintage and is not a stable cross-election trend geography.",

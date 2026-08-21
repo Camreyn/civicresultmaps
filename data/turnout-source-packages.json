@@ -309,7 +309,37 @@
           "ncsbeHistoryVotersWhoVoted": 5705861,
           "ncsbeHistoryMinusEacBallotsCast": -50245,
           "ncsbeRegisteredMinusEacRegistered": 0,
-          "ncsbeHistoryMinusOverviewBallotsCast": -18126
+          "ncsbeHistoryMinusOverviewBallotsCast": -18126,
+          "sourceReview": "data/nc-2024-turnout-source-review.json",
+          "replayCommand": "node scripts/normalize-nc-turnout.mjs --check",
+          "rawArtifacts": [
+            {
+              "localFile": "data/nc-2024-voter-stats.zip",
+              "byteCount": 6522548,
+              "sha256": "48685b14b1a58e07417fb8756778a8faf3e4d536228b4a9651d156be4a39fe6c",
+              "entry": "voter_stats_20241105.txt",
+              "entryByteCount": 48726474,
+              "entrySha256": "a2472e9c4e19504f259a2624eae028c0d3844cd7b986860be36987f40c0cfdfe"
+            },
+            {
+              "localFile": "data/nc-2024-history-stats.zip",
+              "byteCount": 4715895,
+              "sha256": "56305c7b7c84a2a58702e87e4a5dcd176ce50281f62b894b24af0b162a008085",
+              "entry": "history_stats_20241105.txt",
+              "entryByteCount": 88112050,
+              "entrySha256": "9360820ed58a370b767977a7a0e9adcca98cdfdc14ff7b8b8dfd3da18a55c641"
+            },
+            {
+              "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+              "byteCount": 28220,
+              "sha256": "2f6d17734e5e3da0593427943a37ae9667b6a9f956f827f311c01d6b070a99e5"
+            }
+          ],
+          "generatedLead": {
+            "localFile": "data/nc-2024-turnout-denominator-lead.csv",
+            "byteCount": 77097,
+            "sha256": "02e9c6f4686eeb232ca5b1342a7b4fba1e12a74c9a2f7af0d0d4f820717d8ec7"
+          }
         }
       }
     },
