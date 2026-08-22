@@ -18,6 +18,7 @@ test.afterEach(async ({ page }) => {
 });
 test("public workspace uses the safe embedded layout and durable visitor cookie", async ({ page, context, baseURL }) => {
   test.setTimeout(90_000);
+  await page.setViewportSize({ height: 1080, width: 1920 });
   await context.addCookies([{ name: "crm_layout_visitor", value: "malformed", url: baseURL! }]);
   await page.goto("/?state=WA&year=2024&tab=map&mode=margin&fips=53033");
 
@@ -82,6 +83,15 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
   const dataNotes = page.getByRole("complementary", { name: "Washington data notes" });
   await workspace.getByRole("button", { name: /^Data Notes/ }).click();
   await expect(dataNotes.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
+  const dataNotesOverflow = await dataNotes.locator(".data-notes-panel").evaluate((panel) => ({
+    clientWidth: panel.clientWidth,
+    scrollWidth: panel.scrollWidth,
+  }));
+  expect(dataNotesOverflow.scrollWidth).toBeLessThanOrEqual(dataNotesOverflow.clientWidth + 1);
+
+  await page.setViewportSize({ height: 1440, width: 2560 });
+  await expect.poll(async () => workspace.evaluate((element) => element.getBoundingClientRect().width)).toBeGreaterThanOrEqual(1900);
+
   await dataNotes.getByRole("button", { name: "Collapse", exact: true }).press("Enter");
   await expect(dataNotes).toHaveClass(/is-collapsed/);
 

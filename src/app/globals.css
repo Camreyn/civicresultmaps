@@ -3977,6 +3977,8 @@ td {
 }
 
 .data-notes-panel {
+  container-name: data-notes;
+  container-type: inline-size;
   margin-bottom: 0;
 }
 
@@ -4019,12 +4021,18 @@ td {
   justify-content: space-between;
 }
 
+.data-note-head > strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .data-note-card p,
 .data-note-card span:not(.section-label):not(.quality-badge) {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.45;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .review-summary-grid,
@@ -6359,6 +6367,11 @@ td {
   padding: 10px 12px;
 }
 
+.data-gap-banner > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .data-gap-banner.missing,
 .data-gap-banner.blocked {
   background: rgba(255, 143, 126, 0.08);
@@ -6465,6 +6478,12 @@ td {
   margin: 0;
 }
 
+@container data-notes (max-width: 720px) {
+  .data-gap-banner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 900px) {
   .data-gap-banner,
   .source-drawer-panel dl,
@@ -6522,7 +6541,7 @@ td {
 
 .workspace-tabs[data-layout-content-width="wide"] {
   margin-inline: auto;
-  max-width: 1540px;
+  max-width: 1920px;
   width: 100%;
 }
 
