@@ -58,6 +58,15 @@
 # Preserve the manually archived official FBI source bytes for hash verification.
 /data/fbi-2024-bomb-threats-polling-locations.html -text whitespace=-trailing-space
 /data/sd-2024-general-canvass-certificate.pdf -text -diff
+/data/sd-2024-official-election-returns.pdf -text -diff
+/data/sd-2024-general-president-precinct-enr.json -text whitespace=-trailing-space,-space-before-tab
+/data/sd-2024-general-us-house-precinct-enr.json -text whitespace=-trailing-space,-space-before-tab
+/data/sd-2024-general-turnout-enr.json -text whitespace=-trailing-space,-space-before-tab
+/data/sd-2024-general-president-us-house-precinct-review.csv text eol=lf
+/data/sd-2024-precinct-review-reconciliation.json text eol=lf
+/data/sd-2024-turnout-semantics.json text eol=lf
+/data/sd-2024-official-active-voter-turnout.csv text eol=lf
+/data/sd-2024-official-turnout-reconciliation.json text eol=lf
 /data/nbc-2024-election-day-bomb-threat-county-compilation.json text eol=crlf
 /data/mn-sos-2024-bomb-threats-county-election-offices.html -text whitespace=-trailing-space
 /data/pa-2024-election-day-security-philadelphia-order.pdf -text -diff

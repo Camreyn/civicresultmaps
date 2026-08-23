@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 1,
+  "state": "SD",
+  "electionId": "2024-11-05-general",
+  "sourceAuthority": "South Dakota Secretary of State",
+  "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+  "localPdf": "data/sd-2024-official-election-returns.pdf",
+  "pdf": {
+    "bytes": 1864655,
+    "sha256": "4e424a7b53972963b81e49a3fef63e8e66e37bdb00431d894b3a55da041887d0"
+  },
+  "parserOrNormalizationPath": "scripts/normalize_sd_2024_official_turnout.py",
+  "sourceTable": {
+    "pdfPage": 23,
+    "reportingGrain": "county",
+    "rowCount": 66,
+    "denominatorType": "activeVoters",
+    "denominatorTiming": "November 5, 2024",
+    "activeVoters": 624175,
+    "ballotsCast": 436478,
+    "turnoutPct": 69.93,
+    "registrationSemanticsEvidence": {
+      "pdfPages": [
+        20,
+        21
+      ],
+      "asOf": "November 5, 2024",
+      "inactiveVoters": 63901,
+      "totalActiveVoters": 624175,
+      "relationshipToTurnoutTable": "The turnout-table denominator total exactly matches the registration table's Total Active total."
+    }
+  },
+  "normalizedArtifact": {
+    "localFile": "data/sd-2024-official-active-voter-turnout.csv",
+    "byteCount": 33141,
+    "sha256": "0157f8aa48fca2b38995ea07553870612bef022a0ed3d19b36b7b535e8df6de8"
+  },
+  "electionId684Comparison": {
+    "rows": [
+      {
+        "county": "Aurora",
+        "officialActiveVoters": 1834,
+        "enrVoters": 1834,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1416,
+        "enrCalcVoterTurnout": 1416,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Beadle",
+        "officialActiveVoters": 10188,
+        "enrVoters": 10189,
+        "enrVotersMinusOfficialActive": 1,
+        "officialBallotsCast": 7163,
+        "enrCalcVoterTurnout": 7163,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Bennett",
+        "officialActiveVoters": 1824,
+        "enrVoters": 1825,
+        "enrVotersMinusOfficialActive": 1,
+        "officialBallotsCast": 1102,
+        "enrCalcVoterTurnout": 1102,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Bon Homme",
+        "officialActiveVoters": 3980,
+        "enrVoters": 3980,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 3058,
+        "enrCalcVoterTurnout": 3058,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Brookings",
+        "officialActiveVoters": 21587,
+        "enrVoters": 21586,
+        "enrVotersMinusOfficialActive": -1,
+        "officialBallotsCast": 15255,
+        "enrCalcVoterTurnout": 15255,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Brown",
+        "officialActiveVoters": 25781,
+        "enrVoters": 25780,
+        "enrVotersMinusOfficialActive": -1,
+        "officialBallotsCast": 17353,
+        "enrCalcVoterTurnout": 17353,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Brule",
+        "officialActiveVoters": 3347,
+        "enrVoters": 3347,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2472,
+        "enrCalcVoterTurnout": 2472,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Buffalo",
+        "officialActiveVoters": 857,
+        "enrVoters": 857,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 475,
+        "enrCalcVoterTurnout": 475,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Butte",
+        "officialActiveVoters": 6942,
+        "enrVoters": 6942,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 5137,
+        "enrCalcVoterTurnout": 5137,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Campbell",
+        "officialActiveVoters": 1130,
+        "enrVoters": 1130,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 847,
+        "enrCalcVoterTurnout": 847,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Charles Mix",
+        "officialActiveVoters": 5439,
+        "enrVoters": 5439,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 3672,
+        "enrCalcVoterTurnout": 3672,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Clark",
+        "officialActiveVoters": 2605,
+        "enrVoters": 2602,
+        "enrVotersMinusOfficialActive": -3,
+        "officialBallotsCast": 1883,
+        "enrCalcVoterTurnout": 1883,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Clay",
+        "officialActiveVoters": 8556,
+        "enrVoters": 8555,
+        "enrVotersMinusOfficialActive": -1,
+        "officialBallotsCast": 5777,
+        "enrCalcVoterTurnout": 5777,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Codington",
+        "officialActiveVoters": 18853,
+        "enrVoters": 18854,
+        "enrVotersMinusOfficialActive": 1,
+        "officialBallotsCast": 13767,
+        "enrCalcVoterTurnout": 13767,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Corson",
+        "officialActiveVoters": 2284,
+        "enrVoters": 2284,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1157,
+        "enrCalcVoterTurnout": 1157,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Custer",
+        "officialActiveVoters": 7994,
+        "enrVoters": 7994,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 6074,
+        "enrCalcVoterTurnout": 6074,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Davison",
+        "officialActiveVoters": 13090,
+        "enrVoters": 13090,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 9335,
+        "enrCalcVoterTurnout": 9335,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Day",
+        "officialActiveVoters": 3942,
+        "enrVoters": 3942,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2989,
+        "enrCalcVoterTurnout": 2989,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Deuel",
+        "officialActiveVoters": 3125,
+        "enrVoters": 3125,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2329,
+        "enrCalcVoterTurnout": 2329,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Dewey",
+        "officialActiveVoters": 3351,
+        "enrVoters": 6152,
+        "enrVotersMinusOfficialActive": 2801,
+        "officialBallotsCast": 1909,
+        "enrCalcVoterTurnout": 1909,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Douglas",
+        "officialActiveVoters": 2108,
+        "enrVoters": 452,
+        "enrVotersMinusOfficialActive": -1656,
+        "officialBallotsCast": 1680,
+        "enrCalcVoterTurnout": 1680,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Edmunds",
+        "officialActiveVoters": 2729,
+        "enrVoters": 2729,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2078,
+        "enrCalcVoterTurnout": 2078,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Fall River",
+        "officialActiveVoters": 6432,
+        "enrVoters": 6432,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 4351,
+        "enrCalcVoterTurnout": 4351,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Faulk",
+        "officialActiveVoters": 1579,
+        "enrVoters": 1579,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1153,
+        "enrCalcVoterTurnout": 1153,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Grant",
+        "officialActiveVoters": 4859,
+        "enrVoters": 4859,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 3694,
+        "enrCalcVoterTurnout": 3694,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Gregory",
+        "officialActiveVoters": 2902,
+        "enrVoters": 2902,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2309,
+        "enrCalcVoterTurnout": 2309,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Haakon",
+        "officialActiveVoters": 1404,
+        "enrVoters": 1404,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1141,
+        "enrCalcVoterTurnout": 1141,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Hamlin",
+        "officialActiveVoters": 4241,
+        "enrVoters": 4242,
+        "enrVotersMinusOfficialActive": 1,
+        "officialBallotsCast": 3273,
+        "enrCalcVoterTurnout": 3273,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Hand",
+        "officialActiveVoters": 2300,
+        "enrVoters": 2300,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1796,
+        "enrCalcVoterTurnout": 1796,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Hanson",
+        "officialActiveVoters": 3355,
+        "enrVoters": 3355,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2089,
+        "enrCalcVoterTurnout": 2089,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Harding",
+        "officialActiveVoters": 1022,
+        "enrVoters": 1022,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 831,
+        "enrCalcVoterTurnout": 831,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Hughes",
+        "officialActiveVoters": 11892,
+        "enrVoters": 11892,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 8616,
+        "enrCalcVoterTurnout": 8616,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Hutchinson",
+        "officialActiveVoters": 5016,
+        "enrVoters": 5021,
+        "enrVotersMinusOfficialActive": 5,
+        "officialBallotsCast": 3790,
+        "enrCalcVoterTurnout": 3790,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Hyde",
+        "officialActiveVoters": 932,
+        "enrVoters": 932,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 707,
+        "enrCalcVoterTurnout": 707,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Jackson",
+        "officialActiveVoters": 1836,
+        "enrVoters": 1836,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1151,
+        "enrCalcVoterTurnout": 1151,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Jerauld",
+        "officialActiveVoters": 1258,
+        "enrVoters": 1258,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1011,
+        "enrCalcVoterTurnout": 1011,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Jones",
+        "officialActiveVoters": 677,
+        "enrVoters": 677,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 557,
+        "enrCalcVoterTurnout": 557,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Kingsbury",
+        "officialActiveVoters": 3683,
+        "enrVoters": 3682,
+        "enrVotersMinusOfficialActive": -1,
+        "officialBallotsCast": 2858,
+        "enrCalcVoterTurnout": 2858,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Lake",
+        "officialActiveVoters": 7828,
+        "enrVoters": 7828,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 6024,
+        "enrCalcVoterTurnout": 6024,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Lawrence",
+        "officialActiveVoters": 22216,
+        "enrVoters": 22216,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 15672,
+        "enrCalcVoterTurnout": 15672,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Lincoln",
+        "officialActiveVoters": 48755,
+        "enrVoters": 48754,
+        "enrVotersMinusOfficialActive": -1,
+        "officialBallotsCast": 37039,
+        "enrCalcVoterTurnout": 37039,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Lyman",
+        "officialActiveVoters": 2192,
+        "enrVoters": 2195,
+        "enrVotersMinusOfficialActive": 3,
+        "officialBallotsCast": 1470,
+        "enrCalcVoterTurnout": 1470,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Marshall",
+        "officialActiveVoters": 2826,
+        "enrVoters": 2827,
+        "enrVotersMinusOfficialActive": 1,
+        "officialBallotsCast": 2156,
+        "enrCalcVoterTurnout": 2156,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "McCook",
+        "officialActiveVoters": 3987,
+        "enrVoters": 3987,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 3100,
+        "enrCalcVoterTurnout": 3100,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "McPherson",
+        "officialActiveVoters": 1730,
+        "enrVoters": 1730,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1332,
+        "enrCalcVoterTurnout": 1332,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Meade",
+        "officialActiveVoters": 20771,
+        "enrVoters": 20769,
+        "enrVotersMinusOfficialActive": -2,
+        "officialBallotsCast": 14899,
+        "enrCalcVoterTurnout": 14899,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Mellette",
+        "officialActiveVoters": 1159,
+        "enrVoters": 1159,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 753,
+        "enrCalcVoterTurnout": 753,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Miner",
+        "officialActiveVoters": 1627,
+        "enrVoters": 1627,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1194,
+        "enrCalcVoterTurnout": 1194,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Minnehaha",
+        "officialActiveVoters": 136816,
+        "enrVoters": 136817,
+        "enrVotersMinusOfficialActive": 1,
+        "officialBallotsCast": 95648,
+        "enrCalcVoterTurnout": 95648,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Moody",
+        "officialActiveVoters": 4386,
+        "enrVoters": 4386,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 3258,
+        "enrCalcVoterTurnout": 3258,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Oglala Lakota",
+        "officialActiveVoters": 8060,
+        "enrVoters": 8060,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 3128,
+        "enrCalcVoterTurnout": 3128,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Pennington",
+        "officialActiveVoters": 90586,
+        "enrVoters": 90588,
+        "enrVotersMinusOfficialActive": 2,
+        "officialBallotsCast": 57555,
+        "enrCalcVoterTurnout": 57555,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Perkins",
+        "officialActiveVoters": 2183,
+        "enrVoters": 2183,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1619,
+        "enrCalcVoterTurnout": 1619,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Potter",
+        "officialActiveVoters": 1684,
+        "enrVoters": 1684,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1322,
+        "enrCalcVoterTurnout": 1322,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Roberts",
+        "officialActiveVoters": 6196,
+        "enrVoters": 6200,
+        "enrVotersMinusOfficialActive": 4,
+        "officialBallotsCast": 4215,
+        "enrCalcVoterTurnout": 4215,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Sanborn",
+        "officialActiveVoters": 1645,
+        "enrVoters": 1645,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1232,
+        "enrCalcVoterTurnout": 1232,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Spink",
+        "officialActiveVoters": 4246,
+        "enrVoters": 4246,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 3197,
+        "enrCalcVoterTurnout": 3197,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Stanley",
+        "officialActiveVoters": 2212,
+        "enrVoters": 2212,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 1758,
+        "enrCalcVoterTurnout": 1758,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Sully",
+        "officialActiveVoters": 1134,
+        "enrVoters": 1134,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 913,
+        "enrCalcVoterTurnout": 913,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Todd",
+        "officialActiveVoters": 4557,
+        "enrVoters": 4557,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2170,
+        "enrCalcVoterTurnout": 2170,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Tripp",
+        "officialActiveVoters": 3591,
+        "enrVoters": 3591,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2710,
+        "enrCalcVoterTurnout": 2710,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Turner",
+        "officialActiveVoters": 6058,
+        "enrVoters": 6058,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 4632,
+        "enrCalcVoterTurnout": 4632,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Union",
+        "officialActiveVoters": 12617,
+        "enrVoters": 12617,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 8895,
+        "enrCalcVoterTurnout": 8895,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Walworth",
+        "officialActiveVoters": 3662,
+        "enrVoters": 3662,
+        "enrVotersMinusOfficialActive": 0,
+        "officialBallotsCast": 2489,
+        "enrCalcVoterTurnout": 2489,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Yankton",
+        "officialActiveVoters": 14908,
+        "enrVoters": 14769,
+        "enrVotersMinusOfficialActive": -139,
+        "officialBallotsCast": 11046,
+        "enrCalcVoterTurnout": 11046,
+        "ballotsCastDelta": 0
+      },
+      {
+        "county": "Ziebach",
+        "officialActiveVoters": 1609,
+        "enrVoters": 1610,
+        "enrVotersMinusOfficialActive": 1,
+        "officialBallotsCast": 797,
+        "enrCalcVoterTurnout": 797,
+        "ballotsCastDelta": 0
+      }
+    ],
+    "summary": {
+      "countyRows": 66,
+      "exactBallotsCastRows": 66,
+      "enrBallotsCast": 436478,
+      "officialBallotsCast": 436478,
+      "enrVoters": 625192,
+      "officialActiveVoters": 624175,
+      "enrVotersMinusOfficialActive": 1017
+    }
+  },
+  "activeSourceDecision": {
+    "decision": "activate_official_active_voter_turnout",
+    "reason": "The official returns provide complete county rows, election-day timing, and an active-voter denominator. ElectionID 684 calcVoterTurnout matches all 66 official ballots-cast rows, while its Voters field remains a separate untimestamped lead 1,017 above the official active total.",
+    "eacDisposition": "Retain EAC total-registration turnout as fallback provenance, not the active South Dakota denominator."
+  },
+  "caveats": [
+    "Turnout percentages use active voters, not all registered voters; the website must label the denominator accordingly.",
+    "The ElectionID 684 Voters field is not substituted for the official-return active-voter table because it totals 1,017 higher and has no snapshot timestamp.",
+    "The 739-vote difference from EAC ballots cast is a cross-source reporting difference, not an error or misconduct claim."
+  ]
+}

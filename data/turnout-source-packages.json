@@ -1318,22 +1318,25 @@
       "year": 2024,
       "priority": 42,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
-      "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/sd-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "sourceLevel": "county",
+      "denominatorType": "activeVoters",
+      "denominatorTiming": "electionDay",
+      "sourceTitle": "South Dakota Official Election Returns and Registration Figures",
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+      "localFile": "data/sd-2024-official-active-voter-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 66,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official SOS county active-voter turnout is normalized and active for ETL. The denominator is Total Active registration as of November 5, 2024; EAC total-registration rows remain fallback provenance only.",
+      "nextAction": "Keep the active-voter denominator label visible and retain the ENR/EAC reconciliation caveat; collect local turnout denominators only if a compatible geographic local-result package becomes available.",
       "coverage": {
         "jurisdictionRows": 66,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/sd-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 690306,
-        "ballotsCast": 435739,
-        "warningRows": 0
+        "registeredVoters": 624175,
+        "ballotsCast": 436478,
+        "warningRows": 0,
+        "sourcePdf": "data/sd-2024-official-election-returns.pdf",
+        "reconciliationFile": "data/sd-2024-official-turnout-reconciliation.json",
+        "eacFallbackFile": "data/eac-2024-state-turnout/sd-2024-eac-turnout.csv",
+        "enrComparisonFile": "data/sd-2024-turnout-semantics.json"
       }
     },
     {
@@ -1697,6 +1700,36 @@
           "sha256": "c90adc5ca5a8939a870d6d65db1acb0f2a776887d93f6e2c5adb0823a8725b94",
           "disposition": "candidate_not_loaded; active VREMS remains"
         }
+      ]
+    },
+    {
+      "state": "SD",
+      "name": "South Dakota",
+      "authority": "South Dakota Secretary of State",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "South Dakota Official Election Returns and Registration Figures",
+        "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+        "localFile": "data/sd-2024-official-active-voter-turnout.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "South Dakota November 5, 2024 Total Active registration table",
+        "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+        "localFile": "data/sd-2024-official-election-returns.pdf",
+        "parser": "scripts/normalize_sd_2024_official_turnout.py",
+        "denominatorType": "activeVoters",
+        "denominatorTiming": "November 5, 2024"
+      },
+      "expected": {
+        "turnoutRows": 66,
+        "registeredVoters": 624175,
+        "ballotsCast": 436478
+      },
+      "caveats": [
+        "The denominator is active voters as of November 5, 2024, not all registered voters.",
+        "All 66 county ballots-cast values exactly match ElectionID 684 calcVoterTurnout, but the archive's untimestamped Voters field is not substituted for the dated active-voter table.",
+        "EAC total-registration rows remain fallback provenance and are not combined with the active-voter percentages."
       ]
     },
     {

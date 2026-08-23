@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { buildCountyProfile } from "../../src/lib/county-profile-core.ts";
 import {
   findCanonicalCountyByFips,
@@ -10,6 +11,12 @@ function test(name, fn) {
   fn();
   console.log(`ok - ${name}`);
 }
+
+test("county turnout display does not assume every denominator is all registered voters", () => {
+  const countyPage = readFileSync("src/app/county/[fips]/page.tsx", "utf8");
+  assert.match(countyPage, /<dt>Turnout denominator<\/dt>/);
+  assert.doesNotMatch(countyPage, /<dt>Registered voters<\/dt>/);
+});
 
 test("canonical county search ranks exact FIPS, names, and explicit aliases", () => {
   assert.equal(searchCanonicalCounties({ query: "40079" })[0]?.displayName, "Le Flore County");

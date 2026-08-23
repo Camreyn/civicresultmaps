@@ -219,7 +219,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
               <>
                 <dl className={styles.metricGrid}>
                   <div><dt>Ballots cast</dt><dd>{formatNumber(profile.turnout.ballotsCast)}</dd></div>
-                  <div><dt>Registered voters</dt><dd>{formatNumber(profile.turnout.registeredVoters)}</dd></div>
+                  <div><dt>Turnout denominator</dt><dd>{formatNumber(profile.turnout.registeredVoters)}</dd></div>
                   <div><dt>Reported/calculated rate</dt><dd>{formatPct(profile.turnout.turnoutPct)}</dd></div>
                   <div><dt>Reporting grain</dt><dd>{profile.turnout.level}</dd></div>
                 </dl>
