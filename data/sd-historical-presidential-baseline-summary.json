@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "state": "SD",
+  "sourceAuthority": "South Dakota Secretary of State",
+  "sourceId": "sd-historical-presidential-official-county",
+  "parserOrNormalizationPath": "scripts/normalize_sd_historical_presidential_baseline.py",
+  "sources": [
+    {
+      "id": "sd-2012-general-official-statewide-candidates-county",
+      "year": 2012,
+      "sourceTitle": "South Dakota 2012 General Election Official Results - Presidential Electors by County",
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2012%20Assets/2012generalelectionstatewidecandidatesbycounty.pdf",
+      "localPdf": "data/sd-2012-general-official-statewide-candidates-county.pdf",
+      "pdf": {
+        "bytes": 177676,
+        "sha256": "cd1b353d116b18c24a06c686be793e9310091339e1e1635e934d542cbf816a8b"
+      },
+      "pdfPages": 4,
+      "tablePage": 1,
+      "reportingGrain": "county",
+      "totals": {
+        "rows": 66,
+        "dem": 145039,
+        "rep": 210610,
+        "other": 8166,
+        "total": 363815
+      }
+    },
+    {
+      "id": "sd-2016-official-election-returns",
+      "year": 2016,
+      "sourceTitle": "South Dakota 2016 Official Election Returns and Registration Figures",
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/Prior%20to%202026/ElectionReturns2016_Web.pdf",
+      "localPdf": "data/sd-2016-official-election-returns.pdf",
+      "pdf": {
+        "bytes": 431448,
+        "sha256": "e9b841ce1b5fd109dc9bead72a3748c6bf9075b08199595d5dc7201d89c3040f"
+      },
+      "pdfPages": 48,
+      "tablePage": 14,
+      "reportingGrain": "county",
+      "totals": {
+        "rows": 66,
+        "dem": 117458,
+        "rep": 227721,
+        "other": 24914,
+        "total": 370093
+      }
+    },
+    {
+      "id": "sd-2020-general-official-state-canvass",
+      "year": 2020,
+      "sourceTitle": "South Dakota 2020 General Election Official State Canvass Results",
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2020%20Assests/2020GeneralStateCanvassFinal%26Certificate.pdf",
+      "localPdf": "data/sd-2020-general-official-state-canvass.pdf",
+      "pdf": {
+        "bytes": 823991,
+        "sha256": "34ad25189dd9fb4d6a83d30486a97502ef0a26cfcd09ec1f01f9e5895f2d5d22"
+      },
+      "pdfPages": 17,
+      "tablePage": 2,
+      "reportingGrain": "county",
+      "totals": {
+        "rows": 66,
+        "dem": 150471,
+        "rep": 261043,
+        "other": 11095,
+        "total": 422609
+      }
+    }
+  ],
+  "normalizedArtifact": {
+    "localFile": "data/sd-historical-presidential-baseline.csv",
+    "rowCount": 198,
+    "years": [
+      2012,
+      2016,
+      2020
+    ],
+    "byteCount": 55304,
+    "sha256": "8772bbe71220e94e8a590f7f9c6c3cdd8189ddd25c6bf14f59bb8f434748e30c"
+  },
+  "caveat": "These are official county presidential baselines for historical context. The 2012 source's Shannon County row is normalized to Oglala Lakota County, the county's current canonical name. They do not establish 2024 precinct geometry or a 2024 result-to-feature crosswalk."
+}

@@ -8,6 +8,8 @@
     "postElectionAuditPage": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
     "officialCertifiedCanvass": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
     "officialReturns": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+    "localCanvassHistoryPage": "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx",
+    "pollingLocations": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/2024GeneralPollingLocation.pdf",
     "publicRecordsRequest": "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
     "countyAuditors": "https://vip.sdsos.gov/CountyAuditors.aspx",
     "candidates": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=684",
@@ -265,6 +267,22 @@
       }
     ]
   },
+  "postElectionAuditCollectionDecision": {
+    "checkedAt": "2026-08-24",
+    "expectedRowCount": 66,
+    "liveParsedRowCount": 0,
+    "retainedRowCount": 66,
+    "matches": false,
+    "liveUniqueCountyCount": 0,
+    "retainedUniqueCountyCount": 66,
+    "countySetMatches": false,
+    "liveLinkedCertificateCount": 0,
+    "retainedLinkedCertificateCount": 83,
+    "liveDiscrepancySummaryCount": 0,
+    "retainedDiscrepancySummaryCount": 14,
+    "usedRetainedContext": true,
+    "reason": "The live official page no longer matched the pinned 66-county set, unique-row count, certificate-link count, and discrepancy-summary count, so the collector retained the prior hash-reviewed context instead of accepting a malformed regression."
+  },
   "canvassUrlProbes": [
     {
       "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/State%20Canvass%20and%20Certificate.pdf",
@@ -343,7 +361,7 @@
       "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
     ],
     "result": "Wave 25 did not locate the certificate at the tested paths. Wave 26 subsequently found and retained the official State Canvass and Certificate from the SOS Election History page; it exactly validates all 66 county President and U.S. House staging rows. The ElectionID 684 export remains an explicitly unofficial lower-total artifact.",
-    "nextStep": "Use the public-records request path and county-auditor directory for certified local adjustment/allocation evidence, precinct crosswalk or geometry, official historical baselines, and normalized administration context."
+    "nextStep": "Use the public-records request path and Buffalo/Stanley county-auditor contacts for the two missing canvasses plus an authoritative ElectionID 684 identity crosswalk and election-effective 2024 precinct geometry. Treat normalized administration context as a separate supplemental follow-up; official historical baselines are resolved."
   },
   "turnoutLeadDecision": {
     "status": "official_active_voter_table_activated",

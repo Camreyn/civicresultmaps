@@ -1,7 +1,7 @@
 {
   "state": "SD",
   "stateName": "South Dakota",
-  "checkedAt": "2026-08-23",
+  "checkedAt": "2026-08-24",
   "currentConfigStatus": {
     "activeParser": "countyPresidentCsv+localComparisonCsv+normalizedTurnoutCsv+historicalPresidentialCsv",
     "resultRows": 66,
@@ -10,7 +10,7 @@
     "historicalBaselineRows": 198,
     "geometryFeatures": 66,
     "completionDecision": "remain_in_source_discovery_queue",
-    "reason": "South Dakota retains the certified State Canvass and Certificate for all 66 county result rows, loads complete official-source ElectionID 684 President-versus-U.S.-House review context for 691 county-qualified reporting units, and now uses the official 66-county Election Returns and Registration Figures active-voter turnout table. The local ENR rows remain explicitly unofficial and 194 President votes and 184 U.S. House votes below the certified canvass; those county deltas are never allocated locally. South Dakota remains incomplete pending certified local reconciliation, precinct geometry/crosswalks, official historical baselines, and normalized administration context."
+    "reason": "South Dakota retains the certified State Canvass and Certificate for all 66 county result rows, loads complete official-source ElectionID 684 President-versus-U.S.-House review context for 691 county-qualified reporting units, uses the official 66-county Election Returns and Registration Figures active-voter turnout table, and now loads 198 official county presidential history rows for 2012, 2016, and 2020. The published 2024 county-canvass bundles contain county canvass certificate sections for 64 counties but omit Buffalo and Stanley; their local-result pages expose visible precinct names rather than ElectionID 684 unit IDs and do not supply election-effective geometry. The local ENR rows therefore remain explicitly unofficial and 194 President votes and 184 U.S. House votes below the certified canvass; those county deltas are never allocated locally."
   },
   "loadedArtifacts": [
     {
@@ -193,6 +193,23 @@
       "caveat": "Active-voter denominator is labeled explicitly in normalized rows. All ballots-cast values match the ElectionID 684 turnout payload, but its untimestamped Voters field totals 1,017 higher and is not used."
     },
     {
+      "id": "sd-2024-certified-local-canvass-publication-audit",
+      "sourceTitle": "South Dakota 2024 General certified local canvass bundles and polling-location evidence",
+      "sourceUrl": "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx; https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/2024GeneralPollingLocation.pdf",
+      "localFile": "data/sd-2024-certified-local-canvass-publication-audit.json; data/precinct-geometry/SD/2024-11-05-general/raw/sd-2024-general-precincts-and-polling-places.pdf",
+      "parser": "scripts/audit_sd_2024_certified_local_canvasses.py",
+      "authority": "South Dakota Secretary of State and county boards of canvassers",
+      "reportingGrain": "certified local table publication coverage and polling-place-name evidence",
+      "expectedCounts": {
+        "publishedBundles": 4,
+        "certificateRecords": 65,
+        "distinctCountiesPresent": 64,
+        "missingCounties": ["Buffalo", "Stanley"],
+        "duplicatedCounties": ["Brule"]
+      },
+      "caveat": "The four large canvass bundles are staged for reproducible source audit rather than committed. The committed polling-location PDF is not geometry. Certified local activation remains fail-closed because Buffalo and Stanley are absent and the table names lack authoritative ElectionID 684 IDs."
+    },
+    {
       "id": "sd-2024-official-source-request-packet",
       "sourceTitle": "South Dakota remaining-native-source request packet and official audit-page context",
       "sourceUrl": "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx; https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684; https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx; https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
@@ -206,7 +223,7 @@
         "discrepancySummaryCounties": 14,
         "canvassUrlProbeMisses": 5
       },
-      "caveat": "Request/evidence packet only. The certified county canvass and official turnout report are now retained; the packet remains useful for certified local allocation, geometry/crosswalk, historical, and normalized administration-context requests."
+      "caveat": "Request/evidence packet only. Certified county results, official turnout, and official historical baselines are resolved. The packet now targets the omitted Buffalo and Stanley county canvasses, an authoritative ElectionID 684 result-unit crosswalk or election-effective precinct geometry, and normalized administration-context records."
     },
     {
       "id": "sd-2024-eac-turnout",
@@ -224,12 +241,12 @@
       "caveat": "Retained as total-registration fallback provenance only. Active turnout now uses the official South Dakota active-voter table, so the two denominators must not be mixed."
     },
     {
-      "id": "sd-historical-presidential-wikipedia-county",
-      "sourceTitle": "Wikipedia South Dakota county presidential tables for 2012, 2016, and 2020",
-      "sourceUrl": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_South_Dakota",
-      "localFile": "data/sd-historical-presidential-baseline.csv",
-      "parser": "scripts/collect-sd-historical-baseline.mjs -> historicalPresidentialCsv",
-      "authority": "Secondary county tables with source footnotes",
+      "id": "sd-historical-presidential-official-county",
+      "sourceTitle": "South Dakota Secretary of State official 2012, 2016, and 2020 county presidential tables",
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2012%20Assets/2012generalelectionstatewidecandidatesbycounty.pdf; https://sdsos.gov/elections-voting/assets/Archive/Prior%20to%202026/ElectionReturns2016_Web.pdf; https://sdsos.gov/elections-voting/assets/Archive/2020%20Assests/2020GeneralStateCanvassFinal%26Certificate.pdf",
+      "localFile": "data/sd-2012-general-official-statewide-candidates-county.pdf; data/sd-2016-official-election-returns.pdf; data/sd-2020-general-official-state-canvass.pdf; data/sd-historical-presidential-baseline.csv; data/sd-historical-presidential-baseline-summary.json",
+      "parser": "scripts/normalize_sd_historical_presidential_baseline.py -> historicalPresidentialCsv",
+      "authority": "South Dakota Secretary of State",
       "reportingGrain": "county",
       "expectedCounts": {
         "rows": 198,
@@ -237,9 +254,12 @@
           2012,
           2016,
           2020
-        ]
+        ],
+        "2012TotalVotes": 363815,
+        "2016TotalVotes": 370093,
+        "2020TotalVotes": 422609
       },
-      "caveat": "Contextual baseline only; replace with official SD SOS historical canvass artifacts when collected."
+      "caveat": "Official contextual baseline. The 2012 source labels present-day Oglala Lakota County as Shannon County; normalization preserves that source display name while using the current canonical county identity. These county rows do not establish 2024 precinct geometry."
     },
     {
       "id": "sd-county-geometry",
@@ -285,6 +305,12 @@
       "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
       "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
       "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+      "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx",
+      "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Aurora-Clark.pdf",
+      "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Clay-Faulk.pdf",
+      "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Grant-Lyman.pdf",
+      "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Marshall-Ziebach.pdf",
+      "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/2024GeneralPollingLocation.pdf",
       "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0"
     ],
     "observedOfficialCapabilities": [
@@ -301,10 +327,25 @@
       "The retained official statewide XLSX export labels itself 2024 Unofficial General Election Results and reconciles to the lower ElectionID 684 map-data totals, not to the certified canvass.",
       "ElectionTerminology.aspx?eid=684 states that Election Night results are unofficial and that official certified results are available from SOS Elections after the 66 County Canvass Boards and State Canvass Board canvass and certify results.",
       "The official 2024 General post-election audit page lists 66 county rows, 83 linked audit certificate URLs, and 14 counties with discrepancy summary text. This is retained as administration context, not as a certified result source.",
+      "On August 24, 2026 the live post-election-audit page no longer exposed the previously parsed 66-county table shape. The collector records a zero-row live parse and retains the prior reviewed 66-county context rather than accepting a silent zero-row regression.",
+      "The official 2024 Election History page links four county-canvass bundles. County canvass certificate sections were identified for 64 distinct counties; Buffalo and Stanley are absent, while Brule appears twice. Local-result pages expose county and visible precinct name but no ElectionID 684 CountyID or StatePrecinctID.",
+      "The official 2024 polling-location PDF is a County/Precinct Name/Polling Place/Address/City listing. It contains no polygons, stable feature IDs, coordinate reference system, or authoritative mapping to ElectionID 684 result-unit IDs, so it cannot activate precinct geometry.",
+      "Official 2012, 2016, and 2020 Secretary of State PDFs now supply all 198 county presidential historical rows and exactly reconcile to their published statewide totals.",
       "Wave 24 tested five likely 2024 State Canvass and Certificate PDF paths under the SOS 2024 election-information assets tree; all returned 404.",
       "Wave 26 found the retained official certificate through the SOS 2024 Election History page and verifies its county tables deterministically in scripts/verify_sd_2024_general_canvass.py."
     ],
-    "blocker": "The retained official State Canvass and Certificate PDF exactly validates all current 66-county President and U.S. House values, the official local endpoints support 691 same-grain review rows, and the official Election Returns report supplies compatible county active-voter turnout. South Dakota still needs a certified allocation for the 194 President and 184 U.S. House votes absent from the unofficial local ENR rows, precinct geometry/crosswalk evidence, official historical baselines, and normalized administration context before it can be treated as completed official-native coverage.",
+    "blocker": "Official county results, active-voter turnout, and 2012/2016/2020 county history are resolved. The SOS-published 2024 county-canvass bundles contain county canvass certificate sections for 64 counties but omit Buffalo and Stanley; their local-result pages also lack ElectionID 684 unit IDs. The SOS polling-location PDF is not geometry. Completion therefore requires the missing Buffalo and Stanley canvasses plus an authoritative result-unit identity crosswalk and election-effective 2024 precinct geometry. Until then, the 691 ENR review rows remain explicitly unofficial and their 194-President/184-House certified gaps are not allocated locally. Normalized administration context remains a supplemental follow-up, not a substitute for those source gaps.",
+    "certifiedLocalCanvassPublicationAudit": {
+      "checkedAt": "2026-08-24",
+      "sourcePage": "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx",
+      "publishedBundleCount": 4,
+      "distinctCountiesPresent": 64,
+      "missingCounties": ["Buffalo", "Stanley"],
+      "duplicatedCounties": ["Brule"],
+      "identityFieldsObserved": ["county", "visible precinct name"],
+      "identityFieldsMissing": ["ElectionID 684 CountyID", "ElectionID 684 StatePrecinctID", "geometry feature ID"],
+      "decision": "fail_closed_no_certified_local_activation"
+    },
     "archiveProbe": {
       "checkedAt": "2026-07-04",
       "method": "Queried the archived official SD ResultsAjax service and retained candidate, county and local map-data, turnout archive evidence, and the official ResultsExport.aspx?eid=684 statewide XLSX workbook for 2024 General ElectionID 684.",
@@ -334,7 +375,7 @@
         "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
       ],
       "result": "The ElectionID 684 export shell presents Unofficial Results General Election November 5, 2024, and the FAQ directs users to SOS Elections for certified results after county and state canvass certification. Wave 26 then located the official certificate on the SOS Election History page and hash-pinned it locally.",
-      "nextStep": "Use the retained certificate, official active-voter turnout table, and lower ElectionID 684 local evidence only for their documented roles; pursue certified local adjustment/allocation evidence, precinct crosswalk or geometry, official historical baselines, and normalized administration context."
+      "nextStep": "Use the retained certificate, official active-voter turnout table, official historical baselines, and lower ElectionID 684 local evidence only for their documented roles. Request the omitted Buffalo and Stanley county canvasses and an authoritative ElectionID 684 result-unit crosswalk/election-effective precinct geometry; treat administration-context normalization as a separate supplemental follow-up."
     },
     "turnoutLeadDecision": {
       "status": "official_active_voter_table_activated",
@@ -367,9 +408,9 @@
     "Current 66-county President and U.S. House staging values are exactly validated against the retained official State Canvass and Certificate PDF. The generated county CSVs retain their secondary extraction lineage rather than becoming a direct certificate-table parser.",
     "Review charts use 691 official-source ElectionID 684 President-versus-at-large-U.S.-House reporting units. The application labels them unofficial; their totals are 194 President votes and 184 U.S. House votes below the certified canvass, and those county deltas are not allocated locally.",
     "Turnout uses the official 66-county Election Returns table: 436,478 ballots cast over 624,175 active voters as of November 5, 2024. It must not be described as an all-registered-voter denominator.",
-    "Historical baselines are contextual secondary county tables for 2012, 2016, and 2020.",
+    "Historical baselines are 198 official Secretary of State county rows for 2012, 2016, and 2020. The 2012 Shannon County source row is normalized to current Oglala Lakota County identity while retaining its source display name.",
     "County geometry is loaded; precinct geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded.",
-    "Wave 24 source-request packet retains the SOS public-records path and official audit-page context. Audit certificates are administration context only; remaining requests concern certified local allocation, precinct geometry/crosswalks, official history, and normalized administration records.",
+    "The SOS-published county-canvass bundles contain county canvass certificate sections for 64 counties but omit Buffalo and Stanley; their local-result pages expose no ElectionID 684 unit IDs. The official polling-location PDF contains names and locations, not precinct polygons. Remaining source requests target those two canvasses and an authoritative ID/geometry crosswalk; audit certificates remain administration context only.",
     "ElectionID 684 turnout archive is comparison evidence only: its ballots-cast values exactly match the active official table, but its untimestamped Voters field totals 1,017 higher and is not used. EAC total-registration rows remain fallback provenance."
   ],
   "requestMatrixArtifact": "data/sd-2024-source-request-matrix.tsv",

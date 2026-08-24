@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "state": "SD",
+  "electionDate": "2024-11-05",
+  "sourceAuthority": "South Dakota Secretary of State and county boards of canvassers",
+  "sourcePage": "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx",
+  "parserOrNormalizationPath": "scripts/audit_sd_2024_certified_local_canvasses.py",
+  "auditedAt": "2026-08-24",
+  "bundles": [
+    {
+      "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Aurora-Clark.pdf",
+      "stagingFile": ".etl/sd-2024-certified-local-canvasses/Aurora-Clark.pdf",
+      "byteCount": 19372145,
+      "sha256": "432c68f2d62031c9692af6f7c5fc22bc0f57c36211805ed8afe6898056203759",
+      "pdfPages": 112,
+      "certificates": [
+        {
+          "county": "Aurora",
+          "certificatePage": 1
+        },
+        {
+          "county": "Beadle",
+          "certificatePage": 10
+        },
+        {
+          "county": "Bennett",
+          "certificatePage": 20
+        },
+        {
+          "county": "Bon Homme",
+          "certificatePage": 29
+        },
+        {
+          "county": "Brookings",
+          "certificatePage": 39
+        },
+        {
+          "county": "Brown",
+          "certificatePage": 49
+        },
+        {
+          "county": "Brule",
+          "certificatePage": 59
+        },
+        {
+          "county": "Brule",
+          "certificatePage": 68
+        },
+        {
+          "county": "Butte",
+          "certificatePage": 77
+        },
+        {
+          "county": "Campbell",
+          "certificatePage": 85
+        },
+        {
+          "county": "Charles Mix",
+          "certificatePage": 94
+        },
+        {
+          "county": "Clark",
+          "certificatePage": 104
+        }
+      ]
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Clay-Faulk.pdf",
+      "stagingFile": ".etl/sd-2024-certified-local-canvasses/Clay-Faulk.pdf",
+      "byteCount": 16895877,
+      "sha256": "5bfec72afec250e3f6ee61469288a18320c905b60d5f0acd3a44a847d845f2bf",
+      "pdfPages": 87,
+      "certificates": [
+        {
+          "county": "Clay",
+          "certificatePage": 1
+        },
+        {
+          "county": "Codington",
+          "certificatePage": 11
+        },
+        {
+          "county": "Corson",
+          "certificatePage": 20
+        },
+        {
+          "county": "Custer",
+          "certificatePage": 30
+        },
+        {
+          "county": "Davison",
+          "certificatePage": 39
+        },
+        {
+          "county": "Day",
+          "certificatePage": 48
+        },
+        {
+          "county": "Deuel",
+          "certificatePage": 51
+        },
+        {
+          "county": "Dewey",
+          "certificatePage": 55
+        },
+        {
+          "county": "Douglas",
+          "certificatePage": 65
+        },
+        {
+          "county": "Edmunds",
+          "certificatePage": 66
+        },
+        {
+          "county": "Fall River",
+          "certificatePage": 69
+        },
+        {
+          "county": "Faulk",
+          "certificatePage": 79
+        }
+      ]
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Grant-Lyman.pdf",
+      "stagingFile": ".etl/sd-2024-certified-local-canvasses/Grant-Lyman.pdf",
+      "byteCount": 28844325,
+      "sha256": "6dfd44263ae01edd2af256083545e7579b3c2b2a12fc441cbffb4ca1d9abd42a",
+      "pdfPages": 153,
+      "certificates": [
+        {
+          "county": "Grant",
+          "certificatePage": 1
+        },
+        {
+          "county": "Gregory",
+          "certificatePage": 10
+        },
+        {
+          "county": "Haakon",
+          "certificatePage": 15
+        },
+        {
+          "county": "Hamlin",
+          "certificatePage": 27
+        },
+        {
+          "county": "Hand",
+          "certificatePage": 37
+        },
+        {
+          "county": "Hanson",
+          "certificatePage": 46
+        },
+        {
+          "county": "Harding",
+          "certificatePage": 55
+        },
+        {
+          "county": "Hughes",
+          "certificatePage": 64
+        },
+        {
+          "county": "Hutchinson",
+          "certificatePage": 74
+        },
+        {
+          "county": "Hyde",
+          "certificatePage": 85
+        },
+        {
+          "county": "Jackson",
+          "certificatePage": 96
+        },
+        {
+          "county": "Jerauld",
+          "certificatePage": 100
+        },
+        {
+          "county": "Jones",
+          "certificatePage": 110
+        },
+        {
+          "county": "Kingsbury",
+          "certificatePage": 119
+        },
+        {
+          "county": "Lake",
+          "certificatePage": 121
+        },
+        {
+          "county": "Lawrence",
+          "certificatePage": 127
+        },
+        {
+          "county": "Lincoln",
+          "certificatePage": 136
+        },
+        {
+          "county": "Lyman",
+          "certificatePage": 144
+        }
+      ]
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Marshall-Ziebach.pdf",
+      "stagingFile": ".etl/sd-2024-certified-local-canvasses/Marshall-Ziebach.pdf",
+      "byteCount": 43617360,
+      "sha256": "df59610614bb65ecff19caa1d3afb1330cc47dfe229d7b5ffef75f86268726d6",
+      "pdfPages": 203,
+      "certificates": [
+        {
+          "county": "Marshall",
+          "certificatePage": 1
+        },
+        {
+          "county": "McCook",
+          "certificatePage": 6
+        },
+        {
+          "county": "McPherson",
+          "certificatePage": 9
+        },
+        {
+          "county": "Meade",
+          "certificatePage": 18
+        },
+        {
+          "county": "Mellette",
+          "certificatePage": 27
+        },
+        {
+          "county": "Miner",
+          "certificatePage": 37
+        },
+        {
+          "county": "Minnehaha",
+          "certificatePage": 41
+        },
+        {
+          "county": "Moody",
+          "certificatePage": 69
+        },
+        {
+          "county": "Oglala Lakota",
+          "certificatePage": 78
+        },
+        {
+          "county": "Pennington",
+          "certificatePage": 88
+        },
+        {
+          "county": "Perkins",
+          "certificatePage": 99
+        },
+        {
+          "county": "Potter",
+          "certificatePage": 109
+        },
+        {
+          "county": "Roberts",
+          "certificatePage": 118
+        },
+        {
+          "county": "Sanborn",
+          "certificatePage": 126
+        },
+        {
+          "county": "Spink",
+          "certificatePage": 129
+        },
+        {
+          "county": "Sully",
+          "certificatePage": 140
+        },
+        {
+          "county": "Todd",
+          "certificatePage": 142
+        },
+        {
+          "county": "Tripp",
+          "certificatePage": 150
+        },
+        {
+          "county": "Turner",
+          "certificatePage": 158
+        },
+        {
+          "county": "Union",
+          "certificatePage": 166
+        },
+        {
+          "county": "Walworth",
+          "certificatePage": 175
+        },
+        {
+          "county": "Yankton",
+          "certificatePage": 184
+        },
+        {
+          "county": "Ziebach",
+          "certificatePage": 194
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "publishedBundleCount": 4,
+    "certificateRecords": 65,
+    "distinctCountiesPresent": 64,
+    "countiesPresent": [
+      "Aurora",
+      "Beadle",
+      "Bennett",
+      "Bon Homme",
+      "Brookings",
+      "Brown",
+      "Brule",
+      "Butte",
+      "Campbell",
+      "Charles Mix",
+      "Clark",
+      "Clay",
+      "Codington",
+      "Corson",
+      "Custer",
+      "Davison",
+      "Day",
+      "Deuel",
+      "Dewey",
+      "Douglas",
+      "Edmunds",
+      "Fall River",
+      "Faulk",
+      "Grant",
+      "Gregory",
+      "Haakon",
+      "Hamlin",
+      "Hand",
+      "Hanson",
+      "Harding",
+      "Hughes",
+      "Hutchinson",
+      "Hyde",
+      "Jackson",
+      "Jerauld",
+      "Jones",
+      "Kingsbury",
+      "Lake",
+      "Lawrence",
+      "Lincoln",
+      "Lyman",
+      "Marshall",
+      "McCook",
+      "McPherson",
+      "Meade",
+      "Mellette",
+      "Miner",
+      "Minnehaha",
+      "Moody",
+      "Oglala Lakota",
+      "Pennington",
+      "Perkins",
+      "Potter",
+      "Roberts",
+      "Sanborn",
+      "Spink",
+      "Sully",
+      "Todd",
+      "Tripp",
+      "Turner",
+      "Union",
+      "Walworth",
+      "Yankton",
+      "Ziebach"
+    ],
+    "missingCounties": [
+      "Buffalo",
+      "Stanley"
+    ],
+    "duplicatedCounties": [
+      "Brule"
+    ]
+  },
+  "identityAssessment": {
+    "observedFields": [
+      "county",
+      "visible precinct name"
+    ],
+    "enrIdentityTermsObserved": [],
+    "missingIdentityFields": [
+      "ElectionID 684 CountyID",
+      "ElectionID 684 StatePrecinctID",
+      "geometry feature ID"
+    ]
+  },
+  "pollingLocationEvidence": {
+    "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/2024GeneralPollingLocation.pdf",
+    "localFile": "data/precinct-geometry/SD/2024-11-05-general/raw/sd-2024-general-precincts-and-polling-places.pdf",
+    "byteCount": 835498,
+    "sha256": "622cb1dd85feac493d1fb8ba78cf486244bf261cc209d44cfc187fb50cf27667",
+    "pdfPages": 48,
+    "observedFields": [
+      "County",
+      "Precinct Name",
+      "Polling Place",
+      "Address",
+      "City",
+      "Instructions"
+    ],
+    "stableResultOrFeatureIdTermsObserved": [],
+    "geometryFieldsObserved": [],
+    "decision": "not_geometry_or_authoritative_result_unit_crosswalk"
+  },
+  "decision": "fail_closed_no_certified_local_or_geometry_activation",
+  "blocker": "The published bundles have county canvass certificate sections for 64 distinct counties but omit Buffalo and Stanley, and their local-result pages do not expose ElectionID 684 unit IDs. The official polling-location PDF is not geometry. An authoritative result-unit crosswalk and election-effective 2024 precinct geometry are still required."
+}

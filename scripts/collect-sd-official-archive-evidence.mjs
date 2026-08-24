@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import XLSX from "xlsx";
 
 const serviceRoot = "https://sdresws.azurewebsites.net/ResultsAjax.svc";
@@ -6,6 +6,8 @@ const electionID = 684;
 const outputPath = "data/sd-2024-official-results-archive-evidence.json";
 const statewideExportPath = "data/sd-2024-general-statewide-results.xlsx";
 const sourceRequestPacketPath = "data/sd-2024-official-source-request-packet.json";
+const certifiedLocalCanvassAuditPath = "data/sd-2024-certified-local-canvass-publication-audit.json";
+const retainedRequestPacket = JSON.parse(await readFile(sourceRequestPacketPath, "utf8"));
 
 const urls = {
   archivedGeneralShell:
@@ -19,6 +21,10 @@ const urls = {
     "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
   officialReturns:
     "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+  localCanvassHistoryPage:
+    "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx",
+  pollingLocations:
+    "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/2024GeneralPollingLocation.pdf",
   publicRecordsRequest: "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
   countyAuditors: "https://vip.sdsos.gov/CountyAuditors.aspx",
   candidates: `${serviceRoot}/GetCandidates?ElectionType=General&ElectionID=${electionID}`,
@@ -64,7 +70,7 @@ const wave25PublicRecheck = {
   result:
     "Wave 25 did not locate the certificate at the tested paths. Wave 26 subsequently found and retained the official State Canvass and Certificate from the SOS Election History page; it exactly validates all 66 county President and U.S. House staging rows. The ElectionID 684 export remains an explicitly unofficial lower-total artifact.",
   nextStep:
-    "Use the public-records request path and county-auditor directory for certified local adjustment/allocation evidence, precinct crosswalk or geometry, official historical baselines, and normalized administration context."
+    "Use the public-records request path and Buffalo/Stanley county-auditor contacts for the two missing canvasses plus an authoritative ElectionID 684 identity crosswalk and election-effective 2024 precinct geometry. Treat normalized administration context as a separate supplemental follow-up; official historical baselines are resolved."
 };
 
 const turnoutLeadDecision = {
@@ -301,6 +307,35 @@ function parsePostElectionAuditPage(html, baseUrl) {
   };
 }
 
+function postElectionAuditShape(liveSummary, retainedSummary) {
+  const normalizeCounty = (value) => String(value ?? "").replace(/\s+County$/i, "").trim().toLowerCase();
+  const liveCounties = liveSummary.countyRows.map((row) => normalizeCounty(row.county));
+  const retainedCounties = retainedSummary?.countyRows?.map((row) => normalizeCounty(row.county)) ?? [];
+  const liveUniqueCounties = [...new Set(liveCounties)].sort();
+  const retainedUniqueCounties = [...new Set(retainedCounties)].sort();
+  const countySetMatches =
+    liveUniqueCounties.length === retainedUniqueCounties.length &&
+    liveUniqueCounties.every((county, index) => county === retainedUniqueCounties[index]);
+
+  return {
+    matches:
+      liveSummary.rowCount === 66 &&
+      liveUniqueCounties.length === 66 &&
+      retainedSummary?.rowCount === 66 &&
+      retainedUniqueCounties.length === 66 &&
+      countySetMatches &&
+      liveSummary.linkedCertificateCount === retainedSummary.linkedCertificateCount &&
+      liveSummary.discrepancySummaryCount === retainedSummary.discrepancySummaryCount,
+    liveUniqueCountyCount: liveUniqueCounties.length,
+    retainedUniqueCountyCount: retainedUniqueCounties.length,
+    countySetMatches,
+    liveLinkedCertificateCount: liveSummary.linkedCertificateCount,
+    retainedLinkedCertificateCount: retainedSummary?.linkedCertificateCount ?? 0,
+    liveDiscrepancySummaryCount: liveSummary.discrepancySummaryCount,
+    retainedDiscrepancySummaryCount: retainedSummary?.discrepancySummaryCount ?? 0
+  };
+}
+
 function summarizeRace(rows, raceName) {
   const raceRows = rows.filter((row) => row.RaceName === raceName);
   const byCandidate = new Map();
@@ -451,12 +486,14 @@ const [
 const statewideExport = await fetchStatewideExportWorkbook(urls.statewideExportShell);
 await mkdir("data", { recursive: true });
 try {
-  await writeFile(statewideExportPath, statewideExport.bytes);
+  await readFile(statewideExportPath);
+  console.warn(`Preserving retained ${statewideExportPath}; live export is used only for endpoint verification.`);
 } catch (error) {
-  if (error?.code !== "EPERM") {
+  if (error?.code === "ENOENT") {
+    await writeFile(statewideExportPath, statewideExport.bytes);
+  } else {
     throw error;
   }
-  console.warn(`Could not overwrite retained ${statewideExportPath}; reusing the existing workbook artifact.`);
 }
 
 const candidateRows = candidatePayload.d ?? [];
@@ -465,7 +502,33 @@ const turnoutRows = turnoutPayload.d ?? [];
 const presidentialArchive = summarizeRace(mapRows, "Presidential Electors");
 const houseArchive = summarizeRace(mapRows, "United States Representative");
 const statewideExportSummary = summarizeOfficialExportWorkbook(statewideExportPath);
-const postElectionAuditSummary = parsePostElectionAuditPage(postElectionAuditHtml, urls.postElectionAuditPage);
+const livePostElectionAuditSummary = parsePostElectionAuditPage(postElectionAuditHtml, urls.postElectionAuditPage);
+const retainedPostElectionAuditSummary = retainedRequestPacket.officialPostElectionAuditContext;
+const livePostElectionAuditShape = postElectionAuditShape(
+  livePostElectionAuditSummary,
+  retainedPostElectionAuditSummary
+);
+const postElectionAuditSummary =
+  livePostElectionAuditShape.matches
+    ? livePostElectionAuditSummary
+    : retainedPostElectionAuditSummary;
+if (postElectionAuditSummary?.rowCount !== 66) {
+  throw new Error(
+    `Official post-election audit page drifted and no retained 66-county context is available: live rows=${livePostElectionAuditSummary.rowCount}`
+  );
+}
+const postElectionAuditCollectionDecision = {
+  checkedAt: "2026-08-24",
+  expectedRowCount: 66,
+  liveParsedRowCount: livePostElectionAuditSummary.rowCount,
+  retainedRowCount: retainedPostElectionAuditSummary?.rowCount ?? 0,
+  ...livePostElectionAuditShape,
+  usedRetainedContext: !livePostElectionAuditShape.matches,
+  reason:
+    livePostElectionAuditShape.matches
+      ? "The live official page retained its pinned 66-county set, unique rows, certificate-link count, and discrepancy-summary count."
+      : "The live official page no longer matched the pinned 66-county set, unique-row count, certificate-link count, and discrepancy-summary count, so the collector retained the prior hash-reviewed context instead of accepting a malformed regression."
+};
 const officialResultsNote = parseOfficialResultsNote(electionTerminologyHtml);
 
 const evidence = {
@@ -512,8 +575,7 @@ const evidence = {
     discrepancySummaryCounties: postElectionAuditSummary.discrepancySummaryCounties,
     countiesWithoutLinkedCertificate: postElectionAuditSummary.countiesWithoutLinkedCertificate
   },
-  wave25PublicRecheck,
-  turnoutLeadDecision,
+  postElectionAuditCollectionDecision,
   canvassUrlProbes,
   expectedCertifiedTotals,
   reconciliation: {
@@ -533,11 +595,18 @@ const evidence = {
     "The official archive ElectionID and service family are identified, and the official ElectionID 684 statewide XLSX export is retained locally, but both official app artifacts are labeled unofficial or map/export evidence and remain below the certified canvass.",
     "The retained archive payload and statewide export are ENR/app results rather than the official certified canvass; the separately retained certificate controls county reconciliation.",
     "The matching local endpoints are active only as explicitly unofficial review context. Certified-minus-ENR deltas are preserved at county grain and never allocated locally.",
-    "Active turnout comes from the separately retained official Election Returns and Registration Figures active-voter table; the archive turnout payload remains comparison evidence."
-  ]
+    "Active turnout comes from the separately retained official Election Returns and Registration Figures active-voter table; the archive turnout payload remains comparison evidence.",
+    "Wave 25 did not locate the certificate at its tested paths; Wave 26 subsequently found and retained it through the SOS Election History page."
+  ],
+  wave25PublicRecheck,
+  turnoutLeadDecision
 };
 
 await writeFile(outputPath, `${JSON.stringify(evidence, null, 2)}\n`);
+
+const certifiedLocalCanvassPublicationAudit = JSON.parse(
+  await readFile(certifiedLocalCanvassAuditPath, "utf8")
+);
 
 const requestPacket = {
   sourceAuthority: "South Dakota Secretary of State",
@@ -546,21 +615,21 @@ const requestPacket = {
   electionYear: 2024,
   reportingGrain: "county_and_local_reporting_unit",
   parserOrNormalizationPath: "scripts/collect-sd-official-archive-evidence.mjs",
-  checkedAt: "2026-08-23",
-  status: "remaining_native_source_request_packet",
+  checkedAt: "2026-08-24",
+  status: "remaining_certified_local_identity_and_geometry_request_packet",
   blocker:
-    "Certified county results and official active-voter turnout are resolved. The official ElectionID 684 local rows remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the certified canvass; no official local allocation or precinct geometry/crosswalk is retained.",
+    "Certified county results, official active-voter turnout, and official 2012/2016/2020 county history are resolved. The four county-canvass bundles published by the SOS contain county canvass certificate sections for 64 counties but omit Buffalo and Stanley; their local-result pages expose no ElectionID 684 unit IDs. The official polling-location PDF has no polygons. The 691 ENR local rows therefore remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the certified canvass; no certified local allocation or precinct geometry/crosswalk is activated.",
   requestTargets: [
     {
       target: "South Dakota Secretary of State Elections Division",
       url: urls.officialResultsPage,
       requestPath: urls.publicRecordsRequest,
-      ask: "Provide any certified precinct/reporting-unit adjustment or allocation table for President and United States Representative, plus the election-applicable reporting-unit crosswalk or boundary data and official historical county canvass artifacts."
+      ask: "Provide the omitted Buffalo and Stanley 2024 General county-canvass local result tables, an authoritative crosswalk from certified-table precinct names to ElectionID 684 CountyID/StatePrecinctID units, and the election-effective 2024 precinct boundary data or reviewed feature crosswalk."
     },
     {
-      target: "South Dakota county auditors",
+      target: "Buffalo and Stanley county auditors",
       url: urls.countyAuditors,
-      ask: "Request any certified local canvass abstracts, reporting-unit definitions/crosswalks, precinct boundary files, and available administration records needed to reconcile the ElectionID 684 local rows."
+      ask: "Request each county's certified 2024 General local canvass abstract/table and any reporting-unit definitions, ElectionID 684 ID crosswalk, or election-effective precinct boundary file needed to reconcile the official ENR rows."
     }
   ],
   requestedFields: [
@@ -572,9 +641,12 @@ const requestPacket = {
     "certified_votes",
     "write_in_or_canvass_adjustment_votes_if_separate",
     "geometry_or_crosswalk_identifier",
+    "geometry_effective_date",
+    "geometry_crs",
     "certification_date",
     "source_document_url"
   ],
+  certifiedLocalCanvassPublicationAudit,
   evidenceToAttach: [
     {
       artifact: outputPath,
@@ -595,6 +667,19 @@ const requestPacket = {
       summary: "Documents the complete 691-unit unofficial ENR universe and the certified-minus-ENR county deltas that must not be manufactured locally."
     },
     {
+      artifact: certifiedLocalCanvassAuditPath,
+      sourceUrl: urls.localCanvassHistoryPage,
+      summary:
+        "Reproducible PDF audit of the four official county-canvass bundles: county canvass certificate sections were identified for 64 distinct counties, Buffalo and Stanley are absent, and Brule is duplicated."
+    },
+    {
+      artifact:
+        "data/precinct-geometry/SD/2024-11-05-general/raw/sd-2024-general-precincts-and-polling-places.pdf",
+      sourceUrl: urls.pollingLocations,
+      summary:
+        "Official polling-location list contains county, precinct name, polling place, address, city, and instructions, but no polygons, feature IDs, CRS, or authoritative ElectionID 684 crosswalk."
+    },
+    {
       artifact: urls.electionTerminology,
       summary:
         officialResultsNote ||
@@ -608,12 +693,17 @@ const requestPacket = {
   wave25PublicRecheck,
   turnoutLeadDecision,
   officialPostElectionAuditContext: postElectionAuditSummary,
+  postElectionAuditCollectionDecision,
   canvassUrlProbes,
   reconciliationDeltas: evidence.reconciliation,
   caveats: [
     "This packet is a source-evidence and request artifact only; it is not a replacement result source.",
     "Audit certificates document post-election audit context and selected discrepancies, but they do not provide a complete certified local allocation or geometry crosswalk.",
-    "Keep the 691 official-source local review rows explicitly labeled unofficial and do not allocate certified county deltas without authoritative local evidence."
+    "The published bundles contain county canvass certificate sections for 64 distinct counties but omit Buffalo and Stanley and duplicate Brule; their local-result pages expose visible precinct names without ElectionID 684 unit IDs.",
+    "The official polling-location PDF is not geometry and cannot support a display-name-only result-to-polygon join.",
+    "Keep the 691 official-source local review rows explicitly labeled unofficial and do not allocate certified county deltas without authoritative local evidence.",
+    "Active turnout comes from the separately retained official Election Returns and Registration Figures active-voter table; the ElectionID 684 turnout payload remains comparison evidence.",
+    "Official county historical baselines for 2012, 2016, and 2020 are resolved separately and are no longer part of this request."
   ]
 };
 
