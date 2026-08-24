@@ -1,5 +1,26 @@
 # Precinct GIS Implementation Program
 
+### 2026-08-23 - South Dakota local review activation without geometry
+
+- `scripts/collect-sd-2024-local-review.mjs` retains and hash-checks the official
+  ElectionID 684 President and at-large U.S. House `Category=PREC` payloads and
+  emits 691 same-key county-qualified reporting-unit review rows across all 66
+  counties. The official application labels these returns unofficial; their
+  totals remain 194 President votes and 184 U.S. House votes below the
+  certified canvass. The reconciliation preserves those deltas by county and
+  never allocates them to local units.
+- The source identity universe contains 632 four-digit geographic candidates
+  and 59 C-prefixed administrative units, including nine explicitly named
+  absentee units. This change activates review charts only. It assigns no unit
+  to geometry, creates no reporting-unit crosswalk, and leaves county geometry
+  as the only active South Dakota map layer.
+- `scripts/normalize_sd_2024_official_turnout.py` separately hash-pins the
+  official Election Returns and Registration Figures PDF and normalizes its 66
+  county turnout rows. The denominator is 624,175 active voters as of November
+  5, 2024, with 436,478 ballots cast. Those ballots exactly match the ENR
+  turnout payload in every county; the untimestamped ENR `Voters` field totals
+  1,017 higher and is not substituted for the dated official table.
+
 ### 2026-08-19 - South Dakota certified county-result reconciliation
 
 - The official 2024 South Dakota State Board of Canvassers certificate is retained
@@ -8,8 +29,9 @@
   all 66 county President and U.S. House result rows to existing staging CSVs.
   This is county-result provenance only: no precinct, ward, VTD, local
   reporting-unit geometry, crosswalk, or map activation was added. The retained
-  ElectionID 684 turnout fields remain a denominator-timing lead, and EAC
-  turnout remains active.
+  At that milestone ElectionID 684 turnout fields remained a denominator-timing
+  lead and EAC turnout remained active; the 2026-08-23 entry above records the
+  later official active-voter turnout replacement.
 
 This is the durable execution plan and work log for election-versioned local
 geography in CivicResultMaps. Read it before changing precinct, ward, VTD,

@@ -1,0 +1,760 @@
+{
+  "schemaVersion": 1,
+  "state": "SD",
+  "electionId": "2024-11-05-general",
+  "reviewedAt": "2026-08-23",
+  "sourceAuthority": "South Dakota Secretary of State",
+  "parserOrNormalizationPath": "scripts/collect-sd-2024-local-review.mjs",
+  "certificationStatus": "unofficial_enr_context_only",
+  "rawArtifacts": [
+    {
+      "sourceAuthority": "South Dakota Secretary of State election-results application",
+      "sourceUrl": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=PREC&RaceID=12665&OSN=0&County=0&Party=0&ElectionID=684",
+      "localArtifactPath": "data/sd-2024-general-president-precinct-enr.json",
+      "electionYear": 2024,
+      "reportingGrain": "county-qualified reporting unit",
+      "byteCount": 1673968,
+      "sha256": "c34f546f0ce46c67c94a5c2015ac68670c48c0bb6398c07d1c92ce27dff57b8e"
+    },
+    {
+      "sourceAuthority": "South Dakota Secretary of State election-results application",
+      "sourceUrl": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=PREC&RaceID=11954&OSN=0&County=0&Party=0&ElectionID=684",
+      "localArtifactPath": "data/sd-2024-general-us-house-precinct-enr.json",
+      "electionYear": 2024,
+      "reportingGrain": "county-qualified reporting unit",
+      "byteCount": 822816,
+      "sha256": "e0836bb8260421f71a1cd8a13418d24b0d7b30aa44cf03aac538a015feacc7dd"
+    }
+  ],
+  "normalizedArtifact": {
+    "localArtifactPath": "data/sd-2024-general-president-us-house-precinct-review.csv",
+    "rowCount": 691,
+    "byteCount": 59291,
+    "sha256": "848cfac8b9b5eb5be6cada942b0ee8b5eb25fe17cf8bae0cfa8aee9c1d6c9046"
+  },
+  "reportingUnits": {
+    "rows": 691,
+    "counties": 66,
+    "sourceIdentity": "CountyID + StatePrecinctID",
+    "fourDigitGeographicCandidates": 632,
+    "cPrefixedAdministrativeUnits": 59,
+    "cPrefixedAbsenteeUnits": 9,
+    "cPrefixedOtherUnits": 50,
+    "geometryDecision": "No reporting unit is assigned to geometry by this review-row package."
+  },
+  "officialEnrTotals": {
+    "president": {
+      "candidateRows": 2764,
+      "reportingUnits": 691,
+      "harris": 146811,
+      "trump": 271938,
+      "other": 9979,
+      "total": 428728
+    },
+    "usHouse": {
+      "candidateRows": 1382,
+      "reportingUnits": 691,
+      "democratic": 117785,
+      "republican": 303479,
+      "other": 0,
+      "total": 421264
+    }
+  },
+  "certifiedCanvass": {
+    "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+    "localArtifactPath": "data/sd-2024-general-canvass-certificate.pdf",
+    "sha256": "a9be018609c45e97c5b9b9c41d7f53dffc9c3390746486c115739e6d6d072c9c",
+    "president": {
+      "harris": 146859,
+      "trump": 272081,
+      "other": 9982,
+      "total": 428922
+    },
+    "usHouse": {
+      "dem": 117818,
+      "rep": 303630,
+      "other": 0,
+      "total": 421448
+    }
+  },
+  "reconciliation": {
+    "presidentCertifiedMinusEnr": 194,
+    "usHouseCertifiedMinusEnr": 184,
+    "countiesWithPresidentDelta": 24,
+    "countiesWithUsHouseDelta": 22,
+    "countyRows": [
+      {
+        "county": "Aurora",
+        "reportingUnits": 5,
+        "presidentEnr": 1393,
+        "presidentCertified": 1393,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1368,
+        "houseCertified": 1368,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Beadle",
+        "reportingUnits": 9,
+        "presidentEnr": 7010,
+        "presidentCertified": 7010,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 6970,
+        "houseCertified": 6970,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Bennett",
+        "reportingUnits": 4,
+        "presidentEnr": 1088,
+        "presidentCertified": 1088,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1064,
+        "houseCertified": 1064,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Bon Homme",
+        "reportingUnits": 5,
+        "presidentEnr": 2992,
+        "presidentCertified": 2992,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2937,
+        "houseCertified": 2937,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Brookings",
+        "reportingUnits": 10,
+        "presidentEnr": 14938,
+        "presidentCertified": 14939,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 14776,
+        "houseCertified": 14777,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Brown",
+        "reportingUnits": 12,
+        "presidentEnr": 17040,
+        "presidentCertified": 17043,
+        "presidentCertifiedMinusEnr": 3,
+        "houseEnr": 16724,
+        "houseCertified": 16727,
+        "houseCertifiedMinusEnr": 3
+      },
+      {
+        "county": "Brule",
+        "reportingUnits": 4,
+        "presidentEnr": 2423,
+        "presidentCertified": 2423,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2407,
+        "houseCertified": 2407,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Buffalo",
+        "reportingUnits": 3,
+        "presidentEnr": 466,
+        "presidentCertified": 466,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 457,
+        "houseCertified": 457,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Butte",
+        "reportingUnits": 18,
+        "presidentEnr": 5081,
+        "presidentCertified": 5082,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 4903,
+        "houseCertified": 4904,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Campbell",
+        "reportingUnits": 5,
+        "presidentEnr": 836,
+        "presidentCertified": 836,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 809,
+        "houseCertified": 809,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Charles Mix",
+        "reportingUnits": 13,
+        "presidentEnr": 3609,
+        "presidentCertified": 3615,
+        "presidentCertifiedMinusEnr": 6,
+        "houseEnr": 3598,
+        "houseCertified": 3604,
+        "houseCertifiedMinusEnr": 6
+      },
+      {
+        "county": "Clark",
+        "reportingUnits": 12,
+        "presidentEnr": 1842,
+        "presidentCertified": 1842,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1817,
+        "houseCertified": 1817,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Clay",
+        "reportingUnits": 11,
+        "presidentEnr": 5656,
+        "presidentCertified": 5657,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 5580,
+        "houseCertified": 5580,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Codington",
+        "reportingUnits": 23,
+        "presidentEnr": 13510,
+        "presidentCertified": 13510,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 13286,
+        "houseCertified": 13286,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Corson",
+        "reportingUnits": 9,
+        "presidentEnr": 1142,
+        "presidentCertified": 1143,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 1121,
+        "houseCertified": 1122,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Custer",
+        "reportingUnits": 10,
+        "presidentEnr": 5996,
+        "presidentCertified": 6001,
+        "presidentCertifiedMinusEnr": 5,
+        "houseEnr": 5865,
+        "houseCertified": 5870,
+        "houseCertifiedMinusEnr": 5
+      },
+      {
+        "county": "Davison",
+        "reportingUnits": 8,
+        "presidentEnr": 9177,
+        "presidentCertified": 9177,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 9065,
+        "houseCertified": 9065,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Day",
+        "reportingUnits": 11,
+        "presidentEnr": 2932,
+        "presidentCertified": 2932,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2905,
+        "houseCertified": 2905,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Deuel",
+        "reportingUnits": 10,
+        "presidentEnr": 2298,
+        "presidentCertified": 2298,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2260,
+        "houseCertified": 2260,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Dewey",
+        "reportingUnits": 11,
+        "presidentEnr": 1871,
+        "presidentCertified": 1871,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1838,
+        "houseCertified": 1838,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Douglas",
+        "reportingUnits": 6,
+        "presidentEnr": 1658,
+        "presidentCertified": 1658,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1619,
+        "houseCertified": 1619,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Edmunds",
+        "reportingUnits": 6,
+        "presidentEnr": 2031,
+        "presidentCertified": 2031,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2003,
+        "houseCertified": 2003,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Fall River",
+        "reportingUnits": 9,
+        "presidentEnr": 4271,
+        "presidentCertified": 4274,
+        "presidentCertifiedMinusEnr": 3,
+        "houseEnr": 4158,
+        "houseCertified": 4161,
+        "houseCertifiedMinusEnr": 3
+      },
+      {
+        "county": "Faulk",
+        "reportingUnits": 7,
+        "presidentEnr": 1130,
+        "presidentCertified": 1130,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1096,
+        "houseCertified": 1096,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Grant",
+        "reportingUnits": 18,
+        "presidentEnr": 3630,
+        "presidentCertified": 3630,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 3581,
+        "houseCertified": 3581,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Gregory",
+        "reportingUnits": 3,
+        "presidentEnr": 2267,
+        "presidentCertified": 2267,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2220,
+        "houseCertified": 2220,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Haakon",
+        "reportingUnits": 5,
+        "presidentEnr": 1123,
+        "presidentCertified": 1125,
+        "presidentCertifiedMinusEnr": 2,
+        "houseEnr": 1101,
+        "houseCertified": 1103,
+        "houseCertifiedMinusEnr": 2
+      },
+      {
+        "county": "Hamlin",
+        "reportingUnits": 7,
+        "presidentEnr": 3226,
+        "presidentCertified": 3226,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 3164,
+        "houseCertified": 3164,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Hand",
+        "reportingUnits": 5,
+        "presidentEnr": 1763,
+        "presidentCertified": 1764,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 1738,
+        "houseCertified": 1739,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Hanson",
+        "reportingUnits": 5,
+        "presidentEnr": 2046,
+        "presidentCertified": 2046,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2018,
+        "houseCertified": 2018,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Harding",
+        "reportingUnits": 8,
+        "presidentEnr": 820,
+        "presidentCertified": 820,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 797,
+        "houseCertified": 797,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Hughes",
+        "reportingUnits": 6,
+        "presidentEnr": 8434,
+        "presidentCertified": 8435,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 8360,
+        "houseCertified": 8361,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Hutchinson",
+        "reportingUnits": 6,
+        "presidentEnr": 3729,
+        "presidentCertified": 3736,
+        "presidentCertifiedMinusEnr": 7,
+        "houseEnr": 3696,
+        "houseCertified": 3700,
+        "houseCertifiedMinusEnr": 4
+      },
+      {
+        "county": "Hyde",
+        "reportingUnits": 1,
+        "presidentEnr": 695,
+        "presidentCertified": 695,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 683,
+        "houseCertified": 683,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Jackson",
+        "reportingUnits": 8,
+        "presidentEnr": 1129,
+        "presidentCertified": 1129,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1112,
+        "houseCertified": 1112,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Jerauld",
+        "reportingUnits": 5,
+        "presidentEnr": 998,
+        "presidentCertified": 999,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 999,
+        "houseCertified": 1000,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Jones",
+        "reportingUnits": 2,
+        "presidentEnr": 550,
+        "presidentCertified": 550,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 539,
+        "houseCertified": 539,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Kingsbury",
+        "reportingUnits": 6,
+        "presidentEnr": 2801,
+        "presidentCertified": 2801,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2780,
+        "houseCertified": 2780,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Lake",
+        "reportingUnits": 10,
+        "presidentEnr": 5906,
+        "presidentCertified": 5906,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 5862,
+        "houseCertified": 5862,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Lawrence",
+        "reportingUnits": 11,
+        "presidentEnr": 15408,
+        "presidentCertified": 15409,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 15044,
+        "houseCertified": 15045,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Lincoln",
+        "reportingUnits": 32,
+        "presidentEnr": 36393,
+        "presidentCertified": 36393,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 35855,
+        "houseCertified": 35855,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Lyman",
+        "reportingUnits": 7,
+        "presidentEnr": 1446,
+        "presidentCertified": 1447,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 1417,
+        "houseCertified": 1417,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Marshall",
+        "reportingUnits": 9,
+        "presidentEnr": 2108,
+        "presidentCertified": 2109,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 2097,
+        "houseCertified": 2098,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "McCook",
+        "reportingUnits": 6,
+        "presidentEnr": 3031,
+        "presidentCertified": 3031,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 3014,
+        "houseCertified": 3014,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "McPherson",
+        "reportingUnits": 4,
+        "presidentEnr": 1299,
+        "presidentCertified": 1299,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1237,
+        "houseCertified": 1237,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Meade",
+        "reportingUnits": 41,
+        "presidentEnr": 14664,
+        "presidentCertified": 14672,
+        "presidentCertifiedMinusEnr": 8,
+        "houseEnr": 14287,
+        "houseCertified": 14294,
+        "houseCertifiedMinusEnr": 7
+      },
+      {
+        "county": "Mellette",
+        "reportingUnits": 4,
+        "presidentEnr": 740,
+        "presidentCertified": 740,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 623,
+        "houseCertified": 623,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Miner",
+        "reportingUnits": 8,
+        "presidentEnr": 1167,
+        "presidentCertified": 1167,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1143,
+        "houseCertified": 1143,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Minnehaha",
+        "reportingUnits": 81,
+        "presidentEnr": 93951,
+        "presidentCertified": 93986,
+        "presidentCertifiedMinusEnr": 35,
+        "houseEnr": 92287,
+        "houseCertified": 92319,
+        "houseCertifiedMinusEnr": 32
+      },
+      {
+        "county": "Moody",
+        "reportingUnits": 6,
+        "presidentEnr": 3189,
+        "presidentCertified": 3189,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 3157,
+        "houseCertified": 3157,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Oglala Lakota",
+        "reportingUnits": 9,
+        "presidentEnr": 3058,
+        "presidentCertified": 3062,
+        "presidentCertifiedMinusEnr": 4,
+        "houseEnr": 3028,
+        "houseCertified": 3033,
+        "houseCertifiedMinusEnr": 5
+      },
+      {
+        "county": "Pennington",
+        "reportingUnits": 46,
+        "presidentEnr": 56575,
+        "presidentCertified": 56580,
+        "presidentCertifiedMinusEnr": 5,
+        "houseEnr": 55350,
+        "houseCertified": 55355,
+        "houseCertifiedMinusEnr": 5
+      },
+      {
+        "county": "Perkins",
+        "reportingUnits": 10,
+        "presidentEnr": 1591,
+        "presidentCertified": 1591,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1577,
+        "houseCertified": 1577,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Potter",
+        "reportingUnits": 3,
+        "presidentEnr": 1298,
+        "presidentCertified": 1298,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1282,
+        "houseCertified": 1282,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Roberts",
+        "reportingUnits": 12,
+        "presidentEnr": 4148,
+        "presidentCertified": 4149,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 4098,
+        "houseCertified": 4099,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Sanborn",
+        "reportingUnits": 4,
+        "presidentEnr": 1212,
+        "presidentCertified": 1212,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1211,
+        "houseCertified": 1211,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Spink",
+        "reportingUnits": 9,
+        "presidentEnr": 3139,
+        "presidentCertified": 3139,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 3115,
+        "houseCertified": 3115,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Stanley",
+        "reportingUnits": 3,
+        "presidentEnr": 1735,
+        "presidentCertified": 1735,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 1690,
+        "houseCertified": 1690,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Sully",
+        "reportingUnits": 4,
+        "presidentEnr": 901,
+        "presidentCertified": 901,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 866,
+        "houseCertified": 866,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Todd",
+        "reportingUnits": 10,
+        "presidentEnr": 2126,
+        "presidentCertified": 2126,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2097,
+        "houseCertified": 2097,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Tripp",
+        "reportingUnits": 13,
+        "presidentEnr": 2654,
+        "presidentCertified": 2654,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 2611,
+        "houseCertified": 2611,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Turner",
+        "reportingUnits": 8,
+        "presidentEnr": 4538,
+        "presidentCertified": 4538,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 4501,
+        "houseCertified": 4501,
+        "houseCertifiedMinusEnr": 0
+      },
+      {
+        "county": "Union",
+        "reportingUnits": 12,
+        "presidentEnr": 8774,
+        "presidentCertified": 8876,
+        "presidentCertifiedMinusEnr": 102,
+        "houseEnr": 8607,
+        "houseCertified": 8707,
+        "houseCertifiedMinusEnr": 100
+      },
+      {
+        "county": "Walworth",
+        "reportingUnits": 10,
+        "presidentEnr": 2464,
+        "presidentCertified": 2466,
+        "presidentCertifiedMinusEnr": 2,
+        "houseEnr": 2404,
+        "houseCertified": 2406,
+        "houseCertifiedMinusEnr": 2
+      },
+      {
+        "county": "Yankton",
+        "reportingUnits": 7,
+        "presidentEnr": 10831,
+        "presidentCertified": 10832,
+        "presidentCertifiedMinusEnr": 1,
+        "houseEnr": 10609,
+        "houseCertified": 10610,
+        "houseCertifiedMinusEnr": 1
+      },
+      {
+        "county": "Ziebach",
+        "reportingUnits": 6,
+        "presidentEnr": 781,
+        "presidentCertified": 781,
+        "presidentCertifiedMinusEnr": 0,
+        "houseEnr": 781,
+        "houseCertified": 781,
+        "houseCertifiedMinusEnr": 0
+      }
+    ]
+  },
+  "activationDecision": {
+    "reviewCharts": "activate_as_official_source_unofficial_enr_context",
+    "certifiedResults": "retain_certificate_validated_county_rows",
+    "geometry": "not_activated",
+    "reason": "The two official ENR endpoints expose the same complete 691-unit universe and support same-grain review. They remain explicitly unofficial and cannot receive the 194 certified President votes or 184 certified U.S. House votes without an official local canvass allocation."
+  },
+  "caveats": [
+    "ElectionID 684 is labeled Unofficial Results by the South Dakota Secretary of State election-results application.",
+    "The local ENR totals are 194 President votes and 184 U.S. House votes below the certified State Board of Canvassers totals.",
+    "The certified-minus-ENR deltas are retained at county grain only and are never allocated to reporting units.",
+    "The 59 C-prefixed administrative reporting units are included in review charts but are not treated as polygon precincts."
+  ]
+}

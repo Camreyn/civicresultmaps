@@ -98,7 +98,7 @@ def main() -> None:
         "certification": "The PDF certificate states that the attached returns are a true and correct record of votes certified to the Secretary of State.",
         "president": assert_exact("President", certified_president_combined, president),
         "usHouse": assert_exact("U.S. House", certified_house, house),
-        "caveat": "The certificate validates county candidate totals, not the ElectionID 684 turnout/registration fields. EAC remains the active turnout source until compatible certified voter-participation and registration rows are collected.",
+        "caveat": "The certificate validates county candidate totals, not turnout or registration. Active turnout is supplied separately by the official Election Returns and Registration Figures active-voter table.",
     }
     OUT.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))

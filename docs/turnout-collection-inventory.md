@@ -1,15 +1,15 @@
 # Turnout Collection Inventory
 
-Generated from repo configs and current source-package pass on 2026-06-30.
+Generated from repo configs and current source-package pass on 2026-08-23.
 
 This is an internal collection inventory. It is not rendered in the Civic Result Maps web app.
 
 ## Summary
 
 - States checked: 50
-- Turnout loaded in database or validated native staging: 20
+- Turnout loaded in database or validated native staging: 21
 - Loaded through official EAC fallback while state-native denominator remains missing: 4
-- Need native turnout package or state-native replacement: 32
+- Need native turnout package or state-native replacement: 31
 
 ## Loaded Turnout
 
@@ -29,6 +29,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | NH New Hampshire | 304 | town_ward | namesOnChecklist | `data/nh-2024-town-ward-president-governor.csv` |
 | OH Ohio | 8,878 | precinct | registeredVoters | `data/oh-2024-statewide-races-precinct-level.xlsx` |
 | PA Pennsylvania | 67 | county | registeredVoters | `data/pa-2024-voter-registration-vote-history-summary.xlsx` |
+| SD South Dakota | 66 | county | activeVoters | `data/sd-2024-official-active-voter-turnout.csv` |
 | UT Utah | 29 | county | activeVoters | `data/ut-2024-general-turnout.csv` |
 | SC South Carolina | 46 | county | printedRegistrationListVoters | `data/sc-2024-vrems-turnout.csv` |
 | VA Virginia | 2,669 | precinct | registeredVoters | `data/va-2024-enr-election-turnout.csv` |
@@ -51,7 +52,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 These states still need a state-native turnout package or review of whether fallback turnout coverage is sufficient for the current caveats.
 
-`AK`, `AL`, `AR`, `CT`, `DE`, `FL`, `GA`, `ID`, `IL`, `KS`, `KY`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `VT`, `WA`, `WY`
+`AK`, `AL`, `AR`, `CT`, `DE`, `FL`, `GA`, `ID`, `IL`, `KS`, `KY`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `TN`, `TX`, `VT`, `WA`, `WY`
 
 ## Standard Request For Each Missing State
 
@@ -242,7 +243,7 @@ Delaware still uses official EAC 2024 V2 county/jurisdiction fallback turnout ro
 Vermont now has native 2024 President county rows and town/reporting-district President-versus-U.S.-Senate review rows loaded from official SOS static JSON, but active turnout still uses official EAC 2024 V2 fallback rows in `etl/state-configs/vt.json`: 247 jurisdiction rows, 361,604 ballots cast, and 500,986 registered voters. The official SOS turnout JSON/PDF artifacts are retained at `data/vt-2024-official-sources/2024-general-turnout.json` and `data/vt-2024-official-sources/2024-general-voter-turnout.pdf`. The observed official JSON lead has 247 town rows, 517,051 registered voters, 372,885 voters cast, and 234,848 early/absentee ballots, while the certified canvass cover page reports 522,600 registered voters. Replacing the EAC fallback remains blocked on denominator-timing review and reconciliation; no production promotion was performed.
 ## South Dakota Wave 20 Update
 
-South Dakota remains on official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/sd-2024-eac-turnout.csv`: 66 rows, 435,739 ballots cast, and 690,306 registered voters. The retained official State Board of Canvassers 2024 General Election Canvass and Certificate at `data/sd-2024-general-canvass-certificate.pdf` exactly validates all 66 current county President (428,922) and at-large U.S. House (421,448) candidate rows through `scripts/verify_sd_2024_general_canvass.py`; it has no turnout or registration fields. ElectionID 684 returns 66 official county turnout rows with 436,478 `calcVoterTurnout` and 625,192 `Voters`, and the official ResultsExport statewide XLSX header reports the same turnout figures, but both are labeled unofficial. Keep EAC active because the archive ballots are 739 higher and its `Voters` denominator is 65,114 lower than EAC until SOS confirms timing and whether `Voters` is active, all registered, or another denominator. No geometry or turnout activation occurred.
+South Dakota now uses the official Election Returns and Registration Figures table retained at `data/sd-2024-official-election-returns.pdf` and normalized by `scripts/normalize_sd_2024_official_turnout.py`. It supplies all 66 counties, 436,478 ballots cast, and 624,175 active voters as of November 5, 2024, for 69.93% turnout. The active-voter denominator must not be described as all registered voters. All 66 ballots-cast values exactly match ElectionID 684 `calcVoterTurnout`; the archive's untimestamped `Voters` field totals 625,192, or 1,017 more than the dated official active-voter table, so it remains comparison evidence only. EAC V2 rows (435,739 ballots and 690,306 total registered voters) remain fallback provenance and are not mixed into active percentages. This turnout activation does not add precinct geometry.
 
 ## Alaska Wave 22 Update
 Alaska still uses official EAC 2024 V2 statewide/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ak-2024-eac-turnout.csv`, totaling 1 row, 340,981 ballots cast, and 611,078 registered voters. Wave 22 located and retained the official Alaska Division of Elections `ENRbyPrecinct.csv` at `data/ak-2024-general-enr-by-precinct.csv` and generated 523 same-grain President-versus-U.S.-House review rows at `data/ak-2024-general-precinct-president-us-house-review.csv`. Wave 2 verification confirmed the live ENR CSV matches the retained artifact and that de-duplicated `Reg_voters`/`total_ballots` reconcile statewide, but ENR remains a documented lead rather than an active turnout replacement because 120 district absentee/early/question reporting units carry 165,047 ballots with zero registered voters. Follow-up fields are tracked in `data/ak-2024-data-coverage-inventory.json` and `data/ak-2024-source-request-matrix.tsv`.

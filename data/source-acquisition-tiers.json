@@ -2330,16 +2330,18 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_geometry_equipment_admin_context",
       "tier": "tier_5_digital_inconsistent",
-      "reportingGrain": "county",
+      "reportingGrain": "county_and_local_reporting_unit",
       "exportFormats": [
         "official results app CSV/media pages for current election",
         "official archive service evidence for 2024 General ElectionID 684",
+        "official ElectionID 684 President and U.S. House local ResultsAjax payloads with 691 shared reporting-unit keys",
         "official ElectionID 684 statewide XLSX export evidence",
         "official 2024 General Election State Canvass and Certificate PDF with deterministic county reconciliation",
+        "official 2024 General Election Returns and Registration Figures PDF plus normalized active-voter turnout CSV",
         "secondary county tables",
         "EAC fallback turnout",
         "county GeoJSON",
-        "official certified-result request packet JSON",
+        "official remaining-native-source request packet JSON",
         "official post-election audit page summary"
       ],
       "sourceUrls": [
@@ -2351,10 +2353,13 @@
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=684",
         "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
+        "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=PREC&RaceID=12665&OSN=0&County=0&Party=0&ElectionID=684",
+        "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=PREC&RaceID=11954&OSN=0&County=0&Party=0&ElectionID=684",
         "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
         "https://web.archive.org/web/20241105222716/https://electionresults.sd.gov/",
         "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
         "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+        "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
         "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
         "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0"
       ],
@@ -2368,7 +2373,9 @@
         "secondary county presidential rows citing the SD SOS 2024 General Election Canvass and Certificate",
         "secondary county U.S. House comparison rows citing the same canvass",
         "official SD SOS archive evidence identifying 2024 General ElectionID 684, President map RaceID 12665, and U.S. House map RaceID 11954",
-        "official SD SOS archive turnout lead for 66 counties from ElectionID 684",
+        "complete official-source unofficial President-versus-U.S.-House review context for 691 CountyID-plus-StatePrecinctID units across 66 counties",
+        "official SD SOS archive turnout comparison for 66 counties from ElectionID 684",
+        "official Election Returns and Registration Figures table with 66 counties, 624,175 active voters as of November 5, 2024, and 436,478 ballots cast",
         "official SD SOS ElectionID 684 statewide XLSX export retained from ResultsExport.aspx?eid=684, labeled 2024 Unofficial General Election Results",
         "official State Board of Canvassers 2024 General Election Canvass and Certificate PDF, hash-pinned and exactly reconciling 66 county President and U.S. House rows",
         "EAC fallback turnout rows",
@@ -2377,20 +2384,19 @@
         "supplemental county equipment context from Verified Voting Verifier",
         "official results FAQ text confirming Election Night app results are unofficial and certified results are published through SOS Elections after county/state canvass certification",
         "official 2024 General post-election audit page summary with 66 county rows, 83 linked audit certificates, and 14 counties with discrepancy summary text",
-        "official certified-result request packet with SOS public-records and county-auditor request targets"
+        "official remaining-source request packet with SOS public-records and county-auditor request targets"
       ],
       "missingFields": [
-        "official same-grain precinct/local result rows",
-        "state-native turnout denominator rows",
+        "certified local allocation or adjustment evidence for the 194 President and 184 U.S. House votes absent from the unofficial ENR rows",
         "precinct boundary geometry or official local reporting-unit crosswalk",
         "official 2012/2016/2020 historical baseline artifacts",
         "normalized official audit certificate rows beyond the retained audit-page summary, plus recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "countyPresidentCsv and countyComparisonCsv load generated secondary county CSVs. scripts/verify_sd_2024_general_canvass.py hash-pins the official State Board of Canvassers certificate and fail-closed exactly reconciles all 66 county rows (President 428,922; U.S. House 421,448). The official ElectionID 684 app/XLSX remains a separate unofficial lower-total archive, and its turnout lead does not replace EAC.",
+      "parserStatus": "countyPresidentCsv loads generated county rows exactly validated by scripts/verify_sd_2024_general_canvass.py against the official State Board certificate. localComparisonCsv loads 691 same-key unofficial ElectionID 684 President-versus-U.S.-House review rows with deterministic certified-delta reconciliation. normalizedTurnoutCsv loads the official 66-county active-voter table from scripts/normalize_sd_2024_official_turnout.py; EAC remains fallback provenance.",
       "manualReviewBurden": "medium",
-      "confidence": "partial_secondary_staging",
-      "caveats": "South Dakota is not completed official-native coverage. The official certificate now exactly validates current county candidate rows, but those CSVs retain secondary extraction lineage and no direct certificate-table ingestion is active. Review rows are county-level President-versus-at-large-U.S.-House comparisons, not precinct scatter plots. Turnout remains EAC fallback while the ElectionID 684 turnout archive is a state-native denominator-timing lead.",
-      "nextAction": "Decide whether to replace the already exactly validated secondary CSV extraction with a direct certificate-table parser only if that would improve maintainability. Independently obtain compatible county/precinct turnout and registration semantics, precinct/local results, crosswalk/geometry, official historical baselines, and normalized administration context."
+      "confidence": "loaded_with_caveat",
+      "caveats": "South Dakota is not completed official-native coverage. The official certificate exactly validates current county candidate rows, but those CSVs retain secondary extraction lineage and no direct certificate-table ingestion is active. The 691 local review rows come from an official application labeled unofficial and remain 194 President votes and 184 U.S. House votes below the certified canvass; no certified deltas are allocated locally and 59 C-prefixed administrative units are not treated as polygon precincts. Turnout uses an official Election Day active-voter denominator, not all registered voters.",
+      "nextAction": "Obtain certified local adjustment/allocation evidence, precinct reporting-unit crosswalk or geometry, official historical baselines, and normalized administration context. A direct certificate-table county parser is optional if it improves maintainability."
     },
     {
       "state": "TN",

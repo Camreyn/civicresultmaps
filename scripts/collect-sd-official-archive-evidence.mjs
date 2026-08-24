@@ -15,6 +15,10 @@ const urls = {
   officialResultsPage: "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
   postElectionAuditPage:
     "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+  officialCertifiedCanvass:
+    "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/2024GeneralElectionCanvassWithCert.pdf",
+  officialReturns:
+    "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
   publicRecordsRequest: "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
   countyAuditors: "https://vip.sdsos.gov/CountyAuditors.aspx",
   candidates: `${serviceRoot}/GetCandidates?ElectionType=General&ElectionID=${electionID}`,
@@ -58,29 +62,36 @@ const wave25PublicRecheck = {
     "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
   ],
   result:
-    "No public certified 2024 General Election State Canvass and Certificate PDF/static export or reconciling official ElectionID 684 payload was found. The public official ElectionID 684 export shell still presents Unofficial Results General Election November 5, 2024, and the FAQ still directs users to SOS Elections for official certified results after county and state canvass certification.",
+    "Wave 25 did not locate the certificate at the tested paths. Wave 26 subsequently found and retained the official State Canvass and Certificate from the SOS Election History page; it exactly validates all 66 county President and U.S. House staging rows. The ElectionID 684 export remains an explicitly unofficial lower-total artifact.",
   nextStep:
-    "Use the public-records request path and county-auditor directory with the retained ElectionID 684 evidence to request the certified canvass/export, county canvass abstracts, and any write-in or canvass-adjustment rows explaining the 194 President and 184 U.S. House vote deltas."
+    "Use the public-records request path and county-auditor directory for certified local adjustment/allocation evidence, precinct crosswalk or geometry, official historical baselines, and normalized administration context."
 };
 
 const turnoutLeadDecision = {
-  status: "retain_as_denominator_timing_lead_only",
-  activeFallback: {
+  status: "official_active_voter_table_activated",
+  activeOfficialSource: {
+    source: urls.officialReturns,
+    localFile: "data/sd-2024-official-active-voter-turnout.csv",
+    rowCount: 66,
+    ballotsCast: 436478,
+    activeVoters: 624175,
+    denominatorTiming: "November 5, 2024"
+  },
+  eacFallbackProvenance: {
     source: "EAC 2024 EAVS V2 jurisdiction fallback",
     rowCount: 66,
     ballotsCast: 435739,
     registeredVoters: 690306
   },
-  officialArchiveLead: {
+  officialArchiveComparison: {
     source: urls.countyTurnout,
     rowCount: 66,
     ballotsCast: 436478,
     voters: 625192,
-    terminology:
-      "ElectionTerminology.aspx?eid=684 says Registered Voters are all individuals registered by the voter registration deadline and that turnout calculation is only based on active voters."
+    votersDeltaFromActiveOfficial: 1017
   },
   reason:
-    "The archive turnout ballots-cast total is 739 above the active EAC fallback and the archive Voters field is 65,114 below the EAC registered-voter denominator. Because the official terminology separates registered-voter language from active-voter turnout calculation and the ElectionID 684 export remains labeled unofficial, the archive turnout rows should not replace EAC fallback until SOS confirms denominator timing and field semantics."
+    "The official Election Returns and Registration Figures report supplies all 66 county rows and identifies its denominator as active voters as of November 5, 2024. Its 436,478 ballots cast exactly match the archive; the untimestamped archive Voters field and EAC total-registration rows remain comparison provenance only."
 };
 
 async function fetchServiceJson(url) {
@@ -324,14 +335,14 @@ function summarizeRace(rows, raceName) {
 
 function summarizeTurnout(rows) {
   const counties = new Set();
-  let registeredVoters = 0;
+  let votersFieldTotal = 0;
   let ballotsCast = 0;
   let precinctsReporting = 0;
   let totalPrecincts = 0;
 
   for (const row of rows) {
     counties.add(String(row.CountyName ?? "").trim());
-    registeredVoters += numberValue(row.Voters);
+    votersFieldTotal += numberValue(row.Voters);
     ballotsCast += numberValue(row.calcVoterTurnout);
     precinctsReporting += numberValue(row.PrecinctsReporting);
     totalPrecincts += numberValue(row.TotalPrecincts);
@@ -340,7 +351,7 @@ function summarizeTurnout(rows) {
   return {
     rowCount: rows.length,
     countyCount: counties.size,
-    registeredVoters,
+    votersFieldTotal,
     ballotsCast,
     precinctsReporting,
     totalPrecincts
@@ -506,7 +517,7 @@ const evidence = {
   canvassUrlProbes,
   expectedCertifiedTotals,
   reconciliation: {
-    status: "official_archive_and_statewide_export_do_not_reconcile_to_current_certified-style_staging_totals",
+    status: "unofficial_archive_and_statewide_export_reconciled_as_lower_than_certified_canvass",
     presidentialCertifiedMinusArchive:
       expectedCertifiedTotals.presidentialElectors.totalVotes - presidentialArchive.totalVotes,
     usHouseCertifiedMinusArchive:
@@ -519,10 +530,10 @@ const evidence = {
       statewideExportSummary.usRepresentative.totalVotes
   },
   caveats: [
-    "The official archive ElectionID and service family are identified, and the official ElectionID 684 statewide XLSX export is retained locally, but both official app artifacts are labeled unofficial or map/export evidence and do not reconcile to the current certified-style staging totals.",
-    "The retained archive payload and statewide export appear to be ENR/app results rather than the official canvass PDF/static export or write-in-inclusive certified county table.",
-    "Current active SD result and review rows remain caveated secondary staging rows until an official canvass/export artifact or reconciling official archive payload is collected and parsed.",
-    "The official turnout archive is a state-native lead only; keep EAC fallback active until denominator timing and replacement semantics are reviewed."
+    "The official archive ElectionID and service family are identified, and the official ElectionID 684 statewide XLSX export is retained locally, but both official app artifacts are labeled unofficial or map/export evidence and remain below the certified canvass.",
+    "The retained archive payload and statewide export are ENR/app results rather than the official certified canvass; the separately retained certificate controls county reconciliation.",
+    "The matching local endpoints are active only as explicitly unofficial review context. Certified-minus-ENR deltas are preserved at county grain and never allocated locally.",
+    "Active turnout comes from the separately retained official Election Returns and Registration Figures active-voter table; the archive turnout payload remains comparison evidence."
   ]
 };
 
@@ -533,32 +544,34 @@ const requestPacket = {
   localArtifactPath: sourceRequestPacketPath,
   sourceUrl: urls.officialResultsPage,
   electionYear: 2024,
-  reportingGrain: "county",
+  reportingGrain: "county_and_local_reporting_unit",
   parserOrNormalizationPath: "scripts/collect-sd-official-archive-evidence.mjs",
-  checkedAt: "2026-07-04",
-  status: "official_certified_reconciliation_request_packet",
+  checkedAt: "2026-08-23",
+  status: "remaining_native_source_request_packet",
   blocker:
-    "The official ElectionID 684 results app and statewide XLSX export remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the current certified-style county staging rows. The certifying PDF/static export has not been found at the tested SOS paths.",
+    "Certified county results and official active-voter turnout are resolved. The official ElectionID 684 local rows remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the certified canvass; no official local allocation or precinct geometry/crosswalk is retained.",
   requestTargets: [
     {
       target: "South Dakota Secretary of State Elections Division",
       url: urls.officialResultsPage,
       requestPath: urls.publicRecordsRequest,
-      ask: "Provide the official 2024 General Election State Canvass and Certificate PDF/static export or a machine-readable county-level certified-result table for President and United States Representative."
+      ask: "Provide any certified precinct/reporting-unit adjustment or allocation table for President and United States Representative, plus the election-applicable reporting-unit crosswalk or boundary data and official historical county canvass artifacts."
     },
     {
       target: "South Dakota county auditors",
       url: urls.countyAuditors,
-      ask: "If the state cannot provide a reconciled county export, request county canvass certificates or county-level certified abstracts for President and United States Representative."
+      ask: "Request any certified local canvass abstracts, reporting-unit definitions/crosswalks, precinct boundary files, and available administration records needed to reconcile the ElectionID 684 local rows."
     }
   ],
   requestedFields: [
     "county",
     "contest",
-    "candidate",
-    "party",
+    "reporting_unit_id",
+    "reporting_unit_name",
+    "county_id",
     "certified_votes",
     "write_in_or_canvass_adjustment_votes_if_separate",
+    "geometry_or_crosswalk_identifier",
     "certification_date",
     "source_document_url"
   ],
@@ -566,11 +579,20 @@ const requestPacket = {
     {
       artifact: outputPath,
       summary:
-        "ElectionID 684 app/export evidence identifies the correct 2024 General federal contests but remains lower than the certified-style totals and is labeled unofficial."
+        "ElectionID 684 app/export evidence identifies the correct 2024 General federal contests but remains lower than the certified canvass and is labeled unofficial."
     },
     {
       artifact: statewideExportPath,
       summary: "Official ResultsExport.aspx?eid=684 workbook retained locally as Statewide Results.xlsx."
+    },
+    {
+      artifact: "data/sd-2024-general-canvass-certificate.pdf",
+      sourceUrl: urls.officialCertifiedCanvass,
+      summary: "Official State Canvass and Certificate retained and exactly reconciled to all 66 county President and U.S. House rows."
+    },
+    {
+      artifact: "data/sd-2024-precinct-review-reconciliation.json",
+      summary: "Documents the complete 691-unit unofficial ENR universe and the certified-minus-ENR county deltas that must not be manufactured locally."
     },
     {
       artifact: urls.electionTerminology,
@@ -580,7 +602,7 @@ const requestPacket = {
     },
     {
       artifact: urls.postElectionAuditPage,
-      summary: `Official 2024 General post-election audit page lists ${postElectionAuditSummary.rowCount} county rows and ${postElectionAuditSummary.linkedCertificateCount} linked audit certificates; useful administration context but not a certified-result replacement.`
+      summary: `Official 2024 General post-election audit page lists ${postElectionAuditSummary.rowCount} county rows and ${postElectionAuditSummary.linkedCertificateCount} linked audit certificates; useful administration context but not a certified local-allocation source.`
     }
   ],
   wave25PublicRecheck,
@@ -590,8 +612,8 @@ const requestPacket = {
   reconciliationDeltas: evidence.reconciliation,
   caveats: [
     "This packet is a source-evidence and request artifact only; it is not a replacement result source.",
-    "Audit certificates document post-election audit context and selected discrepancies, but they do not provide complete certified county President and U.S. House totals.",
-    "Continue using the caveated secondary staging rows until the official certified canvass/export or a reconciling official payload is retained."
+    "Audit certificates document post-election audit context and selected discrepancies, but they do not provide a complete certified local allocation or geometry crosswalk.",
+    "Keep the 691 official-source local review rows explicitly labeled unofficial and do not allocate certified county deltas without authoritative local evidence."
   ]
 };
 
@@ -612,7 +634,7 @@ console.log(
       statewideExportUsHouseTotal: statewideExportSummary.usRepresentative.totalVotes,
       turnoutRows: turnoutRows.length,
       turnoutBallotsCast: evidence.officialArchiveSummaries.turnoutLead.ballotsCast,
-      turnoutRegisteredVoters: evidence.officialArchiveSummaries.turnoutLead.registeredVoters,
+      turnoutVotersFieldTotal: evidence.officialArchiveSummaries.turnoutLead.votersFieldTotal,
       auditCountyRows: postElectionAuditSummary.rowCount,
       auditLinkedCertificateCount: postElectionAuditSummary.linkedCertificateCount,
       auditDiscrepancySummaryCount: postElectionAuditSummary.discrepancySummaryCount,
