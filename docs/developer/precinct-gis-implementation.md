@@ -1,5 +1,25 @@
 # Precinct GIS Implementation Program
 
+### 2026-08-24 - South Dakota certified-local publication and geometry audit
+
+- The four county-canvass bundles linked from the South Dakota Secretary of
+  State's official 2024 Election History page were downloaded and audited.
+  County canvass certificate sections were identified for 64 distinct counties. Buffalo and
+  Stanley are absent, while Brule appears twice. The tables expose county and
+  visible precinct name but do not expose ElectionID 684 `CountyID` or
+  `StatePrecinctID`, so display-name matching is not an authoritative identity
+  crosswalk.
+- The official 2024 General polling-location PDF was also reviewed. Its fields
+  are county, precinct name, polling place, address, city, and instructions. It
+  contains no polygons, stable geometry feature IDs, CRS, effective-boundary
+  metadata, or reviewed link to the ElectionID 684 unit IDs. The official
+  Census VTD service remains a 2010 geography source, not evidence that those
+  boundaries governed the 2024 election.
+- South Dakota therefore remains fail-closed at county map geometry. Certified
+  local activation is blocked on the missing Buffalo and Stanley canvasses,
+  an authoritative result-unit identity crosswalk, and election-effective 2024
+  precinct geometry. No local geometry or inferred display-name join was added.
+
 ### 2026-08-23 - South Dakota local review activation without geometry
 
 - `scripts/collect-sd-2024-local-review.mjs` retains and hash-checks the official

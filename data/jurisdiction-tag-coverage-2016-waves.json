@@ -651,6 +651,92 @@
     ],
     "status": "superseded_by_production_acceptance"
   },
+  "sourceProvenanceRefreshes": [
+    {
+      "state": "SD",
+      "checkedAt": "2026-08-24T15:13:27.345Z",
+      "branch": "state/sd-data-coverage-267-completion",
+      "status": "ready_for_pr_no_production",
+      "purpose": "Replace the secondary Wikipedia lineage for the existing 2012, 2016, and 2020 county presidential baselines with hash-pinned official South Dakota Secretary of State canvass tables.",
+      "sourceId": "sd-historical-presidential-official-county",
+      "normalizedArtifact": "data/sd-historical-presidential-baseline.csv",
+      "stagingOverlay": {
+        "directory": ".etl/staging",
+        "states": [
+          "SD"
+        ]
+      },
+      "coverage2016": {
+        "expectedCountyEquivalentRows": 66,
+        "historicalRows2016": 66,
+        "resolvedCountyTags2016": 66,
+        "unresolvedRows2016": 0,
+        "duplicateTags2016": 0,
+        "missingExpectedTags2016": 0
+      },
+      "comparisons": {
+        "2016To2020": {
+          "rows2016": 66,
+          "taggedRows2016": 66,
+          "rows2020": 66,
+          "taggedRows2020": 66,
+          "matchedRows": 66,
+          "missingComparisonRows": 0,
+          "untaggedFromRows": 0,
+          "untaggedToRows": 0,
+          "redToBlue": 1,
+          "blueToRed": 0
+        },
+        "2016To2024": {
+          "rows2016": 66,
+          "taggedRows2016": 66,
+          "rows2024": 66,
+          "taggedRows2024": 66,
+          "matchedRows": 66,
+          "missingComparisonRows": 0,
+          "untaggedFromRows": 0,
+          "untaggedToRows": 0,
+          "redToBlue": 0,
+          "blueToRed": 0
+        },
+        "2020To2024": {
+          "rows2020": 66,
+          "taggedRows2020": 66,
+          "rows2024": 66,
+          "taggedRows2024": 66,
+          "matchedRows": 66,
+          "missingComparisonRows": 0,
+          "untaggedFromRows": 0,
+          "untaggedToRows": 0,
+          "redToBlue": 0,
+          "blueToRed": 1
+        }
+      },
+      "liveStagingSafety": {
+        "liveRows": 198,
+        "stagingRows": 198,
+        "liveYears": [
+          2012,
+          2016,
+          2020
+        ],
+        "stagingYears": [
+          2012,
+          2016,
+          2020
+        ],
+        "voteTupleDifferences": 0,
+        "identityChange": "The official 2012 table's Shannon County source label is preserved as sourceDisplayName while the normalized jurisdiction identity uses current Oglala Lakota County; no vote allocation changes."
+      },
+      "commands": [
+        "npm.cmd run jurisdictions:coverage:2016 -- --staging-dir=.etl/staging --overlay-states=SD",
+        "npm.cmd run jurisdictions:flips:2016-2020 -- --staging-dir=.etl/staging --overlay-states=SD",
+        "npm.cmd run jurisdictions:flips:2016-2024 -- --staging-dir=.etl/staging --overlay-states=SD",
+        "npm.cmd run jurisdictions:flips:2020-2024 -- --staging-dir=.etl/staging --overlay-states=SD"
+      ],
+      "promotionDecision": "No production promotion was performed; coordinator review remains required after merge."
+    }
+  ],
   "productionAcceptance": {
     "checkedAt": "2026-07-11T03:55:00Z",
     "reportMode": "Cache-fresh public API reads plus in-app browser verification of deployed state pages after state-by-state production promotion.",

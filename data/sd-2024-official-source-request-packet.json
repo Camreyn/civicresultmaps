@@ -5,20 +5,20 @@
   "electionYear": 2024,
   "reportingGrain": "county_and_local_reporting_unit",
   "parserOrNormalizationPath": "scripts/collect-sd-official-archive-evidence.mjs",
-  "checkedAt": "2026-08-23",
-  "status": "remaining_native_source_request_packet",
-  "blocker": "Certified county results and official active-voter turnout are resolved. The official ElectionID 684 local rows remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the certified canvass; no official local allocation or precinct geometry/crosswalk is retained.",
+  "checkedAt": "2026-08-24",
+  "status": "remaining_certified_local_identity_and_geometry_request_packet",
+  "blocker": "Certified county results, official active-voter turnout, and official 2012/2016/2020 county history are resolved. The four county-canvass bundles published by the SOS contain county canvass certificate sections for 64 counties but omit Buffalo and Stanley; their local-result pages expose no ElectionID 684 unit IDs. The official polling-location PDF has no polygons. The 691 ENR local rows therefore remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the certified canvass; no certified local allocation or precinct geometry/crosswalk is activated.",
   "requestTargets": [
     {
       "target": "South Dakota Secretary of State Elections Division",
       "url": "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
       "requestPath": "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
-      "ask": "Provide any certified precinct/reporting-unit adjustment or allocation table for President and United States Representative, plus the election-applicable reporting-unit crosswalk or boundary data and official historical county canvass artifacts."
+      "ask": "Provide the omitted Buffalo and Stanley 2024 General county-canvass local result tables, an authoritative crosswalk from certified-table precinct names to ElectionID 684 CountyID/StatePrecinctID units, and the election-effective 2024 precinct boundary data or reviewed feature crosswalk."
     },
     {
-      "target": "South Dakota county auditors",
+      "target": "Buffalo and Stanley county auditors",
       "url": "https://vip.sdsos.gov/CountyAuditors.aspx",
-      "ask": "Request any certified local canvass abstracts, reporting-unit definitions/crosswalks, precinct boundary files, and available administration records needed to reconcile the ElectionID 684 local rows."
+      "ask": "Request each county's certified 2024 General local canvass abstract/table and any reporting-unit definitions, ElectionID 684 ID crosswalk, or election-effective precinct boundary file needed to reconcile the official ENR rows."
     }
   ],
   "requestedFields": [
@@ -30,9 +30,428 @@
     "certified_votes",
     "write_in_or_canvass_adjustment_votes_if_separate",
     "geometry_or_crosswalk_identifier",
+    "geometry_effective_date",
+    "geometry_crs",
     "certification_date",
     "source_document_url"
   ],
+  "certifiedLocalCanvassPublicationAudit": {
+    "schemaVersion": 1,
+    "state": "SD",
+    "electionDate": "2024-11-05",
+    "sourceAuthority": "South Dakota Secretary of State and county boards of canvassers",
+    "sourcePage": "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx",
+    "parserOrNormalizationPath": "scripts/audit_sd_2024_certified_local_canvasses.py",
+    "auditedAt": "2026-08-24",
+    "bundles": [
+      {
+        "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Aurora-Clark.pdf",
+        "stagingFile": ".etl/sd-2024-certified-local-canvasses/Aurora-Clark.pdf",
+        "byteCount": 19372145,
+        "sha256": "432c68f2d62031c9692af6f7c5fc22bc0f57c36211805ed8afe6898056203759",
+        "pdfPages": 112,
+        "certificates": [
+          {
+            "county": "Aurora",
+            "certificatePage": 1
+          },
+          {
+            "county": "Beadle",
+            "certificatePage": 10
+          },
+          {
+            "county": "Bennett",
+            "certificatePage": 20
+          },
+          {
+            "county": "Bon Homme",
+            "certificatePage": 29
+          },
+          {
+            "county": "Brookings",
+            "certificatePage": 39
+          },
+          {
+            "county": "Brown",
+            "certificatePage": 49
+          },
+          {
+            "county": "Brule",
+            "certificatePage": 59
+          },
+          {
+            "county": "Brule",
+            "certificatePage": 68
+          },
+          {
+            "county": "Butte",
+            "certificatePage": 77
+          },
+          {
+            "county": "Campbell",
+            "certificatePage": 85
+          },
+          {
+            "county": "Charles Mix",
+            "certificatePage": 94
+          },
+          {
+            "county": "Clark",
+            "certificatePage": 104
+          }
+        ]
+      },
+      {
+        "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Clay-Faulk.pdf",
+        "stagingFile": ".etl/sd-2024-certified-local-canvasses/Clay-Faulk.pdf",
+        "byteCount": 16895877,
+        "sha256": "5bfec72afec250e3f6ee61469288a18320c905b60d5f0acd3a44a847d845f2bf",
+        "pdfPages": 87,
+        "certificates": [
+          {
+            "county": "Clay",
+            "certificatePage": 1
+          },
+          {
+            "county": "Codington",
+            "certificatePage": 11
+          },
+          {
+            "county": "Corson",
+            "certificatePage": 20
+          },
+          {
+            "county": "Custer",
+            "certificatePage": 30
+          },
+          {
+            "county": "Davison",
+            "certificatePage": 39
+          },
+          {
+            "county": "Day",
+            "certificatePage": 48
+          },
+          {
+            "county": "Deuel",
+            "certificatePage": 51
+          },
+          {
+            "county": "Dewey",
+            "certificatePage": 55
+          },
+          {
+            "county": "Douglas",
+            "certificatePage": 65
+          },
+          {
+            "county": "Edmunds",
+            "certificatePage": 66
+          },
+          {
+            "county": "Fall River",
+            "certificatePage": 69
+          },
+          {
+            "county": "Faulk",
+            "certificatePage": 79
+          }
+        ]
+      },
+      {
+        "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Grant-Lyman.pdf",
+        "stagingFile": ".etl/sd-2024-certified-local-canvasses/Grant-Lyman.pdf",
+        "byteCount": 28844325,
+        "sha256": "6dfd44263ae01edd2af256083545e7579b3c2b2a12fc441cbffb4ca1d9abd42a",
+        "pdfPages": 153,
+        "certificates": [
+          {
+            "county": "Grant",
+            "certificatePage": 1
+          },
+          {
+            "county": "Gregory",
+            "certificatePage": 10
+          },
+          {
+            "county": "Haakon",
+            "certificatePage": 15
+          },
+          {
+            "county": "Hamlin",
+            "certificatePage": 27
+          },
+          {
+            "county": "Hand",
+            "certificatePage": 37
+          },
+          {
+            "county": "Hanson",
+            "certificatePage": 46
+          },
+          {
+            "county": "Harding",
+            "certificatePage": 55
+          },
+          {
+            "county": "Hughes",
+            "certificatePage": 64
+          },
+          {
+            "county": "Hutchinson",
+            "certificatePage": 74
+          },
+          {
+            "county": "Hyde",
+            "certificatePage": 85
+          },
+          {
+            "county": "Jackson",
+            "certificatePage": 96
+          },
+          {
+            "county": "Jerauld",
+            "certificatePage": 100
+          },
+          {
+            "county": "Jones",
+            "certificatePage": 110
+          },
+          {
+            "county": "Kingsbury",
+            "certificatePage": 119
+          },
+          {
+            "county": "Lake",
+            "certificatePage": 121
+          },
+          {
+            "county": "Lawrence",
+            "certificatePage": 127
+          },
+          {
+            "county": "Lincoln",
+            "certificatePage": 136
+          },
+          {
+            "county": "Lyman",
+            "certificatePage": 144
+          }
+        ]
+      },
+      {
+        "url": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Recount-Canvass-and-Canvass-Docs-General/Marshall-Ziebach.pdf",
+        "stagingFile": ".etl/sd-2024-certified-local-canvasses/Marshall-Ziebach.pdf",
+        "byteCount": 43617360,
+        "sha256": "df59610614bb65ecff19caa1d3afb1330cc47dfe229d7b5ffef75f86268726d6",
+        "pdfPages": 203,
+        "certificates": [
+          {
+            "county": "Marshall",
+            "certificatePage": 1
+          },
+          {
+            "county": "McCook",
+            "certificatePage": 6
+          },
+          {
+            "county": "McPherson",
+            "certificatePage": 9
+          },
+          {
+            "county": "Meade",
+            "certificatePage": 18
+          },
+          {
+            "county": "Mellette",
+            "certificatePage": 27
+          },
+          {
+            "county": "Miner",
+            "certificatePage": 37
+          },
+          {
+            "county": "Minnehaha",
+            "certificatePage": 41
+          },
+          {
+            "county": "Moody",
+            "certificatePage": 69
+          },
+          {
+            "county": "Oglala Lakota",
+            "certificatePage": 78
+          },
+          {
+            "county": "Pennington",
+            "certificatePage": 88
+          },
+          {
+            "county": "Perkins",
+            "certificatePage": 99
+          },
+          {
+            "county": "Potter",
+            "certificatePage": 109
+          },
+          {
+            "county": "Roberts",
+            "certificatePage": 118
+          },
+          {
+            "county": "Sanborn",
+            "certificatePage": 126
+          },
+          {
+            "county": "Spink",
+            "certificatePage": 129
+          },
+          {
+            "county": "Sully",
+            "certificatePage": 140
+          },
+          {
+            "county": "Todd",
+            "certificatePage": 142
+          },
+          {
+            "county": "Tripp",
+            "certificatePage": 150
+          },
+          {
+            "county": "Turner",
+            "certificatePage": 158
+          },
+          {
+            "county": "Union",
+            "certificatePage": 166
+          },
+          {
+            "county": "Walworth",
+            "certificatePage": 175
+          },
+          {
+            "county": "Yankton",
+            "certificatePage": 184
+          },
+          {
+            "county": "Ziebach",
+            "certificatePage": 194
+          }
+        ]
+      }
+    ],
+    "coverage": {
+      "publishedBundleCount": 4,
+      "certificateRecords": 65,
+      "distinctCountiesPresent": 64,
+      "countiesPresent": [
+        "Aurora",
+        "Beadle",
+        "Bennett",
+        "Bon Homme",
+        "Brookings",
+        "Brown",
+        "Brule",
+        "Butte",
+        "Campbell",
+        "Charles Mix",
+        "Clark",
+        "Clay",
+        "Codington",
+        "Corson",
+        "Custer",
+        "Davison",
+        "Day",
+        "Deuel",
+        "Dewey",
+        "Douglas",
+        "Edmunds",
+        "Fall River",
+        "Faulk",
+        "Grant",
+        "Gregory",
+        "Haakon",
+        "Hamlin",
+        "Hand",
+        "Hanson",
+        "Harding",
+        "Hughes",
+        "Hutchinson",
+        "Hyde",
+        "Jackson",
+        "Jerauld",
+        "Jones",
+        "Kingsbury",
+        "Lake",
+        "Lawrence",
+        "Lincoln",
+        "Lyman",
+        "Marshall",
+        "McCook",
+        "McPherson",
+        "Meade",
+        "Mellette",
+        "Miner",
+        "Minnehaha",
+        "Moody",
+        "Oglala Lakota",
+        "Pennington",
+        "Perkins",
+        "Potter",
+        "Roberts",
+        "Sanborn",
+        "Spink",
+        "Sully",
+        "Todd",
+        "Tripp",
+        "Turner",
+        "Union",
+        "Walworth",
+        "Yankton",
+        "Ziebach"
+      ],
+      "missingCounties": [
+        "Buffalo",
+        "Stanley"
+      ],
+      "duplicatedCounties": [
+        "Brule"
+      ]
+    },
+    "identityAssessment": {
+      "observedFields": [
+        "county",
+        "visible precinct name"
+      ],
+      "enrIdentityTermsObserved": [],
+      "missingIdentityFields": [
+        "ElectionID 684 CountyID",
+        "ElectionID 684 StatePrecinctID",
+        "geometry feature ID"
+      ]
+    },
+    "pollingLocationEvidence": {
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/2024GeneralPollingLocation.pdf",
+      "localFile": "data/precinct-geometry/SD/2024-11-05-general/raw/sd-2024-general-precincts-and-polling-places.pdf",
+      "byteCount": 835498,
+      "sha256": "622cb1dd85feac493d1fb8ba78cf486244bf261cc209d44cfc187fb50cf27667",
+      "pdfPages": 48,
+      "observedFields": [
+        "County",
+        "Precinct Name",
+        "Polling Place",
+        "Address",
+        "City",
+        "Instructions"
+      ],
+      "stableResultOrFeatureIdTermsObserved": [],
+      "geometryFieldsObserved": [],
+      "decision": "not_geometry_or_authoritative_result_unit_crosswalk"
+    },
+    "decision": "fail_closed_no_certified_local_or_geometry_activation",
+    "blocker": "The published bundles have county canvass certificate sections for 64 distinct counties but omit Buffalo and Stanley, and their local-result pages do not expose ElectionID 684 unit IDs. The official polling-location PDF is not geometry. An authoritative result-unit crosswalk and election-effective 2024 precinct geometry are still required."
+  },
   "evidenceToAttach": [
     {
       "artifact": "data/sd-2024-official-results-archive-evidence.json",
@@ -52,6 +471,16 @@
       "summary": "Documents the complete 691-unit unofficial ENR universe and the certified-minus-ENR county deltas that must not be manufactured locally."
     },
     {
+      "artifact": "data/sd-2024-certified-local-canvass-publication-audit.json",
+      "sourceUrl": "https://sdsos.gov/elections-voting/election-resources/election-history/2024_Election_History.aspx",
+      "summary": "Reproducible PDF audit of the four official county-canvass bundles: county canvass certificate sections were identified for 64 distinct counties, Buffalo and Stanley are absent, and Brule is duplicated."
+    },
+    {
+      "artifact": "data/precinct-geometry/SD/2024-11-05-general/raw/sd-2024-general-precincts-and-polling-places.pdf",
+      "sourceUrl": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/2024GeneralPollingLocation.pdf",
+      "summary": "Official polling-location list contains county, precinct name, polling place, address, city, and instructions, but no polygons, feature IDs, CRS, or authoritative ElectionID 684 crosswalk."
+    },
+    {
       "artifact": "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
       "summary": "The results displayed on Election Night are unofficial. Once the 66 County Canvass Boards and the State Canvass Board canvass and certify the election results, the official results will be available on our website. Please visit SOS Elections for the official, certified results."
     },
@@ -60,6 +489,46 @@
       "summary": "Official 2024 General post-election audit page lists 66 county rows and 83 linked audit certificates; useful administration context but not a certified local-allocation source."
     }
   ],
+  "wave25PublicRecheck": {
+    "checkedAt": "2026-07-04",
+    "method": "Re-checked normal public SOS/electionresults pages, public search results, known 2024 SOS asset-path patterns, the ElectionID 684 export shell, ElectionTerminology FAQ, post-election audit page, public-records portal, and county-auditor directory. Did not use or recommend anti-bot bypass tactics.",
+    "checkedOfficialPaths": [
+      "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+      "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
+      "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
+      "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+      "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
+      "https://vip.sdsos.gov/CountyAuditors.aspx",
+      "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
+    ],
+    "result": "Wave 25 did not locate the certificate at the tested paths. Wave 26 subsequently found and retained the official State Canvass and Certificate from the SOS Election History page; it exactly validates all 66 county President and U.S. House staging rows. The ElectionID 684 export remains an explicitly unofficial lower-total artifact.",
+    "nextStep": "Use the public-records request path and Buffalo/Stanley county-auditor contacts for the two missing canvasses plus an authoritative ElectionID 684 identity crosswalk and election-effective 2024 precinct geometry. Treat normalized administration context as a separate supplemental follow-up; official historical baselines are resolved."
+  },
+  "turnoutLeadDecision": {
+    "status": "official_active_voter_table_activated",
+    "activeOfficialSource": {
+      "source": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
+      "localFile": "data/sd-2024-official-active-voter-turnout.csv",
+      "rowCount": 66,
+      "ballotsCast": 436478,
+      "activeVoters": 624175,
+      "denominatorTiming": "November 5, 2024"
+    },
+    "eacFallbackProvenance": {
+      "source": "EAC 2024 EAVS V2 jurisdiction fallback",
+      "rowCount": 66,
+      "ballotsCast": 435739,
+      "registeredVoters": 690306
+    },
+    "officialArchiveComparison": {
+      "source": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
+      "rowCount": 66,
+      "ballotsCast": 436478,
+      "voters": 625192,
+      "votersDeltaFromActiveOfficial": 1017
+    },
+    "reason": "The official Election Returns and Registration Figures report supplies all 66 county rows and identifies its denominator as active voters as of November 5, 2024. Its 436,478 ballots cast exactly match the archive; the untimestamped archive Voters field and EAC total-registration rows remain comparison provenance only."
+  },
   "officialPostElectionAuditContext": {
     "sourceUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
     "rowCount": 66,
@@ -883,6 +1352,22 @@
       }
     ]
   },
+  "postElectionAuditCollectionDecision": {
+    "checkedAt": "2026-08-24",
+    "expectedRowCount": 66,
+    "liveParsedRowCount": 0,
+    "retainedRowCount": 66,
+    "matches": false,
+    "liveUniqueCountyCount": 0,
+    "retainedUniqueCountyCount": 66,
+    "countySetMatches": false,
+    "liveLinkedCertificateCount": 0,
+    "retainedLinkedCertificateCount": 83,
+    "liveDiscrepancySummaryCount": 0,
+    "retainedDiscrepancySummaryCount": 14,
+    "usedRetainedContext": true,
+    "reason": "The live official page no longer matched the pinned 66-county set, unique-row count, certificate-link count, and discrepancy-summary count, so the collector retained the prior hash-reviewed context instead of accepting a malformed regression."
+  },
   "canvassUrlProbes": [
     {
       "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/State%20Canvass%20and%20Certificate.pdf",
@@ -930,47 +1415,10 @@
   "caveats": [
     "This packet is a source-evidence and request artifact only; it is not a replacement result source.",
     "Audit certificates document post-election audit context and selected discrepancies, but they do not provide a complete certified local allocation or geometry crosswalk.",
+    "The published bundles contain county canvass certificate sections for 64 distinct counties but omit Buffalo and Stanley and duplicate Brule; their local-result pages expose visible precinct names without ElectionID 684 unit IDs.",
+    "The official polling-location PDF is not geometry and cannot support a display-name-only result-to-polygon join.",
     "Keep the 691 official-source local review rows explicitly labeled unofficial and do not allocate certified county deltas without authoritative local evidence.",
-    "Active turnout comes from the separately retained official Election Returns and Registration Figures active-voter table; the ElectionID 684 turnout payload remains comparison evidence."
-  ],
-  "wave25PublicRecheck": {
-    "checkedAt": "2026-07-04",
-    "method": "Re-checked normal public SOS/electionresults pages, public search results, known 2024 SOS asset-path patterns, the ElectionID 684 export shell, ElectionTerminology FAQ, post-election audit page, public-records portal, and county-auditor directory. Did not use or recommend anti-bot bypass tactics.",
-    "checkedOfficialPaths": [
-      "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
-      "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
-      "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
-      "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
-      "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
-      "https://vip.sdsos.gov/CountyAuditors.aspx",
-      "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
-    ],
-    "result": "Wave 25 did not locate the certificate at the tested paths. Wave 26 subsequently found and retained the official State Canvass and Certificate from the SOS Election History page; it exactly validates all 66 county President and U.S. House staging rows. The ElectionID 684 export remains an explicitly unofficial lower-total artifact.",
-    "nextStep": "Use the public-records request path and county-auditor directory for certified local adjustment/allocation evidence, precinct crosswalk or geometry, official historical baselines, and normalized administration context."
-  },
-  "turnoutLeadDecision": {
-    "status": "official_active_voter_table_activated",
-    "activeOfficialSource": {
-      "source": "https://sdsos.gov/elections-voting/assets/Archive/2024%20Assets/Post-Election-Audit-General/ElectionReturns2024.pdf",
-      "localFile": "data/sd-2024-official-active-voter-turnout.csv",
-      "rowCount": 66,
-      "ballotsCast": 436478,
-      "activeVoters": 624175,
-      "denominatorTiming": "November 5, 2024"
-    },
-    "eacFallbackProvenance": {
-      "source": "EAC 2024 EAVS V2 jurisdiction fallback",
-      "rowCount": 66,
-      "ballotsCast": 435739,
-      "registeredVoters": 690306
-    },
-    "officialArchiveComparison": {
-      "source": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
-      "rowCount": 66,
-      "ballotsCast": 436478,
-      "voters": 625192,
-      "votersDeltaFromActiveOfficial": 1017
-    },
-    "reason": "The official Election Returns and Registration Figures report supplies all 66 county rows and identifies its denominator as active voters as of November 5, 2024. Its 436,478 ballots cast exactly match the archive; the untimestamped archive Voters field and EAC total-registration rows remain comparison provenance only."
-  }
+    "Active turnout comes from the separately retained official Election Returns and Registration Figures active-voter table; the ElectionID 684 turnout payload remains comparison evidence.",
+    "Official county historical baselines for 2012, 2016, and 2020 are resolved separately and are no longer part of this request."
+  ]
 }

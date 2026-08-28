@@ -59,6 +59,13 @@
 /data/fbi-2024-bomb-threats-polling-locations.html -text whitespace=-trailing-space
 /data/sd-2024-general-canvass-certificate.pdf -text -diff
 /data/sd-2024-official-election-returns.pdf -text -diff
+/data/sd-2012-general-official-statewide-candidates-county.pdf -text -diff
+/data/sd-2016-official-election-returns.pdf -text -diff
+/data/sd-2020-general-official-state-canvass.pdf -text -diff
+/data/sd-historical-presidential-baseline.csv text eol=lf
+/data/sd-historical-presidential-baseline-summary.json text eol=lf
+/data/sd-2024-certified-local-canvass-publication-audit.json text eol=lf
+/data/precinct-geometry/SD/2024-11-05-general/raw/sd-2024-general-precincts-and-polling-places.pdf -text -diff
 /data/sd-2024-general-president-precinct-enr.json -text whitespace=-trailing-space,-space-before-tab
 /data/sd-2024-general-us-house-precinct-enr.json -text whitespace=-trailing-space,-space-before-tab
 /data/sd-2024-general-turnout-enr.json -text whitespace=-trailing-space,-space-before-tab
