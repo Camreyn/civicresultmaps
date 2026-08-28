@@ -271,6 +271,7 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: MapIcon, key: "map", label: "Map" },
   { icon: BarChart3, key: "review", label: "Review Center" },
   { icon: History, key: "history", label: "History" },
+  { icon: Activity, key: "methods", label: "Vote Methods" },
   { icon: Server, key: "electronic", label: "Electronic Integrity" },
   { icon: ListChecks, key: "planner", label: "Source Planner" },
   { icon: FileCheck2, key: "data", label: "Data & Sources" },
@@ -281,7 +282,7 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: Mail, key: "contact", label: "Contact" },
 ];
 
-const primaryWorkspaceTabOrder: TabKey[] = ["map", "review", "history", "data"];
+const primaryWorkspaceTabOrder: TabKey[] = ["map", "review", "history", "methods", "data"];
 const secondaryWorkspaceTabGroups: Array<{ label: string; tabKeys: TabKey[] }> = [
   {
     label: "Learn & investigate",
@@ -6179,9 +6180,13 @@ export function WorkspaceTabs({
         </div>
       ))}
 
-      {activeTab === "data" && (
+      {(activeTab === "data" || activeTab === "methods") && (
         <div className="tab-panel-content">
-          <section className="panel layout-section-container" data-tour="data-sources">
+          <section
+            className="panel layout-section-container"
+            data-tour={activeTab === "methods" ? "vote-methods" : "data-sources"}
+          >
+            {activeTab === "data" && (<>
             {captureProduction("source-provenance", (<div className="panel-header" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               <div>
                 <h2>Data & Sources</h2>
@@ -6210,13 +6215,14 @@ export function WorkspaceTabs({
                 variant={dataProvenanceConfig?.provenanceVariant ?? "expanded"}
               />
             </div>))}
-            {captureProduction("vote-methods", (<div className="vote-method-panel" data-tour="vote-method-summary" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
+            </>)}
+            {captureProduction("vote-methods", (<div className="vote-method-panel" data-tour="vote-method-summary" {...layoutSectionProps(layoutManifest, activeTab, "vote-methods")}>
               <div className="vote-method-head">
                 <div>
                   <strong>Vote Methods</strong>
                   <span>
                     {voteMethodRows.length
-                      ? `${voteMethodJurisdictions.toLocaleString()} EAC jurisdictions, ${voteMethodRows.length.toLocaleString()} method rows`
+                      ? `${voteMethodJurisdictions.toLocaleString()} EAC jurisdictions, ${voteMethodRows.length.toLocaleString()} method rows. Compare mail, early in-person, and polling-place participation.`
                       : "No EAC vote-method rows loaded for this state."}
                   </span>
                 </div>
@@ -6301,7 +6307,7 @@ export function WorkspaceTabs({
                 </div>
               )}
             </div>))}
-            {captureProduction("vote-methods", (<div className="vote-method-caveat" data-tour="candidate-method-note" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
+            {captureProduction("vote-methods", (<div className="vote-method-caveat" data-tour="candidate-method-note" {...layoutSectionProps(layoutManifest, activeTab, "vote-methods")}>
               <div>
                 <strong>Candidate by Method</strong>
                 <span>
@@ -6311,6 +6317,7 @@ export function WorkspaceTabs({
               </div>
               <span className="pending">Source required</span>
             </div>))}
+            {activeTab === "data" && (<>
             {captureProduction("equipment-context", (<div className="vote-method-panel" data-tour="equipment-context" {...layoutSectionProps(layoutManifest, "data", "equipment-context")}>
               <div className="vote-method-head">
                 <div>
@@ -6457,6 +6464,7 @@ export function WorkspaceTabs({
                 </div>
               )}
             </div>))}
+            </>)}
           </section>
         </div>
       )}

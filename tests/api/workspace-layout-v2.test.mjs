@@ -10,7 +10,10 @@ import {
   validateWorkspaceLayoutManifestV2,
   workspaceStarterTemplates,
 } from "../../src/lib/workspace-layout-v2.ts";
-import { embeddedWorkspaceLayoutManifest } from "../../src/lib/workspace-layout.ts";
+import {
+  embeddedWorkspaceLayoutManifest,
+  validateWorkspaceLayoutManifest,
+} from "../../src/lib/workspace-layout.ts";
 import {
   closeWorkspaceLayoutHistoryGroup,
   commitWorkspaceLayoutHistory,
@@ -66,6 +69,34 @@ test("the embedded v2 manifest and every starter template are structurally valid
     const validation = validateWorkspaceLayoutManifestV2(template.manifest);
     assert.equal(validation.ok, true, validation.ok ? "" : validation.errors.join("\n"));
   }
+});
+
+test("Vote Methods is global and older valid manifests receive it additively", () => {
+  const methods = embeddedWorkspaceLayoutManifestV2.tabs.find((tab) => tab.id === "methods");
+  assert.equal(methods?.visible, true);
+  assert.deepEqual(
+    methods?.rows.flatMap((row) => row.columns).flatMap((column) => column.items)
+      .filter((node) => node.kind === "production").map((node) => node.component),
+    ["vote-methods"],
+  );
+
+  const legacyV2 = cloneWorkspaceLayoutManifestV2(embeddedWorkspaceLayoutManifestV2);
+  legacyV2.tabs = legacyV2.tabs.filter((tab) => tab.id !== "methods");
+  const legacySnapshot = JSON.stringify(legacyV2);
+  assert.equal(validateWorkspaceLayoutManifestV2(legacyV2).ok, true);
+  assert.equal(validateWorkspaceLayoutEnvelope(createWorkspaceLayoutEnvelope({
+    manifest: legacyV2,
+    publishedAt: "2026-07-16T00:00:00.000Z",
+    revisionId: "pre-methods-v2",
+  })).ok, true);
+  const normalizedV2 = toWorkspaceLayoutManifestV2(legacyV2);
+  assert.equal(normalizedV2.tabs.find((tab) => tab.id === "methods")?.visible, true);
+  assert.equal(JSON.stringify(legacyV2), legacySnapshot);
+
+  const legacyV1 = structuredClone(embeddedWorkspaceLayoutManifest);
+  legacyV1.tabs = legacyV1.tabs.filter((tab) => tab.id !== "methods");
+  assert.equal(validateWorkspaceLayoutManifest(legacyV1).ok, true);
+  assert.equal(toWorkspaceLayoutManifestV2(legacyV1).tabs.some((tab) => tab.id === "methods"), true);
 });
 
 test("v1 revisions upgrade deterministically without mutating the original", () => {
