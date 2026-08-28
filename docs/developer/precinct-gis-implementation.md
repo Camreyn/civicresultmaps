@@ -8631,3 +8631,29 @@ evidence against its verified top-level package.
   registered-voter values remain dated source context only because no
   compatible election-level ballots-cast semantics are retained; active
   turnout remains the EAC fallback.
+
+### 2026-08-28 - Minnesota 2012 turnout correction staging
+
+- The live Minnesota 2012 precinct result and geometry release already has
+  4,102 exact VTDID reporting units and reconciles to 2,936,561 presidential
+  votes, but its historical turnout API had no 2012 rows. The correction is
+  limited to that missing turnout surface.
+- `scripts/build-mn-2012-turnout-staging.mjs` hash-pins the retained official
+  post-recount SOS workbook and parses the 2012-specific `7AM`, `EDR`, and
+  `TOTVOTING` fields. It fails closed on 4,102 rows, 87 county parents,
+  3,084,025 pre-election registrants, 527,867 election-day registrations,
+  3,611,892 combined registration, 2,950,780 ballots, 20 warning rows, and
+  81.6962% statewide turnout.
+- The native importer now treats a turnout-only artifact as additive to the
+  existing election surface: it does not create modern candidate names or
+  rewrite state metadata, election labels, contest titles, or reporting-unit
+  source provenance when result/review/history rows are absent.
+- An isolated `crm_clone_dev` rehearsal stored all 4,102 turnout rows with
+  one-to-one reporting-unit joins and 87 county tags. The existing election,
+  Obama/Romney/Other result totals, and 4,102-row reporting-unit provenance
+  fingerprint were byte-for-byte stable before and after promotion. The full
+  2,376,809-byte turnout response initially exposed Next.js's 2 MB persistent
+  data-cache limit; precinct turnout now uses request-local caching, matching
+  the existing large review-row path. The optimized local server returned all
+  4,102 rows with HTTP 200 and the corrected totals. Production promotion
+  remains a separate, explicitly reviewed step.

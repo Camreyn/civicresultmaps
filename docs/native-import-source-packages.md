@@ -85,6 +85,9 @@ Caveat: the precinct ZIP is valid for same-grain review rows and registration-de
 - Comparison contest: U.S. Senate, same precinct rows
 - Turnout source: `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx`
 - Turnout denominator: `REG7AM + EDR`
+- 2012 turnout source: `data/precinct-geometry/MN/2012-11-06-general/raw/mn-sos/2012-general-federal-state-results-by-precinct-official-post-recounts.xlsx`
+- 2012 turnout denominator: `7AM + EDR`; ballots cast are `TOTVOTING`
+- 2012 turnout parser: `scripts/build-mn-2012-turnout-staging.mjs`, which emits a turnout-only artifact and cannot replace result, review, or historical-result rows
 - County boundary: `data/mn-counties.geojson`
 - Historical native-baseline status: still not loaded through the ordinary 2024 native staging artifact. A separate guarded four-election planner has normalized and locally validated the official 2012, 2016, 2020, and 2024 certified precinct result identities against election-applicable LCC-GIS geometry.
 - Local four-election GIS release candidate: 16,435 precinct reporting units, 49,305 candidate rows, 16,435 geometry features, and 16,435 reviewed exact-ID crosswalks. The production-safe delivery path from PR #209 is merged. The follow-on activation path verifies the exact hidden-load and 352-object Blob receipts, produces only the five deterministic registry/coverage preview surfaces, requires a fresh protected-preview verification and two independent people, and performs the database publication-status transition atomically with an explicit rollback acknowledgement. Canonical manifests and public delivery remain blocked until those production gates pass.
@@ -101,12 +104,18 @@ Expected validation:
 | State total | 3,253,920 |
 | Local review rows | 4,075 |
 | Turnout rows | 4,103 |
+| 2012 turnout rows | 4,102 |
+| 2012 7AM registration | 3,084,025 |
+| 2012 election-day registrations | 527,867 |
+| 2012 combined denominator | 3,611,892 |
+| 2012 ballots cast | 2,950,780 |
+| 2012 warning-required rows | 20 |
 | Native historical baseline rows | 0 |
 | Local release-candidate precinct units, four elections | 16,435 |
 | Local release-candidate geometry features | 16,435 |
 | Local release-candidate reviewed exact crosswalks | 16,435 |
 
-Caveat: the ordinary 2024 native staging artifact remains distinct from the four-election release candidate. The 2016 and 2020 LCC election attributes are preliminary and are excluded from public vote data; certified SOS workbooks are the sole vote authority. All four local geometry/result pairs reconcile by exact VTDID. The guarded hidden-load implementation exists but has not been executed in production. It requires a fresh merged-main candidate, exact overlay/review/project-owner-confirmation hashes, a current read-only preflight, a current full-schema restoration-verified backup, two independently named people, an active rollback window, and a SHA-pinned `GO_PRODUCTION` record. Public Blob placement and receipt-bound canonical/database activation remain separate later decisions.
+Caveat: the ordinary 2024 native staging artifact remains distinct from the four-election release candidate. The 2016 and 2020 LCC election attributes are preliminary and are excluded from public vote data; certified SOS workbooks are the sole vote authority. All four local geometry/result pairs reconcile by exact VTDID. The 2012 workbook uses `7AM`, not `REG7AM`; 20 source rows have `TOTVOTING` above `7AM + EDR` and remain warning-required. The guarded hidden-load implementation exists but has not been executed in production. It requires a fresh merged-main candidate, exact overlay/review/project-owner-confirmation hashes, a current read-only preflight, a current full-schema restoration-verified backup, two independently named people, an active rollback window, and a SHA-pinned `GO_PRODUCTION` record. Public Blob placement and receipt-bound canonical/database activation remain separate later decisions.
 
 ## Michigan
 

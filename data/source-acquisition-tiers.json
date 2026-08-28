@@ -1316,6 +1316,7 @@
       "sourceUrls": [
         "https://www.sos.mn.gov/elections-voting/election-results",
         "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx",
+        "https://sos.mn.gov/media/1450/2012mngeneralelectionresults_official_postrecounts.xlsx",
         "https://gis.lcc.mn.gov/html/download.html",
         "https://gis.lcc.mn.gov/data/shape/vtd2024general.zip"
       ],
@@ -1330,6 +1331,7 @@
         "precinct U.S. Senate rows",
         "precinct TOTVOTING turnout rows",
         "precinct REG7AM plus EDR registration denominator fields",
+        "official 2012 precinct 7AM plus EDR registration denominators and TOTVOTING ballots for 4,102 VTDIDs",
         "official certified precinct presidential result identities for 2012, 2016, 2020, and 2024 with 4,102, 4,120, 4,110, and 4,103 units",
         "official election-applicable statewide precinct geometry for all four tracked elections with 16,435 exact reviewed VTDID relationships across 87 counties per year",
         "deterministic presentation-only delivery candidates with source terms and no election-value properties for all four tracked elections",
@@ -1341,10 +1343,10 @@
       "missingFields": [
         "current production backup/preflight evidence, exact hidden-load and immutable-Blob receipts, a verified protected preview, named independent deployment and rollback roles, and explicitly authorized coordinated public activation"
       ],
-      "parserStatus": "the 2024 native parser retains 87 county aggregates and emits 4,103 independently reviewed VTDID-keyed precinct ResultRows, 4,075 review rows, and 4,103 turnout rows; the guarded four-election planner additionally normalizes certified 2012/2016/2020/2024 precinct result identities and exact reviewed LCC-GIS geometry/crosswalks for 16,435 local units",
+      "parserStatus": "the 2024 native parser retains 87 county aggregates and emits 4,103 independently reviewed VTDID-keyed precinct ResultRows, 4,075 review rows, and 4,103 turnout rows; the guarded four-election planner additionally normalizes certified 2012/2016/2020/2024 precinct result identities and exact reviewed LCC-GIS geometry/crosswalks for 16,435 local units; scripts/build-mn-2012-turnout-staging.mjs separately hash-pins the 2012 official workbook and emits 4,102 turnout-only rows",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Turnout denominator is REG7AM plus EDR, so election-day registrations are included. All four geometry/result packages reconcile by exact VTDID, including 33/31/33/28 geographic zero-vote precincts. The 2016 and 2020 LCC election attributes are preliminary and excluded; certified SOS workbooks are the sole vote authority. The LCC-GIS redistribution disclaimer must accompany every delivered copy. The merged release tooling remains fail-closed without current hash-pinned preflight and restoration-verified backup evidence, named independent roles, an active deployment window, exact hidden-load and Blob receipts, a verified protected preview, and exact authorization acknowledgements. Canonical manifests and public delivery remain blocked until that coordinated release completes.",
+      "caveats": "The 2024 turnout denominator is REG7AM plus EDR; the 2012 workbook instead uses 7AM plus EDR. Twenty official 2012 precinct rows report TOTVOTING above that combined denominator and remain warning-required. All four geometry/result packages reconcile by exact VTDID, including 33/31/33/28 geographic zero-vote precincts. The 2016 and 2020 LCC election attributes are preliminary and excluded; certified SOS workbooks are the sole vote authority. The LCC-GIS redistribution disclaimer must accompany every delivered copy. The merged release tooling remains fail-closed without current hash-pinned preflight and restoration-verified backup evidence, named independent roles, an active deployment window, exact hidden-load and Blob receipts, a verified protected preview, and exact authorization acknowledgements. Canonical manifests and public delivery remain blocked until that coordinated release completes.",
       "nextAction": "Seal a fresh merged-main candidate, create current production backup/preflight evidence, complete the authorized hidden load and immutable Blob publication, then use the receipt-bound activation candidate and protected-preview publication-status workflow for cutover."
     },
     {

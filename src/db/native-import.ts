@@ -610,6 +610,17 @@ export async function promoteNativeStagingArtifact(path: string) {
     historicalRows: native.historicalReviewRows,
     knownSourceIds: artifactSourceIds,
   });
+  const shouldReplaceResultRows = native.resultRows.length > 0;
+  const shouldReplaceReviewRows =
+    native.reviewRows.length > 0 ||
+    (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics);
+  const shouldReplaceTurnoutRows = native.turnoutRows.length > 0;
+  const historicalRows = native.historicalRows ?? [];
+  const shouldReplaceHistoricalRows = historicalRows.length > 0;
+  const shouldRefreshReportingUnitSource =
+    shouldReplaceResultRows || shouldReplaceReviewRows;
+  const shouldRefreshStateMetadata =
+    shouldReplaceResultRows || shouldReplaceReviewRows || shouldReplaceHistoricalRows;
   const runTransaction = database.driver === "postgres" ? runPostgresTransaction : runNeonTransaction;
   return runTransaction(database.databaseUrl, async (sql) => {
     await sql`select set_config('lock_timeout', '30s', true)`;
@@ -618,32 +629,50 @@ export async function promoteNativeStagingArtifact(path: string) {
     insert into states (code, name, authority)
     values (${stateCode}, ${artifact.state.name}, ${artifact.state.authority})
     on conflict (code) do update set
-      name = excluded.name,
-      authority = excluded.authority
+      name = case
+        when ${shouldRefreshStateMetadata} then excluded.name
+        else states.name
+      end,
+      authority = case
+        when ${shouldRefreshStateMetadata} then excluded.authority
+        else states.authority
+      end
   `;
 
   const [election] = await sql`
     insert into elections (year, office, election_date, label)
     values (${electionYear}, ${office}, ${electionEvent.date}, ${`${electionYear} ${office}`})
     on conflict (year, office) do update set
-      election_date = excluded.election_date,
-      label = excluded.label
+      election_date = case
+        when ${shouldReplaceResultRows} then excluded.election_date
+        else elections.election_date
+      end,
+      label = case
+        when ${shouldReplaceResultRows} then excluded.label
+        else elections.label
+      end
     returning id
   `;
 
   const [contest] = await sql`
     insert into contests (election_id, state_code, office, title)
     values (${election.id}, ${stateCode}, ${office}, ${`${artifact.state.name} ${electionYear} ${office}`})
-    on conflict (election_id, state_code, office) do update set title = excluded.title
+    on conflict (election_id, state_code, office) do update set
+      title = case
+        when ${shouldReplaceResultRows} then excluded.title
+        else contests.title
+      end
     returning id
   `;
 
-  for (const [index, candidate] of (["Harris", "Trump", "Other"] as const).entries()) {
-    await sql`
-      insert into candidates (contest_id, name, party, ballot_order)
-      values (${contest.id}, ${candidate}, ${candidateParties[candidate]}, ${index + 1})
-      on conflict (contest_id, name, party) do update set ballot_order = excluded.ballot_order
-    `;
+  if (shouldReplaceResultRows) {
+    for (const [index, candidate] of (["Harris", "Trump", "Other"] as const).entries()) {
+      await sql`
+        insert into candidates (contest_id, name, party, ballot_order)
+        values (${contest.id}, ${candidate}, ${candidateParties[candidate]}, ${index + 1})
+        on conflict (contest_id, name, party) do update set ballot_order = excluded.ballot_order
+      `;
+    }
   }
 
   const sourceIds = new Map<string, string>();
@@ -734,7 +763,6 @@ export async function promoteNativeStagingArtifact(path: string) {
     returning id
   `;
 
-  const shouldReplaceResultRows = native.resultRows.length > 0;
   if (shouldReplaceResultRows) {
     await sql`
       delete from result_rows
@@ -742,9 +770,6 @@ export async function promoteNativeStagingArtifact(path: string) {
         and contest_id = ${contest.id}
     `;
   }
-  const shouldReplaceReviewRows =
-    native.reviewRows.length > 0 ||
-    (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics);
   const reviewYearsToReplace = [
     ...(shouldReplaceReviewRows ? [electionYear] : []),
     ...historicalReviewYears,
@@ -761,7 +786,6 @@ export async function promoteNativeStagingArtifact(path: string) {
         and election_year = ${reviewYear}
     `;
   }
-  const shouldReplaceTurnoutRows = native.turnoutRows.length > 0;
   if (shouldReplaceTurnoutRows) {
     await sql`
       delete from turnout_rows
@@ -769,8 +793,6 @@ export async function promoteNativeStagingArtifact(path: string) {
         and election_year = ${electionYear}
     `;
   }
-  const historicalRows = native.historicalRows ?? [];
-  const shouldReplaceHistoricalRows = historicalRows.length > 0;
   if (shouldReplaceHistoricalRows) {
     await sql`
       delete from historical_result_rows
@@ -856,10 +878,22 @@ export async function promoteNativeStagingArtifact(path: string) {
       )
       on conflict on constraint reporting_units_state_election_grain_parent_source_unique
       do update set
-        source_display_name = excluded.source_display_name,
-        is_geographic = excluded.is_geographic,
-        source_document_id = excluded.source_document_id,
-        updated_at = now()
+        source_display_name = case
+          when ${shouldRefreshReportingUnitSource} then excluded.source_display_name
+          else reporting_units.source_display_name
+        end,
+        is_geographic = case
+          when ${shouldRefreshReportingUnitSource} then excluded.is_geographic
+          else reporting_units.is_geographic
+        end,
+        source_document_id = case
+          when ${shouldRefreshReportingUnitSource} then excluded.source_document_id
+          else reporting_units.source_document_id
+        end,
+        updated_at = case
+          when ${shouldRefreshReportingUnitSource} then now()
+          else reporting_units.updated_at
+        end
       returning id, reporting_grain, parent_geoid, source_unit_id
     `;
     for (const row of inserted) {

@@ -339,6 +339,15 @@
           "denominator": "REG7AM plus EDR",
           "ballotsCast": "TOTVOTING"
         },
+        "historicalTurnout2012": {
+          "sourceTitle": "Minnesota SOS official 2012 General Election precinct workbook, post recounts",
+          "sourceUrl": "https://sos.mn.gov/media/1450/2012mngeneralelectionresults_official_postrecounts.xlsx",
+          "localFile": "data/precinct-geometry/MN/2012-11-06-general/raw/mn-sos/2012-general-federal-state-results-by-precinct-official-post-recounts.xlsx",
+          "level": "precinct",
+          "denominator": "7AM plus EDR",
+          "ballotsCast": "TOTVOTING",
+          "parserHint": "scripts/build-mn-2012-turnout-staging.mjs hash-pins the workbook and emits a turnout-only native artifact for all 4,102 VTDIDs. The 2012 registration field is 7AM, not the REG7AM field used in later workbooks."
+        },
         "countyBoundary": {
           "sourceTitle": "MnGeo county boundary feature service",
           "sourceUrl": "https://feat.gisdata.mn.gov/arcgis/rest/services/MnGeo/mn_counties/FeatureServer/0",
@@ -364,6 +373,12 @@
         "other": 77909,
         "localReviewRows": 4075,
         "turnoutRows": 4103,
+        "historicalTurnoutRows2012": 4102,
+        "historicalRegisteredVotersPreElection2012": 3084025,
+        "historicalElectionDayRegistrations2012": 527867,
+        "historicalRegisteredVoters2012": 3611892,
+        "historicalBallotsCast2012": 2950780,
+        "historicalTurnoutWarningRows2012": 20,
         "localReleaseCandidatePrecinctUnits": 16435,
         "localReleaseCandidateGeometryFeatures": 16435,
         "localReleaseCandidateExactCrosswalks": 16435
@@ -373,12 +388,14 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff",
         "turnoutMode": "precinct_registered_voters_plus_election_day_registrations",
-      "historicalPrecinctGisMode": "reviewed_2012_2016_2020_2024_release_hidden_load_and_receipt_bound_public_activation_implemented_but_production_blocked"
+        "historicalTurnout2012Mode": "official_precinct_7am_plus_edr_denominator_and_totvoting_ballots",
+        "historicalPrecinctGisMode": "reviewed_2012_2016_2020_2024_release_hidden_load_and_receipt_bound_public_activation_implemented_but_production_blocked"
       },
       "caveats": [
         "County presidential totals can be aggregated from the precinct workbook; separate official county text files also exist for historical baseline.",
         "The 2024 native staging artifact does not by itself load the 2012/2016/2020 precinct elections. A separate guarded local planner has verified all four certified result/geometry pairs and exact VTDID joins.",
-      "All four canonical geometry manifests and immutable public delivery remain blocked. The reviewed production-safe delivery path from PR #209 is merged; the follow-on activation tooling now requires exact hidden-load and Blob publication receipts before producing five deterministic preview surfaces, then requires a fresh verified protected preview, two independent people, an active deployment window, and exact acknowledgements before the atomic database publication-status transition."
+        "The 2012 turnout denominator is the workbook's 7AM field plus EDR, not REG7AM. Twenty official precinct rows have TOTVOTING above that combined denominator; the source values are retained and warning-required rather than treated as statewide registration totals.",
+        "All four canonical geometry manifests and immutable public delivery remain blocked. The reviewed production-safe delivery path from PR #209 is merged; the follow-on activation tooling now requires exact hidden-load and Blob publication receipts before producing five deterministic preview surfaces, then requires a fresh verified protected preview, two independent people, an active deployment window, and exact acknowledgements before the atomic database publication-status transition."
       ]
     },
     {

@@ -63,6 +63,13 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /else capability_flags\.review_graphs/);
   assert.match(importer, /const shouldReplaceTurnoutRows = native\.turnoutRows\.length > 0/);
   assert.match(importer, /if \(shouldReplaceTurnoutRows\)/);
+  assert.match(importer, /if \(shouldReplaceResultRows\) \{\s+for \(const \[index, candidate\]/);
+  assert.match(importer, /const shouldRefreshReportingUnitSource =\s+shouldReplaceResultRows \|\| shouldReplaceReviewRows/);
+  assert.match(importer, /const shouldRefreshStateMetadata =\s+shouldReplaceResultRows \|\| shouldReplaceReviewRows \|\| shouldReplaceHistoricalRows/);
+  assert.match(importer, /when \$\{shouldRefreshStateMetadata\} then excluded\.authority\s+else states\.authority/);
+  assert.match(importer, /when \$\{shouldReplaceResultRows\} then excluded\.election_date\s+else elections\.election_date/);
+  assert.match(importer, /when \$\{shouldReplaceResultRows\} then excluded\.title\s+else contests\.title/);
+  assert.match(importer, /when \$\{shouldRefreshReportingUnitSource\} then excluded\.source_document_id\s+else reporting_units\.source_document_id/);
   assert.doesNotMatch(importer, /parseLegacyBundle/);
   assert.match(script, /promoteNativeStagingArtifact/);
 });
