@@ -179,7 +179,9 @@ export default async function Home({ searchParams }: HomeProps) {
   const needsIndicators = activeTab === "map" || needsReview;
   const needsTurnout = ["history", "data", "exports"].includes(activeTab);
   const needsHistory = ["history", "data", "exports"].includes(activeTab);
-  const needsMethods = (selectedYear === 2024 || activeTab === "exports")
+  const needsVoteMethods = (selectedYear === 2024 || activeTab === "exports")
+    && ["map", "electronic", "methods", "data", "exports"].includes(activeTab);
+  const needsEquipment = (selectedYear === 2024 || activeTab === "exports")
     && ["map", "electronic", "data", "exports"].includes(activeTab);
   const needsSecurity = (selectedYear === 2024 || activeTab === "exports")
     && ["map", "data", "exports"].includes(activeTab);
@@ -216,8 +218,8 @@ export default async function Home({ searchParams }: HomeProps) {
       : Promise.resolve([]),
     needsTurnout ? listTurnoutRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
     needsHistory ? listHistoricalResultRows({ state: selectedState, limit: 5000 }) : Promise.resolve([]),
-    needsMethods ? listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
-    needsMethods ? listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
+    needsVoteMethods ? listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
+    needsEquipment ? listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
     needsSecurity ? listSecurityIncidents({ state: selectedState, year: selectedYear, limit: 5000 }) : Promise.resolve([]),
     listAdminSourceStatuses({ state: selectedState, year: workspaceSummaryYear }),
     listElectronicIntegrityArtifacts({ state: selectedState, year: workspaceSummaryYear }),

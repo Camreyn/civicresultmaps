@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   defaultWorkspaceLayoutSettings,
+  shouldBackfillWorkspaceTab,
   workspaceLayoutRegistry,
   type WorkspaceCustomBlockKind,
   type WorkspaceLayoutEmphasis,
@@ -431,10 +432,11 @@ const manifestSchema = z.object({
       notesPosition: z.enum(["side", "below", "drawer"]).optional(),
     }).strict().optional(),
     visible: z.boolean(),
-  }).strict()).length(workspaceLayoutRegistry.length),
+  }).strict()).min(1).max(workspaceLayoutRegistry.length),
 }).strict();
 
 export const workspaceLayoutRegistryV2 = workspaceLayoutRegistry.map((tab) => ({
+  backfillIfMissing: shouldBackfillWorkspaceTab(tab),
   id: tab.id,
   label: tab.label,
   required: "required" in tab && tab.required === true,
@@ -504,7 +506,7 @@ export function validateWorkspaceLayoutManifestV2(value: unknown): WorkspaceLayo
 
 export function toWorkspaceLayoutManifestV2(manifest: WorkspaceLayoutManifest): WorkspaceLayoutManifestV2 {
   return manifest.schemaVersion === WORKSPACE_LAYOUT_SCHEMA_VERSION_V2
-    ? structuredClone(manifest)
+    ? backfillWorkspaceLayoutManifestV2(manifest)
     : upgradeWorkspaceLayoutManifestV1(manifest);
 }
 
@@ -583,7 +585,26 @@ export function upgradeWorkspaceLayoutManifestV1(manifest: WorkspaceLayoutManife
     }
     return defaultTab;
   });
-  return upgraded;
+  return backfillWorkspaceLayoutManifestV2(upgraded);
+}
+
+export function backfillWorkspaceLayoutManifestV2(manifest: WorkspaceLayoutManifestV2) {
+  const normalized = structuredClone(manifest);
+  const seenTabs = new Set(normalized.tabs.map((tab) => tab.id));
+
+  for (const [registryIndex, registryTab] of workspaceLayoutRegistryV2.entries()) {
+    if (!registryTab.backfillIfMissing || seenTabs.has(registryTab.id)) continue;
+    const previousTab = [...workspaceLayoutRegistryV2.slice(0, registryIndex)]
+      .reverse()
+      .find((candidate) => seenTabs.has(candidate.id));
+    const insertionIndex = previousTab
+      ? normalized.tabs.findIndex((tab) => tab.id === previousTab.id) + 1
+      : 0;
+    normalized.tabs.splice(insertionIndex, 0, defaultTabLayout(registryTab.id));
+    seenTabs.add(registryTab.id);
+  }
+
+  return normalized;
 }
 
 export function cloneWorkspaceLayoutManifestV2(
@@ -785,7 +806,9 @@ function inspectStructuralRules(manifest: WorkspaceLayoutManifestV2) {
     }
   }
   for (const registryTab of workspaceLayoutRegistryV2) {
-    if (!seenTabs.has(registryTab.id)) errors.push(`Tab ${registryTab.id} is missing.`);
+    if (!seenTabs.has(registryTab.id) && !registryTab.backfillIfMissing) {
+      errors.push(`Tab ${registryTab.id} is missing.`);
+    }
   }
   if (!manifest.tabs.find((tab) => tab.id === manifest.settings.defaultTab)?.visible) {
     errors.push("settings.defaultTab must reference a visible tab.");

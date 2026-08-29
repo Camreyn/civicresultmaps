@@ -27,6 +27,10 @@ test("secondary workspace destinations retain their tab and canonical 2024 conte
     workspaceStateHref({ ...mapContext, tab: "review" }, "OR"),
     "/?state=OR&year=2024&tab=review",
   );
+  assert.equal(
+    workspaceStateHref({ ...mapContext, tab: "methods" }, "OR"),
+    "/?state=OR&year=2024&tab=methods",
+  );
 });
 
 test("exports preserve the selected historical election while removing map-only context", () => {

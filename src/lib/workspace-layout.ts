@@ -5,6 +5,7 @@ export type WorkspaceTabId =
   | "map"
   | "review"
   | "history"
+  | "methods"
   | "electronic"
   | "planner"
   | "data"
@@ -133,6 +134,7 @@ export type WorkspaceSectionRegistryEntry = {
 };
 
 export type WorkspaceTabRegistryEntry = {
+  backfillIfMissing?: boolean;
   id: WorkspaceTabId;
   label: string;
   required?: boolean;
@@ -170,6 +172,13 @@ export const workspaceLayoutRegistry = [
       { id: "historical-summary", label: "Historical Summary" },
       { id: "historical-charts", label: "Historical Charts" },
     ],
+  },
+  {
+    backfillIfMissing: true,
+    id: "methods",
+    label: "Vote Methods",
+    required: true,
+    sections: [{ id: "vote-methods", label: "Vote Methods", required: true }],
   },
   {
     id: "electronic",
@@ -231,6 +240,10 @@ export const workspaceLayoutRegistry = [
     sections: [{ id: "contact-options", label: "Contact Options" }],
   },
 ] as const satisfies readonly WorkspaceTabRegistryEntry[];
+
+export function shouldBackfillWorkspaceTab(tab: WorkspaceTabRegistryEntry) {
+  return tab.backfillIfMissing === true;
+}
 
 const registryByTab = new Map<WorkspaceTabId, WorkspaceTabRegistryEntry>(
   workspaceLayoutRegistry.map((tab) => [tab.id, tab]),
@@ -416,12 +429,12 @@ export function validateWorkspaceLayoutManifest(value: unknown): WorkspaceLayout
   }
 
   for (const tab of workspaceLayoutRegistry) {
-    if (!seenTabs.has(tab.id)) {
+    if (!seenTabs.has(tab.id) && !shouldBackfillWorkspaceTab(tab)) {
       errors.push(`Tab ${tab.id} is missing.`);
     }
   }
-  if (value.tabs.length !== workspaceLayoutRegistry.length) {
-    errors.push(`Manifest must contain exactly ${workspaceLayoutRegistry.length} tabs.`);
+  if (value.tabs.length > workspaceLayoutRegistry.length) {
+    errors.push(`Manifest may contain at most ${workspaceLayoutRegistry.length} tabs.`);
   }
 
   return errors.length

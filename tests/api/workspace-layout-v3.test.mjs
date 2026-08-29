@@ -44,6 +44,28 @@ test("v2 upgrades are deterministic and retain compatibility structure", () => {
   assert.equal(JSON.stringify(workspaceLayoutManifestV3ToV2(first).tabs), JSON.stringify(embeddedWorkspaceLayoutManifestV2.tabs));
 });
 
+test("older v3 envelopes remain valid and gain the Vote Methods tab at conversion", () => {
+  const legacy = cloneWorkspaceLayoutManifestV3();
+  legacy.tabs = legacy.tabs.filter((tab) => tab.id !== "methods");
+  const snapshot = JSON.stringify(legacy);
+  const envelope = createWorkspaceLayoutEnvelope({
+    manifest: legacy,
+    publishedAt: "2026-07-16T00:00:00.000Z",
+    revisionId: "pre-methods-v3",
+  });
+  assert.equal(validateWorkspaceLayoutEnvelope(envelope).ok, true);
+
+  const normalized = toWorkspaceLayoutManifestV3(legacy);
+  const methods = normalized.tabs.find((tab) => tab.id === "methods");
+  assert.equal(methods?.visible, true);
+  assert.deepEqual(
+    methods?.groups.flatMap((group) => group.rows).flatMap((row) => row.columns)
+      .flatMap((column) => column.items).map((node) => node.component),
+    ["vote-methods"],
+  );
+  assert.equal(JSON.stringify(legacy), snapshot);
+});
+
 test("weak design-token contrast and unknown fields fail closed", () => {
   const weak = cloneWorkspaceLayoutManifestV3();
   weak.settings.textColor = weak.settings.backgroundColor;

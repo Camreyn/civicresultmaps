@@ -15,6 +15,7 @@ import {
   embeddedWorkspaceLayoutManifestV3,
   flattenWorkspaceNodesV3,
   isWorkspaceGroupCustomOnlyV3,
+  toWorkspaceLayoutManifestV3,
   validateWorkspaceLayoutManifestV3,
   type WorkspaceLayoutGroupV3,
   type WorkspaceLayoutManifestV3,
@@ -39,12 +40,13 @@ export function isLayoutDraftDatabaseConfigured() {
 
 export async function listLayoutDrafts(limit = 40) {
   if (!hasDatabase()) return [];
-  return getDb()
+  const drafts = await getDb()
     .select()
     .from(uiLayoutDrafts)
     .where(isNull(uiLayoutDrafts.archivedAt))
     .orderBy(desc(uiLayoutDrafts.updatedAt))
     .limit(Math.min(Math.max(limit, 1), 100));
+  return drafts.map(normalizeStoredDraft);
 }
 
 export async function getLayoutDraft(draftId: string) {
@@ -54,7 +56,7 @@ export async function getLayoutDraft(draftId: string) {
     .from(uiLayoutDrafts)
     .where(eq(uiLayoutDrafts.id, draftId))
     .limit(1);
-  return draft ?? null;
+  return draft ? normalizeStoredDraft(draft) : null;
 }
 
 export async function createLayoutDraft(input: {
@@ -192,15 +194,23 @@ async function syncDraftAssets(draftId: string, manifest: WorkspaceLayoutManifes
 }
 
 function validateDraftPayload(manifest: WorkspaceLayoutManifestV3) {
-  const serialized = JSON.stringify(manifest);
+  const normalized = toWorkspaceLayoutManifestV3(manifest);
+  const serialized = JSON.stringify(normalized);
   if (new TextEncoder().encode(serialized).byteLength > MAX_DRAFT_BYTES) {
     throw new Error("Draft manifest is too large.");
   }
-  const validation = validateWorkspaceLayoutManifestV3(manifest);
+  const validation = validateWorkspaceLayoutManifestV3(normalized);
   if (!validation.ok) {
     throw new Error(validation.errors.join(" "));
   }
   return validation.value;
+}
+
+function normalizeStoredDraft(draft: typeof uiLayoutDrafts.$inferSelect) {
+  return {
+    ...draft,
+    manifest: toWorkspaceLayoutManifestV3(draft.manifest),
+  };
 }
 
 function validateGroupTemplate(group: WorkspaceLayoutGroupV3) {
