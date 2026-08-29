@@ -31,6 +31,7 @@ const workspaceTabs = new Set<WorkspaceTabId>([
   "map",
   "review",
   "history",
+  "methods",
   "electronic",
   "planner",
   "data",

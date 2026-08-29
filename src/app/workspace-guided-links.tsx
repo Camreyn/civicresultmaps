@@ -24,6 +24,11 @@ const guidedDestinations: Partial<Record<WorkspaceTabId, GuidedDestination[]>> =
     { label: "Compare on the map", summary: "View the selected election year geographically.", tab: "map" },
     { label: "Check historical sources", summary: "Inspect the provenance behind the comparison rows.", tab: "data" },
   ],
+  methods: [
+    { label: "Map method patterns", summary: "Compare available participation methods geographically.", tab: "map" },
+    { label: "Verify the sources", summary: "Inspect method coverage, provenance, and source limitations.", tab: "data" },
+    { label: "Review responsibly", summary: "Read the evidence and interpretation guardrails.", tab: "methodology" },
+  ],
   electronic: [
     { label: "Check source records", summary: "Review the evidence inventory and official links.", tab: "data" },
     { label: "Review responsibly", summary: "Read the evidence and interpretation guardrails.", tab: "methodology" },
@@ -34,6 +39,7 @@ const guidedDestinations: Partial<Record<WorkspaceTabId, GuidedDestination[]>> =
   ],
   data: [
     { label: "View the results map", summary: "Return to the state's geographic result explorer.", tab: "map" },
+    { label: "Compare vote methods", summary: "Review mail, early in-person, and polling-place participation.", tab: "methods" },
     { label: "Open the Review Center", summary: "Use these sources to evaluate advisory findings.", tab: "review" },
     { label: "Download the data", summary: "Export normalized rows and source manifests.", tab: "exports" },
   ],

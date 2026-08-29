@@ -25,7 +25,7 @@ Rows use a responsive 12-column grid. Desktop spans are 3, 4, 6, 8, 9, or 12; ta
 ## Safety boundaries
 
 - The registries in `src/lib/workspace-layout.ts` and `src/lib/workspace-layout-v2.ts` are the code-owned lists of allowed tabs and production components.
-- Map, Review Center, Data & Sources, and Review Guide are required tabs.
+- Map, Review Center, Vote Methods, Data & Sources, and Review Guide are required tabs. Vote Methods remains visible for every state and shows an explicit coverage gap when normalized method rows are unavailable.
 - Results Map and Source Provenance are required production sections.
 - Every visible tab must retain at least one visible production section.
 - Data Notes remains a fixed trust surface. Operators may change its initial open state and side, below, or drawer placement, but not its source-driven content or remove it.
@@ -35,6 +35,7 @@ Rows use a responsive 12-column grid. Desktop spans are 3, 4, 6, 8, 9, or 12; ta
 - Custom text is escaped. Links accept only safe internal paths, HTTPS URLs, and email links; protocol-relative links such as `//example.com` are rejected.
 - Verified labels, data queries, interactions, source caveats, and authorization remain code-owned.
 - Every manifest is validated against the exact registry and protected by a SHA-256 digest.
+- Newly introduced required tabs may be marked for additive backfill. Older valid manifests retain their digest and stored content, then receive the code-owned default tab during runtime/editor conversion.
 - Invalid editor state blocks saving.
 - Runtime precedence is authorized draft preview, enabled candidate, stable, then the embedded default.
 - Missing, malformed, stale, or tampered remote data fails closed to the next safe source.

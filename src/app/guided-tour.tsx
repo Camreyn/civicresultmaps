@@ -9,6 +9,7 @@ export type TourTabKey =
   | "map"
   | "review"
   | "history"
+  | "methods"
   | "electronic"
   | "planner"
   | "data"

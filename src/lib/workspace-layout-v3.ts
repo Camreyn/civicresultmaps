@@ -13,10 +13,11 @@ import {
   WORKSPACE_LAYOUT_MAX_CUSTOM_BLOCKS_PER_TAB,
   WORKSPACE_LAYOUT_MAX_ROWS_PER_TAB,
   WORKSPACE_LAYOUT_REGISTRY_VERSION_V2,
-  cloneWorkspaceLayoutManifestV2,
+  backfillWorkspaceLayoutManifestV2,
   embeddedWorkspaceLayoutManifestV2,
   toWorkspaceLayoutManifestV2,
   validateWorkspaceLayoutManifestV2,
+  workspaceLayoutRegistryV2,
   type WorkspaceCustomNodeV2,
   type WorkspaceLayoutColumnV2,
   type WorkspaceLayoutEnvelope,
@@ -206,19 +207,19 @@ export function validateWorkspaceLayoutManifestAnyV3(value: unknown) {
 
 export function toWorkspaceLayoutManifestV3(manifest: WorkspaceLayoutManifestAny): WorkspaceLayoutManifestV3 {
   if (manifest.schemaVersion === WORKSPACE_LAYOUT_SCHEMA_VERSION_V3) {
-    return cloneWorkspaceLayoutManifestV3(manifest);
+    return backfillWorkspaceLayoutManifestV3(manifest);
   }
   return upgradeWorkspaceLayoutManifestV2(toWorkspaceLayoutManifestV2(manifest));
 }
 
 export function workspaceLayoutManifestAnyToV2(manifest: WorkspaceLayoutManifestAny) {
   return manifest.schemaVersion === WORKSPACE_LAYOUT_SCHEMA_VERSION_V3
-    ? workspaceLayoutManifestV3ToV2(manifest)
+    ? toWorkspaceLayoutManifestV2(workspaceLayoutManifestV3ToV2(manifest))
     : toWorkspaceLayoutManifestV2(manifest);
 }
 
 export function upgradeWorkspaceLayoutManifestV2(manifest: WorkspaceLayoutManifestV2): WorkspaceLayoutManifestV3 {
-  const source = cloneWorkspaceLayoutManifestV2(manifest);
+  const source = backfillWorkspaceLayoutManifestV2(manifest);
   return {
     registryVersion: WORKSPACE_LAYOUT_REGISTRY_VERSION_V3,
     schemaVersion: WORKSPACE_LAYOUT_SCHEMA_VERSION_V3,
@@ -227,17 +228,7 @@ export function upgradeWorkspaceLayoutManifestV2(manifest: WorkspaceLayoutManife
       ...source.settings,
       accentColor: source.settings.accentColor ?? defaultWorkspaceLayoutSettingsV3.accentColor,
     },
-    tabs: source.tabs.map((tab) => ({
-      groups: [{
-        id: stableGroupId(tab.id),
-        name: "Primary layout",
-        presentation: { spacing: "comfortable", surface: "plain" },
-        rows: tab.rows,
-      }],
-      id: tab.id,
-      settings: tab.settings,
-      visible: tab.visible,
-    })),
+    tabs: source.tabs.map(workspaceLayoutTabV2ToV3),
   };
 }
 
@@ -274,6 +265,27 @@ export function cloneWorkspaceLayoutManifestV3(
   manifest: WorkspaceLayoutManifestV3 = embeddedWorkspaceLayoutManifestV3,
 ) {
   return structuredClone(manifest);
+}
+
+export function backfillWorkspaceLayoutManifestV3(manifest: WorkspaceLayoutManifestV3) {
+  const normalized = cloneWorkspaceLayoutManifestV3(manifest);
+  const seenTabs = new Set(normalized.tabs.map((tab) => tab.id));
+
+  for (const [registryIndex, registryTab] of workspaceLayoutRegistryV2.entries()) {
+    if (!registryTab.backfillIfMissing || seenTabs.has(registryTab.id)) continue;
+    const defaultTab = embeddedWorkspaceLayoutManifestV2.tabs.find((tab) => tab.id === registryTab.id);
+    if (!defaultTab) continue;
+    const previousTab = [...workspaceLayoutRegistryV2.slice(0, registryIndex)]
+      .reverse()
+      .find((candidate) => seenTabs.has(candidate.id));
+    const insertionIndex = previousTab
+      ? normalized.tabs.findIndex((tab) => tab.id === previousTab.id) + 1
+      : 0;
+    normalized.tabs.splice(insertionIndex, 0, workspaceLayoutTabV2ToV3(structuredClone(defaultTab)));
+    seenTabs.add(registryTab.id);
+  }
+
+  return normalized;
 }
 
 export function flattenWorkspaceGroupsV3(tab: WorkspaceLayoutTabV3) {
@@ -519,6 +531,20 @@ function customNode(component: WorkspaceCustomNodeV2["component"], title: string
   if (component === "link-list") return { ...base, items: [{ href: "/", label: "Workspace home" }] };
   if (component === "metric-strip") return { ...base, items: [{ label: "Metric one", value: "Value" }, { label: "Metric two", value: "Value" }] };
   return base;
+}
+
+function workspaceLayoutTabV2ToV3(tab: WorkspaceLayoutManifestV2["tabs"][number]): WorkspaceLayoutTabV3 {
+  return {
+    groups: [{
+      id: stableGroupId(tab.id),
+      name: "Primary layout",
+      presentation: { spacing: "comfortable", surface: "plain" },
+      rows: tab.rows,
+    }],
+    id: tab.id,
+    settings: tab.settings,
+    visible: tab.visible,
+  };
 }
 
 function stableGroupId(tabId: WorkspaceTabId) {
