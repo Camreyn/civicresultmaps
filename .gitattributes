@@ -126,6 +126,10 @@
 /data/precinct-geometry/MI/**/*.html -diff
 /data/precinct-geometry/MI/**/*.xml -diff
 
+# Preserve every hash-pinned Minnesota local-reporting source byte-for-byte.
+/data/precinct-geometry/MN/** -text whitespace=-trailing-space,-space-before-tab
+/data/precinct-geometry/MN/**/*.xlsx -diff
+
 # Preserve every hash-pinned North Carolina VTD/precinct source and derivative byte-for-byte.
 /data/precinct-geometry/NC/** -text whitespace=-trailing-space,-space-before-tab
 /data/precinct-geometry/NC/**/*.zip -diff

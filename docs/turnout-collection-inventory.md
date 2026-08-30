@@ -36,6 +36,29 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | WI Wisconsin | 1,851 | local_jurisdiction | registeredVoters | `data/wi-2024-eac-turnout.csv` |
 | WV West Virginia | 1,649 | precinct | registeredVoters | `data/wv-2024-county-detailxml-reports` |
 
+## Minnesota 2012 Historical Turnout Correction
+
+- Source: the Minnesota Secretary of State's certified, post-recount 2012
+  General Election precinct workbook, retained at
+  `data/precinct-geometry/MN/2012-11-06-general/raw/mn-sos/2012-general-federal-state-results-by-precinct-official-post-recounts.xlsx`
+  with SHA-256
+  `9a7530cfef9e44f8663c62bf5786418b4b078d81fd13e2d130fbd8ef305ee376`.
+- Parser: `scripts/build-mn-2012-turnout-staging.mjs` reads the 2012-specific
+  `7AM` pre-election registration field, adds `EDR` election-day
+  registrations, and uses `TOTVOTING` as election-level ballots cast. It does
+  not use the later-workbook `REG7AM` field.
+- Controls: 4,102 exact VTDID rows across 87 county parents; 3,084,025
+  pre-election registrants; 527,867 election-day registrations; 3,611,892
+  combined registered-voter denominator; 2,950,780 ballots cast; 81.6962%
+  weighted statewide turnout.
+- Caveat: 20 official precinct rows report `TOTVOTING` above `7AM + EDR`.
+  Those source values are retained with `warningRequired: true`; they are not
+  evidence that statewide ballots exceeded statewide registration.
+- Release status: the turnout-only artifact passed an isolated database and
+  local API rehearsal. Production promotion remains separately gated and must
+  preserve the existing 2012 results, candidates, election labels, geometry,
+  and reporting-unit provenance.
+
 ## Loaded Fallback, State-Native Denominator Still Missing
 
 | State | Current status | Needed |

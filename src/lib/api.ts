@@ -189,9 +189,12 @@ export const listStates = cachePublicData(
   "states",
 );
 
+// Precinct turnout payloads can also exceed Next.js's 2 MB Data Cache item
+// limit. Keep full state/year responses available without persistent caching.
 export const listTurnoutRows = cachePublicData(
   uncachedListTurnoutRows,
   "turnout-rows",
+  { persistent: false },
 );
 
 export const listVoteMethodRows = unstable_cache(
