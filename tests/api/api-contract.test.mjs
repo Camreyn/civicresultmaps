@@ -440,12 +440,16 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /KlimekFingerprint/);
   assert.match(klimek, /Klimek-Style Vote Fingerprint \+ Aligned Marginals/);
   assert.match(klimek, /same reporting-unit identity/);
+  assert.match(klimek, /0%–100% \(compare\)/);
+  assert.match(klimek, /apples-to-apples comparisons between elections/);
   assert.match(klimekMath, /buildKlimekFingerprint/);
   assert.match(klimekMath, /klimekBucketWidths/);
   assert.match(tabs, /ShpilkinHistogram/);
   assert.match(shpilkin, /Shpilkin-Style Distribution Histograms/);
   assert.match(shpilkin, /Accumulated votes/);
   assert.match(shpilkin, /Accumulated sub-jurisdictions/);
+  assert.match(shpilkin, /0%–100% \(compare\)/);
+  assert.match(shpilkin, /Fit visible data/);
   assert.match(shpilkinMath, /buildShpilkinHistogram/);
   assert.match(shpilkinMath, /listShpilkinCountyOptions/);
   assert.match(tabs, /voteMethodDiagnostic/);

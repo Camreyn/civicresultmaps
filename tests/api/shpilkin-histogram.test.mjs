@@ -115,7 +115,7 @@ test("supports 1, 2, 5, and 10 percentage-point buckets with an inclusive 100% e
   }
 });
 
-test("retains values above 100% and caps pathological values in an explicit overflow bucket", () => {
+test("uses a fixed 0-100 comparison domain and a capped fitted domain", () => {
   const overHundred = turnoutRow({ ballotsCast: 125, registeredVoters: 100, turnoutPct: 125 });
   const extreme = turnoutRow({
     ballotsCast: 300,
@@ -125,13 +125,38 @@ test("retains values above 100% and caps pathological values in an explicit over
     registeredVoters: 100,
     turnoutPct: 300,
   });
-  const result = histogram({ bucketWidth: 5, turnoutRows: [overHundred, extreme], xAxis: "turnout" });
+  const comparison = histogram({ bucketWidth: 5, turnoutRows: [overHundred, extreme], xAxis: "turnout" });
+  const fitted = histogram({
+    bucketWidth: 5,
+    scaleMode: "fit",
+    turnoutRows: [overHundred, extreme],
+    xAxis: "turnout",
+  });
 
-  assert.equal(result.domainMax, 200);
-  assert.equal(result.overflowObservationCount, 1);
-  assert.equal(result.buckets.at(-1).label, "≥195%");
-  assert.equal(result.buckets.at(-1).unitCount, 1);
-  assert.equal(result.buckets.find((bucket) => bucket.low === 125).unitCount, 1);
+  assert.equal(comparison.domainMin, 0);
+  assert.equal(comparison.domainMax, 100);
+  assert.equal(comparison.overflowObservationCount, 2);
+  assert.equal(comparison.buckets.at(-1).label, "≥95%");
+  assert.equal(comparison.buckets.at(-1).unitCount, 2);
+
+  assert.equal(fitted.domainMin, 120);
+  assert.equal(fitted.domainMax, 200);
+  assert.equal(fitted.overflowObservationCount, 1);
+  assert.equal(fitted.buckets.at(-1).label, "≥195%");
+  assert.equal(fitted.buckets.at(-1).unitCount, 1);
+  assert.equal(fitted.buckets.find((bucket) => bucket.low === 125).unitCount, 1);
+});
+
+test("fitted scaling removes empty tails while preserving bucket membership", () => {
+  const comparison = histogram();
+  const fitted = histogram({ scaleMode: "fit" });
+
+  assert.deepEqual([comparison.domainMin, comparison.domainMax], [0, 100]);
+  assert.equal(comparison.buckets.length, 10);
+  assert.deepEqual([fitted.domainMin, fitted.domainMax], [30, 70]);
+  assert.equal(fitted.buckets.length, 4);
+  assert.equal(fitted.buckets.find((bucket) => bucket.low === 40).unitCount, 1);
+  assert.equal(fitted.buckets.find((bucket) => bucket.low === 60).unitCount, 1);
 });
 
 test("statewide county rollups require canonical tags and retain contributing row ids", () => {

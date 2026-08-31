@@ -4392,6 +4392,37 @@ td {
   opacity: 0.42;
 }
 
+.chart-scale-guidance {
+  align-items: baseline;
+  background: rgba(53, 199, 163, 0.06);
+  border: 1px solid rgba(53, 199, 163, 0.24);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  padding: 9px 11px;
+}
+
+.chart-scale-guidance strong {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.chart-scale-guidance span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.chart-scale-guidance.is-fitted {
+  background: rgba(240, 195, 106, 0.06);
+  border-color: rgba(240, 195, 106, 0.28);
+}
+
+.chart-scale-guidance.is-fitted strong {
+  color: var(--gold);
+}
+
 .shpilkin-county-select {
   display: grid;
   gap: 6px;
@@ -4417,7 +4448,7 @@ td {
 .shpilkin-stats {
   display: grid;
   gap: 8px;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   margin: 0;
 }
 

@@ -12,6 +12,7 @@ import {
   type ShpilkinScope,
   type ShpilkinXAxis,
 } from "@/lib/shpilkin-histogram";
+import { percentageTicks, type PercentageScaleMode } from "@/lib/percentage-scale";
 import type { ReviewRowSummary, TurnoutRowSummary } from "@/lib/types";
 import { Eli5 } from "./eli5";
 
@@ -36,6 +37,10 @@ const xAxisOptions: Array<{ key: ShpilkinXAxis; label: string }> = [
 const accumulationOptions: Array<{ key: ShpilkinAccumulation; label: string }> = [
   { key: "votes", label: "Accumulated votes" },
   { key: "units", label: "Accumulated sub-jurisdictions" },
+];
+const scaleModeOptions: Array<{ key: PercentageScaleMode; label: string }> = [
+  { key: "comparison", label: "0%–100% (compare)" },
+  { key: "fit", label: "Fit visible data" },
 ];
 const yGridRatios = [0, 0.25, 0.5, 0.75, 1];
 const integerFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
@@ -127,6 +132,7 @@ export function ShpilkinHistogram({
   const [accumulation, setAccumulation] = useState<ShpilkinAccumulation>("votes");
   const [candidate, setCandidate] = useState<ShpilkinCandidate>("dem");
   const [bucketWidth, setBucketWidth] = useState<ShpilkinBucketWidth>(1);
+  const [scaleMode, setScaleMode] = useState<PercentageScaleMode>("comparison");
   const [requestedCountyTag, setRequestedCountyTag] = useState("");
   const [acknowledgedKeys, setAcknowledgedKeys] = useState<string[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -147,11 +153,12 @@ export function ShpilkinHistogram({
       candidate,
       countyTag: selectedCountyTag,
       reviewRows,
+      scaleMode,
       scope,
       turnoutRows,
       xAxis,
     }),
-    [accumulation, bucketWidth, candidate, reviewRows, scope, selectedCountyTag, turnoutRows, xAxis],
+    [accumulation, bucketWidth, candidate, reviewRows, scaleMode, scope, selectedCountyTag, turnoutRows, xAxis],
   );
 
   const issues = [
@@ -168,7 +175,7 @@ export function ShpilkinHistogram({
       ? `This selection combines ${formatCount(histogram.denominatorNotes.length)} source denominator notes; confirm that the definitions are comparable.`
       : "",
     histogram.overflowObservationCount > 0
-      ? `${formatCount(histogram.overflowObservationCount)} observations exceed 200% and are grouped into the final overflow bucket.`
+      ? `${formatCount(histogram.overflowObservationCount)} observations exceed the selected ${histogram.domainMax}% domain and are grouped into the final overflow bucket.`
       : "",
     histogram.drawableObservationCount > 0 && histogram.drawableObservationCount < 10
       ? "Fewer than 10 drawable sub-jurisdictions are available, so the distribution shape is fragile."
@@ -184,6 +191,7 @@ export function ShpilkinHistogram({
     accumulation,
     candidate,
     bucketWidth,
+    scaleMode,
     histogram.drawableObservationCount,
   ].join(":");
   const acknowledged = acknowledgedKeys.includes(diagnosticKey);
@@ -203,12 +211,11 @@ export function ShpilkinHistogram({
     : histogram.levels.length === 1
       ? friendlyLevel(histogram.levels[0])
       : "local reporting units";
-  const xTicks = [...new Set([0, 25, 50, 75, 100, histogram.domainMax])]
-    .filter((value) => value <= histogram.domainMax)
-    .sort((left, right) => left - right);
+  const xTicks = percentageTicks({ max: histogram.domainMax, min: histogram.domainMin });
   const plot = { bottom: 300, height: 250, left: 76, right: 836, top: 50, width: 760 };
+  const domainSpan = histogram.domainMax - histogram.domainMin;
   const barSlot = plot.width / histogram.buckets.length;
-  const chartSummary = `${scopeLabel}: ${yAxisLabel.toLowerCase()} by ${xAxisLabel.toLowerCase()} in ${bucketWidth}-percentage-point buckets.`;
+  const chartSummary = `${scopeLabel}: ${yAxisLabel.toLowerCase()} by ${xAxisLabel.toLowerCase()} in ${bucketWidth}-percentage-point buckets on a ${histogram.domainMin}-${histogram.domainMax}% domain.`;
 
   return (
     <article className="history-chart-card wide shpilkin-workbench" data-tour="history-shpilkin">
@@ -225,7 +232,7 @@ export function ShpilkinHistogram({
             disabled={gated || status === "blocked"}
             onClick={() => svgRef.current && downloadSvg(
               svgRef.current,
-              `${stateCode.toLowerCase()}-${electionYear}-shpilkin-${xAxis}-${accumulation}-${bucketWidth}pct.svg`,
+              `${stateCode.toLowerCase()}-${electionYear}-shpilkin-${xAxis}-${accumulation}-${scaleMode}-${bucketWidth}pct.svg`,
             )}
             type="button"
           >
@@ -280,6 +287,12 @@ export function ShpilkinHistogram({
           </label>
         ) : null}
         <ChoiceButtons label="Horizontal axis" onChange={setXAxis} options={xAxisOptions} value={xAxis} />
+        <ChoiceButtons
+          label="Axis scale"
+          onChange={setScaleMode}
+          options={scaleModeOptions}
+          value={scaleMode}
+        />
         {xAxis === "candidate_share" ? (
           <ChoiceButtons
             label="Candidate"
@@ -303,6 +316,15 @@ export function ShpilkinHistogram({
           options={shpilkinBucketWidths.map((width) => ({ key: width, label: `${width}%` }))}
           value={bucketWidth}
         />
+      </div>
+
+      <div className={`chart-scale-guidance ${scaleMode === "fit" ? "is-fitted" : ""}`} role="note">
+        <strong>{scaleMode === "comparison" ? "Comparable 0%–100% scale" : "Zoomed, data-fitted scale"}</strong>
+        <span>
+          {scaleMode === "comparison"
+            ? "Use this fixed domain for apples-to-apples comparisons between elections."
+            : `This ${histogram.domainMin}%–${histogram.domainMax}% view spreads the selected observations across the chart. Switch to 0%–100% before comparing elections.`}
+        </span>
       </div>
 
       <div className={`chart-quality-notice ${status === "partial" ? "acknowledgement_required" : status}`} role="status">
@@ -340,6 +362,7 @@ export function ShpilkinHistogram({
         <div><dt>Accumulated total</dt><dd>{formatCount(histogram.totalValue)}</dd></div>
         <div><dt>Source datasets</dt><dd>{formatCount(histogram.sourceCount)}</dd></div>
         <div><dt>Bucket width</dt><dd>{bucketWidth}%</dd></div>
+        <div><dt>Axis domain</dt><dd>{histogram.domainMin}%–{histogram.domainMax}%</dd></div>
       </dl>
 
       <div className={`screening-chart-shell ${gated ? "is-gated" : ""}`}>
@@ -356,7 +379,7 @@ export function ShpilkinHistogram({
             >
               <title id={titleId}>{chartSummary}</title>
               <desc id={descriptionId}>
-                {formatCount(histogram.drawableObservationCount)} {unitLabel} grouped into {bucketWidth}-percentage-point buckets.
+                {formatCount(histogram.drawableObservationCount)} {unitLabel} grouped into {bucketWidth}-percentage-point buckets on a {histogram.domainMin}%-to-{histogram.domainMax}% axis.
               </desc>
               <rect className="screening-svg-bg" height="390" width="860" />
               {yGridRatios.map((ratio) => {
@@ -371,7 +394,7 @@ export function ShpilkinHistogram({
                 );
               })}
               {xTicks.map((tick) => {
-                const x = plot.left + (tick / histogram.domainMax) * plot.width;
+                const x = plot.left + ((tick - histogram.domainMin) / domainSpan) * plot.width;
                 return (
                   <g key={tick}>
                     <line className="shpilkin-x-gridline" x1={x} x2={x} y1={plot.top} y2={plot.bottom} />
@@ -452,6 +475,11 @@ export function ShpilkinHistogram({
           State-by-{pluralizeCountyLabel(countyLabel).toLowerCase()} mode rolls rows up only through canonical county tags.
           County-by-local-unit mode filters on that same tag; it does not infer parentage from a display name. Each bucket
           retains the contributing source-row IDs; the paired Klimek meta-chart uses the same deterministic bucket rules.
+        </p>
+        <p>
+          The fixed 0%–100% scale is required for apples-to-apples comparisons between elections. Fit-visible-data mode
+          adds padded, bucket-aligned zoom around the selected observations to make clustering easier to inspect, but its
+          apparent shape must not be compared with a chart using a different domain.
         </p>
       </details>
     </article>

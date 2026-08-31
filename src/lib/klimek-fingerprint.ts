@@ -5,6 +5,10 @@ import {
   type ShpilkinHistogramObservation,
   type ShpilkinScope,
 } from "./shpilkin-histogram.ts";
+import {
+  resolvePercentageDomain,
+  type PercentageScaleMode,
+} from "./percentage-scale.ts";
 import type { ReviewRowSummary, TurnoutRowSummary } from "./types";
 
 export const klimekBucketWidths = [1, 2, 5] as const;
@@ -70,8 +74,10 @@ export type KlimekFingerprintResult = {
   untaggedSourceRowCount: number;
   warningPointCount: number;
   xDomainMax: number;
+  xDomainMin: number;
   xOverflowPointCount: number;
   yDomainMax: number;
+  yDomainMin: number;
   yOverflowPointCount: number;
 };
 
@@ -82,8 +88,6 @@ type ObservationIndex = {
 };
 
 type PointBeforeDensity = Omit<KlimekFingerprintPoint, "densityScore" | "xBucketLow" | "yBucketLow">;
-
-const maximumFingerprintDomain = 200;
 
 function distinct(values: string[]) {
   return [...new Set(values.filter(Boolean))];
@@ -119,17 +123,14 @@ function indexObservations(observations: ShpilkinHistogramObservation[]): Observ
   return { ambiguousKeys, missingIdentityCount, unique };
 }
 
-function domainMaximum(values: number[], bucketWidth: KlimekBucketWidth) {
-  const largest = values.reduce((maximum, value) => Math.max(maximum, value), 0);
-  return Math.min(
-    maximumFingerprintDomain,
-    Math.max(100, Math.ceil(largest / bucketWidth) * bucketWidth),
-  );
-}
-
-function bucketIndex(value: number, domainMax: number, bucketWidth: KlimekBucketWidth) {
-  const bucketCount = Math.max(1, Math.ceil(domainMax / bucketWidth));
-  return Math.min(bucketCount - 1, Math.max(0, Math.floor(value / bucketWidth)));
+function bucketIndex(
+  value: number,
+  domainMin: number,
+  domainMax: number,
+  bucketWidth: KlimekBucketWidth,
+) {
+  const bucketCount = Math.max(1, Math.ceil((domainMax - domainMin) / bucketWidth));
+  return Math.min(bucketCount - 1, Math.max(0, Math.floor((value - domainMin) / bucketWidth)));
 }
 
 function buildMarginalBuckets(input: {
@@ -137,14 +138,15 @@ function buildMarginalBuckets(input: {
   axis: "turnout" | "winner_share";
   bucketWidth: KlimekBucketWidth;
   domainMax: number;
+  domainMin: number;
   points: PointBeforeDensity[];
 }) {
-  const bucketCount = Math.max(1, Math.ceil(input.domainMax / input.bucketWidth));
+  const bucketCount = Math.max(1, Math.ceil((input.domainMax - input.domainMin) / input.bucketWidth));
   const hasOverflow = input.points.some((point) => (
     input.axis === "turnout" ? point.turnoutPct : point.winnerSharePct
   ) > input.domainMax);
   const buckets: KlimekMarginalBucket[] = Array.from({ length: bucketCount }, (_, index) => {
-    const low = index * input.bucketWidth;
+    const low = input.domainMin + index * input.bucketWidth;
     const high = Math.min(input.domainMax, low + input.bucketWidth);
     return {
       high,
@@ -159,7 +161,7 @@ function buildMarginalBuckets(input: {
 
   for (const point of input.points) {
     const percentage = input.axis === "turnout" ? point.turnoutPct : point.winnerSharePct;
-    const index = bucketIndex(percentage, input.domainMax, input.bucketWidth);
+    const index = bucketIndex(percentage, input.domainMin, input.domainMax, input.bucketWidth);
     const bucket = buckets[index];
     const voteWeight = input.axis === "turnout" ? point.ballotsCast : point.totalVotes;
     bucket.pointIds.push(point.id);
@@ -190,6 +192,7 @@ export function buildKlimekFingerprint(input: {
   countyTag?: string | null;
   pointSize: KlimekPointSize;
   reviewRows: ReviewRowSummary[];
+  scaleMode?: PercentageScaleMode;
   scope: ShpilkinScope;
   turnoutRows: TurnoutRowSummary[];
 }): KlimekFingerprintResult {
@@ -258,28 +261,38 @@ export function buildKlimekFingerprint(input: {
     });
   }
 
-  const xDomainMax = domainMaximum(pointsBeforeDensity.map((point) => point.turnoutPct), input.bucketWidth);
-  const yDomainMax = domainMaximum(pointsBeforeDensity.map((point) => point.winnerSharePct), input.bucketWidth);
+  const xDomain = resolvePercentageDomain(
+    pointsBeforeDensity.map((point) => point.turnoutPct),
+    input.bucketWidth,
+    input.scaleMode ?? "comparison",
+  );
+  const yDomain = resolvePercentageDomain(
+    pointsBeforeDensity.map((point) => point.winnerSharePct),
+    input.bucketWidth,
+    input.scaleMode ?? "comparison",
+  );
   const bottomBuckets = buildMarginalBuckets({
     accumulation: input.accumulation,
     axis: "turnout",
     bucketWidth: input.bucketWidth,
-    domainMax: xDomainMax,
+    domainMax: xDomain.max,
+    domainMin: xDomain.min,
     points: pointsBeforeDensity,
   });
   const sideBuckets = buildMarginalBuckets({
     accumulation: input.accumulation,
     axis: "winner_share",
     bucketWidth: input.bucketWidth,
-    domainMax: yDomainMax,
+    domainMax: yDomain.max,
+    domainMin: yDomain.min,
     points: pointsBeforeDensity,
   });
   const maxXUnits = Math.max(1, ...bottomBuckets.map((bucket) => bucket.unitCount));
   const maxYUnits = Math.max(1, ...sideBuckets.map((bucket) => bucket.unitCount));
   const points = pointsBeforeDensity
     .map((point) => {
-      const xIndex = bucketIndex(point.turnoutPct, xDomainMax, input.bucketWidth);
-      const yIndex = bucketIndex(point.winnerSharePct, yDomainMax, input.bucketWidth);
+      const xIndex = bucketIndex(point.turnoutPct, xDomain.min, xDomain.max, input.bucketWidth);
+      const yIndex = bucketIndex(point.winnerSharePct, yDomain.min, yDomain.max, input.bucketWidth);
       const xDensity = bottomBuckets[xIndex].unitCount / maxXUnits;
       const yDensity = sideBuckets[yIndex].unitCount / maxYUnits;
       return {
@@ -320,9 +333,11 @@ export function buildKlimekFingerprint(input: {
     turnoutUnmatchedObservationCount: turnout.observations.length - matchedUnitKeys.size,
     untaggedSourceRowCount: candidate.untaggedSourceRowCount + turnout.untaggedSourceRowCount,
     warningPointCount: points.filter((point) => point.warningRequired).length,
-    xDomainMax,
-    xOverflowPointCount: points.filter((point) => point.turnoutPct > xDomainMax).length,
-    yDomainMax,
-    yOverflowPointCount: points.filter((point) => point.winnerSharePct > yDomainMax).length,
+    xDomainMax: xDomain.max,
+    xDomainMin: xDomain.min,
+    xOverflowPointCount: points.filter((point) => point.turnoutPct > xDomain.max).length,
+    yDomainMax: yDomain.max,
+    yDomainMin: yDomain.min,
+    yOverflowPointCount: points.filter((point) => point.winnerSharePct > yDomain.max).length,
   };
 }

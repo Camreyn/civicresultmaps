@@ -110,6 +110,19 @@ test("plots turnout on x and the loaded scope winner share on y", () => {
   assert.equal(alpha.winnerSharePct, 60);
   assert.equal(alpha.sizeValue, 100);
   assert.deepEqual(alpha.sourceIds.sort(), ["official-review", "official-turnout"]);
+  assert.deepEqual([result.xDomainMin, result.xDomainMax], [0, 100]);
+  assert.deepEqual([result.yDomainMin, result.yDomainMax], [0, 100]);
+});
+
+test("fitted scaling spreads clustered points with bucket-aligned axis domains", () => {
+  const result = fingerprint({ scaleMode: "fit" });
+
+  assert.deepEqual([result.xDomainMin, result.xDomainMax], [70, 85]);
+  assert.deepEqual([result.yDomainMin, result.yDomainMax], [50, 65]);
+  assert.equal(result.bottomBuckets.length, 3);
+  assert.equal(result.sideBuckets.length, 3);
+  assert.equal(result.bottomBuckets.find((bucket) => bucket.low === 75).unitCount, 1);
+  assert.equal(result.sideBuckets.find((bucket) => bucket.low === 55).unitCount, 1);
 });
 
 test("supports both requested point-size encodings and aligned vote or unit marginals", () => {
@@ -208,22 +221,29 @@ test("state-by-county scope pairs canonical county rollups without display-name 
   assert.equal(result.untaggedSourceRowCount, 1);
 });
 
-test("preserves values above 100 percent and labels values beyond 200 as overflow", () => {
-  const result = fingerprint({
+test("uses 0-100 comparison axes and preserves extreme values in capped fitted axes", () => {
+  const input = {
     reviewRows: [reviewRow({ demVotes: 250, harrisVotes: 250, repVotes: 10, totalVotes: 100, trumpVotes: 10 })],
     turnoutRows: [turnoutRow({ ballotsCast: 300, registeredVoters: 100, turnoutPct: 300 })],
-  });
+  };
+  const comparison = fingerprint(input);
+  const fitted = fingerprint({ ...input, scaleMode: "fit" });
 
-  assert.equal(result.xDomainMax, 200);
-  assert.equal(result.yDomainMax, 200);
-  assert.equal(result.xOverflowPointCount, 1);
-  assert.equal(result.yOverflowPointCount, 1);
-  assert.equal(result.points[0].turnoutPct, 300);
-  assert.equal(result.points[0].winnerSharePct, 250);
-  assert.equal(result.bottomBuckets.at(-1).label, "≥195%");
-  assert.equal(result.sideBuckets.at(-1).label, "≥195%");
-  assert.ok(result.bottomBuckets.at(-1).sourceRowIds.includes("turnout-a"));
-  assert.ok(result.sideBuckets.at(-1).sourceRowIds.includes("review-a"));
+  assert.deepEqual([comparison.xDomainMin, comparison.xDomainMax], [0, 100]);
+  assert.deepEqual([comparison.yDomainMin, comparison.yDomainMax], [0, 100]);
+  assert.equal(comparison.bottomBuckets.at(-1).label, "≥95%");
+  assert.equal(comparison.sideBuckets.at(-1).label, "≥95%");
+
+  assert.deepEqual([fitted.xDomainMin, fitted.xDomainMax], [190, 200]);
+  assert.deepEqual([fitted.yDomainMin, fitted.yDomainMax], [190, 200]);
+  assert.equal(fitted.xOverflowPointCount, 1);
+  assert.equal(fitted.yOverflowPointCount, 1);
+  assert.equal(fitted.points[0].turnoutPct, 300);
+  assert.equal(fitted.points[0].winnerSharePct, 250);
+  assert.equal(fitted.bottomBuckets.at(-1).label, "≥195%");
+  assert.equal(fitted.sideBuckets.at(-1).label, "≥195%");
+  assert.ok(fitted.bottomBuckets.at(-1).sourceRowIds.includes("turnout-a"));
+  assert.ok(fitted.sideBuckets.at(-1).sourceRowIds.includes("review-a"));
 });
 
 test("uses marginal bucket density for opacity without changing exact coordinates", () => {
