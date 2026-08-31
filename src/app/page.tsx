@@ -176,6 +176,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const initialFips = /^\d{5}$/.test(params?.fips ?? "") ? params?.fips : undefined;
 
   const needsReview = ["map", "review", "methodology", "exports"].includes(activeTab);
+  const needsReviewRows = activeTab === "history" || needsReview;
   const needsIndicators = activeTab === "map" || needsReview;
   const needsTurnout = ["history", "data", "exports"].includes(activeTab);
   const needsHistory = ["history", "data", "exports"].includes(activeTab);
@@ -213,8 +214,8 @@ export default async function Home({ searchParams }: HomeProps) {
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     needsImports ? listImportRuns() : Promise.resolve([]),
     needsIndicators ? listIndicators({ state: selectedState, year: selectedYear }) : Promise.resolve([]),
-    needsReview
-      ? listReviewRows({ state: selectedState, year: selectedYear, includeMetrics: true, limit: 5000 })
+    needsReviewRows
+      ? listReviewRows({ state: selectedState, year: selectedYear, includeMetrics: true, limit: activeTab === "history" || activeTab === "exports" ? 20000 : 5000 })
       : Promise.resolve([]),
     needsTurnout ? listTurnoutRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
     needsHistory ? listHistoricalResultRows({ state: selectedState, limit: 5000 }) : Promise.resolve([]),

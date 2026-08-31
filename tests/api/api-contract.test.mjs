@@ -29,7 +29,9 @@ test("README links graph calculation documentation", () => {
   assert.match(graphDocs, /Average Down-Ballot Difference/);
   assert.match(graphDocs, /Down-Ballot Outliers/);
   assert.match(graphDocs, /Klimek-Style Proxy Fingerprints/);
-  assert.match(graphDocs, /Shpilkin-Style Vote-Share Diagnostics/);
+  assert.match(graphDocs, /Shpilkin-Style Distribution Histograms/);
+  assert.match(graphDocs, /accumulated presidential votes by candidate vote share/);
+  assert.match(graphDocs, /Bucket widths are 1, 2, 5, or 10 percentage points/);
   assert.match(graphDocs, /EAC Datasets, Codebooks, and Surveys/);
   assert.match(graphDocs, /NIST Voting Program/);
   assert.match(graphDocs, /Statistical detection of systematic election irregularities/);
@@ -364,6 +366,8 @@ test("state switcher shows compact data availability", () => {
 test("review indicators explain advisory meaning", () => {
   const eli5 = readFileSync("src/app/eli5.tsx", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const shpilkin = readFileSync("src/app/shpilkin-histogram.tsx", "utf8");
+  const shpilkinMath = readFileSync("src/lib/shpilkin-histogram.ts", "utf8");
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   const overview = readFileSync("src/app/national-overview.tsx", "utf8");
   const dataReviewTemplate = readFileSync(".github/ISSUE_TEMPLATE/data-review.yml", "utf8");
@@ -432,7 +436,12 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /flagMixDiagnostic/);
   assert.match(tabs, /historicalContextDiagnostic/);
   assert.match(tabs, /klimekProxyDiagnostic/);
-  assert.match(tabs, /shpilkinProxyDiagnostic/);
+  assert.match(tabs, /ShpilkinHistogram/);
+  assert.match(shpilkin, /Shpilkin-Style Distribution Histograms/);
+  assert.match(shpilkin, /Accumulated votes/);
+  assert.match(shpilkin, /Accumulated sub-jurisdictions/);
+  assert.match(shpilkinMath, /buildShpilkinHistogram/);
+  assert.match(shpilkinMath, /listShpilkinCountyOptions/);
   assert.match(tabs, /voteMethodDiagnostic/);
   assert.match(tabs, /equipmentContextDiagnostic/);
   assert.match(tabs, /Proxy graph, not a complete Klimek fingerprint/);
@@ -444,7 +453,7 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /Drop-off histogram/);
   assert.match(tabs, /Turnout and registration checks/);
   assert.match(tabs, /Klimek-style fingerprints/);
-  assert.match(tabs, /Shpilkin-style diagnostics/);
+  assert.match(tabs, /Shpilkin-style distribution histograms/);
   assert.match(tabs, /EAC Quality Monitoring Program/);
   assert.match(tabs, /EAC Voting System Reports Collection/);
   assert.match(tabs, /NIST Voting Program/);
@@ -486,6 +495,7 @@ test("raw review turnout and historical APIs are exposed", () => {
   const schema = readFileSync("src/db/schema.ts", "utf8");
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const shpilkin = readFileSync("src/app/shpilkin-histogram.tsx", "utf8");
 
   assert.match(schema, /reviewRows/);
   assert.match(schema, /historicalResultRows/);
@@ -495,17 +505,17 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(dataAccess, /includeMetrics/);
   assert.match(dataAccess, /else '\{\}'::jsonb end as metrics/);
   assert.match(readFileSync("src/lib/api.ts", "utf8"), /listVoteMethodRows/);
-  assert.match(tabs, /Historical Baselines/);
+  assert.match(tabs, /History &amp; Distribution Diagnostics/);
   assert.match(tabs, /historicalYearSummaries/);
   assert.match(tabs, /enabledHistoricalYears/);
   assert.match(tabs, /enabledHistoricalGraphs/);
   assert.match(tabs, /Statewide Vote Share/);
   assert.match(tabs, /Largest County Dem-Share Movement/);
   assert.match(tabs, /Klimek-Style Vote Fingerprints/);
-  assert.match(tabs, /Shpilkin-Style Vote-Share Diagnostics/);
+  assert.match(shpilkin, /Shpilkin-Style Distribution Histograms/);
   assert.doesNotMatch(tabs, /Klimek & Shpilkin-Style Fingerprints/);
   assert.match(tabs, /fingerprint-grid/);
-  assert.match(tabs, /shpilkin-grid/);
+  assert.match(shpilkin, /shpilkin-svg-frame/);
   assert.match(tabs, /\/api\/review-rows/);
   assert.match(tabs, /includeMetrics=true/);
   assert.match(tabs, /\/api\/turnout/);

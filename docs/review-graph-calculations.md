@@ -221,19 +221,49 @@ Center. They are not conclusions.
 - The chart is always presented with an acknowledgement gate because it is a
   proxy, not a complete fingerprint test.
 
-### Shpilkin-Style Vote-Share Diagnostics
+### Shpilkin-Style Distribution Histograms
 
-- Input: historical rows by year.
-- For each enabled year, rows are grouped into ten Democratic-share buckets:
-  `0-10`, `10-20`, ..., `90-100`.
-- For each bucket, the app sums total votes, Democratic votes, Republican votes,
-  and row count.
-- Bar height is bucket total votes divided by the largest bucket total for that
-  year.
-- The bar color reflects whether the bucket's Democratic share is at least 50
-  percent.
-- The chart is a distribution diagnostic and does not replace precinct-level or
-  turnout-based review.
+- Inputs for the selected election year:
+  - candidate-share views use normalized presidential review rows;
+  - turnout views use normalized turnout rows, including source-reported
+    `turnoutPct` or `ballotsCast / registeredVoters * 100` when the stored rate
+    is absent and the denominator is positive.
+- The controls expose the four requested combinations:
+  - accumulated presidential votes by candidate vote share;
+  - accumulated sub-jurisdictions by candidate vote share;
+  - accumulated ballots cast by turnout percentage;
+  - accumulated sub-jurisdictions by turnout percentage.
+- Candidate-share views can use the normalized Democratic or Republican
+  candidate. A row-level share is recalculated from candidate votes and total
+  presidential votes when both are available; a stored share is used only when
+  vote counts cannot calculate it. Vote-weighted mode still requires a positive
+  total-vote weight.
+- Bucket widths are 1, 2, 5, or 10 percentage points. The nominal domain is
+  0-100 percent. Values above 100 percent remain visible; the domain expands to
+  200 percent, and more extreme values are retained in an explicit final
+  overflow bucket instead of being clamped or discarded. An exact endpoint is
+  included in the final ordinary bucket.
+- Jurisdiction scales are:
+  - statewide distribution at county/county-equivalent scale;
+  - statewide distribution at the loaded local-reporting-unit scale;
+  - one canonically selected county's distribution at the loaded local-unit
+    scale.
+- County rollups and county-local filters require `county:<GEOID>`
+  `jurisdictionTag` identity. The app does not infer county parentage from a
+  display name. If both direct county rows and local rows exist, the direct
+  county row is preferred to prevent double counting; otherwise compatible
+  local rows are summed. A turnout rollup requires compatible positive
+  registration denominators across all contributing local rows.
+- Each output bucket retains the contributing normalized source-row IDs. This
+  gives a future Klimek-style scatterplot a shared, deterministic membership
+  function for coloring points by histogram bucket without changing the
+  calculation.
+- Source omissions, denominator warnings, low row counts, missing canonical
+  tags, and overflow observations are surfaced in the chart-quality notice. A
+  partial chart remains behind an acknowledgement gate.
+- These histograms are descriptive screening views. Their shape is sensitive to
+  geography, bin width, candidate choice, turnout definition, and source
+  coverage; it is not evidence of fraud, tampering, misconduct, or intent.
 
 ## Data And Context Charts
 
@@ -260,6 +290,10 @@ Center. They are not conclusions.
 
 - `src/app/workspace-tabs.tsx`: Review Center, historical graphs, vote-method
   context, equipment context, chart gates, and methodology copy.
+- `src/app/shpilkin-histogram.tsx`: interactive histogram controls, quality
+  notices, accessible SVG rendering, and SVG export.
+- `src/lib/shpilkin-histogram.ts`: canonical scope selection, rollups,
+  bucketing, weights, overflow handling, and source-row membership.
 - `src/app/results-explorer.tsx`: map modes, result table, map join behavior,
   selected jurisdiction drawer, and source links.
 - `src/db/native-import.ts`: native import advisory indicator generation.

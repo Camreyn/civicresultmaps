@@ -1074,7 +1074,7 @@ export async function listReviewRows(input: {
       where review_rows.state_code = ${input.state}
         and review_rows.election_year = ${input.year}
       order by review_rows.jurisdiction_name, review_rows.local_unit
-      limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+      limit ${Math.min(Math.max(input.limit ?? 500, 1), 20000)}
     `) as typeof rows;
   } catch (error) {
     rethrowReadErrorIfStrict(error);
@@ -1155,7 +1155,7 @@ export async function listTurnoutRows(input: {
       where turnout_rows.state_code = ${input.state}
         and turnout_rows.election_year = ${input.year}
       order by turnout_rows.jurisdiction_name
-      limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+      limit ${Math.min(Math.max(input.limit ?? 500, 1), 20000)}
     `) as typeof rows;
   } catch (error) {
     rethrowReadErrorIfStrict(error);
