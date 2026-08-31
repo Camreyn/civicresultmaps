@@ -14,12 +14,14 @@ export type ShpilkinCountyOption = {
 };
 
 export type ShpilkinHistogramObservation = {
+  candidateVoteWeight: number | null;
   id: string;
   label: string;
   level: string;
   parentTag: string | null;
   sourceIds: string[];
   sourceRowIds: string[];
+  unitKey: string | null;
   valuePct: number;
   voteWeight: number | null;
   warningRequired: boolean;
@@ -180,12 +182,14 @@ function buildCandidateObservations(input: {
       const valuePct = candidateShare(row, input.candidate);
       if (valuePct === null) return [];
       return [{
+        candidateVoteWeight: candidateVoteValue(row, input.candidate),
         id: `review:${row.id}`,
         label: row.localUnit || row.jurisdictionName,
         level: row.level,
         parentTag: canonicalCountyTag(row.jurisdictionTag),
         sourceIds: [row.sourceId],
         sourceRowIds: [row.id],
+        unitKey: row.reportingUnitId ? `reporting-unit:${row.reportingUnitId}` : null,
         valuePct,
         voteWeight: positiveNumber(row.totalVotes),
         warningRequired: false,
@@ -214,14 +218,17 @@ function buildCandidateObservations(input: {
     );
     let valuePct: number | null = null;
     let voteWeight: number | null = null;
+    let candidateVoteWeight: number | null = null;
 
     if (completeVoteRows.length === rows.length && rows.length > 0) {
       const candidateVotes = rows.reduce((sum, row) => sum + (candidateVoteValue(row, input.candidate) ?? 0), 0);
       voteWeight = rows.reduce((sum, row) => sum + (positiveNumber(row.totalVotes) ?? 0), 0);
+      candidateVoteWeight = candidateVotes;
       valuePct = voteWeight > 0 ? (candidateVotes / voteWeight) * 100 : null;
     } else if (rows.length === 1) {
       valuePct = candidateShare(rows[0], input.candidate);
       voteWeight = positiveNumber(rows[0].totalVotes);
+      candidateVoteWeight = candidateVoteValue(rows[0], input.candidate);
     }
 
     if (valuePct === null) {
@@ -230,12 +237,14 @@ function buildCandidateObservations(input: {
     }
 
     observations.push({
+      candidateVoteWeight,
       id: `review-county:${tag}`,
       label: rows[0]?.jurisdictionName ?? tag,
       level: "county",
       parentTag: tag,
       sourceIds: distinct(rows.map((row) => row.sourceId)),
       sourceRowIds: rows.map((row) => row.id),
+      unitKey: tag,
       valuePct,
       voteWeight,
       warningRequired: false,
@@ -264,12 +273,14 @@ function buildTurnoutObservations(input: {
       const valuePct = turnoutShare(row);
       if (valuePct === null) return [];
       return [{
+        candidateVoteWeight: null,
         id: `turnout:${row.id}`,
         label: row.jurisdictionName,
         level: row.level,
         parentTag: canonicalCountyTag(row.jurisdictionTag),
         sourceIds: [row.sourceId],
         sourceRowIds: [row.id],
+        unitKey: row.reportingUnitId ? `reporting-unit:${row.reportingUnitId}` : null,
         valuePct,
         voteWeight: nonnegativeNumber(row.ballotsCast),
         warningRequired: row.warningRequired,
@@ -311,12 +322,14 @@ function buildTurnoutObservations(input: {
     }
 
     observations.push({
+      candidateVoteWeight: null,
       id: `turnout-county:${tag}`,
       label: turnoutCountyName(rows[0]),
       level: "county",
       parentTag: tag,
       sourceIds: distinct(rows.map((row) => row.sourceId)),
       sourceRowIds: rows.map((row) => row.id),
+      unitKey: tag,
       valuePct,
       voteWeight: totalBallots,
       warningRequired: rows.some((row) => row.warningRequired),

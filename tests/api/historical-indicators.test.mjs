@@ -54,7 +54,7 @@ test("coverage reads capability flags for the selected election year", () => {
 test("historical maps load same-year indicators and distinguish not evaluated", () => {
   assert.match(page, /const needsIndicators = activeTab === "map" \|\| needsReview/);
   assert.match(page, /listIndicators\(\{ state: selectedState, year: selectedYear \}\)/);
-  assert.match(page, /listReviewRows\(\{ state: selectedState, year: selectedYear/);
+  assert.match(page, /listReviewRows\(\{\s*state: selectedState,\s*year: selectedYear/);
   assert.match(page, /indicatorsEvaluated/);
   assert.match(page, /not been evaluated for advisory indicators/);
   assert.match(page, /indicatorEvaluation\.broadSignalWarning/);
@@ -70,7 +70,7 @@ test("historical maps load same-year indicators and distinguish not evaluated", 
 test("historical exports keep one election context across data, metadata, and API examples", () => {
   assert.match(page, /workspaceTabSupportsHistoricalYear\(activeTab\) \? requestedYear : 2024/);
   assert.match(page, /loadDisplaySources\(selectedState, selectedYear, activeTab !== "exports"\)/);
-  assert.match(page, /listTurnoutRows\(\{ state: selectedState, year: selectedYear/);
+  assert.match(page, /listTurnoutRows\(\{\s*state: selectedState,\s*year: selectedYear/);
   assert.match(workspaceTabs, /selectedStateCode\.toLowerCase\(\)\}-\$\{electionYear\}-president/);
   assert.match(workspaceTabs, /candidateNamesForYear\(electionYear\)/);
   assert.match(workspaceTabs, /activeTab !== "exports" \|\| run\.electionYear === electionYear/);

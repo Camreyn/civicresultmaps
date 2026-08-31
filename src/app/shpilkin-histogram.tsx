@@ -451,7 +451,7 @@ export function ShpilkinHistogram({
         <p>
           State-by-{pluralizeCountyLabel(countyLabel).toLowerCase()} mode rolls rows up only through canonical county tags.
           County-by-local-unit mode filters on that same tag; it does not infer parentage from a display name. Each bucket
-          retains the contributing source-row IDs so a future fingerprint scatterplot can reuse the same membership.
+          retains the contributing source-row IDs; the paired Klimek meta-chart uses the same deterministic bucket rules.
         </p>
       </details>
     </article>
