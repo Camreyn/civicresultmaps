@@ -4,8 +4,10 @@ This document explains how Civic Result Maps calculates the public graph and
 advisory-review views. These calculations are source-reconciliation tools. They
 are not findings of fraud, tampering, misconduct, or intent.
 
-Implementation source: `src/app/workspace-tabs.tsx`, `src/app/results-explorer.tsx`,
-`src/db/native-import.ts`, and `src/db/legacy-import.ts`.
+Implementation source: `src/app/workspace-tabs.tsx`,
+`src/app/klimek-fingerprint.tsx`, `src/lib/klimek-fingerprint.ts`,
+`src/app/results-explorer.tsx`, `src/db/native-import.ts`, and
+`src/db/legacy-import.ts`.
 
 ## Data Inputs
 
@@ -207,19 +209,46 @@ Center. They are not conclusions.
   - movement = last share minus first share.
 - The chart displays the 12 jurisdictions with the largest absolute movement.
 
-### Klimek-Style Proxy Fingerprints
+### Klimek-Style Vote Fingerprint And Aligned Marginals
 
-- Input: historical rows by year.
-- Current app status: proxy view. True Klimek-style fingerprints need vote share
-  and turnout percentage for the same reporting units. The current chart uses
-  vote volume as a temporary turnout proxy when turnout denominators are missing.
-- For each row:
-  - x = Democratic vote share from 0 to 100 percent.
-  - y = square-root-scaled total votes relative to the largest row total in that
-    year.
-  - point radius = square-root-scaled total votes.
-- The chart is always presented with an acknowledgement gate because it is a
-  proxy, not a complete fingerprint test.
+- Inputs for the selected election year are normalized presidential review rows
+  and turnout rows. The chart does not substitute historical vote volume for
+  turnout.
+- Jurisdiction scales are state by county/county-equivalent, state by loaded
+  local reporting unit, and one canonically selected county by loaded local
+  reporting unit.
+- County observations pair only through a canonical `county:<GEOID>` tag. Local
+  observations pair only when the vote-share and turnout rows carry the same
+  stored reporting-unit identity. A matching display name is never treated as a
+  local identity crosswalk.
+- The loaded major-candidate winner is calculated inside the selected scope from
+  normalized Democratic and Republican vote counts. If the loaded totals tie or
+  cannot identify a winner, the chart fails closed.
+- Every drawable point represents one exactly paired sub-jurisdiction:
+  - x = turnout percentage from the turnout row;
+  - y = the loaded winner's presidential vote share from the review row;
+  - point radius = square-root-scaled total presidential votes or votes for the
+    loaded winner, selected by the user.
+- The turnout histogram is aligned below the scatterplot. The winner-share
+  histogram is rotated beside it. Both marginals contain only the plotted points,
+  use the same axis domains, and retain contributing source-row IDs.
+- Marginal bucket widths are 1, 2, or 5 percentage points. Equal-unit mode counts
+  each plotted sub-jurisdiction once. Vote mode accumulates ballots cast in the
+  turnout marginal and total presidential votes in the winner-share marginal.
+- Point opacity is the geometric mean of the normalized unit counts in its two
+  marginal buckets. This is a marginal-density cue, not a two-dimensional heat
+  map. Bucket width does not move or blur a point; its exact percentages remain
+  the scatter coordinates.
+- The ordinary domain is 0-100 percent. Values above 100 percent expand an axis
+  through at most 200 percent. More extreme values are retained in the final
+  overflow bucket and drawn at the display boundary with their exact values in
+  the point tooltip.
+- Missing identities, ambiguous or unmatched rows, missing weights, denominator
+  warnings, mixed denominator notes, low point counts, and overflow values are
+  disclosed by the chart-quality notice. A partial view remains behind an
+  acknowledgement gate.
+- The fingerprint and its marginals are descriptive screening views. They do not
+  establish fraud, tampering, misconduct, or intent.
 
 ### Shpilkin-Style Distribution Histograms
 
@@ -254,10 +283,9 @@ Center. They are not conclusions.
   county row is preferred to prevent double counting; otherwise compatible
   local rows are summed. A turnout rollup requires compatible positive
   registration denominators across all contributing local rows.
-- Each output bucket retains the contributing normalized source-row IDs. This
-  gives a future Klimek-style scatterplot a shared, deterministic membership
-  function for coloring points by histogram bucket without changing the
-  calculation.
+- Each output bucket retains the contributing normalized source-row IDs. The
+  Klimek meta-chart uses the same deterministic membership rules for its aligned
+  marginal buckets and point-density cue without changing exact point placement.
 - Source omissions, denominator warnings, low row counts, missing canonical
   tags, and overflow observations are surfaced in the chart-quality notice. A
   partial chart remains behind an acknowledgement gate.
@@ -290,6 +318,11 @@ Center. They are not conclusions.
 
 - `src/app/workspace-tabs.tsx`: Review Center, historical graphs, vote-method
   context, equipment context, chart gates, and methodology copy.
+- `src/app/klimek-fingerprint.tsx`: exact-point controls, aligned SVG marginals,
+  quality notices, accessibility text, and SVG export.
+- `src/lib/klimek-fingerprint.ts`: winner selection, exact identity pairing,
+  point-size weights, shared marginal buckets, density scores, and overflow
+  handling.
 - `src/app/shpilkin-histogram.tsx`: interactive histogram controls, quality
   notices, accessible SVG rendering, and SVG export.
 - `src/lib/shpilkin-histogram.ts`: canonical scope selection, rollups,

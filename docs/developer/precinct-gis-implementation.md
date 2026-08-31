@@ -8683,3 +8683,31 @@ evidence against its verified top-level package.
 - This change is code and documentation only. It does not alter ETL artifacts,
   normalized election data, canonical geography registries, public delivery
   eligibility, production database rows, Blob assets, or deployment state.
+
+### 2026-08-30 - Klimek fingerprint and aligned marginal charts
+
+- The History workspace now intersects selected-election turnout and
+  presidential review rows into a Klimek-style scatterplot: turnout percentage
+  is the horizontal coordinate and the loaded major-candidate winner's vote
+  share is the vertical coordinate. Point size can represent total presidential
+  votes or votes for that winner.
+- The turnout distribution is aligned below the scatterplot and the winner-share
+  distribution is aligned beside it. Their 1, 2, or 5 percentage-point buckets
+  contain only the exactly matched scatter points, retain source-row membership,
+  and provide a marginal-density opacity cue without moving or blurring exact
+  point coordinates. A two-dimensional heat map remains separate future work.
+- State-by-county observations pair only through canonical `county:<GEOID>`
+  tags. State-by-local-unit and county-by-local-unit observations pair only
+  through the same stored `reporting_unit_id`; the History server-read path now
+  passes that existing nullable identity to the client without changing the
+  public raw-row API response. Display-name similarity is never
+  used as an identity crosswalk, and ambiguous or unmatched inputs fail closed
+  behind the chart-quality notice.
+- Percentages above 100 remain visible by expanding either axis through 200.
+  More extreme values remain in an explicit overflow bucket and keep their
+  exact values in point tooltips. Turnout denominator warnings, mixed notes,
+  missing weights, low point counts, and overflow observations are disclosed.
+- This work adds no geometry relationship, reporting-unit record, source row,
+  ETL artifact, production data write, or public map eligibility. It is a
+  descriptive screening surface and does not establish fraud, tampering,
+  misconduct, or intent.

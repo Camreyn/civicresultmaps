@@ -4481,6 +4481,114 @@ td {
   fill-opacity: 1;
 }
 
+.klimek-stats dd {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.klimek-legend {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 11px;
+  gap: 8px 16px;
+}
+
+.klimek-legend span {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.klimek-legend-dot {
+  border: 1px solid #101112;
+  border-radius: 999px;
+  display: inline-block;
+  height: 11px;
+  width: 11px;
+}
+
+.klimek-legend-dot.dem,
+.klimek-point.dem,
+.klimek-marginal-bar.dem {
+  fill: #4f8df7;
+}
+
+.klimek-legend-dot.dem {
+  background: #4f8df7;
+}
+
+.klimek-legend-dot.rep,
+.klimek-point.rep,
+.klimek-marginal-bar.rep {
+  fill: #ef5b4f;
+}
+
+.klimek-legend-dot.rep {
+  background: #ef5b4f;
+}
+
+.klimek-legend-dot.neutral,
+.klimek-point.neutral,
+.klimek-marginal-bar.neutral {
+  fill: var(--gold);
+}
+
+.klimek-legend-dot.neutral {
+  background: var(--gold);
+}
+
+.klimek-svg-frame {
+  overflow-x: auto;
+}
+
+.klimek-svg-frame svg {
+  min-width: 720px;
+}
+
+.klimek-plot-bg {
+  fill: rgba(255, 255, 255, 0.012);
+  stroke: rgba(214, 222, 216, 0.06);
+}
+
+.klimek-marginal-title,
+.klimek-marginal-max {
+  fill: var(--muted);
+  font-family: var(--font-code);
+  font-size: 10px;
+}
+
+.klimek-marginal-bar {
+  fill-opacity: 0.82;
+  shape-rendering: crispEdges;
+}
+
+.klimek-marginal-bar.turnout {
+  fill: #35c7a3;
+}
+
+.klimek-marginal-bar:hover {
+  fill-opacity: 1;
+}
+
+.klimek-point {
+  stroke: #0c0e0d;
+  stroke-width: 1.25;
+}
+
+.klimek-point:hover {
+  fill-opacity: 1 !important;
+  stroke: var(--foreground);
+  stroke-width: 1.7;
+}
+
+.klimek-point.overflow {
+  stroke: var(--gold);
+  stroke-dasharray: 2 1;
+  stroke-width: 2;
+}
+
 .shpilkin-empty {
   border-top: 0;
   min-height: 240px;

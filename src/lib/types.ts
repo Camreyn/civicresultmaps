@@ -164,6 +164,7 @@ export type ReviewRowSummary = {
   demDropoff: number | null;
   repDropoff: number | null;
   metrics: Record<string, unknown>;
+  reportingUnitId?: string | null;
   sourceId: string;
 };
 
@@ -180,6 +181,7 @@ export type TurnoutRowSummary = {
   turnoutPct: number | null;
   denominatorNote: string;
   warningRequired: boolean;
+  reportingUnitId?: string | null;
   sourceId: string;
 };
 

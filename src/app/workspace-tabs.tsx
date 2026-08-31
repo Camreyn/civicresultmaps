@@ -34,6 +34,7 @@ import { WorkspaceSourceCatalog } from "./workspace-source-catalog";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
+import { KlimekFingerprint } from "./klimek-fingerprint";
 import { ShpilkinHistogram } from "./shpilkin-histogram";
 import { WorkspaceContextBar } from "./workspace-context-bar";
 import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
@@ -689,8 +690,8 @@ const tourFeatureRegistry: TourFeature[] = [
         ? [
             {
               body: context.hasHistoricalRows
-                ? "Historical charts compare older results with the selected election. The Shpilkin workbench separately uses selected-election review and turnout rows when those inputs are available."
-                : "Historical baselines are not loaded, but the Shpilkin workbench can still use the selected election's review or turnout rows.",
+                ? "Historical charts compare older results. The Klimek and Shpilkin workbenches separately use selected-election review and turnout rows when those inputs are available."
+                : "Historical baselines are not loaded, but the Klimek and Shpilkin workbenches can still use the selected election's review and turnout rows.",
               fallbackTarget: "[data-tour='history-panel']",
               id: "history",
               tab: "history",
@@ -699,14 +700,12 @@ const tourFeatureRegistry: TourFeature[] = [
             },
             {
               body: context.hasReviewRows || context.hasTurnoutRows
-                ? "Switch between candidate share and turnout, vote and unit accumulation, jurisdiction scale, and 1% to 10% buckets. Treat every shape as a prompt for source review, not a conclusion."
-                : "The fingerprint view is a proxy diagnostic. Treat it as a prompt for better turnout inputs and source review, not a conclusion.",
+                ? "The Klimek meta-chart intersects exact turnout and winner-share points with aligned marginal histograms. The Shpilkin workbench exposes each distribution separately. Treat every shape as a prompt for source review, not a conclusion."
+                : "Fingerprint views require compatible vote-share and turnout inputs for the same reporting units.",
               fallbackTarget: "[data-tour='history-panel']",
               id: "fingerprints",
               tab: "history",
-              target: context.hasReviewRows || context.hasTurnoutRows
-                ? "[data-tour='history-shpilkin']"
-                : "[data-tour='history-fingerprints']",
+              target: "[data-tour='history-klimek']",
               title: "Use diagnostic graph views carefully",
             },
           ]
@@ -1061,11 +1060,11 @@ const methodologyGuides: MethodologyGuide[] = [
     title: "Historical baseline movement",
   },
   {
-    caveat: "This app currently labels these as Klimek-style when true turnout denominators are unavailable. A proxy fingerprint should never be treated as a complete forensic test.",
+    caveat: "A Klimek-style fingerprint is drawn only where vote share and turnout can be paired for the same canonical county or exact reporting-unit identity. Missing matches are a data limitation, not evidence.",
     guide: [
       "Use a true vote fingerprint only when candidate share and turnout percentage are available for the same reporting units.",
       "Look for dense bands, tails, or clusters that combine very high turnout with one-sided vote share, then verify against source denominators.",
-      "Treat proxy fingerprints as visualization aids that tell you where to collect better turnout or ballot-accounting data.",
+      "Compare the scatterplot with its aligned marginal histograms, but remember that bucket width changes the density cue rather than the exact point coordinates.",
     ],
     id: "klimek-fingerprint",
     links: [
@@ -1085,7 +1084,7 @@ const methodologyGuides: MethodologyGuide[] = [
         label: "EAC Quality Monitoring Program",
       },
     ],
-    summary: "Use vote fingerprints cautiously to compare vote share with turnout or turnout proxies.",
+    summary: "Use exact-identity vote fingerprints cautiously to compare the loaded winner's vote share with turnout.",
     title: "Klimek-style fingerprints",
   },
   {
@@ -3212,7 +3211,7 @@ export function WorkspaceTabs({
     { key: "share", label: "Vote Share" },
     { key: "margin", label: "Margin Trend" },
     { key: "movement", label: "County Movement" },
-    { key: "klimek", label: "Klimek Fingerprints" },
+    { key: "klimek", label: "Klimek Meta-Chart" },
     { key: "shpilkin", label: "Shpilkin Histograms" },
   ];
   const historicalCountyTrends = useMemo(() => {
@@ -3239,23 +3238,6 @@ export function WorkspaceTabs({
       .filter((trend) => trend.rows.length >= 2)
       .sort((a, b) => Math.abs(b.demShareChange) - Math.abs(a.demShareChange))
       .slice(0, 12);
-  }, [filteredHistoricalRows]);
-  const historicalRowsByYear = useMemo(() => {
-    const rowsByYear = new Map<number, HistoricalResultRowSummary[]>();
-
-    for (const row of filteredHistoricalRows) {
-      rowsByYear.set(row.electionYear, [...(rowsByYear.get(row.electionYear) ?? []), row]);
-    }
-
-    return Array.from(rowsByYear.entries())
-      .map(([year, rows]) => ({
-        maxTotalVotes: Math.max(1, ...rows.map((row) => row.totalVotes ?? 0)),
-        rows: rows
-          .filter((row) => (row.totalVotes ?? 0) > 0)
-          .sort((a, b) => (b.totalVotes ?? 0) - (a.totalVotes ?? 0)),
-        year,
-      }))
-      .sort((a, b) => a.year - b.year);
   }, [filteredHistoricalRows]);
   const topIndicators = filteredIndicators.slice(0, 6);
   const voteMethodSummaries = useMemo(() => {
@@ -3486,22 +3468,6 @@ export function WorkspaceTabs({
     summary: "Historical charts use contextual baseline rows. Read the source and coverage limits before comparing years.",
     title: `${stateName} historical context charts`,
   });
-  const klimekProxyDiagnostic = staticChartDiagnostic({
-    acknowledgementKey: `klimek-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
-    actionHref: `/?state=${selectedStateCode}&tab=data`,
-    actionLabel: "What source would improve this?",
-    checked: [`${historicalRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
-    issues: [
-      "This is a proxy graph, not a complete Klimek fingerprint.",
-      "It uses county vote volume because true turnout percentages are not imported for these historical rows.",
-      "Do not interpret it as a complete turnout-fingerprint test.",
-    ],
-    readiness: "proxy",
-    rowCount: historicalRowsByYear.reduce((sum, yearGroup) => sum + yearGroup.rows.length, 0),
-    status: historicalRowsByYear.length ? "acknowledgement_required" : "blocked",
-    summary: "This Klimek-style view uses proxy inputs. Read the limits before viewing the fingerprint panels.",
-    title: `${stateName} Klimek-style proxy fingerprints`,
-  });
   const voteMethodDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `vote-method:${selectedStateCode}:${voteMethodRows.length}:${voteMethodUnavailableRows}` ,
     actionHref: `/?state=${selectedStateCode}&tab=data`,
@@ -3533,7 +3499,6 @@ export function WorkspaceTabs({
   });
   const flagMixAcknowledged = acknowledgedChartKeys.includes(flagMixDiagnostic.acknowledgementKey);
   const historicalContextAcknowledged = acknowledgedChartKeys.includes(historicalContextDiagnostic.acknowledgementKey);
-  const klimekProxyAcknowledged = acknowledgedChartKeys.includes(klimekProxyDiagnostic.acknowledgementKey);
   const voteMethodAcknowledged = acknowledgedChartKeys.includes(voteMethodDiagnostic.acknowledgementKey);
   const equipmentContextAcknowledged = acknowledgedChartKeys.includes(equipmentContextDiagnostic.acknowledgementKey);
   const dataNoteSections = buildDataNoteSections({
@@ -5222,18 +5187,18 @@ export function WorkspaceTabs({
               </div>
               <div className="header-actions">
                 <Eli5>
-                  Historical panels compare old report cards. The distribution workbench separately sorts the selected
-                  election's counties or local units into candidate-share or turnout buckets.
+                  Historical panels compare old report cards. The fingerprint workbenches separately compare and sort
+                  the selected election&apos;s counties or local units by vote share and turnout.
                 </Eli5>
                 <QualityBadge
                   detail={
                     historicalRows.length
-                      ? "Historical context rows are loaded. The Klimek fingerprint remains a proxy; the Shpilkin workbench reports its own selected-input quality."
+                      ? "Historical context rows are loaded. Selected-election Klimek and Shpilkin views report their own identity, turnout, and coverage quality."
                       : reviewRows.length || turnoutRows.length
-                        ? "Historical baselines are missing, but selected-election distribution inputs are available."
+                        ? "Historical baselines are missing, but selected-election fingerprint inputs are available."
                         : "Historical baseline and selected-election distribution rows are not loaded."
                   }
-                  status={historicalRows.length ? "proxy" : reviewRows.length || turnoutRows.length ? "partial" : "missing"}
+                  status={historicalRows.length || reviewRows.length || turnoutRows.length ? "partial" : "missing"}
                 />
                 <History aria-hidden size={18} />
               </div>
@@ -5438,77 +5403,6 @@ export function WorkspaceTabs({
                     </article>
                   )}
 
-                  {enabledHistoricalGraphs.includes("klimek") && (
-                    <article className="history-chart-card wide" data-tour="history-fingerprints">
-                      <div>
-                        <strong>Klimek-Style Vote Fingerprints</strong>
-                        <span>
-                          Separate year charts plotting Democratic share against county vote volume as a temporary turnout
-                          proxy. True Klimek fingerprints will use turnout percentages once denominators are imported.
-                        </span>
-                        <Eli5>
-                          Imagine each county as a dot. The dot's left-right position is vote share, and its height is
-                          vote size for now. This is only a practice version until real turnout denominators are loaded.
-                        </Eli5>
-                      </div>
-                      <div className="data-warning strong-warning" role="status">
-                        <TriangleAlert aria-hidden size={18} />
-                        <div>
-                          <strong>Proxy graph, not a complete Klimek fingerprint</strong>
-                          <span>
-                            This uses county vote volume because true turnout percentages are not imported for these
-                            historical rows. Do not interpret it as a complete turnout-fingerprint test.
-                          </span>
-                        </div>
-                      </div>
-                      <ChartQualityNotice diagnostic={klimekProxyDiagnostic} />
-<div className={`screening-chart-shell ${klimekProxyDiagnostic.status !== "ready" && !klimekProxyAcknowledged ? "is-gated" : ""}`}>
-  <div className="chart-gate-frame">
-<div className="fingerprint-grid">
-                        {historicalRowsByYear.map((yearGroup) => (
-                          <div className="fingerprint-panel" key={yearGroup.year}>
-                            <strong>{yearGroup.year}</strong>
-                            <svg role="img" viewBox="0 0 260 170" aria-label={`${yearGroup.year} Klimek-style vote fingerprint`}>
-                              <line className="fingerprint-axis" x1="34" x2="244" y1="136" y2="136" />
-                              <line className="fingerprint-axis" x1="34" x2="34" y1="16" y2="136" />
-                              <line className="fingerprint-midline" x1="139" x2="139" y1="16" y2="136" />
-                              <text className="fingerprint-label" x="34" y="154">0% D</text>
-                              <text className="fingerprint-label" x="128" y="154">50%</text>
-                              <text className="fingerprint-label" x="220" y="154">100%</text>
-                              <text className="fingerprint-label" x="38" y="24">High volume</text>
-                              {yearGroup.rows.map((row) => {
-                                const demShare = row.totalVotes ? ((row.demVotes ?? 0) / row.totalVotes) * 100 : 0;
-                                const x = 34 + (demShare / 100) * 210;
-                                const y = 136 - Math.sqrt((row.totalVotes ?? 0) / yearGroup.maxTotalVotes) * 112;
-                                const radius = Math.max(2.4, Math.min(7.5, Math.sqrt((row.totalVotes ?? 0) / yearGroup.maxTotalVotes) * 7));
-                                return (
-                                  <circle
-                                    className={demShare >= 50 ? "fingerprint-dem-dot" : "fingerprint-rep-dot"}
-                                    cx={x.toFixed(2)}
-                                    cy={y.toFixed(2)}
-                                    key={row.id}
-                                    r={radius.toFixed(2)}
-                                  >
-                                    <title>
-                                      {row.jurisdictionName}: D {demShare.toFixed(2)}%, total {(row.totalVotes ?? 0).toLocaleString()}
-                                    </title>
-                                  </circle>
-                                );
-                              })}
-                            </svg>
-                          </div>
-                        ))}
-                      </div>
-  </div>
-  <ChartGate
-    acknowledged={klimekProxyAcknowledged}
-    diagnostic={klimekProxyDiagnostic}
-    onAcknowledge={() => acknowledgeChart(klimekProxyDiagnostic.acknowledgementKey)}
-  />
-</div>
-                    </article>
-                  )}
-
                 </div>
                 <div className="table-wrap">
                   <div className="table-helper-row">
@@ -5563,6 +5457,21 @@ export function WorkspaceTabs({
               </div>))}
               </>
             )}
+            {(reviewRows.length > 0 || turnoutRows.length > 0) && enabledHistoricalGraphs.includes("klimek") &&
+              captureProduction("historical-charts", (
+                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-charts")}>
+                  <div className="history-chart-grid shpilkin-only-grid" data-tour="history-charts">
+                    <KlimekFingerprint
+                      countyLabel={countyLabel}
+                      electionYear={electionYear}
+                      reviewRows={reviewRows}
+                      stateCode={selectedStateCode}
+                      stateName={stateName}
+                      turnoutRows={turnoutRows}
+                    />
+                  </div>
+                </div>
+              ))}
             {(reviewRows.length > 0 || turnoutRows.length > 0) && enabledHistoricalGraphs.includes("shpilkin") &&
               captureProduction("historical-charts", (
                 <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-charts")}>

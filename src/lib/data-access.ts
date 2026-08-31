@@ -1004,6 +1004,7 @@ export async function listIndicators(input: {
 
 export async function listReviewRows(input: {
   includeMetrics?: boolean;
+  includeReportingUnitIdentity?: boolean;
   limit?: number;
   state: string;
   year: number;
@@ -1031,6 +1032,7 @@ export async function listReviewRows(input: {
     repDropoff: string | number | null;
     repShare: string | number | null;
     repVotes: number | null;
+    reportingUnitId: string | null;
     sourceSlug: string | null;
     state: string;
     totalVotes: number | null;
@@ -1064,6 +1066,7 @@ export async function listReviewRows(input: {
         review_rows.dem_dropoff as "demDropoff",
         review_rows.rep_dropoff as "repDropoff",
         case when ${Boolean(input.includeMetrics)} then review_rows.metrics else '{}'::jsonb end as metrics,
+        review_rows.reporting_unit_id as "reportingUnitId",
         source_documents.slug as "sourceSlug"
       from review_rows
       inner join capability_flags
@@ -1100,6 +1103,7 @@ export async function listReviewRows(input: {
     repDropoff: row.repDropoff === null ? null : Number(row.repDropoff),
     repShare: row.repShare === null ? null : Number(row.repShare),
     repVotes: row.repVotes,
+    ...(input.includeReportingUnitIdentity ? { reportingUnitId: row.reportingUnitId } : {}),
     sourceId: row.sourceSlug ?? "database",
     state: row.state,
     totalVotes: row.totalVotes,
@@ -1109,6 +1113,7 @@ export async function listReviewRows(input: {
 }
 
 export async function listTurnoutRows(input: {
+  includeReportingUnitIdentity?: boolean;
   limit?: number;
   state: string;
   year: number;
@@ -1127,6 +1132,7 @@ export async function listTurnoutRows(input: {
     jurisdictionTag: string | null;
     level: string;
     registeredVoters: number | null;
+    reportingUnitId: string | null;
     sourceSlug: string | null;
     state: string;
     turnoutPct: string | number | null;
@@ -1149,6 +1155,7 @@ export async function listTurnoutRows(input: {
         turnout_rows.turnout_pct as "turnoutPct",
         turnout_rows.denominator_note as "denominatorNote",
         turnout_rows.warning_required as "warningRequired",
+        turnout_rows.reporting_unit_id as "reportingUnitId",
         source_documents.slug as "sourceSlug"
       from turnout_rows
       left join source_documents on turnout_rows.source_document_id = source_documents.id
@@ -1172,6 +1179,7 @@ export async function listTurnoutRows(input: {
     jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({ state: row.state, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.level }),
     level: row.level,
     registeredVoters: row.registeredVoters,
+    ...(input.includeReportingUnitIdentity ? { reportingUnitId: row.reportingUnitId } : {}),
     sourceId: row.sourceSlug ?? "database",
     state: row.state,
     turnoutPct: row.turnoutPct === null ? null : Number(row.turnoutPct),

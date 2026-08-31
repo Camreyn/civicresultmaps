@@ -215,9 +215,22 @@ export default async function Home({ searchParams }: HomeProps) {
     needsImports ? listImportRuns() : Promise.resolve([]),
     needsIndicators ? listIndicators({ state: selectedState, year: selectedYear }) : Promise.resolve([]),
     needsReviewRows
-      ? listReviewRows({ state: selectedState, year: selectedYear, includeMetrics: true, limit: activeTab === "history" || activeTab === "exports" ? 20000 : 5000 })
+      ? listReviewRows({
+        state: selectedState,
+        year: selectedYear,
+        includeMetrics: true,
+        includeReportingUnitIdentity: activeTab === "history",
+        limit: activeTab === "history" || activeTab === "exports" ? 20000 : 5000,
+      })
       : Promise.resolve([]),
-    needsTurnout ? listTurnoutRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
+    needsTurnout
+      ? listTurnoutRows({
+        state: selectedState,
+        year: selectedYear,
+        includeReportingUnitIdentity: activeTab === "history",
+        limit: 20000,
+      })
+      : Promise.resolve([]),
     needsHistory ? listHistoricalResultRows({ state: selectedState, limit: 5000 }) : Promise.resolve([]),
     needsVoteMethods ? listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
     needsEquipment ? listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }) : Promise.resolve([]),
