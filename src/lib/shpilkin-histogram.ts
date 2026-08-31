@@ -1,0 +1,434 @@
+import type { ReviewRowSummary, TurnoutRowSummary } from "./types";
+
+export const shpilkinBucketWidths = [1, 2, 5, 10] as const;
+
+export type ShpilkinBucketWidth = (typeof shpilkinBucketWidths)[number];
+export type ShpilkinCandidate = "dem" | "rep";
+export type ShpilkinXAxis = "candidate_share" | "turnout";
+export type ShpilkinAccumulation = "votes" | "units";
+export type ShpilkinScope = "state_county" | "state_local" | "county_local";
+
+export type ShpilkinCountyOption = {
+  name: string;
+  tag: string;
+};
+
+export type ShpilkinHistogramObservation = {
+  id: string;
+  label: string;
+  level: string;
+  parentTag: string | null;
+  sourceIds: string[];
+  sourceRowIds: string[];
+  valuePct: number;
+  voteWeight: number | null;
+  warningRequired: boolean;
+};
+
+export type ShpilkinHistogramBucket = {
+  high: number;
+  label: string;
+  low: number;
+  observationIds: string[];
+  unitCount: number;
+  value: number;
+  voteCount: number;
+};
+
+export type ShpilkinHistogramResult = {
+  buckets: ShpilkinHistogramBucket[];
+  candidateLabel: string;
+  denominatorNotes: string[];
+  domainMax: number;
+  drawableObservationCount: number;
+  inputObservationCount: number;
+  levels: string[];
+  maxBucketValue: number;
+  observations: ShpilkinHistogramObservation[];
+  omittedObservationCount: number;
+  overflowObservationCount: number;
+  sourceCount: number;
+  totalValue: number;
+  untaggedSourceRowCount: number;
+  warningObservationCount: number;
+};
+
+type ObservationBuildResult = {
+  candidateLabel: string;
+  denominatorNotes: string[];
+  inputObservationCount: number;
+  observations: ShpilkinHistogramObservation[];
+  omittedObservationCount: number;
+  untaggedSourceRowCount: number;
+};
+
+const countyTagPattern = /^county:\d{5}$/u;
+const maximumHistogramDomain = 200;
+
+function finiteNumber(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function nonnegativeNumber(value: number | null | undefined) {
+  const number = finiteNumber(value);
+  return number !== null && number >= 0 ? number : null;
+}
+
+function positiveNumber(value: number | null | undefined) {
+  const number = finiteNumber(value);
+  return number !== null && number > 0 ? number : null;
+}
+
+function isCountyLevel(level: string) {
+  return level.trim().toLowerCase() === "county";
+}
+
+function isLocalLevel(level: string) {
+  const normalized = level.trim().toLowerCase();
+  return normalized !== "state" && normalized !== "county";
+}
+
+function canonicalCountyTag(value: string | null | undefined) {
+  return value && countyTagPattern.test(value) ? value : null;
+}
+
+function candidateVoteValue(row: ReviewRowSummary, candidate: ShpilkinCandidate) {
+  return nonnegativeNumber(candidate === "dem" ? row.demVotes : row.repVotes);
+}
+
+function candidateStoredShare(row: ReviewRowSummary, candidate: ShpilkinCandidate) {
+  return nonnegativeNumber(candidate === "dem" ? row.demShare : row.repShare);
+}
+
+function candidateShare(row: ReviewRowSummary, candidate: ShpilkinCandidate) {
+  const votes = candidateVoteValue(row, candidate);
+  const totalVotes = positiveNumber(row.totalVotes);
+  return votes !== null && totalVotes !== null
+    ? (votes / totalVotes) * 100
+    : candidateStoredShare(row, candidate);
+}
+
+function candidateName(row: ReviewRowSummary, candidate: ShpilkinCandidate) {
+  return candidate === "dem" ? row.demCandidate : row.repCandidate;
+}
+
+function mostFrequentCandidateName(rows: ReviewRowSummary[], candidate: ShpilkinCandidate) {
+  const counts = new Map<string, number>();
+  for (const row of rows) {
+    const name = candidateName(row, candidate)?.trim();
+    if (name) counts.set(name, (counts.get(name) ?? 0) + 1);
+  }
+  const fallback = candidate === "dem" ? "Democratic candidate" : "Republican candidate";
+  return [...counts.entries()].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))[0]?.[0]
+    ?? fallback;
+}
+
+function turnoutShare(row: TurnoutRowSummary) {
+  const stored = nonnegativeNumber(row.turnoutPct);
+  if (stored !== null) return stored;
+  const ballots = nonnegativeNumber(row.ballotsCast);
+  const registered = positiveNumber(row.registeredVoters);
+  return ballots !== null && registered !== null ? (ballots / registered) * 100 : null;
+}
+
+function turnoutCountyName(row: TurnoutRowSummary) {
+  return row.jurisdictionName.split(/\s+\/\s+/u)[0]?.trim() || row.jurisdictionName;
+}
+
+function distinct(values: string[]) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function rowsForScope<Row extends { jurisdictionTag?: string | null; level: string }>(
+  rows: Row[],
+  scope: ShpilkinScope,
+  countyTag: string | null,
+) {
+  if (scope === "state_county") return rows;
+  const localRows = rows.filter((row) => isLocalLevel(row.level));
+  return scope === "county_local"
+    ? localRows.filter((row) => canonicalCountyTag(row.jurisdictionTag) === countyTag)
+    : localRows;
+}
+
+function groupByCounty<Row extends { jurisdictionTag?: string | null }>(rows: Row[]) {
+  const groups = new Map<string, Row[]>();
+  for (const row of rows) {
+    const tag = canonicalCountyTag(row.jurisdictionTag);
+    if (!tag) continue;
+    groups.set(tag, [...(groups.get(tag) ?? []), row]);
+  }
+  return groups;
+}
+
+function preferredCountyRows<Row extends { level: string }>(rows: Row[]) {
+  const directCountyRows = rows.filter((row) => isCountyLevel(row.level));
+  return directCountyRows.length ? directCountyRows : rows.filter((row) => isLocalLevel(row.level));
+}
+
+function buildCandidateObservations(input: {
+  candidate: ShpilkinCandidate;
+  countyTag: string | null;
+  reviewRows: ReviewRowSummary[];
+  scope: ShpilkinScope;
+}): ObservationBuildResult {
+  const selectedRows = rowsForScope(input.reviewRows, input.scope, input.countyTag);
+  const candidateLabel = mostFrequentCandidateName(selectedRows, input.candidate);
+
+  if (input.scope !== "state_county") {
+    const observations = selectedRows.flatMap((row) => {
+      const valuePct = candidateShare(row, input.candidate);
+      if (valuePct === null) return [];
+      return [{
+        id: `review:${row.id}`,
+        label: row.localUnit || row.jurisdictionName,
+        level: row.level,
+        parentTag: canonicalCountyTag(row.jurisdictionTag),
+        sourceIds: [row.sourceId],
+        sourceRowIds: [row.id],
+        valuePct,
+        voteWeight: positiveNumber(row.totalVotes),
+        warningRequired: false,
+      } satisfies ShpilkinHistogramObservation];
+    });
+    return {
+      candidateLabel,
+      denominatorNotes: [],
+      inputObservationCount: selectedRows.length,
+      observations,
+      omittedObservationCount: selectedRows.length - observations.length,
+      untaggedSourceRowCount: input.scope === "state_local"
+        ? selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length
+        : 0,
+    };
+  }
+
+  const countyGroups = groupByCounty(selectedRows);
+  const observations: ShpilkinHistogramObservation[] = [];
+  let omittedObservationCount = 0;
+
+  for (const [tag, groupedRows] of countyGroups) {
+    const rows = preferredCountyRows(groupedRows);
+    const completeVoteRows = rows.filter(
+      (row) => candidateVoteValue(row, input.candidate) !== null && positiveNumber(row.totalVotes) !== null,
+    );
+    let valuePct: number | null = null;
+    let voteWeight: number | null = null;
+
+    if (completeVoteRows.length === rows.length && rows.length > 0) {
+      const candidateVotes = rows.reduce((sum, row) => sum + (candidateVoteValue(row, input.candidate) ?? 0), 0);
+      voteWeight = rows.reduce((sum, row) => sum + (positiveNumber(row.totalVotes) ?? 0), 0);
+      valuePct = voteWeight > 0 ? (candidateVotes / voteWeight) * 100 : null;
+    } else if (rows.length === 1) {
+      valuePct = candidateShare(rows[0], input.candidate);
+      voteWeight = positiveNumber(rows[0].totalVotes);
+    }
+
+    if (valuePct === null) {
+      omittedObservationCount += 1;
+      continue;
+    }
+
+    observations.push({
+      id: `review-county:${tag}`,
+      label: rows[0]?.jurisdictionName ?? tag,
+      level: "county",
+      parentTag: tag,
+      sourceIds: distinct(rows.map((row) => row.sourceId)),
+      sourceRowIds: rows.map((row) => row.id),
+      valuePct,
+      voteWeight,
+      warningRequired: false,
+    });
+  }
+
+  return {
+    candidateLabel,
+    denominatorNotes: [],
+    inputObservationCount: countyGroups.size,
+    observations,
+    omittedObservationCount,
+    untaggedSourceRowCount: selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length,
+  };
+}
+
+function buildTurnoutObservations(input: {
+  countyTag: string | null;
+  scope: ShpilkinScope;
+  turnoutRows: TurnoutRowSummary[];
+}): ObservationBuildResult {
+  const selectedRows = rowsForScope(input.turnoutRows, input.scope, input.countyTag);
+
+  if (input.scope !== "state_county") {
+    const observations = selectedRows.flatMap((row) => {
+      const valuePct = turnoutShare(row);
+      if (valuePct === null) return [];
+      return [{
+        id: `turnout:${row.id}`,
+        label: row.jurisdictionName,
+        level: row.level,
+        parentTag: canonicalCountyTag(row.jurisdictionTag),
+        sourceIds: [row.sourceId],
+        sourceRowIds: [row.id],
+        valuePct,
+        voteWeight: nonnegativeNumber(row.ballotsCast),
+        warningRequired: row.warningRequired,
+      } satisfies ShpilkinHistogramObservation];
+    });
+    return {
+      candidateLabel: "",
+      denominatorNotes: distinct(selectedRows.map((row) => row.denominatorNote)),
+      inputObservationCount: selectedRows.length,
+      observations,
+      omittedObservationCount: selectedRows.length - observations.length,
+      untaggedSourceRowCount: input.scope === "state_local"
+        ? selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length
+        : 0,
+    };
+  }
+
+  const countyGroups = groupByCounty(selectedRows);
+  const observations: ShpilkinHistogramObservation[] = [];
+  let omittedObservationCount = 0;
+
+  for (const [tag, groupedRows] of countyGroups) {
+    const rows = preferredCountyRows(groupedRows);
+    const ballots = rows.map((row) => nonnegativeNumber(row.ballotsCast));
+    const registered = rows.map((row) => positiveNumber(row.registeredVoters));
+    const ballotsComplete = ballots.every((value) => value !== null);
+    const registrationComplete = registered.every((value) => value !== null);
+    const totalBallots = ballotsComplete ? ballots.reduce<number>((sum, value) => sum + (value ?? 0), 0) : null;
+    const totalRegistered = registrationComplete
+      ? registered.reduce<number>((sum, value) => sum + (value ?? 0), 0)
+      : null;
+    const valuePct = totalBallots !== null && totalRegistered !== null && totalRegistered > 0
+      ? (totalBallots / totalRegistered) * 100
+      : rows.length === 1 ? turnoutShare(rows[0]) : null;
+
+    if (valuePct === null) {
+      omittedObservationCount += 1;
+      continue;
+    }
+
+    observations.push({
+      id: `turnout-county:${tag}`,
+      label: turnoutCountyName(rows[0]),
+      level: "county",
+      parentTag: tag,
+      sourceIds: distinct(rows.map((row) => row.sourceId)),
+      sourceRowIds: rows.map((row) => row.id),
+      valuePct,
+      voteWeight: totalBallots,
+      warningRequired: rows.some((row) => row.warningRequired),
+    });
+  }
+
+  return {
+    candidateLabel: "",
+    denominatorNotes: distinct(selectedRows.map((row) => row.denominatorNote)),
+    inputObservationCount: countyGroups.size,
+    observations,
+    omittedObservationCount,
+    untaggedSourceRowCount: selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length,
+  };
+}
+
+export function listShpilkinCountyOptions(
+  reviewRows: ReviewRowSummary[],
+  turnoutRows: TurnoutRowSummary[],
+): ShpilkinCountyOption[] {
+  const names = new Map<string, { name: string; priority: number }>();
+  for (const row of turnoutRows) {
+    if (!isLocalLevel(row.level)) continue;
+    const tag = canonicalCountyTag(row.jurisdictionTag);
+    if (tag) names.set(tag, { name: turnoutCountyName(row), priority: 1 });
+  }
+  for (const row of reviewRows) {
+    if (!isLocalLevel(row.level)) continue;
+    const tag = canonicalCountyTag(row.jurisdictionTag);
+    if (!tag) continue;
+    const existing = names.get(tag);
+    if (!existing || existing.priority < 2) names.set(tag, { name: row.jurisdictionName, priority: 2 });
+  }
+  return [...names.entries()]
+    .map(([tag, value]) => ({ name: value.name, tag }))
+    .sort((left, right) => left.name.localeCompare(right.name) || left.tag.localeCompare(right.tag));
+}
+
+export function buildShpilkinHistogram(input: {
+  accumulation: ShpilkinAccumulation;
+  bucketWidth: ShpilkinBucketWidth;
+  candidate: ShpilkinCandidate;
+  countyTag?: string | null;
+  reviewRows: ReviewRowSummary[];
+  scope: ShpilkinScope;
+  turnoutRows: TurnoutRowSummary[];
+  xAxis: ShpilkinXAxis;
+}): ShpilkinHistogramResult {
+  const built = input.xAxis === "candidate_share"
+    ? buildCandidateObservations({
+      candidate: input.candidate,
+      countyTag: input.countyTag ?? null,
+      reviewRows: input.reviewRows,
+      scope: input.scope,
+    })
+    : buildTurnoutObservations({
+      countyTag: input.countyTag ?? null,
+      scope: input.scope,
+      turnoutRows: input.turnoutRows,
+    });
+  const observations = built.observations.filter((observation) =>
+    input.accumulation === "units" || observation.voteWeight !== null,
+  );
+  const weightOmissions = built.observations.length - observations.length;
+  const largestValue = observations.reduce((largest, observation) => Math.max(largest, observation.valuePct), 0);
+  const naturalDomainMax = Math.max(100, Math.ceil(largestValue / input.bucketWidth) * input.bucketWidth);
+  const domainMax = Math.min(maximumHistogramDomain, naturalDomainMax);
+  const bucketCount = Math.max(1, Math.ceil(domainMax / input.bucketWidth));
+  const hasOverflow = largestValue > domainMax;
+  const buckets: ShpilkinHistogramBucket[] = Array.from({ length: bucketCount }, (_, index) => {
+    const low = index * input.bucketWidth;
+    const high = Math.min(domainMax, low + input.bucketWidth);
+    return {
+      high,
+      label: hasOverflow && index === bucketCount - 1 ? `≥${low}%` : `${low}-${high}%`,
+      low,
+      observationIds: [],
+      unitCount: 0,
+      value: 0,
+      voteCount: 0,
+    };
+  });
+
+  for (const observation of observations) {
+    const bucketIndex = Math.min(
+      buckets.length - 1,
+      Math.max(0, Math.floor(observation.valuePct / input.bucketWidth)),
+    );
+    const bucket = buckets[bucketIndex];
+    const voteCount = observation.voteWeight ?? 0;
+    bucket.observationIds.push(...observation.sourceRowIds);
+    bucket.unitCount += 1;
+    bucket.voteCount += voteCount;
+    bucket.value += input.accumulation === "votes" ? voteCount : 1;
+  }
+
+  const sourceCount = new Set(observations.flatMap((observation) => observation.sourceIds)).size;
+  return {
+    buckets,
+    candidateLabel: built.candidateLabel,
+    denominatorNotes: built.denominatorNotes,
+    domainMax,
+    drawableObservationCount: observations.length,
+    inputObservationCount: built.inputObservationCount,
+    levels: distinct(observations.map((observation) => observation.level)).sort(),
+    maxBucketValue: buckets.reduce((maximum, bucket) => Math.max(maximum, bucket.value), 0),
+    observations,
+    omittedObservationCount: built.omittedObservationCount + weightOmissions,
+    overflowObservationCount: observations.filter((observation) => observation.valuePct > domainMax).length,
+    sourceCount,
+    totalValue: buckets.reduce((sum, bucket) => sum + bucket.value, 0),
+    untaggedSourceRowCount: built.untaggedSourceRowCount,
+    warningObservationCount: observations.filter((observation) => observation.warningRequired).length,
+  };
+}

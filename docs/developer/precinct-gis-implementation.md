@@ -8657,3 +8657,29 @@ evidence against its verified top-level package.
   the existing large review-row path. The optimized local server returned all
   4,102 rows with HTTP 200 and the corrected totals. Production promotion
   remains a separate, explicitly reviewed step.
+
+### 2026-08-30 - Shpilkin-style distribution histogram surface
+
+- The History workspace now calculates four selected-election distribution
+  views from normalized review and turnout rows: presidential-vote or
+  sub-jurisdiction accumulation by candidate share, and ballots-cast or
+  sub-jurisdiction accumulation by turnout. Bucket controls expose 1, 2, 5,
+  and 10 percentage-point widths; values above 100% remain visible and
+  pathological values are retained in a labeled overflow bucket.
+- Statewide county/county-equivalent rollups and county-local selection use only
+  canonical `county:<GEOID>` tags. Display-name similarity is never used to
+  infer a parent. Direct county turnout rows take precedence over local-row
+  aggregation so mixed grains are not double counted. Local chart labels retain
+  the source's reporting grain and do not claim that a ward, VTD, municipality,
+  or generic reporting unit is a precinct.
+- The reusable calculation returns source-row membership for every bucket so a
+  later Klimek-style scatterplot can share exact bucket colors. This does not
+  create a geometry crosswalk, alter any reporting-unit identity, or make an
+  unmatched row map-eligible.
+- The UI exposes missing percentages or weights, canonical-tag gaps, turnout
+  warnings, low observation counts, and overflow rows before a partial chart can
+  be viewed. Copy consistently describes the output as a descriptive screening
+  view, not evidence of fraud, tampering, misconduct, or intent.
+- This change is code and documentation only. It does not alter ETL artifacts,
+  normalized election data, canonical geography registries, public delivery
+  eligibility, production database rows, Blob assets, or deployment state.

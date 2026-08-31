@@ -34,6 +34,7 @@ import { WorkspaceSourceCatalog } from "./workspace-source-catalog";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
+import { ShpilkinHistogram } from "./shpilkin-histogram";
 import { WorkspaceContextBar } from "./workspace-context-bar";
 import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
 import { WorkspaceLayoutGroupsV3 } from "./workspace-layout-v3-groups";
@@ -238,6 +239,7 @@ type WorkspaceTourContext = {
   hasResults: boolean;
   hasReviewRows: boolean;
   hasSources: boolean;
+  hasTurnoutRows: boolean;
   hasVoteMethodRows: boolean;
   stateName: string;
 };
@@ -683,10 +685,12 @@ const tourFeatureRegistry: TourFeature[] = [
   {
     key: "history",
     build: (context) =>
-      context.hasHistoricalRows
+      context.hasHistoricalRows || context.hasReviewRows || context.hasTurnoutRows
         ? [
             {
-              body: "Historical charts compare older county results with the current import. Use the toggles to include or remove specific years and graph families.",
+              body: context.hasHistoricalRows
+                ? "Historical charts compare older results with the selected election. The Shpilkin workbench separately uses selected-election review and turnout rows when those inputs are available."
+                : "Historical baselines are not loaded, but the Shpilkin workbench can still use the selected election's review or turnout rows.",
               fallbackTarget: "[data-tour='history-panel']",
               id: "history",
               tab: "history",
@@ -694,11 +698,15 @@ const tourFeatureRegistry: TourFeature[] = [
               title: "Compare historical baselines",
             },
             {
-              body: "Fingerprint and Shpilkin-style views are diagnostic visualizations. Treat them as prompts for review, not as conclusions.",
+              body: context.hasReviewRows || context.hasTurnoutRows
+                ? "Switch between candidate share and turnout, vote and unit accumulation, jurisdiction scale, and 1% to 10% buckets. Treat every shape as a prompt for source review, not a conclusion."
+                : "The fingerprint view is a proxy diagnostic. Treat it as a prompt for better turnout inputs and source review, not a conclusion.",
               fallbackTarget: "[data-tour='history-panel']",
               id: "fingerprints",
               tab: "history",
-              target: "[data-tour='history-fingerprints']",
+              target: context.hasReviewRows || context.hasTurnoutRows
+                ? "[data-tour='history-shpilkin']"
+                : "[data-tour='history-fingerprints']",
               title: "Use diagnostic graph views carefully",
             },
           ]
@@ -1081,11 +1089,11 @@ const methodologyGuides: MethodologyGuide[] = [
     title: "Klimek-style fingerprints",
   },
   {
-    caveat: "Shpilkin-style views are sensitive to binning, geography size, and turnout definition. They can highlight suspicious distribution shapes, but official audits and source reconciliation are still required.",
+    caveat: "Shpilkin-style views are sensitive to binning, geography size, candidate choice, source coverage, and turnout definition. They describe distribution shape; official audits and source reconciliation are still required before drawing conclusions.",
     guide: [
-      "Bucket reporting units by candidate vote share and inspect whether vote totals pile up in unnatural bands.",
-      "Compare the shape across years, parties, and turnout sources before treating a spike as suspicious.",
-      "Use any strong pattern to guide document requests: ballot accounting, audit reports, recount records, and official canvass detail.",
+      "Choose candidate share or turnout, then compare vote-weighted and equal-unit views at 1%, 2%, 5%, and 10% bucket widths.",
+      "Compare state-by-county, state-by-local-unit, and canonically selected county-by-local-unit scopes without assuming unlike reporting grains are comparable.",
+      "Use a durable pattern to guide source checks and document requests: denominator definitions, ballot accounting, audit reports, recount records, and official canvass detail.",
     ],
     id: "shpilkin-diagnostics",
     links: [
@@ -1105,8 +1113,8 @@ const methodologyGuides: MethodologyGuide[] = [
         label: "NIST Voting Program",
       },
     ],
-    summary: "Use vote-share distribution shapes to find clusters that need source-level verification.",
-    title: "Shpilkin-style diagnostics",
+    summary: "Use vote-share and turnout distribution shapes to prioritize source-level verification.",
+    title: "Shpilkin-style distribution histograms",
   },
 ];
 
@@ -3205,7 +3213,7 @@ export function WorkspaceTabs({
     { key: "margin", label: "Margin Trend" },
     { key: "movement", label: "County Movement" },
     { key: "klimek", label: "Klimek Fingerprints" },
-    { key: "shpilkin", label: "Shpilkin Diagnostics" },
+    { key: "shpilkin", label: "Shpilkin Histograms" },
   ];
   const historicalCountyTrends = useMemo(() => {
     const rowsByCounty = new Map<string, HistoricalResultRowSummary[]>();
@@ -3249,38 +3257,6 @@ export function WorkspaceTabs({
       }))
       .sort((a, b) => a.year - b.year);
   }, [filteredHistoricalRows]);
-  const shpilkinRowsByYear = useMemo(
-    () =>
-      historicalRowsByYear.map((yearGroup) => {
-        const buckets = Array.from({ length: 10 }, (_, index) => {
-          const low = index * 10;
-          const high = low + 10;
-          const rows = yearGroup.rows.filter((row) => {
-            const demShare = row.totalVotes ? ((row.demVotes ?? 0) / row.totalVotes) * 100 : 0;
-            return index === 9 ? demShare >= low && demShare <= high : demShare >= low && demShare < high;
-          });
-          const totalVotes = rows.reduce((sum, row) => sum + (row.totalVotes ?? 0), 0);
-          const demVotes = rows.reduce((sum, row) => sum + (row.demVotes ?? 0), 0);
-          const repVotes = rows.reduce((sum, row) => sum + (row.repVotes ?? 0), 0);
-          return {
-            demVotes,
-            high,
-            label: `${low}-${high}%`,
-            low,
-            repVotes,
-            rows: rows.length,
-            totalVotes,
-          };
-        });
-
-        return {
-          buckets,
-          maxBucketVotes: Math.max(1, ...buckets.map((bucket) => bucket.totalVotes)),
-          year: yearGroup.year,
-        };
-      }),
-    [historicalRowsByYear],
-  );
   const topIndicators = filteredIndicators.slice(0, 6);
   const voteMethodSummaries = useMemo(() => {
     const summaries = new Map<
@@ -3526,21 +3502,6 @@ export function WorkspaceTabs({
     summary: "This Klimek-style view uses proxy inputs. Read the limits before viewing the fingerprint panels.",
     title: `${stateName} Klimek-style proxy fingerprints`,
   });
-  const shpilkinProxyDiagnostic = staticChartDiagnostic({
-    acknowledgementKey: `shpilkin-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
-    actionHref: `/?state=${selectedStateCode}&tab=data`,
-    actionLabel: "What source would improve this?",
-    checked: [`${shpilkinRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
-    issues: [
-      "This groups county vote volume by vote-share buckets, not precinct-level or ballot-level distributions.",
-      "It does not replace turnout-based review or official source reconciliation when those data are missing.",
-    ],
-    readiness: "proxy",
-    rowCount: shpilkinRowsByYear.reduce((sum, yearGroup) => sum + yearGroup.buckets.length, 0),
-    status: shpilkinRowsByYear.length ? "acknowledgement_required" : "blocked",
-    summary: "This Shpilkin-style diagnostic uses limited county-level inputs. Read the limits before viewing the bucket charts.",
-    title: `${stateName} Shpilkin-style diagnostics`,
-  });
   const voteMethodDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `vote-method:${selectedStateCode}:${voteMethodRows.length}:${voteMethodUnavailableRows}` ,
     actionHref: `/?state=${selectedStateCode}&tab=data`,
@@ -3573,7 +3534,6 @@ export function WorkspaceTabs({
   const flagMixAcknowledged = acknowledgedChartKeys.includes(flagMixDiagnostic.acknowledgementKey);
   const historicalContextAcknowledged = acknowledgedChartKeys.includes(historicalContextDiagnostic.acknowledgementKey);
   const klimekProxyAcknowledged = acknowledgedChartKeys.includes(klimekProxyDiagnostic.acknowledgementKey);
-  const shpilkinProxyAcknowledged = acknowledgedChartKeys.includes(shpilkinProxyDiagnostic.acknowledgementKey);
   const voteMethodAcknowledged = acknowledgedChartKeys.includes(voteMethodDiagnostic.acknowledgementKey);
   const equipmentContextAcknowledged = acknowledgedChartKeys.includes(equipmentContextDiagnostic.acknowledgementKey);
   const dataNoteSections = buildDataNoteSections({
@@ -3701,6 +3661,7 @@ export function WorkspaceTabs({
         hasResults: results.length > 0,
         hasReviewRows: reviewRows.length > 0,
         hasSources: sources.length > 0,
+        hasTurnoutRows: turnoutRows.length > 0,
         hasVoteMethodRows: voteMethodRows.length > 0,
         hasEquipmentRows: equipmentRows.length > 0,
         stateName,
@@ -3717,6 +3678,7 @@ export function WorkspaceTabs({
       selectedImportRuns.length,
       sources.length,
       stateName,
+      turnoutRows.length,
       voteMethodRows.length,
       equipmentRows.length,
     ],
@@ -5253,21 +5215,25 @@ export function WorkspaceTabs({
                 <span>
                   {historicalRows.length
                     ? `${historicalRows.length.toLocaleString()} rows across ${historicalYearSummaries.length} election years`
-                  : "Waiting on historical rows from the legacy bundle"}
+                    : reviewRows.length || turnoutRows.length
+                      ? `${(reviewRows.length + turnoutRows.length).toLocaleString()} selected-election review and turnout rows available for distributions`
+                      : "Waiting on historical, review, or turnout rows"}
                 </span>
               </div>
               <div className="header-actions">
                 <Eli5>
-                  This section is like looking at old report cards before reading the new one. It shows whether the same
-                  places changed over past presidential elections, when those old rows are available.
+                  Historical panels compare old report cards. The distribution workbench separately sorts the selected
+                  election's counties or local units into candidate-share or turnout buckets.
                 </Eli5>
                 <QualityBadge
                   detail={
                     historicalRows.length
-                      ? "Historical context rows are loaded. Fingerprint charts remain proxy views until turnout denominators are used."
-                      : "Historical baseline rows are not loaded."
+                      ? "Historical context rows are loaded. The Klimek fingerprint remains a proxy; the Shpilkin workbench reports its own selected-input quality."
+                      : reviewRows.length || turnoutRows.length
+                        ? "Historical baselines are missing, but selected-election distribution inputs are available."
+                        : "Historical baseline and selected-election distribution rows are not loaded."
                   }
-                  status={historicalRows.length ? "proxy" : "missing"}
+                  status={historicalRows.length ? "proxy" : reviewRows.length || turnoutRows.length ? "partial" : "missing"}
                 />
                 <History aria-hidden size={18} />
               </div>
@@ -5543,71 +5509,6 @@ export function WorkspaceTabs({
                     </article>
                   )}
 
-                  {enabledHistoricalGraphs.includes("shpilkin") && (
-                    <article className="history-chart-card wide" data-tour="history-shpilkin">
-                      <div>
-                        <strong>Shpilkin-Style Vote-Share Diagnostics</strong>
-                        <span>
-                          Vote volume grouped by Democratic share bucket for each enabled year. This separates the
-                          distribution diagnostic from the Klimek fingerprint view.
-                        </span>
-                        <Eli5>
-                          Imagine sorting counties into buckets by how Democratic they were, then stacking their votes in
-                          each bucket. Tall buckets show where a lot of votes are concentrated.
-                        </Eli5>
-                      </div>
-                      <div className="data-warning strong-warning" role="status">
-                        <TriangleAlert aria-hidden size={18} />
-                        <div>
-                          <strong>Diagnostic view with limited inputs</strong>
-                          <span>
-                            This groups county vote volume by vote-share buckets. It does not replace precinct-level
-                            distributions or turnout-based review when those data are missing.
-                          </span>
-                        </div>
-                      </div>
-                      <ChartQualityNotice diagnostic={shpilkinProxyDiagnostic} />
-<div className={`screening-chart-shell ${shpilkinProxyDiagnostic.status !== "ready" && !shpilkinProxyAcknowledged ? "is-gated" : ""}`}>
-  <div className="chart-gate-frame">
-<div className="shpilkin-grid">
-                        {shpilkinRowsByYear.map((yearGroup) => (
-                          <div className="shpilkin-panel" key={yearGroup.year}>
-                            <strong>{yearGroup.year}</strong>
-                            <div className="shpilkin-bars" role="img" aria-label={`${yearGroup.year} Shpilkin-style vote-share bucket chart`}>
-                              {yearGroup.buckets.map((bucket) => {
-                                const height = Math.max(4, (bucket.totalVotes / yearGroup.maxBucketVotes) * 100);
-                                const demShare = bucket.totalVotes ? (bucket.demVotes / bucket.totalVotes) * 100 : 0;
-                                return (
-                                  <div className="shpilkin-bucket" key={bucket.label}>
-                                    <i
-                                      className={demShare >= 50 ? "shpilkin-dem-bar" : "shpilkin-rep-bar"}
-                                      style={{ height: `${height}%` }}
-                                    >
-                                      <span>
-                                        {bucket.label}: {bucket.totalVotes.toLocaleString()} votes, {bucket.rows} rows
-                                      </span>
-                                    </i>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            <div className="shpilkin-labels" aria-hidden="true">
-                              <span>0% D</span>
-                              <span>50%</span>
-                              <span>100%</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-  </div>
-  <ChartGate
-    acknowledged={shpilkinProxyAcknowledged}
-    diagnostic={shpilkinProxyDiagnostic}
-    onAcknowledge={() => acknowledgeChart(shpilkinProxyDiagnostic.acknowledgementKey)}
-  />
-</div>
-                    </article>
-                  )}
                 </div>
                 <div className="table-wrap">
                   <div className="table-helper-row">
@@ -5662,6 +5563,21 @@ export function WorkspaceTabs({
               </div>))}
               </>
             )}
+            {(reviewRows.length > 0 || turnoutRows.length > 0) && enabledHistoricalGraphs.includes("shpilkin") &&
+              captureProduction("historical-charts", (
+                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-charts")}>
+                  <div className="history-chart-grid shpilkin-only-grid" data-tour="history-charts">
+                    <ShpilkinHistogram
+                      countyLabel={countyLabel}
+                      electionYear={electionYear}
+                      reviewRows={reviewRows}
+                      stateCode={selectedStateCode}
+                      stateName={stateName}
+                      turnoutRows={turnoutRows}
+                    />
+                  </div>
+                </div>
+              ))}
           </section>
         </div>
       )}

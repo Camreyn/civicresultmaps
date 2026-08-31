@@ -173,7 +173,7 @@ flowchart TB
     Map --> Drawer["Jurisdiction drawer<br/>results, indicators, source receipt"]
     Review --> ReviewViews["Overview | Evidence Tools<br/>Screening | Indicators"]
     Review --> ReviewCharts["Readiness, flag mix, scatter,<br/>drop-off, ticket-splitting proxy"]
-    History --> HistoryCharts["Share, margin, movement,<br/>Klimek-style and Shpilkin-style proxies"]
+    History --> HistoryCharts["Share, margin, movement,<br/>Klimek proxy and Shpilkin histograms"]
     Electronic --> Requests["Evidence inventory and<br/>user-sent records-request drafts"]
   end
 
