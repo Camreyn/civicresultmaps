@@ -505,7 +505,7 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(dataAccess, /includeMetrics/);
   assert.match(dataAccess, /else '\{\}'::jsonb end as metrics/);
   assert.match(readFileSync("src/lib/api.ts", "utf8"), /listVoteMethodRows/);
-  assert.match(tabs, /History &amp; Distribution Diagnostics/);
+  assert.match(tabs, /Historical Baselines/);
   assert.match(tabs, /historicalYearSummaries/);
   assert.match(tabs, /enabledHistoricalYears/);
   assert.match(tabs, /enabledHistoricalGraphs/);

@@ -5211,7 +5211,7 @@ export function WorkspaceTabs({
           <section className="panel layout-section-container">
             {captureProduction("historical-summary", (<div className="panel-header">
               <div>
-                <h2>History &amp; Distribution Diagnostics</h2>
+                <h2>Historical Baselines</h2>
                 <span>
                   {historicalRows.length
                     ? `${historicalRows.length.toLocaleString()} rows across ${historicalYearSummaries.length} election years`
