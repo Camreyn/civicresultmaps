@@ -13,6 +13,7 @@ import {
   type ShpilkinAccumulation,
   type ShpilkinScope,
 } from "@/lib/shpilkin-histogram";
+import { percentageTicks, type PercentageScaleMode } from "@/lib/percentage-scale";
 import type { ReviewRowSummary, TurnoutRowSummary } from "@/lib/types";
 import { Eli5 } from "./eli5";
 
@@ -37,6 +38,10 @@ const accumulationOptions: Array<{ key: ShpilkinAccumulation; label: string }> =
 const pointSizeOptions: Array<{ key: KlimekPointSize; label: string }> = [
   { key: "total_votes", label: "Total presidential votes" },
   { key: "winner_votes", label: "Votes for loaded winner" },
+];
+const scaleModeOptions: Array<{ key: PercentageScaleMode; label: string }> = [
+  { key: "comparison", label: "0%–100% (compare)" },
+  { key: "fit", label: "Fit visible data" },
 ];
 const integerFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const compactFormatter = new Intl.NumberFormat("en-US", {
@@ -134,6 +139,7 @@ export function KlimekFingerprint({
   const [accumulation, setAccumulation] = useState<ShpilkinAccumulation>("votes");
   const [pointSize, setPointSize] = useState<KlimekPointSize>("total_votes");
   const [bucketWidth, setBucketWidth] = useState<KlimekBucketWidth>(1);
+  const [scaleMode, setScaleMode] = useState<PercentageScaleMode>("comparison");
   const [requestedCountyTag, setRequestedCountyTag] = useState("");
   const [acknowledgedKeys, setAcknowledgedKeys] = useState<string[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -154,10 +160,11 @@ export function KlimekFingerprint({
       countyTag: selectedCountyTag,
       pointSize,
       reviewRows,
+      scaleMode,
       scope,
       turnoutRows,
     }),
-    [accumulation, bucketWidth, pointSize, reviewRows, scope, selectedCountyTag, turnoutRows],
+    [accumulation, bucketWidth, pointSize, reviewRows, scaleMode, scope, selectedCountyTag, turnoutRows],
   );
   const issues = [
     fingerprint.referenceCandidate === null
@@ -191,7 +198,7 @@ export function KlimekFingerprint({
       ? `This selection combines ${formatCount(fingerprint.denominatorNotes.length)} turnout denominator notes; confirm that the definitions are comparable.`
       : "",
     fingerprint.xOverflowPointCount > 0 || fingerprint.yOverflowPointCount > 0
-      ? `${formatCount(fingerprint.xOverflowPointCount)} turnout and ${formatCount(fingerprint.yOverflowPointCount)} vote-share values exceed the 200% display domain; they remain in the final overflow bucket with exact values in their tooltips.`
+      ? `${formatCount(fingerprint.xOverflowPointCount)} turnout and ${formatCount(fingerprint.yOverflowPointCount)} vote-share values exceed the selected axis domains; they remain in the final overflow buckets and at the chart boundary with exact values in their tooltips.`
       : "",
     fingerprint.points.length > 0 && fingerprint.points.length < 10
       ? "Fewer than 10 exactly matched sub-jurisdictions are drawable, so the fingerprint shape is fragile."
@@ -206,6 +213,7 @@ export function KlimekFingerprint({
     accumulation,
     pointSize,
     bucketWidth,
+    scaleMode,
     fingerprint.referenceCandidate,
     fingerprint.points.length,
   ].join(":");
@@ -223,20 +231,24 @@ export function KlimekFingerprint({
       : "local reporting units";
   const pointSizeLabel = pointSize === "winner_votes" ? "winner votes" : "total presidential votes";
   const marginalLabel = accumulation === "units" ? "sub-jurisdiction count" : "accumulated votes";
-  const xTicks = [...new Set([0, 25, 50, 75, 100, fingerprint.xDomainMax])]
-    .filter((value) => value <= fingerprint.xDomainMax)
-    .sort((left, right) => left - right);
-  const yTicks = [...new Set([0, 25, 50, 75, 100, fingerprint.yDomainMax])]
-    .filter((value) => value <= fingerprint.yDomainMax)
-    .sort((left, right) => left - right);
+  const xTicks = percentageTicks({ max: fingerprint.xDomainMax, min: fingerprint.xDomainMin });
+  const yTicks = percentageTicks({ max: fingerprint.yDomainMax, min: fingerprint.yDomainMin });
   const plot = { bottom: 474, height: 420, left: 82, right: 714, top: 54, width: 632 };
   const side = { left: 734, right: 966, width: 232 };
   const bottom = { bottom: 644, height: 148, top: 496 };
-  const xPosition = (value: number) => plot.left + (Math.min(value, fingerprint.xDomainMax) / fingerprint.xDomainMax) * plot.width;
-  const yPosition = (value: number) => plot.bottom - (Math.min(value, fingerprint.yDomainMax) / fingerprint.yDomainMax) * plot.height;
+  const xDomainSpan = fingerprint.xDomainMax - fingerprint.xDomainMin;
+  const yDomainSpan = fingerprint.yDomainMax - fingerprint.yDomainMin;
+  const xPosition = (value: number) => plot.left + (
+    (Math.min(fingerprint.xDomainMax, Math.max(fingerprint.xDomainMin, value)) - fingerprint.xDomainMin)
+    / xDomainSpan
+  ) * plot.width;
+  const yPosition = (value: number) => plot.bottom - (
+    (Math.min(fingerprint.yDomainMax, Math.max(fingerprint.yDomainMin, value)) - fingerprint.yDomainMin)
+    / yDomainSpan
+  ) * plot.height;
   const bottomSlot = plot.width / fingerprint.bottomBuckets.length;
   const sideSlot = plot.height / fingerprint.sideBuckets.length;
-  const chartSummary = `${scopeLabel}: ${fingerprint.referenceCandidateLabel} vote share by turnout, with aligned ${bucketWidth}-point marginal histograms.`;
+  const chartSummary = `${scopeLabel}: ${fingerprint.referenceCandidateLabel} vote share by turnout, with aligned ${bucketWidth}-point marginal histograms on turnout ${fingerprint.xDomainMin}-${fingerprint.xDomainMax}% and vote-share ${fingerprint.yDomainMin}-${fingerprint.yDomainMax}% domains.`;
 
   return (
     <article className="history-chart-card wide klimek-workbench" data-tour="history-klimek">
@@ -253,7 +265,7 @@ export function KlimekFingerprint({
             disabled={gated || status === "blocked"}
             onClick={() => svgRef.current && downloadSvg(
               svgRef.current,
-              `${stateCode.toLowerCase()}-${electionYear}-klimek-${scope}-${bucketWidth}pct.svg`,
+              `${stateCode.toLowerCase()}-${electionYear}-klimek-${scope}-${scaleMode}-${bucketWidth}pct.svg`,
             )}
             type="button"
           >
@@ -306,6 +318,12 @@ export function KlimekFingerprint({
           </label>
         ) : null}
         <KlimekChoiceButtons
+          label="Axis scale"
+          onChange={setScaleMode}
+          options={scaleModeOptions}
+          value={scaleMode}
+        />
+        <KlimekChoiceButtons
           label="Point size"
           onChange={setPointSize}
           options={pointSizeOptions}
@@ -323,6 +341,15 @@ export function KlimekFingerprint({
           options={klimekBucketWidths.map((width) => ({ key: width, label: `${width}%` }))}
           value={bucketWidth}
         />
+      </div>
+
+      <div className={`chart-scale-guidance ${scaleMode === "fit" ? "is-fitted" : ""}`} role="note">
+        <strong>{scaleMode === "comparison" ? "Comparable 0%–100% scale" : "Zoomed, data-fitted scale"}</strong>
+        <span>
+          {scaleMode === "comparison"
+            ? "Use this fixed domain on both axes for apples-to-apples comparisons between elections."
+            : `This view fits turnout to ${fingerprint.xDomainMin}%–${fingerprint.xDomainMax}% and vote share to ${fingerprint.yDomainMin}%–${fingerprint.yDomainMax}% so clustered points spread out. Switch to 0%–100% before comparing elections.`}
+        </span>
       </div>
 
       <div className={`chart-quality-notice ${status === "partial" ? "acknowledgement_required" : status}`} role="status">
@@ -363,6 +390,10 @@ export function KlimekFingerprint({
         </div>
         <div><dt>Source datasets</dt><dd>{formatCount(fingerprint.sourceCount)}</dd></div>
         <div><dt>Marginal bucket width</dt><dd>{bucketWidth}%</dd></div>
+        <div>
+          <dt>Axis domains</dt>
+          <dd>X {fingerprint.xDomainMin}%–{fingerprint.xDomainMax}% · Y {fingerprint.yDomainMin}%–{fingerprint.yDomainMax}%</dd>
+        </div>
       </dl>
 
       <div className="klimek-legend" aria-label="Fingerprint encoding legend" role="note">
@@ -386,7 +417,7 @@ export function KlimekFingerprint({
             >
               <title id={titleId}>{chartSummary}</title>
               <desc id={descriptionId}>
-                {formatCount(fingerprint.points.length)} exactly matched {unitLabel}. Point placement uses exact turnout and winner vote-share percentages; marginal bars use {bucketWidth}-percentage-point buckets.
+                {formatCount(fingerprint.points.length)} exactly matched {unitLabel}. Point placement uses exact turnout and winner vote-share percentages on turnout {fingerprint.xDomainMin}%-to-{fingerprint.xDomainMax}% and vote-share {fingerprint.yDomainMin}%-to-{fingerprint.yDomainMax}% axes; marginal bars use {bucketWidth}-percentage-point buckets.
               </desc>
               <rect className="screening-svg-bg" height="700" width="1000" />
               <rect className="klimek-plot-bg" height={plot.height} width={plot.width} x={plot.left} y={plot.top} />
@@ -518,7 +549,7 @@ export function KlimekFingerprint({
           Counties pair only through canonical county tags. Local units pair only when the normalized vote-share and turnout rows carry the same reporting-unit identity; display-name similarity is never treated as an identity crosswalk. The two marginal histograms aggregate only the points visible in the scatterplot, so their buckets align exactly with its axes.
         </p>
         <p>
-          Bucket width affects the marginal bars and the point-opacity density cue, but it never moves or blurs a point. A two-dimensional heat-map transformation remains separate future work. Values above 100% expand the axis through 200%; more extreme values stay in a labeled overflow bucket and retain their exact tooltip values.
+          Bucket width affects the marginal bars and the point-opacity density cue, but it never moves or blurs a point. A two-dimensional heat-map transformation remains separate future work. The fixed 0%–100% domain is required for apples-to-apples comparisons between elections. Fit-visible-data mode adds padded, bucket-aligned zoom independently to each axis; it improves separation but must not be compared with a chart using different domains. Values outside the selected domain stay in the final overflow bucket, draw at the chart boundary, and retain their exact tooltip values.
         </p>
       </details>
     </article>

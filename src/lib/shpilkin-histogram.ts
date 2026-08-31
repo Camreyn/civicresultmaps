@@ -1,4 +1,8 @@
 import type { ReviewRowSummary, TurnoutRowSummary } from "./types";
+import {
+  resolvePercentageDomain,
+  type PercentageScaleMode,
+} from "./percentage-scale.ts";
 
 export const shpilkinBucketWidths = [1, 2, 5, 10] as const;
 
@@ -42,6 +46,7 @@ export type ShpilkinHistogramResult = {
   candidateLabel: string;
   denominatorNotes: string[];
   domainMax: number;
+  domainMin: number;
   drawableObservationCount: number;
   inputObservationCount: number;
   levels: string[];
@@ -65,7 +70,6 @@ type ObservationBuildResult = {
 };
 
 const countyTagPattern = /^county:\d{5}$/u;
-const maximumHistogramDomain = 200;
 
 function finiteNumber(value: number | null | undefined) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -374,6 +378,7 @@ export function buildShpilkinHistogram(input: {
   candidate: ShpilkinCandidate;
   countyTag?: string | null;
   reviewRows: ReviewRowSummary[];
+  scaleMode?: PercentageScaleMode;
   scope: ShpilkinScope;
   turnoutRows: TurnoutRowSummary[];
   xAxis: ShpilkinXAxis;
@@ -394,14 +399,16 @@ export function buildShpilkinHistogram(input: {
     input.accumulation === "units" || observation.voteWeight !== null,
   );
   const weightOmissions = built.observations.length - observations.length;
-  const largestValue = observations.reduce((largest, observation) => Math.max(largest, observation.valuePct), 0);
-  const naturalDomainMax = Math.max(100, Math.ceil(largestValue / input.bucketWidth) * input.bucketWidth);
-  const domainMax = Math.min(maximumHistogramDomain, naturalDomainMax);
-  const bucketCount = Math.max(1, Math.ceil(domainMax / input.bucketWidth));
-  const hasOverflow = largestValue > domainMax;
+  const domain = resolvePercentageDomain(
+    observations.map((observation) => observation.valuePct),
+    input.bucketWidth,
+    input.scaleMode ?? "comparison",
+  );
+  const bucketCount = Math.max(1, Math.ceil((domain.max - domain.min) / input.bucketWidth));
+  const hasOverflow = observations.some((observation) => observation.valuePct > domain.max);
   const buckets: ShpilkinHistogramBucket[] = Array.from({ length: bucketCount }, (_, index) => {
-    const low = index * input.bucketWidth;
-    const high = Math.min(domainMax, low + input.bucketWidth);
+    const low = domain.min + index * input.bucketWidth;
+    const high = Math.min(domain.max, low + input.bucketWidth);
     return {
       high,
       label: hasOverflow && index === bucketCount - 1 ? `≥${low}%` : `${low}-${high}%`,
@@ -416,7 +423,7 @@ export function buildShpilkinHistogram(input: {
   for (const observation of observations) {
     const bucketIndex = Math.min(
       buckets.length - 1,
-      Math.max(0, Math.floor(observation.valuePct / input.bucketWidth)),
+      Math.max(0, Math.floor((observation.valuePct - domain.min) / input.bucketWidth)),
     );
     const bucket = buckets[bucketIndex];
     const voteCount = observation.voteWeight ?? 0;
@@ -431,14 +438,15 @@ export function buildShpilkinHistogram(input: {
     buckets,
     candidateLabel: built.candidateLabel,
     denominatorNotes: built.denominatorNotes,
-    domainMax,
+    domainMax: domain.max,
+    domainMin: domain.min,
     drawableObservationCount: observations.length,
     inputObservationCount: built.inputObservationCount,
     levels: distinct(observations.map((observation) => observation.level)).sort(),
     maxBucketValue: buckets.reduce((maximum, bucket) => Math.max(maximum, bucket.value), 0),
     observations,
     omittedObservationCount: built.omittedObservationCount + weightOmissions,
-    overflowObservationCount: observations.filter((observation) => observation.valuePct > domainMax).length,
+    overflowObservationCount: observations.filter((observation) => observation.valuePct > domain.max).length,
     sourceCount,
     totalValue: buckets.reduce((sum, bucket) => sum + bucket.value, 0),
     untaggedSourceRowCount: built.untaggedSourceRowCount,

@@ -239,10 +239,15 @@ Center. They are not conclusions.
   marginal buckets. This is a marginal-density cue, not a two-dimensional heat
   map. Bucket width does not move or blur a point; its exact percentages remain
   the scatter coordinates.
-- The ordinary domain is 0-100 percent. Values above 100 percent expand an axis
-  through at most 200 percent. More extreme values are retained in the final
-  overflow bucket and drawn at the display boundary with their exact values in
-  the point tooltip.
+- The default comparison domain is fixed at 0-100 percent on both axes. Use that
+  mode for apples-to-apples comparisons between elections.
+- Fit-visible-data mode adds a padded, bucket-aligned zoom independently to the
+  turnout and vote-share axes so clustered points are easier to inspect. Because
+  the fitted domains vary with the selected data, their apparent shapes must not
+  be compared across elections unless the domains are identical.
+- Values outside the selected domain are retained in the final overflow bucket
+  and drawn at the display boundary with their exact values in the point tooltip.
+  Fitted domains are capped at 200 percent.
 - Missing identities, ambiguous or unmatched rows, missing weights, denominator
   warnings, mixed denominator notes, low point counts, and overflow values are
   disclosed by the chart-quality notice. A partial view remains behind an
@@ -267,11 +272,13 @@ Center. They are not conclusions.
   presidential votes when both are available; a stored share is used only when
   vote counts cannot calculate it. Vote-weighted mode still requires a positive
   total-vote weight.
-- Bucket widths are 1, 2, 5, or 10 percentage points. The nominal domain is
-  0-100 percent. Values above 100 percent remain visible; the domain expands to
-  200 percent, and more extreme values are retained in an explicit final
-  overflow bucket instead of being clamped or discarded. An exact endpoint is
-  included in the final ordinary bucket.
+- Bucket widths are 1, 2, 5, or 10 percentage points. The default comparison
+  domain is fixed at 0-100 percent so election-to-election views remain
+  apples-to-apples. Fit-visible-data mode removes empty tails with a padded,
+  bucket-aligned zoom, but fitted views must not be compared unless their domains
+  are identical. Values outside the selected domain remain in an explicit final
+  overflow bucket instead of being discarded. Fitted domains are capped at 200
+  percent, and an exact endpoint is included in the final ordinary bucket.
 - Jurisdiction scales are:
   - statewide distribution at county/county-equivalent scale;
   - statewide distribution at the loaded local-reporting-unit scale;
