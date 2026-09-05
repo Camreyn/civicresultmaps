@@ -19,6 +19,7 @@ function reviewRow(overrides = {}) {
     jurisdictionTag: "county:01001",
     level: "precinct",
     localUnit: "Precinct 1",
+    metrics: {},
     repCandidate: "Example Republican",
     repShare: 60,
     repVotes: 60,
@@ -235,6 +236,71 @@ test("county turnout rollups fail closed when a local denominator is missing", (
     xAxis: "turnout",
   });
 
+  assert.equal(result.drawableObservationCount, 0);
+  assert.equal(result.omittedObservationCount, 1);
+});
+
+test("uses an explicit local presidential-participation proxy only when actual turnout rows are absent", () => {
+  const proxiedReviewRows = reviewRows.map((row, index) => ({
+    ...row,
+    reportingUnitId: `unit-${index + 1}`,
+    metrics: {
+      presidentialParticipationProxy: {
+        denominator: index === 0 ? 125 : 250,
+        note: "Presidential votes divided by an official registration snapshot; not election-level turnout.",
+        numerator: row.totalVotes,
+        sourceId: "official-registration",
+        valuePct: 999,
+        warningRequired: true,
+      },
+    },
+  }));
+  const proxy = histogram({
+    reviewRows: proxiedReviewRows,
+    turnoutRows: [],
+    xAxis: "turnout",
+  });
+  const actual = histogram({
+    reviewRows: proxiedReviewRows,
+    turnoutRows,
+    xAxis: "turnout",
+  });
+
+  assert.equal(proxy.participationMode, "presidential_participation_proxy");
+  assert.equal(proxy.proxyObservationCount, 2);
+  assert.equal(proxy.warningObservationCount, 2);
+  assert.equal(proxy.totalValue, 200);
+  assert.deepEqual(proxy.observations.map((row) => row.valuePct), [80, 40]);
+  assert.ok(proxy.observations.every((row) => row.sourceIds.includes("official-registration")));
+  assert.deepEqual(proxy.denominatorNotes, [
+    "Presidential votes divided by an official registration snapshot; not election-level turnout.",
+  ]);
+
+  assert.equal(actual.participationMode, "turnout");
+  assert.equal(actual.proxyObservationCount, 0);
+  assert.equal(actual.totalValue, 170);
+  assert.ok(actual.observations.every((row) => !row.sourceIds.includes("official-registration")));
+});
+
+test("omits a participation proxy with a zero registration denominator", () => {
+  const result = histogram({
+    accumulation: "units",
+    reviewRows: [reviewRow({
+      metrics: {
+        presidentialParticipationProxy: {
+          denominator: 0,
+          note: "Zero denominator is not drawable.",
+          numerator: 100,
+          sourceId: "official-registration",
+        },
+      },
+      reportingUnitId: "unit-a",
+    })],
+    turnoutRows: [],
+    xAxis: "turnout",
+  });
+
+  assert.equal(result.participationMode, "presidential_participation_proxy");
   assert.equal(result.drawableObservationCount, 0);
   assert.equal(result.omittedObservationCount, 1);
 });

@@ -8711,3 +8711,25 @@ evidence against its verified top-level package.
   ETL artifact, production data write, or public map eligibility. It is a
   descriptive screening surface and does not establish fraud, tampering,
   misconduct, or intent.
+
+### 2026-09-05 - Pennsylvania precinct-registration identity join
+
+- Issue 317 was reproduced against the retained official Department of State
+  returns and registration exports. All 9,186 non-placeholder registration
+  rows join to a returns identity by `countyCode + precinctCode`. Only 1,535
+  raw municipality names match because the returns file redundantly appends
+  the registration breakdown fields to its municipality column; reconstructing
+  that display value from the segmented registration fields matches all 9,186.
+- The Pennsylvania native parser now uses the stable numeric key, verifies the
+  reconstructed display identity, removes the duplicated breakdown text from
+  review labels, and assigns each of the 9,154 nonzero presidential review rows
+  an exact county-parented precinct reporting-unit identity.
+- Each matched review row retains its official registered-voter count as a
+  warning-required presidential-participation proxy. This does not create a
+  precinct turnout row: presidential contest votes are not election-level
+  ballots cast or SURE vote history. Four nonzero-vote rows have a zero
+  denominator and fail closed; 17 drawable ratios exceed 100 percent and stay
+  visible as source-timing or reconciliation warnings.
+- Existing 67-row county vote-history turnout remains unchanged and takes
+  precedence wherever it is applicable. No geometry relationship, immutable
+  delivery, production database row, Blob asset, or deployment is changed.

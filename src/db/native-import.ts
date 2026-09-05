@@ -546,7 +546,11 @@ export function partitionReviewRowsForPromotion(input: {
       throw new Error(`${kind} review row ${row.county}/${row.localUnit} is missing its primary source id.`);
     }
 
-    for (const sourceId of [normalized.sourceId, normalized.comparisonSourceId].filter(
+    for (const sourceId of [
+      normalized.sourceId,
+      normalized.comparisonSourceId,
+      normalized.presidentialParticipationProxy?.sourceId,
+    ].filter(
       (value): value is string => typeof value === "string" && value.trim().length > 0,
     )) {
       if (!knownSourceIds.has(sourceId)) {

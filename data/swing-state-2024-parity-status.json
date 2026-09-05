@@ -698,6 +698,9 @@
         "resultRows": 67,
         "reviewRows": 9154,
         "turnoutRows": 67,
+        "precinctRegistrationRows": 9186,
+        "reviewRowsWithParticipationProxy": 9154,
+        "drawableParticipationProxyRows": 9150,
         "comparisonContest": "United States Senator",
         "reviewWarning": "Pennsylvania native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Two presidential precinct groups do not have Senate rows and are kept as vote-share-only rows.",
         "validationPassed": true
@@ -731,8 +734,16 @@
           "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/voter%20registration%20-%20vote%20history%20summary%20-%202024%20general.xlsx",
           "authority": "Pennsylvania Department of State"
         },
-        "registrationSource": null,
-        "notes": "Pennsylvania turnout rows use Vote History divided by Registered voters from the official DOS summary workbook."
+        "registrationSource": {
+          "id": "pa-2024-precinct-registration",
+          "category": "Official precinct voter-registration snapshot",
+          "status": "loaded",
+          "parser": "pennsylvaniaPrecinctRegistrationCsv",
+          "localFile": "data/pa-2024-general-voter-registration-precinct.txt",
+          "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/vr/vrstat2024_g(9187)_20241223.txt",
+          "authority": "Pennsylvania Department of State"
+        },
+        "notes": "Pennsylvania turnout rows use county Vote History divided by Registered voters from the official DOS summary workbook. The exact precinct registration join is stored separately on review rows as a warning-required presidential-participation proxy, not as election-level turnout."
       },
       "administrationContext": {
         "equipment": {
@@ -765,10 +776,10 @@
         "scope": "statewide",
         "dataFamily": "results_review_turnout",
         "reportingGrain": "precinct",
-        "parserStatus": "native precinct review package loaded",
+        "parserStatus": "native precinct review plus exact precinct-registration join loaded",
         "manualReviewBurden": "low",
         "confidence": "loaded",
-        "nextAction": "Optional next steps are precinct geometry and precinct turnout denominator.",
+        "nextAction": "Optional next steps are election-effective precinct geometry and same-grain precinct vote-history or election-level ballots cast; the current local presidential-participation value remains a warning-required proxy.",
         "sourceUrls": [
           "https://www.pa.gov/agencies/vote/elections/election-results.html"
         ]

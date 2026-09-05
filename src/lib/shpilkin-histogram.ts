@@ -11,6 +11,7 @@ export type ShpilkinCandidate = "dem" | "rep";
 export type ShpilkinXAxis = "candidate_share" | "turnout";
 export type ShpilkinAccumulation = "votes" | "units";
 export type ShpilkinScope = "state_county" | "state_local" | "county_local";
+export type ShpilkinParticipationMode = "turnout" | "presidential_participation_proxy";
 
 export type ShpilkinCountyOption = {
   name: string;
@@ -23,6 +24,7 @@ export type ShpilkinHistogramObservation = {
   label: string;
   level: string;
   parentTag: string | null;
+  participationMode: ShpilkinParticipationMode | null;
   sourceIds: string[];
   sourceRowIds: string[];
   unitKey: string | null;
@@ -54,6 +56,8 @@ export type ShpilkinHistogramResult = {
   observations: ShpilkinHistogramObservation[];
   omittedObservationCount: number;
   overflowObservationCount: number;
+  participationMode: ShpilkinParticipationMode | null;
+  proxyObservationCount: number;
   sourceCount: number;
   totalValue: number;
   untaggedSourceRowCount: number;
@@ -66,7 +70,17 @@ type ObservationBuildResult = {
   inputObservationCount: number;
   observations: ShpilkinHistogramObservation[];
   omittedObservationCount: number;
+  participationMode: ShpilkinParticipationMode | null;
+  proxyObservationCount: number;
   untaggedSourceRowCount: number;
+};
+
+type PresidentialParticipationProxy = {
+  denominator: number | null;
+  note: string;
+  numerator: number | null;
+  sourceId: string;
+  valuePct: number | null;
 };
 
 const countyTagPattern = /^county:\d{5}$/u;
@@ -83,6 +97,31 @@ function nonnegativeNumber(value: number | null | undefined) {
 function positiveNumber(value: number | null | undefined) {
   const number = finiteNumber(value);
   return number !== null && number > 0 ? number : null;
+}
+
+function unknownFiniteNumber(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function presidentialParticipationProxy(row: ReviewRowSummary): PresidentialParticipationProxy | null {
+  const raw = row.metrics?.presidentialParticipationProxy;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const values = raw as Record<string, unknown>;
+  const numeratorValue = unknownFiniteNumber(values.numerator);
+  const denominatorValue = unknownFiniteNumber(values.denominator);
+  const numerator = numeratorValue !== null && numeratorValue >= 0 ? numeratorValue : null;
+  const denominator = denominatorValue !== null && denominatorValue > 0 ? denominatorValue : null;
+  const sourceId = typeof values.sourceId === "string" ? values.sourceId.trim() : "";
+  if (!sourceId) return null;
+  return {
+    denominator,
+    note: typeof values.note === "string" && values.note.trim()
+      ? values.note.trim()
+      : "Presidential contest votes divided by a registered-voter snapshot; this is not election-level turnout.",
+    numerator,
+    sourceId,
+    valuePct: numerator !== null && denominator !== null ? (numerator / denominator) * 100 : null,
+  };
 }
 
 function isCountyLevel(level: string) {
@@ -191,6 +230,7 @@ function buildCandidateObservations(input: {
         label: row.localUnit || row.jurisdictionName,
         level: row.level,
         parentTag: canonicalCountyTag(row.jurisdictionTag),
+        participationMode: null,
         sourceIds: [row.sourceId],
         sourceRowIds: [row.id],
         unitKey: row.reportingUnitId ? `reporting-unit:${row.reportingUnitId}` : null,
@@ -205,6 +245,8 @@ function buildCandidateObservations(input: {
       inputObservationCount: selectedRows.length,
       observations,
       omittedObservationCount: selectedRows.length - observations.length,
+      participationMode: null,
+      proxyObservationCount: 0,
       untaggedSourceRowCount: input.scope === "state_local"
         ? selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length
         : 0,
@@ -246,6 +288,7 @@ function buildCandidateObservations(input: {
       label: rows[0]?.jurisdictionName ?? tag,
       level: "county",
       parentTag: tag,
+      participationMode: null,
       sourceIds: distinct(rows.map((row) => row.sourceId)),
       sourceRowIds: rows.map((row) => row.id),
       unitKey: tag,
@@ -261,12 +304,15 @@ function buildCandidateObservations(input: {
     inputObservationCount: countyGroups.size,
     observations,
     omittedObservationCount,
+    participationMode: null,
+    proxyObservationCount: 0,
     untaggedSourceRowCount: selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length,
   };
 }
 
 function buildTurnoutObservations(input: {
   countyTag: string | null;
+  reviewRows: ReviewRowSummary[];
   scope: ShpilkinScope;
   turnoutRows: TurnoutRowSummary[];
 }): ObservationBuildResult {
@@ -282,6 +328,7 @@ function buildTurnoutObservations(input: {
         label: row.jurisdictionName,
         level: row.level,
         parentTag: canonicalCountyTag(row.jurisdictionTag),
+        participationMode: "turnout",
         sourceIds: [row.sourceId],
         sourceRowIds: [row.id],
         unitKey: row.reportingUnitId ? `reporting-unit:${row.reportingUnitId}` : null,
@@ -290,14 +337,52 @@ function buildTurnoutObservations(input: {
         warningRequired: row.warningRequired,
       } satisfies ShpilkinHistogramObservation];
     });
+    if (selectedRows.length > 0) {
+      return {
+        candidateLabel: "",
+        denominatorNotes: distinct(selectedRows.map((row) => row.denominatorNote)),
+        inputObservationCount: selectedRows.length,
+        observations,
+        omittedObservationCount: selectedRows.length - observations.length,
+        participationMode: "turnout",
+        proxyObservationCount: 0,
+        untaggedSourceRowCount: input.scope === "state_local"
+          ? selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length
+          : 0,
+      };
+    }
+
+    const proxyInputs = rowsForScope(input.reviewRows, input.scope, input.countyTag).flatMap((row) => {
+      const proxy = presidentialParticipationProxy(row);
+      return proxy ? [{ proxy, row }] : [];
+    });
+    const proxyObservations = proxyInputs.flatMap(({ proxy, row }) => {
+      if (proxy.valuePct === null || proxy.numerator === null) return [];
+      return [{
+        candidateVoteWeight: null,
+        id: `participation-proxy:${row.id}`,
+        label: row.localUnit || row.jurisdictionName,
+        level: row.level,
+        parentTag: canonicalCountyTag(row.jurisdictionTag),
+        participationMode: "presidential_participation_proxy" as const,
+        sourceIds: distinct([row.sourceId, proxy.sourceId]),
+        sourceRowIds: [row.id],
+        unitKey: row.reportingUnitId ? `reporting-unit:${row.reportingUnitId}` : null,
+        valuePct: proxy.valuePct,
+        voteWeight: proxy.numerator,
+        warningRequired: true,
+      } satisfies ShpilkinHistogramObservation];
+    });
     return {
       candidateLabel: "",
-      denominatorNotes: distinct(selectedRows.map((row) => row.denominatorNote)),
-      inputObservationCount: selectedRows.length,
-      observations,
-      omittedObservationCount: selectedRows.length - observations.length,
+      denominatorNotes: distinct(proxyInputs.map(({ proxy }) => proxy.note)),
+      inputObservationCount: proxyInputs.length,
+      observations: proxyObservations,
+      omittedObservationCount: proxyInputs.length - proxyObservations.length,
+      participationMode: proxyInputs.length > 0 ? "presidential_participation_proxy" : null,
+      proxyObservationCount: proxyObservations.length,
       untaggedSourceRowCount: input.scope === "state_local"
-        ? selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length
+        ? proxyInputs.filter(({ row }) => !canonicalCountyTag(row.jurisdictionTag)).length
         : 0,
     };
   }
@@ -331,6 +416,7 @@ function buildTurnoutObservations(input: {
       label: turnoutCountyName(rows[0]),
       level: "county",
       parentTag: tag,
+      participationMode: "turnout",
       sourceIds: distinct(rows.map((row) => row.sourceId)),
       sourceRowIds: rows.map((row) => row.id),
       unitKey: tag,
@@ -346,6 +432,8 @@ function buildTurnoutObservations(input: {
     inputObservationCount: countyGroups.size,
     observations,
     omittedObservationCount,
+    participationMode: "turnout",
+    proxyObservationCount: 0,
     untaggedSourceRowCount: selectedRows.filter((row) => !canonicalCountyTag(row.jurisdictionTag)).length,
   };
 }
@@ -392,6 +480,7 @@ export function buildShpilkinHistogram(input: {
     })
     : buildTurnoutObservations({
       countyTag: input.countyTag ?? null,
+      reviewRows: input.reviewRows,
       scope: input.scope,
       turnoutRows: input.turnoutRows,
     });
@@ -447,6 +536,8 @@ export function buildShpilkinHistogram(input: {
     observations,
     omittedObservationCount: built.omittedObservationCount + weightOmissions,
     overflowObservationCount: observations.filter((observation) => observation.valuePct > domain.max).length,
+    participationMode: built.participationMode,
+    proxyObservationCount: built.proxyObservationCount,
     sourceCount,
     totalValue: buckets.reduce((sum, bucket) => sum + bucket.value, 0),
     untaggedSourceRowCount: built.untaggedSourceRowCount,

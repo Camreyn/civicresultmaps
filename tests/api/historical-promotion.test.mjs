@@ -6,6 +6,7 @@ function reviewRow({
   comparisonSourceId,
   electionYear,
   localUnit = "Example County",
+  presidentialParticipationProxy,
   sourceId = "official-presidential-results",
 } = {}) {
   return {
@@ -14,6 +15,7 @@ function reviewRow({
     electionYear,
     jurisdictionTag: "county:01001",
     localUnit,
+    presidentialParticipationProxy,
     sourceId,
   };
 }
@@ -149,5 +151,18 @@ test("rejects unknown non-review sources before promotion writes", () => {
   assert.throws(
     () => validateNativeSourceReferences({ knownSourceIds: ["duplicate", "duplicate"] }),
     /duplicate source ids/,
+  );
+});
+
+test("rejects an unknown presidential-participation proxy source", () => {
+  assert.throws(
+    () => partitionReviewRowsForPromotion({
+      currentRows: [reviewRow({
+        presidentialParticipationProxy: { sourceId: "unknown-registration-source" },
+      })],
+      electionYear: 2024,
+      knownSourceIds,
+    }),
+    /references unknown source unknown-registration-source/,
   );
 });

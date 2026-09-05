@@ -166,6 +166,12 @@ export function KlimekFingerprint({
     }),
     [accumulation, bucketWidth, pointSize, reviewRows, scaleMode, scope, selectedCountyTag, turnoutRows],
   );
+  const usesParticipationProxy = fingerprint.participationMode === "presidential_participation_proxy";
+  const participationLabel = usesParticipationProxy ? "presidential participation proxy" : "turnout";
+  const participationPercentageLabel = usesParticipationProxy
+    ? "presidential participation proxy"
+    : "turnout percentage";
+  const participationWeightLabel = usesParticipationProxy ? "presidential votes" : "ballots cast";
   const issues = [
     fingerprint.referenceCandidate === null
       ? "The loaded Democratic and Republican comparison totals are tied or unavailable, so no winning candidate can be selected."
@@ -174,16 +180,16 @@ export function KlimekFingerprint({
       ? `${formatCount(fingerprint.candidateOmittedObservationCount)} vote-share observations are omitted because a usable candidate percentage is unavailable.`
       : "",
     fingerprint.turnoutOmittedObservationCount > 0
-      ? `${formatCount(fingerprint.turnoutOmittedObservationCount)} turnout observations are omitted because a usable turnout percentage is unavailable.`
+      ? `${formatCount(fingerprint.turnoutOmittedObservationCount)} participation observations are omitted because a usable percentage is unavailable.`
       : "",
     scope !== "state_county" && (fingerprint.candidateIdentityMissingCount > 0 || fingerprint.turnoutIdentityMissingCount > 0)
-      ? `${formatCount(fingerprint.candidateIdentityMissingCount)} vote-share and ${formatCount(fingerprint.turnoutIdentityMissingCount)} turnout observations lack an exact reporting-unit identity and are not joined by display name.`
+      ? `${formatCount(fingerprint.candidateIdentityMissingCount)} vote-share and ${formatCount(fingerprint.turnoutIdentityMissingCount)} participation observations lack an exact reporting-unit identity and are not joined by display name.`
       : "",
     fingerprint.ambiguousUnitCount > 0
       ? `${formatCount(fingerprint.ambiguousUnitCount)} reporting-unit identities are duplicated in an input and are omitted as ambiguous.`
       : "",
     fingerprint.candidateUnmatchedObservationCount > 0 || fingerprint.turnoutUnmatchedObservationCount > 0
-      ? `${formatCount(fingerprint.candidateUnmatchedObservationCount)} vote-share and ${formatCount(fingerprint.turnoutUnmatchedObservationCount)} turnout observations do not have a compatible observation on the other axis.`
+      ? `${formatCount(fingerprint.candidateUnmatchedObservationCount)} vote-share and ${formatCount(fingerprint.turnoutUnmatchedObservationCount)} participation observations do not have a compatible observation on the other axis.`
       : "",
     fingerprint.untaggedSourceRowCount > 0 && scope === "state_county"
       ? `${formatCount(fingerprint.untaggedSourceRowCount)} source rows lack a canonical county tag and are excluded from county rollups.`
@@ -192,13 +198,16 @@ export function KlimekFingerprint({
       ? `${formatCount(fingerprint.pointWeightOmissionCount)} matched observations lack the selected point-size or marginal vote weight.`
       : "",
     fingerprint.warningPointCount > 0
-      ? `${formatCount(fingerprint.warningPointCount)} plotted turnout observations carry a denominator warning from the source pipeline.`
+      ? `${formatCount(fingerprint.warningPointCount)} plotted participation observations carry a denominator warning from the source pipeline.`
+      : "",
+    fingerprint.participationProxyPointCount > 0
+      ? `${formatCount(fingerprint.participationProxyPointCount)} points use presidential contest votes divided by registered voters. This is a participation proxy, not election-level turnout or ballots cast.`
       : "",
     fingerprint.denominatorNotes.length > 1
-      ? `This selection combines ${formatCount(fingerprint.denominatorNotes.length)} turnout denominator notes; confirm that the definitions are comparable.`
+      ? `This selection combines ${formatCount(fingerprint.denominatorNotes.length)} participation denominator notes; confirm that the definitions are comparable.`
       : "",
     fingerprint.xOverflowPointCount > 0 || fingerprint.yOverflowPointCount > 0
-      ? `${formatCount(fingerprint.xOverflowPointCount)} turnout and ${formatCount(fingerprint.yOverflowPointCount)} vote-share values exceed the selected axis domains; they remain in the final overflow buckets and at the chart boundary with exact values in their tooltips.`
+      ? `${formatCount(fingerprint.xOverflowPointCount)} participation and ${formatCount(fingerprint.yOverflowPointCount)} vote-share values exceed the selected axis domains; they remain in the final overflow buckets and at the chart boundary with exact values in their tooltips.`
       : "",
     fingerprint.points.length > 0 && fingerprint.points.length < 10
       ? "Fewer than 10 exactly matched sub-jurisdictions are drawable, so the fingerprint shape is fragile."
@@ -230,7 +239,9 @@ export function KlimekFingerprint({
       ? friendlyLevel(fingerprint.levels[0])
       : "local reporting units";
   const pointSizeLabel = pointSize === "winner_votes" ? "winner votes" : "total presidential votes";
-  const marginalLabel = accumulation === "units" ? "sub-jurisdiction count" : "accumulated votes";
+  const marginalLabel = accumulation === "units"
+    ? "sub-jurisdiction count"
+    : `accumulated ${usesParticipationProxy ? "presidential votes" : "votes"}`;
   const xTicks = percentageTicks({ max: fingerprint.xDomainMax, min: fingerprint.xDomainMin });
   const yTicks = percentageTicks({ max: fingerprint.yDomainMax, min: fingerprint.yDomainMin });
   const plot = { bottom: 474, height: 420, left: 82, right: 714, top: 54, width: 632 };
@@ -248,7 +259,7 @@ export function KlimekFingerprint({
   ) * plot.height;
   const bottomSlot = plot.width / fingerprint.bottomBuckets.length;
   const sideSlot = plot.height / fingerprint.sideBuckets.length;
-  const chartSummary = `${scopeLabel}: ${fingerprint.referenceCandidateLabel} vote share by turnout, with aligned ${bucketWidth}-point marginal histograms on turnout ${fingerprint.xDomainMin}-${fingerprint.xDomainMax}% and vote-share ${fingerprint.yDomainMin}-${fingerprint.yDomainMax}% domains.`;
+  const chartSummary = `${scopeLabel}: ${fingerprint.referenceCandidateLabel} vote share by ${participationLabel}, with aligned ${bucketWidth}-point marginal histograms on ${participationLabel} ${fingerprint.xDomainMin}-${fingerprint.xDomainMax}% and vote-share ${fingerprint.yDomainMin}-${fingerprint.yDomainMax}% domains.`;
 
   return (
     <article className="history-chart-card wide klimek-workbench" data-tour="history-klimek">
@@ -256,7 +267,7 @@ export function KlimekFingerprint({
         <div>
           <strong>Klimek-Style Vote Fingerprint + Aligned Marginals</strong>
           <span>
-            Exact turnout-versus-loaded-winner vote-share points, with the corresponding turnout histogram below and vote-share histogram beside them.
+            Exact participation-versus-loaded-winner vote-share points, with aligned marginal histograms.
           </span>
         </div>
         <div className="shpilkin-heading-actions">
@@ -273,7 +284,7 @@ export function KlimekFingerprint({
             Download SVG
           </button>
           <Eli5>
-            Each dot is one place. Left-to-right is turnout, up-and-down is the loaded winner&apos;s vote share, and dot size is vote volume. The two bar charts count the same dots along each axis.
+            Each dot is one place. Left-to-right is the available participation measure, up-and-down is the loaded winner&apos;s vote share, and dot size is vote volume. The two bar charts count the same dots along each axis.
           </Eli5>
         </div>
       </div>
@@ -283,7 +294,7 @@ export function KlimekFingerprint({
         <div>
           <strong>Descriptive screening view—not a finding</strong>
           <span>
-            Dense bands or high-turnout/high-share points require denominator, ballot-accounting, source, and audit review. This chart does not establish fraud, tampering, misconduct, or intent.
+            Dense bands or high-participation/high-share points require denominator, ballot-accounting, source, and audit review. This chart does not establish fraud, tampering, misconduct, or intent.
           </span>
         </div>
       </div>
@@ -348,7 +359,7 @@ export function KlimekFingerprint({
         <span>
           {scaleMode === "comparison"
             ? "Use this fixed domain on both axes for apples-to-apples comparisons between elections."
-            : `This view fits turnout to ${fingerprint.xDomainMin}%–${fingerprint.xDomainMax}% and vote share to ${fingerprint.yDomainMin}%–${fingerprint.yDomainMax}% so clustered points spread out. Switch to 0%–100% before comparing elections.`}
+            : `This view fits ${participationLabel} to ${fingerprint.xDomainMin}%–${fingerprint.xDomainMax}% and vote share to ${fingerprint.yDomainMin}%–${fingerprint.yDomainMax}% so clustered points spread out. Switch to 0%–100% before comparing elections.`}
         </span>
       </div>
 
@@ -358,7 +369,7 @@ export function KlimekFingerprint({
             <span>{status === "ready" ? "Ready" : status === "blocked" ? "Blocked" : "Partial"}</span>
             <strong>
               {status === "ready"
-                ? "Every plotted point has compatible vote-share, turnout, identity, and size inputs."
+                ? "Every plotted point has compatible vote-share, participation, identity, and size inputs."
                 : status === "blocked"
                   ? "This selection has no exactly matched drawable fingerprint points."
                   : "The selected fingerprint has identity, source, or coverage limits to review."}
@@ -376,7 +387,7 @@ export function KlimekFingerprint({
         ) : null}
         {fingerprint.denominatorNotes.length ? (
           <details>
-            <summary>Turnout denominator notes</summary>
+            <summary>Participation denominator notes</summary>
             <ul>{fingerprint.denominatorNotes.map((note) => <li key={note}>{note}</li>)}</ul>
           </details>
         ) : null}
@@ -417,7 +428,7 @@ export function KlimekFingerprint({
             >
               <title id={titleId}>{chartSummary}</title>
               <desc id={descriptionId}>
-                {formatCount(fingerprint.points.length)} exactly matched {unitLabel}. Point placement uses exact turnout and winner vote-share percentages on turnout {fingerprint.xDomainMin}%-to-{fingerprint.xDomainMax}% and vote-share {fingerprint.yDomainMin}%-to-{fingerprint.yDomainMax}% axes; marginal bars use {bucketWidth}-percentage-point buckets.
+                {formatCount(fingerprint.points.length)} exactly matched {unitLabel}. Point placement uses exact {participationLabel} and winner vote-share percentages on {participationLabel} {fingerprint.xDomainMin}%-to-{fingerprint.xDomainMax}% and vote-share {fingerprint.yDomainMin}%-to-{fingerprint.yDomainMax}% axes; marginal bars use {bucketWidth}-percentage-point buckets.
               </desc>
               <rect className="screening-svg-bg" height="700" width="1000" />
               <rect className="klimek-plot-bg" height={plot.height} width={plot.width} x={plot.left} y={plot.top} />
@@ -435,11 +446,11 @@ export function KlimekFingerprint({
               ))}
               <text className="screening-title" x={plot.left} y="29">{scopeLabel} · {electionYear}</text>
               <text className="klimek-marginal-title" x={side.left} y="42">Winner-share marginal</text>
-              <text className="klimek-marginal-title" x={plot.left} y={bottom.bottom + 24}>Turnout marginal · max {compactFormatter.format(fingerprint.maxBottomBucketValue)}</text>
+              <text className="klimek-marginal-title" x={plot.left} y={bottom.bottom + 24}>{usesParticipationProxy ? "Participation-proxy" : "Turnout"} marginal · max {compactFormatter.format(fingerprint.maxBottomBucketValue)}</text>
               <text className="screening-axis-title vertical" transform={`translate(20 ${(plot.top + plot.bottom) / 2}) rotate(-90)`}>
                 {fingerprint.referenceCandidateLabel} vote share
               </text>
-              <text className="screening-axis-title centered" x={(plot.left + plot.right) / 2} y="694">Turnout percentage</text>
+              <text className="screening-axis-title centered" x={(plot.left + plot.right) / 2} y="694">{participationPercentageLabel}</text>
               {fingerprint.bottomBuckets.map((bucket, index) => {
                 const height = fingerprint.maxBottomBucketValue > 0
                   ? (bucket.value / fingerprint.maxBottomBucketValue) * bottom.height
@@ -455,7 +466,7 @@ export function KlimekFingerprint({
                     x={x}
                     y={bottom.bottom - height}
                   >
-                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? "ballots cast" : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} plotted units`}</title>
+                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? participationWeightLabel : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} plotted units`}</title>
                   </rect>
                 );
               })}
@@ -498,7 +509,7 @@ export function KlimekFingerprint({
                     style={{ fillOpacity: 0.34 + point.densityScore * 0.58 }}
                   >
                     <title>
-                      {`${point.label}: turnout ${point.turnoutPct.toFixed(2)}%; ${fingerprint.referenceCandidateLabel} ${point.winnerSharePct.toFixed(2)}%; total votes ${formatOptionalCount(point.totalVotes)}; winner votes ${formatOptionalCount(point.winnerVotes)}; point size ${formatCount(point.sizeValue)} ${pointSizeLabel}; marginal buckets ${bucketLabel(point.xBucketLow, point.turnoutPct, fingerprint.xDomainMax, bucketWidth)} turnout and ${bucketLabel(point.yBucketLow, point.winnerSharePct, fingerprint.yDomainMax, bucketWidth)} share`}
+                      {`${point.label}: ${participationLabel} ${point.turnoutPct.toFixed(2)}%; ${fingerprint.referenceCandidateLabel} ${point.winnerSharePct.toFixed(2)}%; total votes ${formatOptionalCount(point.totalVotes)}; winner votes ${formatOptionalCount(point.winnerVotes)}; point size ${formatCount(point.sizeValue)} ${pointSizeLabel}; marginal buckets ${bucketLabel(point.xBucketLow, point.turnoutPct, fingerprint.xDomainMax, bucketWidth)} participation and ${bucketLabel(point.yBucketLow, point.winnerSharePct, fingerprint.yDomainMax, bucketWidth)} share`}
                     </title>
                   </circle>
                 );
@@ -511,7 +522,7 @@ export function KlimekFingerprint({
             <div className="empty-state compact shpilkin-empty">
               <strong>No exactly matched observations for this selection</strong>
               <span>
-                A point needs candidate share, turnout percentage, vote-size data, and a shared canonical county tag or exact reporting-unit identity.
+                A point needs candidate share, a compatible participation percentage, vote-size data, and a shared canonical county tag or exact reporting-unit identity.
               </span>
             </div>
           )}
@@ -522,7 +533,7 @@ export function KlimekFingerprint({
             <strong>{status === "blocked" ? "This chart cannot be drawn yet" : "Read this before viewing"}</strong>
             <p>
               {status === "blocked"
-                ? "The current data do not support an exact turnout-to-vote-share intersection for this selection."
+                ? "The current data do not support an exact participation-to-vote-share intersection for this selection."
                 : "This fingerprint has incomplete, warning-marked, or unmatched inputs. Review the listed limits before opening it."}
             </p>
             {status !== "blocked" ? (
@@ -543,10 +554,10 @@ export function KlimekFingerprint({
       <details className="how-to-read">
         <summary>How this fingerprint and its marginal histograms are calculated</summary>
         <p>
-          The loaded major-candidate winner is determined inside the selected scope. Every point uses turnout percentage on the horizontal axis and that candidate&apos;s presidential vote share on the vertical axis. Point size uses either total presidential votes or votes for that candidate.
+          The loaded major-candidate winner is determined inside the selected scope. Every point uses the displayed participation measure on the horizontal axis and that candidate&apos;s presidential vote share on the vertical axis. Point size uses either total presidential votes or votes for that candidate.
         </p>
         <p>
-          Counties pair only through canonical county tags. Local units pair only when the normalized vote-share and turnout rows carry the same reporting-unit identity; display-name similarity is never treated as an identity crosswalk. The two marginal histograms aggregate only the points visible in the scatterplot, so their buckets align exactly with its axes.
+          Counties pair only through canonical county tags. Local units pair only when the normalized vote-share and participation inputs carry the same reporting-unit identity; display-name similarity is never treated as an identity crosswalk. If actual local turnout is unavailable, an explicitly sourced presidential-votes/registration proxy may be used and is always warning-gated. The two marginal histograms aggregate only the points visible in the scatterplot, so their buckets align exactly with its axes.
         </p>
         <p>
           Bucket width affects the marginal bars and the point-opacity density cue, but it never moves or blurs a point. A two-dimensional heat-map transformation remains separate future work. The fixed 0%–100% domain is required for apples-to-apples comparisons between elections. Fit-visible-data mode adds padded, bucket-aligned zoom independently to each axis; it improves separation but must not be compared with a chart using different domains. Values outside the selected domain stay in the final overflow bucket, draw at the chart boundary, and retain their exact tooltip values.

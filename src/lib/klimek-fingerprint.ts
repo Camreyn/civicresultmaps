@@ -3,6 +3,7 @@ import {
   type ShpilkinAccumulation,
   type ShpilkinCandidate,
   type ShpilkinHistogramObservation,
+  type ShpilkinParticipationMode,
   type ShpilkinScope,
 } from "./shpilkin-histogram.ts";
 import {
@@ -27,12 +28,13 @@ export type KlimekMarginalBucket = {
 };
 
 export type KlimekFingerprintPoint = {
-  ballotsCast: number | null;
   densityScore: number;
   id: string;
   label: string;
   level: string;
   parentTag: string | null;
+  participationMode: ShpilkinParticipationMode;
+  participationWeight: number | null;
   sizeValue: number;
   sourceIds: string[];
   sourceRowIds: string[];
@@ -59,6 +61,8 @@ export type KlimekFingerprintResult = {
   maxPointSizeValue: number;
   maxSideBucketValue: number;
   pairedObservationCount: number;
+  participationMode: ShpilkinParticipationMode | null;
+  participationProxyPointCount: number;
   pointWeightOmissionCount: number;
   points: KlimekFingerprintPoint[];
   referenceCandidate: ShpilkinCandidate | null;
@@ -163,7 +167,7 @@ function buildMarginalBuckets(input: {
     const percentage = input.axis === "turnout" ? point.turnoutPct : point.winnerSharePct;
     const index = bucketIndex(percentage, input.domainMin, input.domainMax, input.bucketWidth);
     const bucket = buckets[index];
-    const voteWeight = input.axis === "turnout" ? point.ballotsCast : point.totalVotes;
+    const voteWeight = input.axis === "turnout" ? point.participationWeight : point.totalVotes;
     bucket.pointIds.push(point.id);
     bucket.sourceRowIds.push(...point.sourceRowIds);
     bucket.unitCount += 1;
@@ -236,20 +240,21 @@ export function buildKlimekFingerprint(input: {
   for (const [candidateObservation, turnoutObservation] of pairs) {
     const totalVotes = candidateObservation.voteWeight;
     const winnerVotes = candidateObservation.candidateVoteWeight;
-    const ballotsCast = turnoutObservation.voteWeight;
+    const participationWeight = turnoutObservation.voteWeight;
     const sizeValue = input.pointSize === "winner_votes" ? winnerVotes : totalVotes;
     const marginalWeightsAvailable = input.accumulation === "units"
-      || (totalVotes !== null && ballotsCast !== null);
+      || (totalVotes !== null && participationWeight !== null);
     if (sizeValue === null || !marginalWeightsAvailable) {
       pointWeightOmissionCount += 1;
       continue;
     }
     pointsBeforeDensity.push({
-      ballotsCast,
       id: candidateObservation.unitKey ?? candidateObservation.id,
       label: candidateObservation.label,
       level: candidateObservation.level,
       parentTag: candidateObservation.parentTag ?? turnoutObservation.parentTag,
+      participationMode: turnoutObservation.participationMode ?? "turnout",
+      participationWeight,
       sizeValue,
       sourceIds: distinct([...candidateObservation.sourceIds, ...turnoutObservation.sourceIds]),
       sourceRowIds: distinct([...candidateObservation.sourceRowIds, ...turnoutObservation.sourceRowIds]),
@@ -319,6 +324,10 @@ export function buildKlimekFingerprint(input: {
     maxPointSizeValue: Math.max(0, ...points.map((point) => point.sizeValue)),
     maxSideBucketValue: Math.max(0, ...sideBuckets.map((bucket) => bucket.value)),
     pairedObservationCount: pairs.length,
+    participationMode: turnout.participationMode,
+    participationProxyPointCount: points.filter(
+      (point) => point.participationMode === "presidential_participation_proxy",
+    ).length,
     pointWeightOmissionCount,
     points,
     referenceCandidate,

@@ -5617,22 +5617,39 @@ def _pennsylvania_county_codes(source: SourceConfig) -> dict[int, str]:
     return codes
 
 
-def _pa_precinct_key(row: dict[str, str], county: str) -> tuple[str, ...]:
-    return (
-        county,
-        row["precinctCode"],
-        row["municipality"].strip(),
-        row["breakdownCode1"].strip(),
-        row["breakdownName1"].strip(),
-        row["breakdownCode2"].strip(),
-        row["breakdownName2"].strip(),
-        row["mcd"].strip(),
-        row["vtd"].strip(),
+def _pa_precinct_key(row: dict[str, str]) -> tuple[int, int]:
+    """Return the stable DOS identity shared by the results and registration files."""
+    return int_text(row["countyCode"]), int_text(row["precinctCode"])
+
+
+def _pa_clean_text(value: Any) -> str:
+    return " ".join(str(value or "").split())
+
+
+def _pa_expanded_municipality(row: dict[str, str]) -> str:
+    """Rebuild the results-file municipality value from segmented registration fields."""
+    return " ".join(
+        item
+        for item in [
+            _pa_clean_text(row.get("municipality")),
+            _pa_clean_text(row.get("breakdownCode1")),
+            _pa_clean_text(row.get("breakdownName1")),
+            _pa_clean_text(row.get("breakdownCode2")),
+            _pa_clean_text(row.get("breakdownName2")),
+        ]
+        if item
     )
 
 
-def _pa_local_unit(key: tuple[str, ...]) -> str:
-    _, precinct_code, municipality, code1, name1, code2, name2, mcd, vtd = key
+def _pa_local_unit(row: dict[str, str]) -> str:
+    precinct_code = int_text(row["precinctCode"])
+    municipality = _pa_clean_text(row.get("municipality"))
+    code1 = _pa_clean_text(row.get("breakdownCode1"))
+    name1 = _pa_clean_text(row.get("breakdownName1"))
+    code2 = _pa_clean_text(row.get("breakdownCode2"))
+    name2 = _pa_clean_text(row.get("breakdownName2"))
+    mcd = _pa_clean_text(row.get("mcd"))
+    vtd = _pa_clean_text(row.get("vtd"))
     parts = [municipality or "Unnamed municipality"]
     if code1 or name1:
         parts.append(" ".join(item for item in [code1, name1] if item).strip())
@@ -5650,10 +5667,12 @@ def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> t
     result_section = config.raw["certifiedResults"]
     result_source = sources[result_section["sourceId"]]
     readme_source = sources[config.raw["countyCodeSourceId"]]
+    registration_section = config.raw["precinctRegistration"]
+    registration_source = sources[registration_section["sourceId"]]
     turnout_section = config.raw["turnout"]
     turnout_source = sources[turnout_section["sourceId"]]
     county_codes = _pennsylvania_county_codes(readme_source)
-    fieldnames = [
+    result_fieldnames = [
         "year",
         "electionType",
         "countyCode",
@@ -5692,21 +5711,107 @@ def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> t
         "prevSenate",
         "prevHouse",
     ]
+    registration_fieldnames = [
+        "year",
+        "electionType",
+        "countyCode",
+        "precinctCode",
+        "partyRank1",
+        "partyCode1",
+        "partyCount1",
+        "partyRank2",
+        "partyCode2",
+        "partyCount2",
+        "partyRank3",
+        "partyCode3",
+        "partyCount3",
+        "partyRank4",
+        "partyCode4",
+        "partyCount4",
+        "partyRank5",
+        "partyCode5",
+        "partyCount5",
+        "partyRank6",
+        "partyCode6",
+        "partyCount6",
+        "usCongress",
+        "stateSenate",
+        "stateHouse",
+        "muniType",
+        "municipality",
+        "breakdownCode1",
+        "breakdownName1",
+        "breakdownCode2",
+        "breakdownName2",
+        "biCounty",
+        "mcd",
+        "fips",
+        "vtd",
+        "prevPrecinct",
+        "prevCongress",
+        "prevSenate",
+        "prevHouse",
+    ]
+    registration_rows: dict[tuple[int, int], dict[str, Any]] = {}
+    registration_placeholder_rows = 0
+    with _artifact_path(registration_source).open(newline="", encoding="utf-8-sig") as handle:
+        for row in csv.DictReader(handle, fieldnames=registration_fieldnames):
+            county_code, precinct_code = _pa_precinct_key(row)
+            if county_code not in county_codes:
+                registration_placeholder_rows += 1
+                continue
+            key = (county_code, precinct_code)
+            if key in registration_rows:
+                raise ValueError(f"Pennsylvania registration source contains duplicate precinct key {key}")
+            registered_voters = sum(int_text(row[f"partyCount{rank}"]) for rank in range(1, 7))
+            registration_rows[key] = {
+                "row": row,
+                "registeredVoters": registered_voters,
+            }
+
     county_totals: dict[str, dict[str, int]] = {}
-    precinct_totals: dict[tuple[str, ...], dict[str, int]] = {}
+    precinct_totals: dict[tuple[int, int], dict[str, Any]] = {}
+    result_identities: dict[tuple[int, int], tuple[str, ...]] = {}
 
     with _artifact_path(result_source).open(newline="", encoding="utf-8-sig") as handle:
-        for row in csv.DictReader(handle, fieldnames=fieldnames):
+        for row in csv.DictReader(handle, fieldnames=result_fieldnames):
             office = row["officeCode"]
             if office not in {result_section["officeCode"], config.raw["reviewCharts"]["downBallotOfficeCode"]}:
                 continue
-            county = _county_name(county_codes[int(row["countyCode"])])
+            county_code, _ = _pa_precinct_key(row)
+            county = _county_name(county_codes[county_code])
             party = row["partyCode"]
             votes = int_text(row["votes"])
-            key = _pa_precinct_key(row, county)
+            key = _pa_precinct_key(row)
+            identity = tuple(
+                _pa_clean_text(row.get(field))
+                for field in [
+                    "municipality",
+                    "breakdownCode1",
+                    "breakdownName1",
+                    "breakdownCode2",
+                    "breakdownName2",
+                    "mcd",
+                    "fips",
+                    "vtd",
+                ]
+            )
+            existing_identity = result_identities.get(key)
+            if existing_identity is not None and existing_identity != identity:
+                raise ValueError(f"Pennsylvania result source has conflicting identity fields for precinct key {key}")
+            result_identities[key] = identity
             precinct = precinct_totals.setdefault(
                 key,
-                {"pres_dem": 0, "pres_rep": 0, "pres_other": 0, "pres_total": 0, "sen_dem": 0, "sen_rep": 0, "sen_total": 0},
+                {
+                    "county": county,
+                    "pres_dem": 0,
+                    "pres_rep": 0,
+                    "pres_other": 0,
+                    "pres_total": 0,
+                    "sen_dem": 0,
+                    "sen_rep": 0,
+                    "sen_total": 0,
+                },
             )
 
             if office == result_section["officeCode"]:
@@ -5747,19 +5852,44 @@ def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> t
         for county, values in sorted(county_totals.items())
     ]
 
+    result_keys = set(result_identities)
+    registration_keys = set(registration_rows)
+    matched_registration_keys = registration_keys & result_keys
+    registration_only_keys = registration_keys - result_keys
+    result_only_keys = result_keys - registration_keys
+    raw_name_matches = 0
+    expanded_name_matches = 0
+    for key in matched_registration_keys:
+        registration_row = registration_rows[key]["row"]
+        result_municipality = result_identities[key][0]
+        if _pa_clean_text(registration_row["municipality"]) == result_municipality:
+            raw_name_matches += 1
+        if _pa_expanded_municipality(registration_row) == result_municipality:
+            expanded_name_matches += 1
+
     review_rows: list[dict[str, Any]] = []
     comparison_rows = 0
     for key, values in sorted(precinct_totals.items()):
         total = values["pres_total"]
         if not total:
             continue
+        registration = registration_rows.get(key)
+        if registration is None:
+            raise ValueError(f"Pennsylvania presidential precinct {key} has no registration row")
+        registration_row = registration["row"]
+        registered_voters = registration["registeredVoters"]
+        local_unit = _pa_local_unit(registration_row)
+        county_fips = int_text(registration_row["fips"])
+        if not county_fips:
+            raise ValueError(f"Pennsylvania registration precinct {key} has no county FIPS code")
         has_senate = bool(values["sen_total"])
         if has_senate:
             comparison_rows += 1
         review_rows.append(
             {
-                "county": key[0],
-                "localUnit": _pa_local_unit(key),
+                "county": values["county"],
+                "localUnit": local_unit,
+                "level": "precinct",
                 "totalVotes": total,
                 "harris": values["pres_dem"],
                 "trump": values["pres_rep"],
@@ -5768,6 +5898,24 @@ def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> t
                 "demDropoff": pct(values["pres_dem"] - values["sen_dem"], total) if has_senate else 0,
                 "repDropoff": pct(values["pres_rep"] - values["sen_rep"], total) if has_senate else 0,
                 "coverageMode": "presidentVsSenate" if has_senate else "voteShareOnly",
+                "presidentialParticipationProxy": {
+                    "numerator": total,
+                    "denominator": registered_voters,
+                    "valuePct": pct(total, registered_voters) if registered_voters else None,
+                    "numeratorType": registration_section["participationProxy"]["numeratorType"],
+                    "denominatorType": registration_section["denominatorType"],
+                    "registrationDenominatorTiming": registration_section["registrationDenominatorTiming"],
+                    "warningRequired": True,
+                    "sourceId": registration_source.id,
+                    "note": registration_section["participationProxy"]["note"],
+                },
+                "reportingUnit": {
+                    "sourceUnitId": str(key[1]),
+                    "sourceDisplayName": local_unit,
+                    "parentGeoid": f"42{county_fips:03d}",
+                    "reportingGrain": "precinct",
+                    "isGeographic": True,
+                },
                 "sourceId": result_source.id,
             }
         )
@@ -5800,6 +5948,9 @@ def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> t
             }
         )
 
+    proxy_rows = [row["presidentialParticipationProxy"] for row in review_rows]
+    proxy_drawable_rows = [row for row in proxy_rows if row["valuePct"] is not None]
+    result_only_presidential_keys = [key for key in result_only_keys if precinct_totals[key]["pres_total"]]
     metrics = {
         "nativeResultRows": len(result_rows),
         "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
@@ -5810,10 +5961,49 @@ def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> t
         "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
         "nativeComparisonRows": comparison_rows,
         "nativeComparisonContest": config.raw.get("comparisonContest", {}).get("label"),
+        "nativePrecinctRegistrationRows": len(registration_rows),
+        "nativePrecinctRegistrationPlaceholderRows": registration_placeholder_rows,
+        "nativePrecinctRegistrationRegisteredVoters": sum(
+            row["registeredVoters"] for row in registration_rows.values()
+        ),
+        "nativePrecinctRegistrationMatchedResultKeys": len(matched_registration_keys),
+        "nativePrecinctRegistrationOnlyKeys": len(registration_only_keys),
+        "nativePrecinctResultOnlyKeys": len(result_only_keys),
+        "nativePrecinctResultOnlyPresidentialKeys": len(result_only_presidential_keys),
+        "nativePrecinctRegistrationRawNameMatches": raw_name_matches,
+        "nativePrecinctRegistrationRawNameMismatches": len(matched_registration_keys) - raw_name_matches,
+        "nativePrecinctRegistrationExpandedNameMatches": expanded_name_matches,
+        "nativeReviewRowsWithParticipationProxy": len(proxy_rows),
+        "nativeParticipationProxyDrawableRows": len(proxy_drawable_rows),
+        "nativeParticipationProxyZeroDenominatorRows": sum(row["denominator"] == 0 for row in proxy_rows),
+        "nativeParticipationProxyOver100Rows": sum(row["valuePct"] > 100 for row in proxy_drawable_rows),
         "nativeTurnoutRows": len(turnout_rows),
         "nativeRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
         "nativeBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
     }
+    registration_expected = registration_section.get("expected", {})
+    registration_checks = {
+        "nativePrecinctRegistrationRows": registration_expected.get("rowsExcludingPlaceholder"),
+        "nativePrecinctRegistrationPlaceholderRows": registration_expected.get("placeholderRows"),
+        "nativePrecinctRegistrationRegisteredVoters": registration_expected.get("registeredVoters"),
+        "nativePrecinctRegistrationMatchedResultKeys": registration_expected.get("matchedResultKeys"),
+        "nativePrecinctRegistrationOnlyKeys": registration_expected.get("registrationOnlyKeys"),
+        "nativePrecinctResultOnlyKeys": registration_expected.get("resultOnlyKeys"),
+        "nativePrecinctResultOnlyPresidentialKeys": registration_expected.get("resultOnlyPresidentialKeys"),
+        "nativePrecinctRegistrationRawNameMismatches": registration_expected.get("rawNameMismatchRows"),
+        "nativePrecinctRegistrationExpandedNameMatches": registration_expected.get("expandedNameMatchRows"),
+        "nativeReviewRowsWithParticipationProxy": registration_expected.get("reviewRowsWithProxy"),
+        "nativeParticipationProxyDrawableRows": registration_expected.get("drawableProxyRows"),
+        "nativeParticipationProxyZeroDenominatorRows": registration_expected.get("zeroDenominatorRows"),
+        "nativeParticipationProxyOver100Rows": registration_expected.get("over100Rows"),
+    }
+    registration_mismatches = {
+        key: {"actual": metrics[key], "expected": int_text(expected)}
+        for key, expected in registration_checks.items()
+        if expected is not None and metrics[key] != int_text(expected)
+    }
+    if registration_mismatches:
+        raise ValueError(f"Pennsylvania precinct registration reconciliation failed: {registration_mismatches}")
     return result_rows, review_rows, turnout_rows, metrics
 
 

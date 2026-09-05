@@ -32,7 +32,7 @@ const scopeOptions: Array<{ key: ShpilkinScope; label: string }> = [
 ];
 const xAxisOptions: Array<{ key: ShpilkinXAxis; label: string }> = [
   { key: "candidate_share", label: "Candidate vote share" },
-  { key: "turnout", label: "Turnout" },
+  { key: "turnout", label: "Turnout / participation" },
 ];
 const accumulationOptions: Array<{ key: ShpilkinAccumulation; label: string }> = [
   { key: "votes", label: "Accumulated votes" },
@@ -160,6 +160,8 @@ export function ShpilkinHistogram({
     }),
     [accumulation, bucketWidth, candidate, reviewRows, scaleMode, scope, selectedCountyTag, turnoutRows, xAxis],
   );
+  const usesParticipationProxy = xAxis === "turnout"
+    && histogram.participationMode === "presidential_participation_proxy";
 
   const issues = [
     histogram.omittedObservationCount > 0
@@ -169,7 +171,10 @@ export function ShpilkinHistogram({
       ? `${formatCount(histogram.untaggedSourceRowCount)} source rows lack a canonical county tag and are not rolled into county observations.`
       : "",
     histogram.warningObservationCount > 0
-      ? `${formatCount(histogram.warningObservationCount)} turnout observations carry a denominator warning from the source pipeline.`
+      ? `${formatCount(histogram.warningObservationCount)} participation observations carry a denominator warning from the source pipeline.`
+      : "",
+    histogram.proxyObservationCount > 0
+      ? `${formatCount(histogram.proxyObservationCount)} observations use presidential contest votes divided by registered voters. This is a participation proxy, not election-level turnout or ballots cast.`
       : "",
     xAxis === "turnout" && histogram.denominatorNotes.length > 1
       ? `This selection combines ${formatCount(histogram.denominatorNotes.length)} source denominator notes; confirm that the definitions are comparable.`
@@ -197,10 +202,12 @@ export function ShpilkinHistogram({
   const acknowledged = acknowledgedKeys.includes(diagnosticKey);
   const gated = status !== "ready" && !acknowledged;
   const candidateAxisLabel = `${histogram.candidateLabel} vote share`;
-  const xAxisLabel = xAxis === "candidate_share" ? candidateAxisLabel : "Turnout percentage";
+  const xAxisLabel = xAxis === "candidate_share"
+    ? candidateAxisLabel
+    : usesParticipationProxy ? "Presidential participation proxy" : "Turnout percentage";
   const yAxisLabel = accumulation === "units"
     ? "Sub-jurisdiction count"
-    : xAxis === "turnout" ? "Ballots cast" : "Presidential votes";
+    : xAxis === "turnout" && !usesParticipationProxy ? "Ballots cast" : "Presidential votes";
   const scopeLabel = scope === "state_county"
     ? `${stateName} · ${pluralizeCountyLabel(countyLabel)}`
     : scope === "county_local"
@@ -223,7 +230,7 @@ export function ShpilkinHistogram({
         <div>
           <strong>Shpilkin-Style Distribution Histograms</strong>
           <span>
-            Four requested views: accumulated votes or sub-jurisdictions, bucketed by candidate share or turnout.
+            Accumulated votes or sub-jurisdictions, bucketed by candidate share or available participation measure.
           </span>
         </div>
         <div className="shpilkin-heading-actions">
@@ -251,7 +258,7 @@ export function ShpilkinHistogram({
         <div>
           <strong>Descriptive screening view—not a finding</strong>
           <span>
-            Distribution shape changes with geography, bucket width, candidate choice, turnout definition, and source
+            Distribution shape changes with geography, bucket width, candidate choice, participation definition, and source
             coverage. Use official audits and source reconciliation before drawing conclusions.
           </span>
         </div>
@@ -351,7 +358,7 @@ export function ShpilkinHistogram({
         ) : null}
         {histogram.denominatorNotes.length ? (
           <details>
-            <summary>Turnout denominator notes</summary>
+            <summary>Participation denominator notes</summary>
             <ul>{histogram.denominatorNotes.map((note) => <li key={note}>{note}</li>)}</ul>
           </details>
         ) : null}
@@ -425,7 +432,7 @@ export function ShpilkinHistogram({
                     x={x}
                     y={plot.bottom - height}
                   >
-                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? "votes" : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} units`}</title>
+                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? (usesParticipationProxy ? "presidential votes" : "ballots cast") : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} units`}</title>
                   </rect>
                 );
               })}
@@ -436,7 +443,7 @@ export function ShpilkinHistogram({
             <div className="empty-state compact shpilkin-empty">
               <strong>No compatible observations for this selection</strong>
               <span>
-                Candidate-share views need review rows. Turnout views need source-reported ballots and a usable denominator.
+                Candidate-share views need review rows. Participation views need source-reported turnout or an exact, warning-labeled registration proxy.
               </span>
             </div>
           )}
