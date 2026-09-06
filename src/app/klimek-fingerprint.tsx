@@ -14,6 +14,12 @@ import {
   type ShpilkinScope,
 } from "@/lib/shpilkin-histogram";
 import { percentageTicks, type PercentageScaleMode } from "@/lib/percentage-scale";
+import {
+  buildKlimekHistogramContext,
+  describeHistogramBin,
+  histogramContextColors,
+  type KlimekPointAppearance,
+} from "@/lib/klimek-histogram-context";
 import type { ReviewRowSummary, TurnoutRowSummary } from "@/lib/types";
 import { Eli5 } from "./eli5";
 
@@ -42,6 +48,10 @@ const pointSizeOptions: Array<{ key: KlimekPointSize; label: string }> = [
 const scaleModeOptions: Array<{ key: PercentageScaleMode; label: string }> = [
   { key: "comparison", label: "0%–100% (compare)" },
   { key: "fit", label: "Fit visible data" },
+];
+const pointAppearanceOptions: Array<{ key: KlimekPointAppearance; label: string }> = [
+  { key: "winner_density", label: "Winner color · density" },
+  { key: "histogram_context", label: "Histogram peaks / valleys" },
 ];
 const integerFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const compactFormatter = new Intl.NumberFormat("en-US", {
@@ -86,7 +96,20 @@ function friendlyLevel(level: string) {
 }
 
 function downloadSvg(svg: SVGSVGElement, filename: string) {
-  const content = new XMLSerializer().serializeToString(svg);
+  // The downloaded SVG has no page stylesheet. Preserve its paint and labels,
+  // including the selected appearance, without modifying the live chart.
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  const originalElements = [svg, ...svg.querySelectorAll<SVGElement>("*")];
+  const clonedElements = [clone, ...clone.querySelectorAll<SVGElement>("*")];
+  const properties = ["fill", "fill-opacity", "stroke", "stroke-width", "stroke-dasharray", "opacity", "font-family", "font-size", "font-weight", "text-anchor"];
+  originalElements.forEach((element, index) => {
+    const computed = window.getComputedStyle(element);
+    properties.forEach((property) => {
+      // Do not bake a transient hover-opacity override into the chosen encoding.
+      clonedElements[index].style.setProperty(property, element.style.getPropertyValue(property) || computed.getPropertyValue(property));
+    });
+  });
+  const content = new XMLSerializer().serializeToString(clone);
   const blob = new Blob([content], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -140,6 +163,7 @@ export function KlimekFingerprint({
   const [pointSize, setPointSize] = useState<KlimekPointSize>("total_votes");
   const [bucketWidth, setBucketWidth] = useState<KlimekBucketWidth>(1);
   const [scaleMode, setScaleMode] = useState<PercentageScaleMode>("comparison");
+  const [pointAppearance, setPointAppearance] = useState<KlimekPointAppearance>("winner_density");
   const [requestedCountyTag, setRequestedCountyTag] = useState("");
   const [acknowledgedKeys, setAcknowledgedKeys] = useState<string[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -172,6 +196,8 @@ export function KlimekFingerprint({
     ? "presidential participation proxy"
     : "turnout percentage";
   const participationWeightLabel = usesParticipationProxy ? "presidential votes" : "ballots cast";
+  const histogramContext = useMemo(() => buildKlimekHistogramContext(fingerprint), [fingerprint]);
+  const showHistogramContext = pointAppearance === "histogram_context";
   const issues = [
     fingerprint.referenceCandidate === null
       ? "The loaded Democratic and Republican comparison totals are tied or unavailable, so no winning candidate can be selected."
@@ -223,6 +249,7 @@ export function KlimekFingerprint({
     pointSize,
     bucketWidth,
     scaleMode,
+    pointAppearance,
     fingerprint.referenceCandidate,
     fingerprint.points.length,
   ].join(":");
@@ -259,10 +286,13 @@ export function KlimekFingerprint({
   ) * plot.height;
   const bottomSlot = plot.width / fingerprint.bottomBuckets.length;
   const sideSlot = plot.height / fingerprint.sideBuckets.length;
-  const chartSummary = `${scopeLabel}: ${fingerprint.referenceCandidateLabel} vote share by ${participationLabel}, with aligned ${bucketWidth}-point marginal histograms on ${participationLabel} ${fingerprint.xDomainMin}-${fingerprint.xDomainMax}% and vote-share ${fingerprint.yDomainMin}-${fingerprint.yDomainMax}% domains.`;
+  const encodingSummary = showHistogramContext
+    ? `Share bins: orange peak, white similar, green valley, gray unavailable. ${usesParticipationProxy ? "Proxy" : "Turnout"}-bin peaks/valleys are opaque; similar bins are translucent.`
+    : "Color: loaded winner. Opacity: shared marginal-bucket density.";
+  const chartSummary = `${scopeLabel}: ${fingerprint.referenceCandidateLabel} vote share by ${participationLabel}, with aligned ${bucketWidth}-point marginal histograms on ${participationLabel} ${fingerprint.xDomainMin}-${fingerprint.xDomainMax}% and vote-share ${fingerprint.yDomainMin}-${fingerprint.yDomainMax}% domains. ${encodingSummary}`;
 
   return (
-    <article className="history-chart-card wide klimek-workbench" data-tour="history-klimek">
+    <article className="history-chart-card wide klimek-workbench" data-appearance={pointAppearance} data-tour="history-klimek">
       <div className="shpilkin-heading">
         <div>
           <strong>Klimek-Style Vote Fingerprint + Aligned Marginals</strong>
@@ -276,7 +306,7 @@ export function KlimekFingerprint({
             disabled={gated || status === "blocked"}
             onClick={() => svgRef.current && downloadSvg(
               svgRef.current,
-              `${stateCode.toLowerCase()}-${electionYear}-klimek-${scope}-${scaleMode}-${bucketWidth}pct.svg`,
+              `${stateCode.toLowerCase()}-${electionYear}-klimek-${scope}-${scaleMode}-${pointAppearance}-${bucketWidth}pct.svg`,
             )}
             type="button"
           >
@@ -335,6 +365,12 @@ export function KlimekFingerprint({
           value={scaleMode}
         />
         <KlimekChoiceButtons
+          label="Point appearance"
+          onChange={setPointAppearance}
+          options={pointAppearanceOptions}
+          value={pointAppearance}
+        />
+        <KlimekChoiceButtons
           label="Point size"
           onChange={setPointSize}
           options={pointSizeOptions}
@@ -353,6 +389,15 @@ export function KlimekFingerprint({
           value={bucketWidth}
         />
       </div>
+
+      {showHistogramContext ? (
+        <div className="chart-scale-guidance" role="note">
+          <strong>Histogram context, not an assessment of a place</strong>
+          <span>
+            Each bin is compared with the mean height of its two immediate neighbors using the selected accumulation and bucket width. White/translucent means within 10% of that local reference, not agreement with a normal distribution. Endpoints and overflow have no two-sided comparison. All points in a bin share its context; this is not a probability, significance test, or evidence of misconduct. Empty valleys remain visible in the marginal gaps, not as invented points.
+          </span>
+        </div>
+      ) : null}
 
       <div className={`chart-scale-guidance ${scaleMode === "fit" ? "is-fitted" : ""}`} role="note">
         <strong>{scaleMode === "comparison" ? "Comparable 0%–100% scale" : "Zoomed, data-fitted scale"}</strong>
@@ -408,9 +453,16 @@ export function KlimekFingerprint({
       </dl>
 
       <div className="klimek-legend" aria-label="Fingerprint encoding legend" role="note">
-        <span><i aria-hidden className={`klimek-legend-dot ${fingerprint.referenceCandidate ?? "neutral"}`} /> Color: loaded winner</span>
+        {showHistogramContext ? (
+          <>
+            <span><i aria-hidden className="klimek-legend-dot" style={{ background: histogramContextColors.peak }} /> Share-bin peak</span>
+            <span><i aria-hidden className="klimek-legend-dot" style={{ background: histogramContextColors.similar }} /> Similar to neighbors</span>
+            <span><i aria-hidden className="klimek-legend-dot" style={{ background: histogramContextColors.valley }} /> Share-bin valley</span>
+            <span><i aria-hidden className="klimek-legend-dot" style={{ background: histogramContextColors.unavailable }} /> Comparison unavailable</span>
+          </>
+        ) : <span><i aria-hidden className={`klimek-legend-dot ${fingerprint.referenceCandidate ?? "neutral"}`} /> Color: loaded winner</span>}
         <span>Size: {pointSizeLabel}</span>
-        <span>Opacity: shared marginal-bucket density</span>
+        <span>{showHistogramContext ? `Opacity: ${usesParticipationProxy ? "proxy" : "turnout"}-bin peaks/valleys opaque; similar translucent; unavailable medium` : "Opacity: shared marginal-bucket density"}</span>
         <span>Bars: {marginalLabel}</span>
       </div>
 
@@ -423,14 +475,15 @@ export function KlimekFingerprint({
               aria-labelledby={titleId}
               ref={svgRef}
               role="img"
-              viewBox="0 0 1000 700"
+              viewBox="0 0 1000 758"
               xmlns="http://www.w3.org/2000/svg"
             >
               <title id={titleId}>{chartSummary}</title>
               <desc id={descriptionId}>
                 {formatCount(fingerprint.points.length)} exactly matched {unitLabel}. Point placement uses exact {participationLabel} and winner vote-share percentages on {participationLabel} {fingerprint.xDomainMin}%-to-{fingerprint.xDomainMax}% and vote-share {fingerprint.yDomainMin}%-to-{fingerprint.yDomainMax}% axes; marginal bars use {bucketWidth}-percentage-point buckets.
+                {encodingSummary} {showHistogramContext ? "Reference: immediate neighboring-bin mean, with a 10% visual tolerance. Not a normality or significance test; not an assessment of individual units or election conduct." : ""}
               </desc>
-              <rect className="screening-svg-bg" height="700" width="1000" />
+              <rect className="screening-svg-bg" height="758" width="1000" />
               <rect className="klimek-plot-bg" height={plot.height} width={plot.width} x={plot.left} y={plot.top} />
               {yTicks.map((tick) => (
                 <g key={`y-${tick}`}>
@@ -466,7 +519,7 @@ export function KlimekFingerprint({
                     x={x}
                     y={bottom.bottom - height}
                   >
-                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? participationWeightLabel : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} plotted units`}</title>
+                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? participationWeightLabel : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} plotted units${showHistogramContext ? `; ${describeHistogramBin(histogramContext.bottom[index])}` : ""}`}</title>
                   </rect>
                 );
               })}
@@ -481,11 +534,12 @@ export function KlimekFingerprint({
                     className={`klimek-marginal-bar ${fingerprint.referenceCandidate ?? "neutral"}`}
                     height={height}
                     key={`side-${bucket.low}`}
+                    style={showHistogramContext ? { fill: histogramContextColors[histogramContext.side[index].relation] } : undefined}
                     width={width}
                     x={side.left}
                     y={y}
                   >
-                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? "presidential votes" : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} plotted units`}</title>
+                    <title>{`${bucket.label}: ${formatCount(bucket.value)} ${accumulation === "votes" ? "presidential votes" : "sub-jurisdictions"}; ${formatCount(bucket.unitCount)} plotted units${showHistogramContext ? `; ${describeHistogramBin(histogramContext.side[index])}` : ""}`}</title>
                   </rect>
                 );
               })}
@@ -494,6 +548,7 @@ export function KlimekFingerprint({
               <line className="fingerprint-axis" x1={plot.left} x2={plot.right} y1={bottom.top} y2={bottom.top} />
               <line className="fingerprint-axis" x1={side.left} x2={side.left} y1={plot.top} y2={plot.bottom} />
               {fingerprint.points.map((point) => {
+                const context = showHistogramContext ? histogramContext.byPoint.get(point.id) : undefined;
                 const radius = 3 + (fingerprint.maxPointSizeValue > 0
                   ? Math.sqrt(point.sizeValue / fingerprint.maxPointSizeValue) * 10
                   : 0);
@@ -506,16 +561,22 @@ export function KlimekFingerprint({
                     data-density-score={point.densityScore.toFixed(4)}
                     key={point.id}
                     r={radius.toFixed(2)}
-                    style={{ fillOpacity: 0.34 + point.densityScore * 0.58 }}
+                    style={context
+                      ? { fill: context.fill, fillOpacity: context.fillOpacity }
+                      : { fillOpacity: 0.34 + point.densityScore * 0.58 }}
                   >
                     <title>
-                      {`${point.label}: ${participationLabel} ${point.turnoutPct.toFixed(2)}%; ${fingerprint.referenceCandidateLabel} ${point.winnerSharePct.toFixed(2)}%; total votes ${formatOptionalCount(point.totalVotes)}; winner votes ${formatOptionalCount(point.winnerVotes)}; point size ${formatCount(point.sizeValue)} ${pointSizeLabel}; marginal buckets ${bucketLabel(point.xBucketLow, point.turnoutPct, fingerprint.xDomainMax, bucketWidth)} participation and ${bucketLabel(point.yBucketLow, point.winnerSharePct, fingerprint.yDomainMax, bucketWidth)} share`}
+                      {`${point.label}: ${participationLabel} ${point.turnoutPct.toFixed(2)}%; ${fingerprint.referenceCandidateLabel} ${point.winnerSharePct.toFixed(2)}%; total votes ${formatOptionalCount(point.totalVotes)}; winner votes ${formatOptionalCount(point.winnerVotes)}; point size ${formatCount(point.sizeValue)} ${pointSizeLabel}; marginal buckets ${bucketLabel(point.xBucketLow, point.turnoutPct, fingerprint.xDomainMax, bucketWidth)} ${participationLabel} and ${bucketLabel(point.yBucketLow, point.winnerSharePct, fingerprint.yDomainMax, bucketWidth)} share${context ? `; share bin: ${describeHistogramBin(context.share)}; ${participationLabel} bin: ${describeHistogramBin(context.turnout)}` : ""}`}
                     </title>
                   </circle>
                 );
               })}
               <text className="klimek-marginal-max" textAnchor="end" x={side.right} y={plot.bottom + 17}>
                 side max {compactFormatter.format(fingerprint.maxSideBucketValue)}
+              </text>
+              <text fill="#b8c5be" fontSize="10" x={plot.left} y="722">{encodingSummary}</text>
+              <text fill="#b8c5be" fontSize="10" x={plot.left} y="742">
+                {showHistogramContext ? "Reference: neighboring-bin mean; 10% visual tolerance. Not a normality test or evidence of misconduct." : "Descriptive screening view; not evidence of misconduct."}
               </text>
             </svg>
           ) : (
@@ -561,6 +622,9 @@ export function KlimekFingerprint({
         </p>
         <p>
           Bucket width affects the marginal bars and the point-opacity density cue, but it never moves or blurs a point. A two-dimensional heat-map transformation remains separate future work. The fixed 0%–100% domain is required for apples-to-apples comparisons between elections. Fit-visible-data mode adds padded, bucket-aligned zoom independently to each axis; it improves separation but must not be compared with a chart using different domains. Values outside the selected domain stay in the final overflow bucket, draw at the chart boundary, and retain their exact tooltip values.
+        </p>
+        <p>
+          Histogram peaks / valleys is an optional local bar-height comparison. A bin is similar when its observed height differs from the mean of its immediate neighbors by at most 10% of the larger height. Otherwise it is a peak or valley relative to those neighbors. Share-bin context controls orange/white/green fill; {participationLabel}-bin context controls fixed opaque/translucent fill. Point positions, sizes, counts, and source identities never change. No normal-distribution assumption, skew/kurtosis amplification, fraud mechanism, or individual-unit inference is applied.
         </p>
       </details>
     </article>

@@ -8733,3 +8733,34 @@ evidence against its verified top-level package.
 - Existing 67-row county vote-history turnout remains unchanged and takes
   precedence wherever it is applicable. No geometry relationship, immutable
   delivery, production database row, Blob asset, or deployment is changed.
+
+### 2026-09-06 - Alaska historical registration source-only package (#246)
+
+- Retained the official Division of Elections November 3 registration reports
+  for 2012, 2016, and 2020 with reviewed byte/SHA-256 pins and actual collection
+  receipts. `scripts/collect-ak-historical-registration.mjs` parses 438, 441,
+  and 441 source precinct rows and reconciles each to its named House district
+  and the separately printed statewide totals of 506,701, 528,879, and 597,319.
+  Source codes/names and leading zeros are preserved; no canonical identity or
+  geometry relationship is inferred from a label or district number.
+- The separately retained November 3, 2012 age report totals 506,702, one above
+  the party-and-precinct report. That difference remains unresolved. The 2012
+  and 2016 snapshots precede election day and are not election-day denominators.
+- This is a source-review collection, not turnout activation. No registration
+  is assigned to absentee, early, questioned, remote, federal-overseas, or
+  county-equivalent units. All four guarded AK result/geography packages,
+  active state config, EAC fallback, and production/API/map state are unchanged.
+  Source links, replay commands, reuse caveats, and remaining activation gates
+  are documented in `docs/ak-historical-registration-source-review.md`.
+
+### 2026-09-06 - PR #318 conflict resolution
+
+- Integrated the current main branch while retaining both the Pennsylvania
+  identity-join entry and the Alaska source-only package entry above.
+- Combined participation-aware chart labels and warning gates with the optional
+  histogram-context appearance. Proxy axes, tooltips, marginal weights, legends,
+  and downloaded SVGs continue to identify presidential participation rather
+  than election-level turnout. Point placement and source identities are unchanged.
+- Extended the guarded synthetic chart regression to exercise actual turnout
+  and the participation proxy with both appearance modes. No source artifact,
+  ETL parser, production data, or geography relationship was changed by this resolution.

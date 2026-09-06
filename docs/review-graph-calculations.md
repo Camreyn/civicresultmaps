@@ -241,6 +241,23 @@ Center. They are not conclusions.
   marginal buckets. This is a marginal-density cue, not a two-dimensional heat
   map. Bucket width does not move or blur a point; its exact percentages remain
   the scatter coordinates.
+- The optional **Histogram peaks / valleys** point appearance compares each
+  marginal bin's observed height to the mean of its two immediate neighbors,
+  excluding the bin itself. The selected unit/vote accumulation and bin width
+  apply to both the bars and this comparison. Orange means a share-bin peak,
+  green a valley, and white a difference within 10% of the larger of the
+  observed/reference heights. Turnout-bin peaks and valleys use 95% fill opacity;
+  similar bins use 18%. These are fixed display settings, not significance
+  thresholds or individual-unit assessments. Endpoint/overflow comparisons and
+  comparisons bordering an overflow bin are unavailable (gray fill or 55%
+  opacity). Empty valleys do not create scatter points. Tooltips retain observed
+  values and adjacent-bin means, and exports name the selected appearance.
+- This local reference does **not** assume normally distributed election data,
+  apply skew/kurtosis amplification, or infer a fraud mechanism. Point positions,
+  sizes, source identities, counts, warning gates, and turnout semantics do not
+  change. Binning, geography, weighting, source coverage, and denominators can
+  change the descriptive pattern; a bin's appearance is not a conclusion about
+  any of its contributing units.
 - The default comparison domain is fixed at 0-100 percent on both axes. Use that
   mode for apples-to-apples comparisons between elections.
 - Fit-visible-data mode adds a padded, bucket-aligned zoom independently to the
