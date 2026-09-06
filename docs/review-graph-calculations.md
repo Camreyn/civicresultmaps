@@ -225,7 +225,9 @@ Center. They are not conclusions.
   normalized Democratic and Republican vote counts. If the loaded totals tie or
   cannot identify a winner, the chart fails closed.
 - Every drawable point represents one exactly paired sub-jurisdiction:
-  - x = turnout percentage from the turnout row;
+  - x = turnout percentage from the turnout row, or a clearly labeled local
+    presidential-participation proxy when no local turnout rows exist and the
+    review row contains an exact registration join;
   - y = the loaded winner's presidential vote share from the review row;
   - point radius = square-root-scaled total presidential votes or votes for the
     loaded winner, selected by the user.
@@ -269,6 +271,11 @@ Center. They are not conclusions.
   warnings, mixed denominator notes, low point counts, and overflow values are
   disclosed by the chart-quality notice. A partial view remains behind an
   acknowledgement gate.
+- A local presidential-participation proxy is calculated as presidential
+  contest votes / registered voters * 100. It is never stored or labeled as
+  election-level ballots cast or vote history, never replaces a compatible
+  turnout row, and is always warning-required. Zero denominators fail closed;
+  values above the visible domain remain disclosed in the overflow bucket.
 - The fingerprint and its marginals are descriptive screening views. They do not
   establish fraud, tampering, misconduct, or intent.
 
@@ -278,12 +285,15 @@ Center. They are not conclusions.
   - candidate-share views use normalized presidential review rows;
   - turnout views use normalized turnout rows, including source-reported
     `turnoutPct` or `ballotsCast / registeredVoters * 100` when the stored rate
-    is absent and the denominator is positive.
+    is absent and the denominator is positive. If a local scope has no turnout
+    rows, the view may instead use the same explicitly sourced, warning-required
+    presidential-participation proxy described above.
 - The controls expose the four requested combinations:
   - accumulated presidential votes by candidate vote share;
   - accumulated sub-jurisdictions by candidate vote share;
-  - accumulated ballots cast by turnout percentage;
-  - accumulated sub-jurisdictions by turnout percentage.
+  - accumulated ballots cast by turnout percentage, or presidential votes by
+    the labeled local participation proxy;
+  - accumulated sub-jurisdictions by turnout or the labeled local proxy.
 - Candidate-share views can use the normalized Democratic or Republican
   candidate. A row-level share is recalculated from candidate votes and total
   presidential votes when both are available; a stored share is used only when

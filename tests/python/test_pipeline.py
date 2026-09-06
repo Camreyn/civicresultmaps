@@ -228,14 +228,59 @@ class PipelineTests(unittest.TestCase):
         config = load_config("etl/state-configs/pa.json")
         report = validate_config(config)
         artifact = build_staging_artifact(config, report)
+        metrics = artifact["native"]["metrics"]
+        review_rows = artifact["native"]["reviewRows"]
 
         self.assertTrue(report.passed)
-        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 67)
-        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 7031737)
-        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 9154)
-        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 9152)
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 67)
-        self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
+        self.assertEqual(metrics["nativeResultRows"], 67)
+        self.assertEqual(metrics["nativeResultTotalVotes"], 7031737)
+        self.assertEqual(metrics["nativeReviewRows"], 9154)
+        self.assertEqual(metrics["nativeComparisonRows"], 9152)
+        self.assertEqual(metrics["nativeTurnoutRows"], 67)
+        self.assertEqual(metrics["nativePrecinctRegistrationRows"], 9186)
+        self.assertEqual(metrics["nativePrecinctRegistrationPlaceholderRows"], 1)
+        self.assertEqual(metrics["nativePrecinctRegistrationRegisteredVoters"], 9175133)
+        self.assertEqual(metrics["nativePrecinctRegistrationMatchedResultKeys"], 9186)
+        self.assertEqual(metrics["nativePrecinctRegistrationOnlyKeys"], 0)
+        self.assertEqual(metrics["nativePrecinctResultOnlyKeys"], 1)
+        self.assertEqual(metrics["nativePrecinctResultOnlyPresidentialKeys"], 0)
+        self.assertEqual(metrics["nativePrecinctRegistrationRawNameMatches"], 1535)
+        self.assertEqual(metrics["nativePrecinctRegistrationRawNameMismatches"], 7651)
+        self.assertEqual(metrics["nativePrecinctRegistrationExpandedNameMatches"], 9186)
+        self.assertEqual(metrics["nativeReviewRowsWithParticipationProxy"], 9154)
+        self.assertEqual(metrics["nativeParticipationProxyDrawableRows"], 9150)
+        self.assertEqual(metrics["nativeParticipationProxyZeroDenominatorRows"], 4)
+        self.assertEqual(metrics["nativeParticipationProxyOver100Rows"], 17)
+        self.assertIn("pa-2024-precinct-registration", {source["id"] for source in artifact["sources"]})
+        self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in review_rows))
+        self.assertTrue(all(row["level"] == "precinct" for row in review_rows))
+        self.assertTrue(all(row["presidentialParticipationProxy"]["warningRequired"] for row in review_rows))
+        self.assertTrue(all(row["reportingUnit"]["reportingGrain"] == "precinct" for row in review_rows))
+
+        carroll_valley = next(
+            row
+            for row in review_rows
+            if row["reportingUnit"]["parentGeoid"] == "42001"
+            and row["reportingUnit"]["sourceUnitId"] == "80"
+        )
+        self.assertEqual(
+            carroll_valley["localUnit"],
+            "CARROLL VALLEY - D 1 - Precinct 80 - MCD 33 - VTD 0078",
+        )
+        self.assertNotIn("D 1 - D 1", carroll_valley["localUnit"])
+        self.assertEqual(carroll_valley["presidentialParticipationProxy"]["numerator"], 1482)
+        self.assertEqual(carroll_valley["presidentialParticipationProxy"]["denominator"], 1804)
+        self.assertEqual(carroll_valley["presidentialParticipationProxy"]["valuePct"], 82.1508)
+        self.assertEqual(
+            carroll_valley["presidentialParticipationProxy"]["sourceId"],
+            "pa-2024-precinct-registration",
+        )
+        self.assertTrue(
+            all(
+                row["sourceId"] == "pa-2024-vote-history-registration-summary"
+                for row in artifact["native"]["turnoutRows"]
+            )
+        )
 
     def test_michigan_native_staging_parses_mvic_package(self):
         registration = json.loads(Path("data/mi-2024-registered-voter-count.json").read_text(encoding="utf-8"))

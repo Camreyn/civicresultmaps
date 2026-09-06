@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "pa-2024-precinct-registration",
+      "category": "Official precinct voter-registration snapshot",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/vr/vrstat2024_g(9187)_20241223.txt",
+      "localFile": "data/pa-2024-general-voter-registration-precinct.txt",
+      "parser": "pennsylvaniaPrecinctRegistrationCsv",
+      "authority": "Pennsylvania Department of State",
+      "timestampBasis": "Official 2024 General Election precinct voter-registration extract dated December 23, 2024 in the source filename.",
+      "confidence": "Official Pennsylvania Department of State precinct registration snapshot. Joined to returns by county code plus precinct code; segmented municipality and breakdown fields are used to verify and label the identity.",
+      "status": "loaded"
+    },
+    {
       "id": "pa-2024-vote-history-registration-summary",
       "category": "Official county turnout and registration summary",
       "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/voter%20registration%20-%20vote%20history%20summary%20-%202024%20general.xlsx",
@@ -79,6 +90,31 @@
     "downBallotOfficeCode": "USS",
     "warning": "Pennsylvania native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Two presidential precinct groups do not have Senate rows and are kept as vote-share-only rows."
   },
+  "precinctRegistration": {
+    "format": "pennsylvaniaPrecinctRegistrationCsv",
+    "sourceId": "pa-2024-precinct-registration",
+    "denominatorType": "registeredVoters",
+    "registrationDenominatorTiming": "2024-12-23 DOS SURE point-in-time extract",
+    "participationProxy": {
+      "numeratorType": "presidentialContestVotes",
+      "note": "Presidential contest votes divided by the December 23, 2024 precinct registration snapshot. This is a participation proxy, not election-level ballots cast or SURE vote history; the source's point-in-time registration caveats apply."
+    },
+    "expected": {
+      "rowsExcludingPlaceholder": 9186,
+      "placeholderRows": 1,
+      "registeredVoters": 9175133,
+      "matchedResultKeys": 9186,
+      "registrationOnlyKeys": 0,
+      "resultOnlyKeys": 1,
+      "resultOnlyPresidentialKeys": 0,
+      "rawNameMismatchRows": 7651,
+      "expandedNameMatchRows": 9186,
+      "reviewRowsWithProxy": 9154,
+      "drawableProxyRows": 9150,
+      "zeroDenominatorRows": 4,
+      "over100Rows": 17
+    }
+  },
   "turnout": {
     "format": "pennsylvaniaVoteHistoryXlsx",
     "sourceId": "pa-2024-vote-history-registration-summary",
@@ -92,7 +128,7 @@
   "expected": {
     "jurisdictions": 67,
     "resultRows": 67,
-    "sources": 5,
+    "sources": 6,
     "stateTotal": 7031737,
     "trump": 3543041,
     "harris": 3420865,
@@ -123,8 +159,8 @@
   },
   "coverageInventory": {
     "localFile": "data/pa-2024-data-coverage-inventory.json",
-    "checkedAt": "2026-08-18",
-    "status": "official_precinct_review_county_turnout_loaded_official_historical_loaded_precinct_registration_lead_published_partial_2016_2020_precinct_gis_and_reviewed_union_candidates",
+    "checkedAt": "2026-09-05",
+    "status": "official_precinct_review_and_registration_join_loaded_county_turnout_loaded_official_historical_loaded_published_partial_2016_2020_precinct_gis_and_reviewed_union_candidates",
     "officialSourceSearchPath": [
       "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
       "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/election%20data%20handbook%20general.pdf",
@@ -135,7 +171,8 @@
       "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=1994"
     ],
     "caveats": [
-      "Official precinct voter-registration rows are collected as a denominator lead only; no same-grain precinct vote-history or ballots-cast rows are loaded.",
+      "Official precinct voter-registration rows are joined to review rows by county code plus precinct code. The resulting presidential-votes/registration value is explicitly a warning-required participation proxy, not election-level turnout; no same-grain precinct vote-history or ballots-cast rows are loaded.",
+      "Four nonzero presidential review rows have zero registered voters in the official precinct snapshot and therefore have no drawable proxy percentage. Seventeen drawable proxy values exceed 100 percent and remain disclosed as source-timing or reconciliation warnings rather than being clipped or silently repaired.",
       "Current turnout rows remain county-level vote-history divided by registered voters.",
       "Reviewed partial precinct geometry is public for 2016 and 2020. The current 2024 statewide map remains county-level; a separate official Union County 27-precinct reviewed-name candidate is retained with delivery=null and is not loaded into production. Its archive export lineage is dated 2024-09-05, but its embedded feature metadata remains dated 2021-10-12, so Election Day boundary effectiveness is unknown.",
       "2024 RLA source context is identified but not normalized into row-level audit context.",

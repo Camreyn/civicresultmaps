@@ -118,8 +118,8 @@
       "localFile": "data/pa-2024-voter-registration-vote-history-summary.xlsx",
       "parser": "pennsylvaniaVoteHistoryXlsx",
       "expectedTurnoutRows": 67,
-      "statusNote": "Promoted 2024 turnout rows are available from the configured official turnout source.",
-      "nextAction": "Keep source link and denominator caveats visible in the app.",
+      "statusNote": "The configured official source provides 67 county turnout rows. A separate exact precinct-registration join is retained in review metrics as a warning-required presidential-participation proxy and is not promoted as turnout.",
+      "nextAction": "Keep county turnout and local proxy labels distinct; collect precinct vote-history or election-level ballots cast before replacing the proxy with turnout.",
       "coverage": {
         "jurisdictionRows": 67,
         "registeredVoterDenominatorFile": "",
@@ -1646,11 +1646,32 @@
         "denominatorType": "registeredVoters",
         "denominatorTiming": "certifiedVoterRegistrationSummary"
       },
+      "participationProxy": {
+        "sourceTitle": "Pennsylvania DOS 2024 General precinct voter-registration snapshot",
+        "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/vr/vrstat2024_g(9187)_20241223.txt",
+        "localFile": "data/pa-2024-general-voter-registration-precinct.txt",
+        "parser": "pennsylvaniaPrecinctRegistrationCsv",
+        "reportingLevel": "precinct",
+        "joinKey": "countyCode + precinctCode",
+        "numeratorType": "presidentialContestVotes",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "2024-12-23 DOS SURE point-in-time extract",
+        "status": "loaded_in_review_metrics_not_turnout_rows",
+        "expected": {
+          "registrationRows": 9186,
+          "matchedResultKeys": 9186,
+          "reviewRowsWithProxy": 9154,
+          "drawableProxyRows": 9150,
+          "zeroDenominatorRows": 4,
+          "over100Rows": 17
+        }
+      },
       "expected": {
         "turnoutRows": 67
       },
       "caveats": [
-        "Turnout is county-level, not precinct-level."
+        "Actual turnout is county-level, not precinct-level.",
+        "The local presidential-votes/registration value is explicitly a warning-required participation proxy. It is not election-level ballots cast or SURE vote history and is not stored in turnout_rows."
       ]
     },
     {

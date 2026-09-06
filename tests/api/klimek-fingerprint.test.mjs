@@ -227,6 +227,31 @@ test("state-by-county scope pairs canonical county rollups without display-name 
   assert.equal(result.untaggedSourceRowCount, 1);
 });
 
+test("pairs an explicit local presidential-participation proxy without relabeling it as turnout", () => {
+  const proxiedReviewRows = reviewRows.map((row, index) => ({
+    ...row,
+    metrics: {
+      presidentialParticipationProxy: {
+        denominator: index === 0 ? 125 : 250,
+        note: "Presidential votes divided by an official registration snapshot; not election-level turnout.",
+        numerator: row.totalVotes,
+        sourceId: "official-registration",
+        warningRequired: true,
+      },
+    },
+  }));
+  const result = fingerprint({ reviewRows: proxiedReviewRows, turnoutRows: [] });
+
+  assert.equal(result.participationMode, "presidential_participation_proxy");
+  assert.equal(result.participationProxyPointCount, 2);
+  assert.equal(result.warningPointCount, 2);
+  assert.equal(result.points.length, 2);
+  assert.equal(result.totalBottomValue, 300);
+  assert.ok(result.points.every((point) => point.participationMode === "presidential_participation_proxy"));
+  assert.ok(result.points.every((point) => point.sourceIds.includes("official-registration")));
+  assert.deepEqual(result.points.map((point) => point.turnoutPct).sort((a, b) => a - b), [80, 80]);
+});
+
 test("uses 0-100 comparison axes and preserves extreme values in capped fitted axes", () => {
   const input = {
     reviewRows: [reviewRow({ demVotes: 250, harrisVotes: 250, repVotes: 10, totalVotes: 100, trumpVotes: 10 })],

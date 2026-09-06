@@ -2,9 +2,9 @@
   "state": "PA",
   "stateName": "Pennsylvania",
   "electionYear": 2024,
-  "checkedAt": "2026-08-18",
+  "checkedAt": "2026-09-05",
   "purpose": "State-scoped coverage inventory for Pennsylvania 2024 result, review, turnout, registration, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_precinct_review_county_turnout_loaded_official_historical_loaded_precinct_registration_lead_published_partial_2016_2020_precinct_gis_and_reviewed_union_2020_2024_candidates",
+  "status": "official_precinct_review_and_registration_join_loaded_county_turnout_loaded_official_historical_loaded_published_partial_2016_2020_precinct_gis_and_reviewed_union_2020_2024_candidates",
   "authorityPriority": "Official Pennsylvania Department of State, county boards of elections, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -58,18 +58,27 @@
       "localPath": "data/pa-2024-general-voter-registration-precinct.txt",
       "electionYear": 2024,
       "reportingGrain": "precinct",
-      "parserNormalizationPath": "candidate source only; a Pennsylvania precinct-registration normalizer should use the Department of State precinct voter registration layout before this file is used as a denominator input",
+      "parserNormalizationPath": "civic_etl/native.py _pennsylvania_rows via etl/state-configs/pa.json precinctRegistration.format=pennsylvaniaPrecinctRegistrationCsv; county code plus precinct code is the stable join and the segmented municipality/breakdown fields verify the returns display name",
       "expectedCounts": {
         "rowsExcludingPlaceholder": 9186,
         "counties": 67,
-        "registeredVoters": 9175133
+        "registeredVoters": 9175133,
+        "matchedResultKeys": 9186,
+        "rawNameMismatchRows": 7651,
+        "expandedNameMatchRows": 9186,
+        "reviewRowsWithParticipationProxy": 9154,
+        "drawableParticipationProxyRows": 9150,
+        "zeroDenominatorReviewRows": 4,
+        "participationProxyRowsAbove100Pct": 17
       },
       "caveats": [
         "This file supplies precinct-level registered-voter counts, not precinct vote-history or ballots-cast counts; its statewide registered-voter total is one voter higher than the loaded county vote-history workbook total.",
-        "Do not use it as a precinct turnout input until same-grain ballots-cast or vote-history rows are collected and joined to the precinct return keys.",
+        "The native parser joins registration to results by county code plus precinct code. For 7,651 rows, the raw municipality fields differ because the results file redundantly appends the registration breakdown fields; rebuilding that display value from the segmented fields matches all 9,186 registration keys.",
+        "Local charts may use presidential contest votes divided by this snapshot only as an explicitly labeled, warning-required participation proxy. It is not stored as a turnout row and is not described as election-level ballots cast or vote history.",
+        "Four nonzero presidential review rows have a zero registration denominator and no drawable proxy percentage. Seventeen drawable proxy values exceed 100 percent and remain visible as source-timing or reconciliation warnings.",
         "The first placeholder row has county code 0 and is excluded from the row and registered-voter counts above."
       ],
-      "confidence": "collected_denominator_lead_not_loaded"
+      "confidence": "loaded_exact_precinct_identity_join_warning_required_participation_proxy"
     },
     {
       "id": "pa-county-geometry",
@@ -188,8 +197,8 @@
         "2024 precinct voter-registration rows",
         "historical 2012/2016/2020 official bulk result source leads"
       ],
-      "result": "The official historical election data page exposes 2012, 2016, and 2020 General Election Returns data/readme paths; these are now downloaded and normalized into official county presidential baseline rows.",
-      "blocker": "No precinct-level 2024 vote-history or ballots-cast summary file was identified on this page; the collected precinct registration file is denominator-only."
+      "result": "The official page exposes the 2024 precinct returns and registration files plus 2012, 2016, and 2020 General Election Returns data/readme paths. The 2024 registration rows now reconcile to the returns by stable county/precinct keys, and the historical files are normalized into official county presidential baseline rows.",
+      "blocker": "No precinct-level 2024 vote-history or ballots-cast summary file was identified on this page; the joined registration file supports only a clearly labeled presidential-participation proxy below county level."
     },
     {
       "sourceAuthority": "Pennsylvania Department of State",
@@ -300,7 +309,7 @@
       "status": "not_found_publicly",
       "neededFor": "Same-grain turnout screening and denominator context below county level.",
       "preferredAuthority": "Pennsylvania Department of State SURE summary export or county boards of elections if no statewide export exists.",
-      "remainingRisk": "Current turnout rows are county-level; the collected precinct registration file cannot by itself calculate precinct turnout."
+      "remainingRisk": "Current turnout rows are county-level. The exact registration join enables a warning-required presidential-participation proxy, but it does not establish precinct election-level turnout."
     },
     {
       "artifact": "precinct_boundary_geometry",
@@ -326,10 +335,10 @@
   ],
   "confidenceNotes": [
     "Pennsylvania has strong official precinct President-versus-U.S. Senate review coverage and county turnout coverage.",
-    "The new official precinct voter-registration file is useful denominator evidence, but it is intentionally not wired into turnout until same-grain ballots-cast or vote-history rows are collected.",
+    "The official precinct voter-registration file is joined to all 9,154 nonzero presidential review rows through stable county/precinct keys. Its presidential-votes/registration calculation is exposed only as a warning-required participation proxy; active turnout remains the 67 county vote-history rows.",
     "Official 2012/2016/2020 historical presidential baselines are normalized from DOS bulk returns.",
     "The reviewed partial 2016 and 2020 exact-vector packages are public at revision 27 with excluded votes retained and unallocated. The canonical 2012 and statewide 2024 diagnostics remain zero-feature blocked packages.",
     "Two deterministic official Union County candidates are retained for 2020 and 2024. Each contains 27 vote-free polygons and 27 reviewed one-to-one result relationships; the 2020 vintage is confirmed, while the 2024 vintage remains unknown because its feature metadata is dated 2021-10-12. Both remain delivery-null and absent from production.",
-    "Next implementation steps are continued official county archive/crosswalk collection, same-grain precinct turnout/ballots-cast collection, and a separate guarded terms/release decision for any reviewed county expansion."
+    "Next implementation steps are continued official county archive/crosswalk collection, same-grain precinct vote-history/ballots-cast collection, and a separate guarded terms/release decision for any reviewed county expansion."
   ]
 }

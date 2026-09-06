@@ -2047,6 +2047,12 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
       evidence: "Pennsylvania native review rows support presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
       why: "Two presidential precinct groups do not have matching Senate rows and stay vote-share-only; source rows should be inspected before treating a flag as meaningful.",
     },
+    {
+      key: "turnout",
+      evidence: "Pennsylvania retains 67 county vote-history turnout rows and exactly joins 9,186 official precinct-registration rows to the returns by county code plus precinct code.",
+      status: "partial",
+      why: "Below county level, the app labels presidential contest votes divided by the December 23 registration snapshot as a warning-required participation proxy, not election-level turnout. Four nonzero review rows have zero denominators and 17 drawable ratios exceed 100 percent; same-grain precinct vote history or ballots cast remains unavailable.",
+    },
   ],
   VA: [
     {

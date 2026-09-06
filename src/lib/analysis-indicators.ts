@@ -27,6 +27,17 @@ export type CandidateNeutralReviewRow = {
   repShare?: number;
   repVotes?: number;
   otherVotes?: number;
+  presidentialParticipationProxy?: {
+    denominator: number;
+    denominatorType: string;
+    note: string;
+    numerator: number;
+    numeratorType: string;
+    registrationDenominatorTiming: string;
+    sourceId: string;
+    valuePct: number | null;
+    warningRequired: boolean;
+  };
   sourceId: string;
   sourceUrl?: string;
   totalVotes?: number;
