@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import "./ak-historical-registration.test.mjs";
 
 function parseTsv(text) {
   const [headerLine, ...lines] = text.trim().split(/\r?\n/);

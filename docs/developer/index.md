@@ -10,6 +10,8 @@ The project does not assert fraud. It exposes data quality, reconciliation, prov
 
 For historical 2016/2020 review-row eligibility, candidate-neutral fields, indicator thresholds, broad-signal warnings, and promotion rules, read [`docs/historical-advisory-indicators.md`](../historical-advisory-indicators.md).
 
+For Alaska's retained 2012/2016/2020 official registration snapshots, exact source replay, and source-only turnout limitations, read [`docs/ak-historical-registration-source-review.md`](../ak-historical-registration-source-review.md).
+
 For the private workspace layout editor, immutable revision model, protected Vercel rollout, rollback, and privacy controls, read [`docs/developer/ui-layout-operations.md`](ui-layout-operations.md).
 
 For the guarded layout MCP endpoint, constrained LLM operation vocabulary, authentication, and Codex plugin, read [`docs/developer/layout-agent-tooling.md`](layout-agent-tooling.md).
