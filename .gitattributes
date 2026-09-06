@@ -57,6 +57,9 @@
 
 # Preserve the manually archived official FBI source bytes for hash verification.
 /data/fbi-2024-bomb-threats-polling-locations.html -text whitespace=-trailing-space
+/data/ak-historical-registration/raw/*.html -text whitespace=-trailing-space,-space-before-tab
+/data/ak-historical-registration/*.json text eol=lf
+/data/ak-historical-registration/*.csv text eol=lf
 /data/sd-2024-general-canvass-certificate.pdf -text -diff
 /data/sd-2024-official-election-returns.pdf -text -diff
 /data/sd-2012-general-official-statewide-candidates-county.pdf -text -diff
