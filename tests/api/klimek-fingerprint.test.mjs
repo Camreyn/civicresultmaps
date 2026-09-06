@@ -4,6 +4,12 @@ import {
   buildKlimekFingerprint,
   klimekBucketWidths,
 } from "../../src/lib/klimek-fingerprint.ts";
+import {
+  buildKlimekHistogramContext,
+  compareHistogramBin,
+  describeHistogramBin,
+  histogramContextColors,
+} from "../../src/lib/klimek-histogram-context.ts";
 
 function reviewRow(overrides = {}) {
   return {
@@ -287,4 +293,84 @@ test("does not treat a missing loaded candidate vote count as zero when selectin
   assert.equal(result.loadedCandidateVotes.rep, 40);
   assert.equal(result.referenceCandidate, null);
   assert.equal(result.points.length, 0);
+});
+
+test("histogram context compares observed bar heights without a normality assumption", () => {
+  assert.equal(compareHistogramBin(10, 5).relation, "peak");
+  assert.equal(compareHistogramBin(5, 10).relation, "valley");
+  assert.equal(compareHistogramBin(90, 100).relation, "similar");
+  assert.equal(compareHistogramBin(89, 100).relation, "valley");
+  assert.equal(compareHistogramBin(0, 0).relation, "similar");
+  assert.equal(compareHistogramBin(1, 0).relation, "peak");
+  assert.equal(compareHistogramBin(0, 1).relation, "valley");
+  for (const [observed, reference] of [[1, null], [NaN, 1], [1, Infinity], [-1, 2], [2, -1]]) {
+    assert.equal(compareHistogramBin(observed, reference).relation, "unavailable");
+  }
+});
+
+test("histogram appearance uses shared bin membership and preserves all data", () => {
+  const result = fingerprint();
+  const before = structuredClone(result);
+  const context = buildKlimekHistogramContext(result);
+  const a = context.byPoint.get("reporting-unit:unit-a");
+  assert.equal(a.share.observed, 100);
+  assert.equal(a.share.reference, 100); // Adjacent 55-60% bin has 200; 65-70% has 0.
+  assert.equal(a.share.relation, "similar");
+  assert.equal(a.fill, histogramContextColors.similar);
+  assert.equal(a.turnout.reference, 75);
+  assert.equal(a.turnout.observed, 80);
+  assert.equal(a.fillOpacity, 0.18);
+  const b = context.byPoint.get("reporting-unit:unit-b");
+  assert.equal(b.fill, histogramContextColors.peak);
+  assert.equal(b.fillOpacity, 0.95);
+  assert.deepEqual(result, before);
+  assert.equal(context.byPoint.size, result.points.length);
+  assert.match(describeHistogramBin(a.share), /observed 100, adjacent-bin mean 100/);
+});
+
+test("context follows selected marginal weights, not point-size weights", () => {
+  const votes = buildKlimekHistogramContext(fingerprint());
+  const units = buildKlimekHistogramContext(fingerprint({ accumulation: "units" }));
+  const winnerSize = buildKlimekHistogramContext(fingerprint({ pointSize: "winner_votes" }));
+  assert.equal(votes.byPoint.get("reporting-unit:unit-a").share.relation, "similar");
+  assert.equal(units.byPoint.get("reporting-unit:unit-a").share.relation, "peak");
+  assert.deepEqual(votes, winnerSize);
+});
+
+test("valleys with observations are green while empty valleys never invent points", () => {
+  const result = fingerprint();
+  // Use a synthetic histogram independent of any real jurisdiction or candidate.
+  result.sideBuckets[10].value = 100;
+  result.sideBuckets[11].value = 10;
+  result.sideBuckets[12].value = 100;
+  const context = buildKlimekHistogramContext(result);
+  assert.equal(context.byPoint.get("reporting-unit:unit-b").fill, histogramContextColors.valley);
+  assert.ok(context.side.some((bucket) => bucket.observed === 0 && bucket.relation === "valley"));
+  assert.equal(context.byPoint.size, result.points.length);
+});
+
+test("endpoint and overflow bins do not acquire a fabricated two-sided comparison", () => {
+  const result = fingerprint({
+    reviewRows: [reviewRow({ demVotes: 100, repVotes: 0, harrisVotes: 100, trumpVotes: 0 })],
+    turnoutRows: [turnoutRow({ turnoutPct: 105, warningRequired: true })],
+  });
+  const context = buildKlimekHistogramContext(result);
+  const point = context.byPoint.values().next().value;
+  assert.equal(point.share.relation, "unavailable");
+  assert.equal(point.turnout.relation, "unavailable");
+  assert.equal(point.fill, histogramContextColors.unavailable);
+  assert.equal(point.fillOpacity, 0.55);
+  assert.equal(result.points[0].turnoutPct, 105);
+  assert.equal(result.points[0].warningRequired, true);
+  assert.equal(context.bottom.at(-2).relation, "unavailable");
+  assert.match(describeHistogramBin(point.turnout), /unavailable/);
+});
+
+test("interior bin comparisons survive fitted scaling and empty fingerprints", () => {
+  const fixed = buildKlimekHistogramContext(fingerprint());
+  const fit = buildKlimekHistogramContext(fingerprint({ scaleMode: "fit" }));
+  // 75% and 55% bins retain both neighbors in the fitted domains.
+  assert.deepEqual(fixed.byPoint.get("reporting-unit:unit-b"), fit.byPoint.get("reporting-unit:unit-b"));
+  const empty = fingerprint({ reviewRows: [], turnoutRows: [] });
+  assert.equal(buildKlimekHistogramContext(empty).byPoint.size, 0);
 });
