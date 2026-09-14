@@ -9,7 +9,7 @@ async function stateLoadEvents(page: Page) {
 test.beforeEach(async ({ page }) => {
   // Leave the SDK's real queue in place, including when the tracker mounts before
   // root Analytics. Never deliver local test pageviews or custom events to Vercel.
-  await page.route(/(?:va\.vercel-scripts\.com\/|\/_vercel\/insights\/)/, (route) =>
+  await page.route(/(?:va\.vercel-scripts\.com\/|\/_vercel\/insights\/|\/[a-f0-9]{16}\/(?:script\.js|event|view|session)(?:\?|$))/, (route) =>
     route.fulfill({ contentType: "application/javascript", body: "/* local analytics test */" }));
 });
 
@@ -49,7 +49,7 @@ test("URL state/year loads and state navigation use only resolved properties", a
     { name: "state_loaded", data: { state: "WI", year: 2020, selection: "explicit" } },
   ]);
 
-  // Non-map workspaces resolve to 2024 even if an earlier year was requested.
+  // The History workspace resolves to 2024 even if an earlier year was requested.
   await page.goto("/?state=WI&year=2016&tab=history");
   await expect(page.getByLabel("Workspace election year", { exact: true })).toHaveValue("2024");
   await expect.poll(() => stateLoadEvents(page)).toEqual([
@@ -59,7 +59,7 @@ test("URL state/year loads and state navigation use only resolved properties", a
 
 test("unrecognized states and other site pages do not emit state loads", async ({ page }) => {
   await page.goto("/?state=ZZ");
-  await expect(page.locator(".dashboard-head h1")).toHaveText("ZZ");
+  await expect(page.getByRole("region", { name: "ZZ workspace", exact: true })).toBeVisible();
   await expect(page.locator('script[data-sdkn="@vercel/analytics/next"]')).toHaveCount(1);
   expect(await stateLoadEvents(page)).toEqual([]);
 
