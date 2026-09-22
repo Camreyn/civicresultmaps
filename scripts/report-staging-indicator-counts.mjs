@@ -64,36 +64,7 @@ export async function buildStagingIndicatorReport({ stagingDir = ".etl/staging",
   for (const file of files) {
     const artifact = JSON.parse(await readFile(path.join(stagingDir, file), "utf8"));
     const state = String(artifact.state?.code ?? file.slice(0, 2)).toUpperCase();
-    const reviewRows = reviewRowsForYear(artifact, year);
-    const indicators = calculateAnalysisIndicators(state, reviewRows);
-    const evaluation = summarizeIndicatorEvaluation(reviewRows, indicators);
-    const countyIndicators = indicators.filter((indicator) => indicator.level === "county");
-    const evaluated = reviewRows.length > 0;
-    states.push({
-      state,
-      year,
-      evaluated,
-      evaluationReason: evaluated
-        ? "same-grain_review_rows_loaded"
-        : year === Number(artifact.election?.year ?? 2024)
-          ? "no_review_rows"
-          : "no_historical_review_rows",
-      reviewRows: reviewRows.length,
-      evaluationCaveat: year === Number(artifact.election?.year ?? 2024)
-        ? artifact.native?.metrics?.nativeReviewWarning ?? null
-        : artifact.native?.metrics?.nativeHistoricalReviewWarning ?? null,
-      comparisonCoverageModes: Array.from(new Set(reviewRows.map((row) => row.coverageMode).filter(Boolean))).sort(),
-      evaluatedCountyJurisdictions: evaluation.evaluatedCountyJurisdictions,
-      uniqueFlaggedJurisdictions: evaluation.uniqueFlaggedJurisdictions,
-      uniqueFlaggedCountyJurisdictions: evaluation.uniqueFlaggedCountyJurisdictions,
-      flaggedCountyRate: evaluation.flaggedCountyRate,
-      broadSignalWarning: evaluation.broadSignalWarning,
-      flaggedAreas: evaluation.flaggedAreas,
-      indicatorRows: indicators.length,
-      countyIndicatorRows: countyIndicators.length,
-      byLevel: countBy(indicators, "level"),
-      byType: countBy(indicators, "type"),
-    });
+    states.push(buildArtifactIndicatorReport(artifact, year, state));
   }
 
   return {
@@ -103,6 +74,42 @@ export async function buildStagingIndicatorReport({ stagingDir = ".etl/staging",
     evaluatedStates: states.filter((state) => state.evaluated).length,
     notEvaluatedStates: states.filter((state) => !state.evaluated).length,
     states,
+  };
+}
+
+// Shared pure entry point for bounded callers (including the Mattermost reader).
+// It uses exactly the same normalization and calculation as the directory report.
+export function buildArtifactIndicatorReport(artifact, year = 2024, state = String(artifact.state?.code ?? "").toUpperCase()) {
+  if (![2016, 2020, 2024].includes(year)) throw new Error("Indicator report year must be 2016, 2020, or 2024.");
+  const reviewRows = reviewRowsForYear(artifact, year);
+  const indicators = calculateAnalysisIndicators(state, reviewRows);
+  const evaluation = summarizeIndicatorEvaluation(reviewRows, indicators);
+  const countyIndicators = indicators.filter((indicator) => indicator.level === "county");
+  const evaluated = reviewRows.length > 0;
+  return {
+    state,
+    year,
+    evaluated,
+    evaluationReason: evaluated
+      ? "same-grain_review_rows_loaded"
+      : year === Number(artifact.election?.year ?? 2024)
+        ? "no_review_rows"
+        : "no_historical_review_rows",
+    reviewRows: reviewRows.length,
+    evaluationCaveat: year === Number(artifact.election?.year ?? 2024)
+      ? artifact.native?.metrics?.nativeReviewWarning ?? null
+      : artifact.native?.metrics?.nativeHistoricalReviewWarning ?? null,
+    comparisonCoverageModes: Array.from(new Set(reviewRows.map((row) => row.coverageMode).filter(Boolean))).sort(),
+    evaluatedCountyJurisdictions: evaluation.evaluatedCountyJurisdictions,
+    uniqueFlaggedJurisdictions: evaluation.uniqueFlaggedJurisdictions,
+    uniqueFlaggedCountyJurisdictions: evaluation.uniqueFlaggedCountyJurisdictions,
+    flaggedCountyRate: evaluation.flaggedCountyRate,
+    broadSignalWarning: evaluation.broadSignalWarning,
+    flaggedAreas: evaluation.flaggedAreas,
+    indicatorRows: indicators.length,
+    countyIndicatorRows: countyIndicators.length,
+    byLevel: countBy(indicators, "level"),
+    byType: countBy(indicators, "type"),
   };
 }
 
