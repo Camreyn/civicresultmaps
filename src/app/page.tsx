@@ -6,6 +6,7 @@ import { SiteHeader } from "./site-header";
 import { StateRail } from "./state-rail";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
+import { WorkspaceStateAnalytics } from "./workspace-state-analytics";
 import { equipmentCatalogMetadata } from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import {
@@ -326,6 +327,13 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="app-shell">
+      {selected && layoutResolution.source !== "draft" && (
+        <WorkspaceStateAnalytics
+          state={selected.code}
+          year={selectedYear}
+          selection={params?.state === undefined ? "default" : "explicit"}
+        />
+      )}
       {layoutResolution.source === "draft" && (
         <aside className="layout-preview-banner" role="status">
           <span><strong>Draft layout preview</strong> Revision {layoutResolution.envelope.revisionId.slice(0, 8)} is visible only in this authenticated browser.</span>

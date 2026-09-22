@@ -45,6 +45,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Workspace analytics contract tests
+        run: npm run test:analytics
+
       - name: Workspace layout contract tests
         run: npm run test:layout
 
@@ -97,6 +100,9 @@ jobs:
 
       - name: Workspace layout browser tests
         run: npm run test:e2e:workspace
+
+      - name: Workspace analytics browser tests
+        run: npx playwright test tests/e2e/workspace-analytics.spec.ts --workers=1
 
   vercel-preview:
     if: github.event_name == 'pull_request'
