@@ -54,7 +54,7 @@ patterns, generated state registries, and validation expectations.
 - `GET /api/results?state=WI&year=2024&level=county`
 - `GET /api/sources?state=WI&year=2024`
 - `GET /api/coverage?state=WI&year=2024`
-- `GET /api/security-incidents?year=2024` (all states; optional `state=GA`; mixed-grain response schema `4.1.0`)
+- `GET /api/security-incidents?year=2024` (all states; optional `state=GA`; mixed-grain response schema `4.2.0`)
 - `GET /api/indicators?state=WI&year=2024`
 - `GET /api/review-rows?state=WI&year=2024`
 - `GET /api/turnout?state=WI&year=2024`

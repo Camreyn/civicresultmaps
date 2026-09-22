@@ -7,7 +7,7 @@ import type {
 } from "./types";
 
 export const securityCountExplanation =
-  "Reported threats are messages or reports, not necessarily unique disrupted places: one message can name several facilities, and sources may count polling locations, precincts, election offices, or tabulation sites differently. This report keeps those units separate, preserves statewide counts whose counties were not named, and never turns an unknown count into zero.";
+  "Bomb-threat counts are messages or reports, not necessarily unique disrupted places: one message can name several facilities, and sources may count polling locations, precincts, election offices, or tabulation sites differently. Other official security incidents, such as suspicious-item responses, are identified separately and never added to bomb-threat totals. This report keeps those units separate, preserves statewide counts whose counties were not named, and never turns an unknown count into zero.";
 
 const affectedLocationLabels: Record<SecurityAffectedLocationUnit, { plural: string; singular: string }> = {
   election_facility: { plural: "election facilities", singular: "election facility" },
@@ -20,6 +20,7 @@ const threatCountBasisLabels: Record<SecurityThreatCountBasis, string> = {
   official_county_record: "Threat count source: official county record",
   research_tracker_compilation: "Threat count source: later public-source tracker",
   supplemental_national_compilation: "Threat count source: earlier nationwide compilation",
+  not_applicable_non_bomb_incident: "Bomb-threat count: not applicable to this non-bomb-threat incident",
   not_separately_published: "Threat count source: exact county count not separately published",
 };
 
@@ -49,11 +50,14 @@ export function summarizeSecurityIncidents(rows: SecurityIncidentSummary[]): Sec
     .sort((left, right) => left.unit.localeCompare(right.unit));
   const comparableUnit = affectedLocationUnits.length === 1 ? affectedLocationUnits[0] : null;
   const affectedLocationCountComplete = Boolean(comparableUnit?.countComplete);
-  const threatCountComplete = rows.length > 0 && rows.every((row) => row.threatCount !== null);
-  const knownThreatCount = rows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
+  const bombThreatRows = rows.filter((row) => row.eventType === "bomb_threat");
+  const nonBombThreatRowCount = rows.length - bombThreatRows.length;
+  const threatCountComplete = bombThreatRows.length > 0
+    && bombThreatRows.every((row) => row.threatCount !== null);
+  const knownThreatCount = bombThreatRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
   const officialRowCount = rows.filter((row) => row.sourceTier === "official").length;
   const supplementalRowCount = rows.length - officialRowCount;
-  const unknownThreatCountRows = rows.filter((row) => row.threatCount === null).length;
+  const unknownThreatCountRows = bombThreatRows.filter((row) => row.threatCount === null).length;
   const countyRows = rows.filter((row) => row.reportingGrain === "county");
   const statewideRows = rows.filter((row) => row.reportingGrain === "statewide_unspecified");
 
@@ -66,6 +70,7 @@ export function summarizeSecurityIncidents(rows: SecurityIncidentSummary[]): Sec
     documentedThreatCount: threatCountComplete ? knownThreatCount : null,
     knownAffectedLocations: comparableUnit?.knownCount ?? null,
     knownThreatCount,
+    nonBombThreatRowCount,
     officialRowCount,
     rowCount: rows.length,
     stateCount: new Set(rows.map((row) => row.state)).size,
@@ -109,16 +114,48 @@ export function affectedLocationText(totals: SecurityIncidentTotals) {
   return "Number of affected election facilities not specified";
 }
 
+function nonBombThreatIncidentText(count: number, trackedSeparately = false) {
+  const text = `${count.toLocaleString()} non-bomb-threat security ${plural(count, "incident")}`;
+  return trackedSeparately ? `${text} tracked separately` : text;
+}
+
+export function securityIncidentMetricText(totals: SecurityIncidentTotals) {
+  const parts: string[] = [];
+  if (totals.knownThreatCount > 0) {
+    parts.push(
+      `${totals.unknownThreatCountRows ? "At least " : ""}${totals.knownThreatCount.toLocaleString()} bomb ${plural(totals.knownThreatCount, "threat")}`,
+    );
+  } else if (totals.unknownThreatCountRows > 0) {
+    parts.push("Bomb-threat count not published");
+  }
+  if (totals.nonBombThreatRowCount > 0) {
+    parts.push(nonBombThreatIncidentText(totals.nonBombThreatRowCount));
+  }
+  return parts.join("; ") || "No loaded incidents";
+}
+
 export function threatCountText(totals: SecurityIncidentTotals) {
+  const nonBombSuffix = totals.nonBombThreatRowCount > 0
+    ? `; ${nonBombThreatIncidentText(totals.nonBombThreatRowCount, true)}`
+    : "";
+
   if (totals.threatCountComplete && totals.documentedThreatCount !== null) {
-    return `${totals.documentedThreatCount.toLocaleString()} reported ${plural(totals.documentedThreatCount, "threat")} documented in loaded rows`;
+    return `${totals.documentedThreatCount.toLocaleString()} reported bomb ${plural(totals.documentedThreatCount, "threat")} documented in loaded rows${nonBombSuffix}`;
   }
 
   if (totals.knownThreatCount > 0) {
-    return `At least ${totals.knownThreatCount.toLocaleString()} reported ${plural(totals.knownThreatCount, "threat")} documented; ${totals.unknownThreatCountRows.toLocaleString()} additional ${plural(totals.unknownThreatCountRows, "record")} has no published count`;
+    return `At least ${totals.knownThreatCount.toLocaleString()} reported bomb ${plural(totals.knownThreatCount, "threat")} documented; ${totals.unknownThreatCountRows.toLocaleString()} additional bomb-threat ${plural(totals.unknownThreatCountRows, "record")} has no published count${nonBombSuffix}`;
   }
 
-  return "Exact threat count not published for this record";
+  if (totals.unknownThreatCountRows > 0) {
+    return `${totals.unknownThreatCountRows.toLocaleString()} bomb-threat ${plural(totals.unknownThreatCountRows, "record")} has no published count${nonBombSuffix}`;
+  }
+
+  if (totals.nonBombThreatRowCount > 0) {
+    return `${nonBombThreatIncidentText(totals.nonBombThreatRowCount)} tracked; no bomb-threat count applies`;
+  }
+
+  return "No bomb-threat count is available for this record";
 }
 
 export function securityIncidentSummaryText(rows: SecurityIncidentSummary[]) {

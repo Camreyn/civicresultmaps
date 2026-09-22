@@ -1,6 +1,6 @@
 {
   "schemaVersion": 4,
-  "description": "Nationwide source inventory for November 2024 election-period bomb threats, centered on the Brennan Center's later 227-threat tracker with official federal, state, and county context.",
+  "description": "Nationwide source inventory for November 2024 election-period security incidents, centered on the Brennan Center's later 227-bomb-threat tracker with official federal, state, and county context plus a separately counted official suspicious-package response.",
   "electionYear": 2024,
   "reportingGrain": "mixed_county_and_statewide_unspecified",
   "reportingWindow": {
@@ -10,19 +10,20 @@
   "normalizationPath": "scripts/build-security-incident-registry.mjs",
   "expected": {
     "configuredStates": 51,
-    "statesWithNormalizedRows": 9,
-    "normalizedEventRows": 111,
-    "mappedCountyCount": 109,
+    "statesWithNormalizedRows": 10,
+    "normalizedEventRows": 112,
+    "mappedCountyCount": 110,
     "statewideUnspecifiedRowCount": 2,
     "knownThreatCountMinimum": 227,
-    "officialRowCount": 6,
-    "reviewedOfficialSourceCount": 2,
+    "nonBombThreatRowCount": 1,
+    "officialRowCount": 7,
+    "reviewedOfficialSourceCount": 4,
     "trackerRowCount": 110,
     "trackerCountyCount": 108,
     "trackerThreatCount": 227,
     "additionalEarlierCompilationCountyRows": 1
   },
-  "caveat": "The later Brennan Center tracker documents at least 227 threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Reviewed official records confirm Minnesota's broad statewide scope but do not publish its county list, and add Philadelphia facility detail without changing tracker threat totals. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
+  "caveat": "The later Brennan Center tracker documents at least 227 bomb threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Reviewed official records confirm Minnesota's broad statewide scope but do not publish its county list, and add Philadelphia facility detail without changing tracker threat totals. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. A separate official Hamilton County row documents an evacuated and relocated polling place after a suspicious package was found; official records do not characterize that event as a bomb threat, so it is not added to the 227-threat total. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
   "nationalContext": [
     {
       "sourceAuthority": "Federal Bureau of Investigation",
@@ -139,6 +140,40 @@
       "sourceTier": "official",
       "confidence": "high_for_named_locations_tracker_supplies_threat_count",
       "caveat": "The official court record and attached threat email identify six Philadelphia polling locations and document a court-ordered extension at one address. The record does not independently establish the later tracker's 10-threat count, so threats and affected locations remain separate measures."
+    },
+    {
+      "sourceAuthority": "Hamilton County Board of Elections",
+      "sourceTitle": "Hamilton County Board of Elections Relocates Episcopal Church of the Redeemer Election Day Polling Location to Knox Presbyterian Church",
+      "sourceUrl": "https://votehamiltoncountyohio.gov/wp-content/uploads/2024/11/Polling-Place-Relocation.pdf",
+      "localArtifact": "data/oh-2024-election-day-security-hamilton-polling-relocation.pdf",
+      "sha256": "0b70ede461915b7011d2312ce460047d00288eb1f0fe564ba3f7dcc2689cc7de",
+      "acquiredAt": "2026-07-25",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "normalizationPath": "scripts/build-security-incident-registry.mjs",
+      "expectedRowCount": 1,
+      "expectedAffectedLocationCount": 1,
+      "acquisitionStatus": "download_complete_pdf_visually_reviewed",
+      "sourceTier": "official",
+      "confidence": "high_for_evacuation_relocation_and_precinct_scope",
+      "caveat": "The official Election Day release confirms that the Episcopal Church of the Redeemer polling location was evacuated and that voters in Cincinnati precincts 4B and 4G were redirected to Knox Presbyterian Church. It does not state the cause or characterize the event as a bomb threat."
+    },
+    {
+      "sourceAuthority": "Hamilton County Board of Elections",
+      "sourceTitle": "Update on Relocation of Polling Location in Hamilton County",
+      "sourceUrl": "https://votehamiltoncountyohio.gov/wp-content/uploads/2024/11/All-Clear-at-Polling-Location.pdf",
+      "localArtifact": "data/oh-2024-election-day-security-hamilton-all-clear.pdf",
+      "sha256": "8566b72a7823e8db46e63c885c3b8f8c425df429a81504f7e75eab993a91dad4",
+      "acquiredAt": "2026-07-25",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "normalizationPath": "scripts/build-security-incident-registry.mjs",
+      "expectedRowCount": 1,
+      "expectedAffectedLocationCount": 1,
+      "acquisitionStatus": "download_complete_pdf_visually_reviewed",
+      "sourceTier": "official",
+      "confidence": "high_for_all_clear_and_continued_relocation",
+      "caveat": "The official follow-up says the Cincinnati Fire Department gave an all-clear, there was no threat to public safety, and voting for Cincinnati precincts 4B and 4G continued at Knox Presbyterian Church for the remainder of Election Day."
     }
   ],
   "stateCoverage": [
@@ -177,7 +212,7 @@
       "mappedCountyCount": 10,
       "statewideUnspecifiedThreatCount": 0,
       "confidence": "mixed_official_detail_and_public_source_tracker",
-      "caveat": "10 county row(s) are mapped for Arizona. Reviewed official records supplement the tracker's scope or facility detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
+      "caveat": "10 county row(s) are mapped for Arizona. Reviewed official records supply or supplement incident detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "CA",
@@ -246,7 +281,7 @@
       "mappedCountyCount": 4,
       "statewideUnspecifiedThreatCount": 19,
       "confidence": "mixed_official_detail_and_public_source_tracker",
-      "caveat": "4 county row(s) are mapped for Georgia. 19 additional threats are retained only at statewide-unspecified grain because an authoritative county list was not published. Reviewed official records supplement the tracker's scope or facility detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
+      "caveat": "4 county row(s) are mapped for Georgia. 19 additional threats are retained only at statewide-unspecified grain because an authoritative county list was not published. Reviewed official records supply or supplement incident detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "HI",
@@ -356,7 +391,7 @@
       "mappedCountyCount": 0,
       "statewideUnspecifiedThreatCount": 47,
       "confidence": "mixed_official_detail_and_public_source_tracker",
-      "caveat": "0 county row(s) are mapped for Minnesota. 47 additional threats are retained only at statewide-unspecified grain because an authoritative county list was not published. Reviewed official records supplement the tracker's scope or facility detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
+      "caveat": "0 county row(s) are mapped for Minnesota. 47 additional threats are retained only at statewide-unspecified grain because an authoritative county list was not published. Reviewed official records supply or supplement incident detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "MO",
@@ -416,7 +451,21 @@
     {
       "state": "OH",
       "stateName": "Ohio",
-      "status": "needs_data"
+      "status": "partial",
+      "sourceAuthorities": [
+        "Hamilton County Board of Elections"
+      ],
+      "sourceUrls": [
+        "https://votehamiltoncountyohio.gov/wp-content/uploads/2024/11/Polling-Place-Relocation.pdf"
+      ],
+      "localArtifacts": [
+        "data/oh-2024-election-day-security-hamilton-polling-relocation.pdf"
+      ],
+      "expectedRowCount": 1,
+      "mappedCountyCount": 1,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "official_security_incident_record",
+      "caveat": "1 county row(s) are mapped for Ohio. Reviewed official records supply or supplement incident detail. 1 official non-bomb-threat security incident row(s) are kept separate from bomb-threat totals."
     },
     {
       "state": "OK",
@@ -465,7 +514,7 @@
       "mappedCountyCount": 32,
       "statewideUnspecifiedThreatCount": 0,
       "confidence": "mixed_official_detail_and_public_source_tracker",
-      "caveat": "32 county row(s) are mapped for Pennsylvania. Reviewed official records supplement the tracker's scope or facility detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
+      "caveat": "32 county row(s) are mapped for Pennsylvania. Reviewed official records supply or supplement incident detail. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "RI",

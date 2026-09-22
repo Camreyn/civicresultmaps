@@ -23,6 +23,7 @@ import {
   affectedLocationText,
   affectedLocationUnitLabel,
   securityCountExplanation,
+  securityIncidentMetricText,
   securityIncidentSummaryText,
   summarizeSecurityIncidents,
   threatCountBasisText,
@@ -370,11 +371,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
   const trackerContext = report.nationalContext.find(
     (source) => source.reportedThreatCount !== undefined,
   );
-  const threatMetric = !filteredTotals.rowCount
-    ? "No matching rows"
-    : filteredTotals.knownThreatCount > 0
-      ? `At least ${filteredTotals.knownThreatCount.toLocaleString()}`
-      : "No published count";
+
   const reportRows = filteredRows.slice(0, reportRowLimit);
   const reportRowsTruncated = reportRows.length < filteredRows.length;
   const selectedStateName =
@@ -594,24 +591,20 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
           <small>{filteredTotals.countyCount.toLocaleString()} mapped counties in the current filters</small>
         </article>
         <article>
-          <span>Matching loaded rows</span>
-          <strong>{threatMetric}</strong>
-          <small>
-            {filteredTotals.unknownThreatCountRows
-              ? `${filteredTotals.unknownThreatCountRows.toLocaleString()} county record names a county but gives no number, so it is mapped but not added to the total`
-              : "Every matching row includes a reported count"}
-          </small>
+          <span>Matching loaded incident rows</span>
+          <strong>{filteredTotals.rowCount.toLocaleString()}</strong>
+          <small>{securityIncidentMetricText(filteredTotals)}</small>
         </article>
         <article className={baseStyles.metricWarn + " " + styles.textMetric}>
           <span>Later public-source tracker</span>
-          <strong>At least {trackerContext?.reportedThreatCount?.toLocaleString() ?? "227"} threats</strong>
+          <strong>At least {trackerContext?.reportedThreatCount?.toLocaleString() ?? "227"} bomb threats</strong>
           <small>
             {formatDate(report.reportingWindow.start)} through {formatDate(report.reportingWindow.end)}; independent of filters
           </small>
         </article>
         <article className={styles.textMetric}>
           <span>County not specified</span>
-          <strong>{filteredTotals.statewideUnspecifiedThreatCount.toLocaleString()} threats</strong>
+          <strong>{filteredTotals.statewideUnspecifiedThreatCount.toLocaleString()} bomb threats</strong>
           <small>
             {filteredTotals.statewideUnspecifiedRowCount.toLocaleString()} state-level record{filteredTotals.statewideUnspecifiedRowCount === 1 ? "" : "s"} kept in totals but not drawn on counties
           </small>
@@ -660,7 +653,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
             <span className={baseStyles.sectionLabel}>Nationwide election-period county view</span>
             <h2>
               {mapLayer === "security"
-                ? "Mapped November 5-9, 2024 bomb-threat counties"
+                ? "Mapped November 5-9, 2024 security incident counties"
                 : mapLayer === "winner"
                   ? "2024 presidential winners in mapped threat counties"
                   : "2024 presidential margins in mapped threat counties"}
@@ -721,11 +714,11 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
                 viewBox="0 0 1000 620"
               >
                 <title id="security-map-title">
-                  {mapLayer === "security" ? "2024 source-linked county bomb-threat incident records" : `2024 presidential ${mapLayer} overlay with source-linked county incident outlines`}
+                  {mapLayer === "security" ? "2024 source-linked county security incident records" : `2024 presidential ${mapLayer} overlay with source-linked county incident outlines`}
                 </title>
                 <desc id="security-map-description">
                   All 3,144 counties and county equivalents remain visible. Only county-attributed incident records are
-                  mapped; 66 threats reported without a county remain in totals and the report. In election modes, fill
+                  mapped; 66 bomb threats reported without a county remain in totals and the report. In election modes, fill
                   shows the joined 2024 presidential winner or margin and the colored outline retains incident source
                   status. Hatched counties have no loaded matching record. Use Tab to enter the map, arrow keys to move
                   through FIPS order, and Enter or Space to pin a county.
@@ -949,7 +942,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
                 ) : (
                   <p>
                     No county record is loaded for this polygon. That is a data-coverage statement, not a claim
-                    that no threat or disruption occurred.
+                    that no security incident or disruption occurred.
                   </p>
                 )}
                 <a href={"/county/" + detailFeature.properties.GEOID}>
@@ -976,7 +969,8 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
               The FBI confirms threats occurred but does not publish a national count or county roster. The 227 figure
               comes from the Brennan Center&apos;s later tracker of public reports, which says it may not be exhaustive
               and is not an official FBI list. Its 66 threats without a named county stay in totals but are not placed on
-              county polygons; reviewed official state and county records add detail where available.
+              county polygons. Reviewed official state and county records add detail where available, including a
+              separate Hamilton County suspicious-package response that is not added to the bomb-threat total.
             </p>
           </div>
         </header>
@@ -1011,7 +1005,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>Exportable, source-linked report</span>
-            <h2>November 2024 election-period bomb-threat report</h2>
+            <h2>November 2024 election-period security incident report</h2>
             <p aria-live="polite">
               {generatedAt
                 ? "Generated " + new Date(generatedAt).toLocaleString() + " from the current filters."
@@ -1030,14 +1024,14 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
           </div>
           <div>
             <span>County not specified</span>
-            <strong>{filteredTotals.statewideUnspecifiedThreatCount.toLocaleString()} threats</strong>
+            <strong>{filteredTotals.statewideUnspecifiedThreatCount.toLocaleString()} bomb threats</strong>
           </div>
           <div>
             <span>Affected locations / precincts</span>
             <strong>{affectedLocationText(filteredTotals)}</strong>
           </div>
           <div>
-            <span>Reported threats</span>
+            <span>Bomb-threat and other incident counts</span>
             <strong>{threatCountText(filteredTotals)}</strong>
           </div>
         </div>
@@ -1046,7 +1040,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
           <section aria-labelledby="security-state-summary-heading" className={styles.breakdownPanel}>
             <header>
               <h3 id="security-state-summary-heading">Summary by state</h3>
-              <p>Threat totals stay separate from the number of mapped counties.</p>
+              <p>Bomb-threat totals and other security incidents stay separate from mapped-county counts.</p>
             </header>
             <div className={styles.summaryTableWrap}>
               <table aria-label="Security incident summary by state" className={styles.summaryTable}>
@@ -1055,7 +1049,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
                     <th>State</th>
                     <th>Rows</th>
                     <th>Mapped counties</th>
-                    <th>Reported threats</th>
+                    <th>Incident counts</th>
                     <th>Threats with no county named</th>
                   </tr>
                 </thead>
@@ -1065,7 +1059,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
                       <td><strong>{summary.stateName}</strong><br /><span>{summary.state}</span></td>
                       <td>{summary.rowCount.toLocaleString()}</td>
                       <td>{summary.countyCount.toLocaleString()}</td>
-                      <td>{summary.threatCountComplete ? summary.knownThreatCount.toLocaleString() : `At least ${summary.knownThreatCount.toLocaleString()}`}</td>
+                      <td>{securityIncidentMetricText(summary)}</td>
                       <td>{summary.statewideUnspecifiedThreatCount.toLocaleString()}</td>
                     </tr>
                   ))}
@@ -1079,7 +1073,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
           <section aria-labelledby="security-date-summary-heading" className={styles.breakdownPanel}>
             <header>
               <h3 id="security-date-summary-heading">Summary by report date</h3>
-              <p>Dates reflect the tracker row date, not a claim that every message arrived at the same time.</p>
+              <p>Dates reflect each source row date, not a claim that every threat or incident occurred at the same time.</p>
             </header>
             <div className={styles.summaryTableWrap}>
               <table aria-label="Security incident summary by date" className={styles.summaryTable}>
@@ -1088,7 +1082,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
                     <th>Date</th>
                     <th>States</th>
                     <th>Rows</th>
-                    <th>Reported threats</th>
+                    <th>Incident counts</th>
                     <th>Threats with no county named</th>
                   </tr>
                 </thead>
@@ -1098,7 +1092,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
                       <td><strong>{formatDate(summary.eventDate)}</strong></td>
                       <td>{summary.stateCount.toLocaleString()}</td>
                       <td>{summary.rowCount.toLocaleString()}</td>
-                      <td>{summary.threatCountComplete ? summary.knownThreatCount.toLocaleString() : `At least ${summary.knownThreatCount.toLocaleString()}`}</td>
+                      <td>{securityIncidentMetricText(summary)}</td>
                       <td>{summary.statewideUnspecifiedThreatCount.toLocaleString()}</td>
                     </tr>
                   ))}

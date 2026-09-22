@@ -7,6 +7,10 @@ const senateArtifact = "data/us-2024-election-day-bomb-threats-senate-letter.pdf
 const fbiArtifact = "data/fbi-2024-bomb-threats-polling-locations.html";
 const minnesotaArtifact = "data/mn-sos-2024-bomb-threats-county-election-offices.html";
 const philadelphiaArtifact = "data/pa-2024-election-day-security-philadelphia-order.pdf";
+const hamiltonRelocationArtifact =
+  "data/oh-2024-election-day-security-hamilton-polling-relocation.pdf";
+const hamiltonAllClearArtifact =
+  "data/oh-2024-election-day-security-hamilton-all-clear.pdf";
 
 const senateUrl =
   "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf";
@@ -16,6 +20,14 @@ const minnesotaUrl =
   "https://www.sos.mn.gov/about-the-office/news-room/statement-on-bomb-threats-to-county-election-offices/";
 const philadelphiaUrl =
   "https://www.pacourts.us/Storage/media/pdfs/20241107/153927-nov.5%2C2024-order.pdf";
+const hamiltonRelocationUrl =
+  "https://votehamiltoncountyohio.gov/wp-content/uploads/2024/11/Polling-Place-Relocation.pdf";
+const hamiltonAllClearUrl =
+  "https://votehamiltoncountyohio.gov/wp-content/uploads/2024/11/All-Clear-at-Polling-Location.pdf";
+const hamiltonMinutesUrl =
+  "https://votehamiltoncountyohio.gov/22136-2/";
+const hamiltonWlwtUrl =
+  "https://www.wlwt.com/article/hyde-park-cincinnati-voting-site-election-backpack-police/62819153";
 
 const reviewedOfficialSources = [
   {
@@ -52,6 +64,42 @@ const reviewedOfficialSources = [
     confidence: "high_for_named_locations_tracker_supplies_threat_count",
     caveat:
       "The official court record and attached threat email identify six Philadelphia polling locations and document a court-ordered extension at one address. The record does not independently establish the later tracker's 10-threat count, so threats and affected locations remain separate measures.",
+  },
+  {
+    sourceAuthority: "Hamilton County Board of Elections",
+    sourceTitle: "Hamilton County Board of Elections Relocates Episcopal Church of the Redeemer Election Day Polling Location to Knox Presbyterian Church",
+    sourceUrl: hamiltonRelocationUrl,
+    localArtifact: hamiltonRelocationArtifact,
+    sha256: "0b70ede461915b7011d2312ce460047d00288eb1f0fe564ba3f7dcc2689cc7de",
+    acquiredAt: "2026-07-25",
+    electionYear: 2024,
+    reportingGrain: "county",
+    normalizationPath: "scripts/build-security-incident-registry.mjs",
+    expectedRowCount: 1,
+    expectedAffectedLocationCount: 1,
+    acquisitionStatus: "download_complete_pdf_visually_reviewed",
+    sourceTier: "official",
+    confidence: "high_for_evacuation_relocation_and_precinct_scope",
+    caveat:
+      "The official Election Day release confirms that the Episcopal Church of the Redeemer polling location was evacuated and that voters in Cincinnati precincts 4B and 4G were redirected to Knox Presbyterian Church. It does not state the cause or characterize the event as a bomb threat.",
+  },
+  {
+    sourceAuthority: "Hamilton County Board of Elections",
+    sourceTitle: "Update on Relocation of Polling Location in Hamilton County",
+    sourceUrl: hamiltonAllClearUrl,
+    localArtifact: hamiltonAllClearArtifact,
+    sha256: "8566b72a7823e8db46e63c885c3b8f8c425df429a81504f7e75eab993a91dad4",
+    acquiredAt: "2026-07-25",
+    electionYear: 2024,
+    reportingGrain: "county",
+    normalizationPath: "scripts/build-security-incident-registry.mjs",
+    expectedRowCount: 1,
+    expectedAffectedLocationCount: 1,
+    acquisitionStatus: "download_complete_pdf_visually_reviewed",
+    sourceTier: "official",
+    confidence: "high_for_all_clear_and_continued_relocation",
+    caveat:
+      "The official follow-up says the Cincinnati Fire Department gave an all-clear, there was no threat to public safety, and voting for Cincinnati precincts 4B and 4G continued at Knox Presbyterian Church for the remainder of Election Day.",
   },
 ];
 
@@ -280,6 +328,52 @@ function minnesotaOfficialStatewideRow(sourceRow) {
   };
 }
 
+function hamiltonSuspiciousPackageRow() {
+  return {
+    id: "oh-2024-general-hamilton-suspicious-package-response",
+    state: "OH",
+    stateName: "Ohio",
+    electionYear: 2024,
+    county: "Hamilton County",
+    jurisdictionCode: "39061",
+    jurisdictionTag: "county:39061",
+    reportingGrain: "county",
+    eventDate: "2024-11-05",
+    eventType: "security_threat",
+    eventTypeLabel: "Suspicious-package response",
+    threatCount: null,
+    threatCountBasis: "not_applicable_non_bomb_incident",
+    threatCountSourceUrl: null,
+    threatCountLocalArtifact: null,
+    affectedLocations: 1,
+    affectedLocationUnit: "polling_location",
+    namedLocations: [
+      "Episcopal Church of the Redeemer",
+      "Knox Presbyterian Church (relocation site)",
+    ],
+    disruptionType: "temporary_evacuation_and_relocation",
+    disruptionLabel: "Polling location evacuated; voting relocated for the remainder of Election Day",
+    hoursExtended: null,
+    sourceAuthority: "Hamilton County Board of Elections",
+    sourceTitle: "Hamilton County Board of Elections Relocates Episcopal Church of the Redeemer Election Day Polling Location to Knox Presbyterian Church",
+    sourcePublishedAt: "2024-11-05",
+    sourceUrl: hamiltonRelocationUrl,
+    supportingSourceUrls: [
+      hamiltonAllClearUrl,
+      hamiltonMinutesUrl,
+      hamiltonWlwtUrl,
+    ],
+    localArtifact: hamiltonRelocationArtifact,
+    supportingLocalArtifacts: [hamiltonAllClearArtifact],
+    normalizationPath: "scripts/build-security-incident-registry.mjs",
+    sourceTier: "official",
+    sourceStatus: "official_county_record",
+    confidence: "high",
+    caveat:
+      "Hamilton County Board of Elections records confirm that the Episcopal Church of the Redeemer polling location was evacuated, voters in Cincinnati precincts 4B and 4G were relocated to Knox Presbyterian Church, and the Cincinnati Fire Department later gave an all-clear with no threat to public safety. Approved January 14, 2025 board minutes identify a suspicious package left outside the polling location and say voting remained at the replacement site to avoid further disruption. The official records do not document a bomb-threat message or malicious intent, so this row is classified as a non-bomb-threat suspicious-package response and does not increase the Brennan Center tracker's 227-threat total. WLWT separately described the item as an unattended backpack. This row is administration context only and is not evidence of fraud or misconduct.",
+  };
+}
+
 const incidentRows = tracker.rows.map((sourceRow) => {
   const key = sourceRow.county ? `${sourceRow.state}|${sourceRow.county}` : null;
   if (key === "PA|Philadelphia County") return philadelphiaOfficialRow(sourceRow);
@@ -288,6 +382,8 @@ const incidentRows = tracker.rows.map((sourceRow) => {
   }
   return key && officialRowIds.has(key) ? officialRow(sourceRow) : trackerRow(sourceRow);
 });
+
+incidentRows.push(hamiltonSuspiciousPackageRow());
 
 const milwaukee = retainedRows.get("wi-2024-general-milwaukee-bomb-threat-compilation");
 if (!milwaukee) throw new Error("Missing retained Milwaukee compilation row.");
@@ -322,7 +418,9 @@ incidentRows.sort(
 
 const countyRows = incidentRows.filter((row) => row.reportingGrain === "county");
 const statewideRows = incidentRows.filter((row) => row.reportingGrain === "statewide_unspecified");
-const knownThreatCountMinimum = incidentRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
+const bombThreatRows = incidentRows.filter((row) => row.eventType === "bomb_threat");
+const nonBombThreatRows = incidentRows.filter((row) => row.eventType !== "bomb_threat");
+const knownThreatCountMinimum = bombThreatRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
 const statewideUnspecifiedThreatCount = statewideRows.reduce(
   (sum, row) => sum + (row.threatCount ?? 0),
   0,
@@ -339,9 +437,9 @@ const affectedLocationUnitTotals = Object.fromEntries(
 );
 
 const nextRegistry = {
-  schemaVersion: 5,
+  schemaVersion: 6,
   description:
-    "November 2024 election-period bomb-threat records normalized from the Brennan Center's later 227-threat public-source tracker, enriched with reviewed official state and county records and one additional earlier county mention whose count was not published.",
+    "November 2024 election-period security incident records, centered on the Brennan Center's later 227-threat public-source tracker and supplemented with reviewed official state and county records, one earlier bomb-threat county mention whose count was not published, and one official non-bomb-threat suspicious-package response.",
   electionYear: 2024,
   reportingGrain: "mixed_county_and_statewide_unspecified",
   reportingWindow: tracker.reportingWindow,
@@ -353,8 +451,9 @@ const nextRegistry = {
     countyRowCount: countyRows.length,
     statewideUnspecifiedRowCount: statewideRows.length,
     statewideUnspecifiedThreatCount,
-    completeThreatCountRows: incidentRows.filter((row) => row.threatCount !== null).length,
-    unknownThreatCountRows: incidentRows.filter((row) => row.threatCount === null).length,
+    completeThreatCountRows: bombThreatRows.filter((row) => row.threatCount !== null).length,
+    unknownThreatCountRows: bombThreatRows.filter((row) => row.threatCount === null).length,
+    nonBombThreatRowCount: nonBombThreatRows.length,
     knownThreatCountMinimum,
     officialRowCount: incidentRows.filter((row) => row.sourceTier === "official").length,
     trackerRowCount: tracker.expected.rowCount,
@@ -364,7 +463,7 @@ const nextRegistry = {
     affectedLocationUnitTotals,
   },
   caveat:
-    "The later Brennan Center tracker documents at least 227 threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Reviewed official records confirm Minnesota's broad statewide scope but do not publish its county list, and add Philadelphia facility detail without changing tracker threat totals. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
+    "The later Brennan Center tracker documents at least 227 bomb threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Reviewed official records confirm Minnesota's broad statewide scope but do not publish its county list, and add Philadelphia facility detail without changing tracker threat totals. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. A separate official Hamilton County row documents an evacuated and relocated polling place after a suspicious package was found; official records do not characterize that event as a bomb threat, so it is not added to the 227-threat total. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
   incidentRows,
 };
 
@@ -382,6 +481,8 @@ const stateCoverage = inventory.stateCoverage.map((entry) => {
   const unallocatedRows = rows.filter((row) => row.reportingGrain === "statewide_unspecified");
   const statewideCount = unallocatedRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
   const hasOfficialRecord = rows.some((row) => row.sourceTier === "official");
+  const hasTrackerRecord = rows.some((row) => row.threatCountBasis === "research_tracker_compilation");
+  const nonBombThreatRowCount = rows.filter((row) => row.eventType !== "bomb_threat").length;
   return {
     state: entry.state,
     stateName: entry.stateName,
@@ -397,10 +498,12 @@ const stateCoverage = inventory.stateCoverage.map((entry) => {
     expectedRowCount: rows.length,
     mappedCountyCount: new Set(mappedRows.map((row) => row.jurisdictionTag)).size,
     statewideUnspecifiedThreatCount: statewideCount,
-    confidence: hasOfficialRecord
-      ? "mixed_official_detail_and_public_source_tracker"
-      : "public_source_tracker",
-    caveat: `${mappedRows.length} county row(s) are mapped for ${entry.stateName}. ${statewideCount ? `${statewideCount} additional threats are retained only at statewide-unspecified grain because an authoritative county list was not published. ` : ""}${hasOfficialRecord ? "Reviewed official records supplement the tracker's scope or facility detail. " : ""}The Brennan Center tracker is not an FBI roster and may not be exhaustive.`,
+    confidence: hasTrackerRecord
+      ? hasOfficialRecord
+        ? "mixed_official_detail_and_public_source_tracker"
+        : "public_source_tracker"
+      : "official_security_incident_record",
+    caveat: `${mappedRows.length} county row(s) are mapped for ${entry.stateName}. ${statewideCount ? `${statewideCount} additional threats are retained only at statewide-unspecified grain because an authoritative county list was not published. ` : ""}${hasOfficialRecord ? "Reviewed official records supply or supplement incident detail. " : ""}${nonBombThreatRowCount ? `${nonBombThreatRowCount} official non-bomb-threat security incident row(s) are kept separate from bomb-threat totals. ` : ""}${hasTrackerRecord ? "The Brennan Center tracker is not an FBI roster and may not be exhaustive." : ""}`.trim(),
   };
 });
 
@@ -416,7 +519,7 @@ const retainedNationalContext = inventory.nationalContext
 const nextInventory = {
   schemaVersion: 4,
   description:
-    "Nationwide source inventory for November 2024 election-period bomb threats, centered on the Brennan Center's later 227-threat tracker with official federal, state, and county context.",
+    "Nationwide source inventory for November 2024 election-period security incidents, centered on the Brennan Center's later 227-bomb-threat tracker with official federal, state, and county context plus a separately counted official suspicious-package response.",
   electionYear: 2024,
   reportingGrain: "mixed_county_and_statewide_unspecified",
   reportingWindow: tracker.reportingWindow,
@@ -428,6 +531,7 @@ const nextInventory = {
     mappedCountyCount: new Set(countyRows.map((row) => row.jurisdictionTag)).size,
     statewideUnspecifiedRowCount: statewideRows.length,
     knownThreatCountMinimum,
+    nonBombThreatRowCount: nonBombThreatRows.length,
     officialRowCount: incidentRows.filter((row) => row.sourceTier === "official").length,
     reviewedOfficialSourceCount: reviewedOfficialSources.length,
     trackerRowCount: tracker.expected.rowCount,
