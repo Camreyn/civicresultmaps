@@ -60,19 +60,21 @@ test("local caller-provided outcomes never become verified CI evidence", async (
   }
 });
 
-test("matching GitHub run and commit with every fixed gate passing records passed CI gates only", async () => {
+test("matching reported GitHub context never self-attests verified CI provenance", async () => {
   const { root, commit } = await fixture();
   try {
     await runRecorder(root, successfulOutcomes, { GITHUB_ACTIONS: "true", GITHUB_RUN_ID: "424242", GITHUB_SHA: commit });
     const record = await readRecord(root);
-    assert.equal(record.source, "github_actions_step_outcomes");
+    assert.equal(record.source, "reported_github_actions_context");
     assert.equal(record.runId, "424242");
     assert.equal(record.identity.commitSha, commit);
     assert.equal(record.identity.status, "complete");
     assert.equal(record.missingGates.length, 0);
     assert.equal(record.namedStepOutcomes.length, requiredGates.length);
     assert.ok(record.namedStepOutcomes.every((step) => step.outcome === "success" && /^[a-f0-9]{64}$/.test(step.outcomeRecordSha256)));
-    assert.equal(record.ciGateStatus, "passed");
+    assert.equal(record.ciGateStatus, "reported_passed");
+    assert.notEqual(record.ciGateStatus, "passed");
+    assert.equal(record.provenance.status, "unverified_in_payload");
     assert.equal(record.releaseReady, false);
   } finally {
     await rm(root, { recursive: true, force: true });

@@ -47,8 +47,12 @@ It excludes secret environment files and is bounded to 4 GiB per scan,
 256 MiB per file, and 60 seconds; hitting a bound is inconclusive. This is not a
 snapshot: changes detected during the scan or test prevent verified evidence.
 
-The CI helper records all enumerated validation gates and checks GitHub's
-run/commit context against the checkout. Local caller-provided outcomes are
-unverified. Outcome-record hashes are explicitly not CI log hashes; GitHub
-retains the actual logs. CI evidence also always leaves `releaseReady: false`,
-with deployment and database identity unverified. Existing CI gates are retained.
+The CI helper records all enumerated validation gates and compares the reported
+GitHub run/commit context with the checkout. Environment values remain
+caller-settable, so the JSON can report `reported_passed` but never self-labels
+itself verified or passed. Verify provenance by retrieving it as the
+`verification-evidence` artifact of the matching GitHub-hosted run. Local
+caller-provided outcomes remain unverified. Outcome-record hashes are
+explicitly not CI log hashes; GitHub retains the actual logs. CI evidence also
+always leaves `releaseReady: false`, with deployment and database identity
+unverified. Existing CI gates are retained.

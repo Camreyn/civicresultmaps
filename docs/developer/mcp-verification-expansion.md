@@ -122,7 +122,9 @@ IDs or caller-claimed pass results. To explicitly record missing evidence:
 Local evidence may be verified, but `releaseReady` is always false here:
 complete CI gates, deployment identity, database revision, and publication
 approval are separate. CI now retains named gate outcomes with matching
-run/commit context; outcome hashes are not CI-log hashes or signed attestations.
+reported run/commit context. The JSON never self-attests that context: verify
+provenance by retrieving it as the artifact of the matching GitHub-hosted run.
+Outcome hashes are not CI-log hashes or signed attestations.
 [Detailed evidence contract](release-evidence-tools.md).
 
 ## 5. Synthetic statistical QA and data readiness
