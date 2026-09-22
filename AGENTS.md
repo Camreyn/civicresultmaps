@@ -2,6 +2,18 @@
 
 CivicResultMaps is a public election-result explorer and ETL platform. Treat all data work as public-interest, source-driven, and reviewable. Do not make claims of fraud or misconduct. The site identifies data gaps, reconciliation issues, source limitations, and advisory signals only.
 
+## Local MCP Startup Check
+
+At the start of every task rooted in this repository, call `crm_doctor` once
+before substantive code or data work. Confirm that `ok` is true, review all
+warnings and workflow drift, and mention any material issue to the user. Do not
+repeat the check in the same task unless the MCP restarts or a tool call fails.
+
+If `crm_doctor` is unavailable or unhealthy, pause normal work and diagnose the
+project MCP configuration, repository trust, dependencies, and restart state.
+Do not launch a detached or persistent copy of the STDIO server. Continue
+without the MCP only when the user explicitly asks after seeing the failure.
+
 ## First Reads
 
 Before changing code or data, read:

@@ -5,7 +5,7 @@ import { reviewPolicy } from "../lib/review-policy.ts";
 import { jurisdictionTagForRow } from "../lib/jurisdiction-tags.ts";
 import { reportingUnitCode } from "../lib/precinct-geography.ts";
 import { runNeonTransaction, runPostgresTransaction } from "./neon-transaction.ts";
-import { resolveNativeImportDatabaseTarget } from "./database-driver.ts";
+import { isDatabaseRehearsalTarget, resolveNativeImportDatabaseTarget } from "./database-driver.ts";
 import { bumpPublicDataRevision } from "./public-data-revision.ts";
 
 type NativeSource = {
@@ -286,15 +286,18 @@ function auditMunicipalityName(value: string) {
   return titleCase(String(value || "").replace(/^[CTV]\.\s*/i, "").trim());
 }
 
-async function loadWisconsinIndicatorContext(stateCode: string): Promise<WisconsinIndicatorContext | null> {
+async function loadWisconsinIndicatorContext(
+  stateCode: string,
+  readContext: (relativePath: string) => Promise<string> = (relativePath) => readFile(relativePath, "utf8"),
+): Promise<WisconsinIndicatorContext | null> {
   if (stateCode !== "WI") {
     return null;
   }
 
   try {
     const [summaryText, csvText] = await Promise.all([
-      readFile("data/wi-2024-audit-summary.json", "utf8"),
-      readFile("data/wi-2024-audit-selections.csv", "utf8"),
+      readContext("data/wi-2024-audit-summary.json"),
+      readContext("data/wi-2024-audit-selections.csv"),
     ]);
     const summary = JSON.parse(summaryText) as {
       aggregateAuditResults?: Record<string, unknown>;
@@ -396,8 +399,12 @@ function comparisonContextForScope(scope: NativeReviewScope) {
   };
 }
 
-async function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
-  const wisconsinContext = await loadWisconsinIndicatorContext(stateCode);
+export async function analysisIndicatorsForNativeRows(
+  stateCode: string,
+  rows: NativeReviewRow[],
+  readContext?: (relativePath: string) => Promise<string>,
+) {
+  const wisconsinContext = await loadWisconsinIndicatorContext(stateCode, readContext);
   return calculateAnalysisIndicators(stateCode, rows, {
     enrichMetrics: (scope) => ({
       auditContext: auditContextForScope(scope, wisconsinContext),
@@ -589,8 +596,27 @@ function assertPromotable(artifact: NativeArtifact) {
   }
 }
 
-export async function promoteNativeStagingArtifact(path: string) {
-  const database = resolveNativeImportDatabaseTarget();
+/** Pure source identity contract shared with read-only delivery projections. */
+export function nativeSourceDocumentIdentity(stateCode: string, electionYear: number, source: { id: string; metadata?: Record<string, unknown> }) {
+  const metadataElectionYear = Number(source.metadata?.electionYear);
+  const metadataElectionYears = Array.isArray(source.metadata?.electionYears)
+    ? source.metadata.electionYears.map(Number).filter(Number.isInteger)
+    : [];
+  const sourceElectionYear = Number.isInteger(metadataElectionYear)
+    ? metadataElectionYear
+    : metadataElectionYears.length ? Math.max(...metadataElectionYears) : electionYear;
+  return { sourceElectionYear, targetSlug: `${stateCode.toLowerCase()}-${sourceElectionYear}-${source.id}`, legacySlug: `${stateCode.toLowerCase()}-${electionYear}-${source.id}` };
+}
+
+export type NativeImportDatabaseTarget = { databaseUrl: string; driver: "postgres"; rehearsalRunId: string };
+
+export async function promoteNativeStagingArtifact(path: string, options: { databaseTarget?: NativeImportDatabaseTarget; rehearsalFailBeforeCommit?: boolean } = {}) {
+  // The optional target is only for the isolated rehearsal. Normal callers
+  // retain the existing resolver and its crm_clone_dev-only write policy.
+  const database = options.databaseTarget ?? resolveNativeImportDatabaseTarget();
+  if (options.databaseTarget && !isDatabaseRehearsalTarget(options.databaseTarget)) {
+    throw new Error("An injected native import target must be created by the labelled database rehearsal target resolver.");
+  }
 
   const artifact = JSON.parse(await readFile(path, "utf8")) as NativeArtifact;
   assertPromotable(artifact);
@@ -681,17 +707,7 @@ export async function promoteNativeStagingArtifact(path: string) {
 
   const sourceIds = new Map<string, string>();
   for (const source of artifact.sources) {
-    const metadataElectionYear = Number(source.metadata?.electionYear);
-    const metadataElectionYears = Array.isArray(source.metadata?.electionYears)
-      ? source.metadata.electionYears.map(Number).filter(Number.isInteger)
-      : [];
-    const sourceElectionYear = Number.isInteger(metadataElectionYear)
-      ? metadataElectionYear
-      : metadataElectionYears.length
-        ? Math.max(...metadataElectionYears)
-        : electionYear;
-    const targetSlug = `${stateCode.toLowerCase()}-${sourceElectionYear}-${source.id}`;
-    const legacySlug = `${stateCode.toLowerCase()}-${electionYear}-${source.id}`;
+    const { sourceElectionYear, targetSlug, legacySlug } = nativeSourceDocumentIdentity(stateCode, electionYear, source);
     if (sourceElectionYear !== electionYear) {
       await retargetLegacySourceDocument(sql, {
         legacySlug,
@@ -1718,6 +1734,9 @@ export async function promoteNativeStagingArtifact(path: string) {
     where id = ${importRun.id}
   `;
 
+    if (options.rehearsalFailBeforeCommit) {
+      throw new Error("Intentional database rehearsal rollback before commit.");
+    }
     await bumpPublicDataRevision(sql, `native-promotion:${stateCode}:${electionYear}`);
 
     return {
