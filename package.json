@@ -430,7 +430,13 @@
     "precinct-gis:public-activation:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/prepare-pa-precinct-public-activation.mjs",
     "precinct-gis:publication-status:pa": "node --max-old-space-size=4096 --experimental-strip-types scripts/publish-pa-precinct-geography-status.mjs",
     "test:precinct-geometry:pa": "node --max-old-space-size=4096 --experimental-strip-types --experimental-test-isolation=none --test tests/api/pa-precinct-geometry.test.mjs tests/api/pa-union-county-precinct-geometry.test.mjs tests/api/pa-precinct-gis-plan.test.mjs tests/api/pa-precinct-gis-local.test.mjs tests/api/pa-precinct-release-candidate.test.mjs tests/api/pa-precinct-blob-publication.test.mjs tests/api/pa-precinct-production-release.test.mjs tests/api/pa-precinct-public-activation.test.mjs tests/api/pa-precinct-publication-gate.test.mjs tests/api/pa-precinct-publication.test.mjs",
-    "test:precinct-geometry:pa:union": "node --max-old-space-size=4096 --experimental-strip-types --experimental-test-isolation=none --test tests/api/pa-union-county-precinct-geometry.test.mjs"
+    "test:precinct-geometry:pa:union": "node --max-old-space-size=4096 --experimental-strip-types --experimental-test-isolation=none --test tests/api/pa-union-county-precinct-geometry.test.mjs",
+    "mcp:crm": "node --experimental-strip-types tools/civicresultmaps-mcp/server.ts",
+    "test:mcp": "node --experimental-strip-types tests/api/civicresultmaps-local-mcp.test.mjs",
+    "test:mcp:browser": "node --experimental-strip-types tests/api/crm-browser-values-live.test.mjs",
+    "test:mcp:database": "node --experimental-strip-types tests/api/crm-database-rehearsal.test.mjs && node --experimental-strip-types tests/api/native-import-local-driver.test.mjs",
+    "test:mcp:model": "python -m unittest tests.python.test_model_validation && node --experimental-strip-types tests/api/crm-model-validation.test.mjs",
+    "db:rehearse": "node --experimental-strip-types scripts/run-database-rehearsal.mjs native-import REHEARSE_LOCAL_DATABASE"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",
@@ -465,6 +471,8 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
     "@playwright/test": "^1.61.1",
     "@types/d3-force": "^3.0.10",
     "@types/node": "^22.10.2",
