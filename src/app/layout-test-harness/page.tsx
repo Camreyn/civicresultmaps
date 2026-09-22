@@ -25,6 +25,29 @@ const rCalculation = {
   version: 1,
 } satisfies WorkspaceRCalculationDefinitionV1;
 
+const rTimeoutCalculation = {
+  input: "workspace-results-v1",
+  source: "while (TRUE) {}",
+  timeoutMs: 1_000,
+  version: 1,
+} satisfies WorkspaceRCalculationDefinitionV1;
+
+const rNetworkIsolationCalculation = {
+  input: "workspace-results-v1",
+  source: `local({
+  blocked <- webr::eval_js(
+    "(() => { try { const xhr = new XMLHttpRequest(); xhr.open('GET', '/api/states', false); xhr.send(); return 0; } catch (_) { return 1; } })()"
+  )
+  list(
+    label = "Same-origin API request blocked",
+    value = blocked,
+    detail = "1 means the isolated runtime could not reach /api."
+  )
+})`,
+  timeoutMs: 2_500,
+  version: 1,
+} satisfies WorkspaceRCalculationDefinitionV1;
+
 const rCalculationResults = [
   {
     jurisdictionCode: "53033",
@@ -103,6 +126,39 @@ export default function LayoutTestHarnessPage() {
             navigationContext={rCalculationNavigation}
             pageContext={rCalculationPageContext}
             title="Browser R calculation test"
+          />
+        </section>
+      </section>
+      <section aria-label="Browser R timeout harness" className="workspace-tabs">
+        <section className="workspace-custom-block workspace-custom-r-calculation" data-layout-surface="panel">
+          <WorkspaceRCalculation
+            calculation={rTimeoutCalculation}
+            description="Local-only fixture for verifying that timeout removes the entire execution frame."
+            navigationContext={rCalculationNavigation}
+            pageContext={rCalculationPageContext}
+            title="Browser R timeout test"
+          />
+        </section>
+      </section>
+      <section aria-label="Browser R network isolation harness" className="workspace-tabs">
+        <section className="workspace-custom-block workspace-custom-r-calculation" data-layout-surface="panel">
+          <WorkspaceRCalculation
+            calculation={rNetworkIsolationCalculation}
+            description="Local-only adversarial fixture for verifying that formula code cannot reach application APIs."
+            navigationContext={rCalculationNavigation}
+            pageContext={rCalculationPageContext}
+            title="Browser R network isolation test"
+          />
+        </section>
+      </section>
+      <section aria-label="Browser R disabled harness" className="workspace-tabs">
+        <section className="workspace-custom-block workspace-custom-r-calculation" data-layout-surface="panel">
+          <WorkspaceRCalculation
+            calculation={rCalculation}
+            description="Local-only fixture for verifying fail-closed deployment behavior."
+            navigationContext={rCalculationNavigation}
+            pageContext={{ ...rCalculationPageContext, enabled: false }}
+            title="Browser R disabled test"
           />
         </section>
       </section>

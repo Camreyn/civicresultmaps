@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { CSSProperties, ReactNode } from "react";
+import { lazy, Suspense, type CSSProperties, type ReactNode } from "react";
 import {
   workspaceViewportVisibilityAttributes,
   type WorkspaceCustomNodeV2,
@@ -8,7 +8,11 @@ import {
 } from "@/lib/workspace-layout-v2";
 import type { WorkspaceRuntimeCustomNode } from "@/lib/workspace-layout-v2-runtime";
 import { contextualizeWorkspaceHref, type WorkspaceNavigationContext } from "@/lib/workspace-navigation";
-import { WorkspaceRCalculation, type WorkspaceRCalculationPageContext } from "./workspace-r-calculation";
+import type { WorkspaceRCalculationPageContext } from "./workspace-r-calculation";
+
+const WorkspaceRCalculation = lazy(async () => ({
+  default: (await import("./workspace-r-calculation")).WorkspaceRCalculation,
+}));
 
 type WorkspaceLayoutBlockV2Props = {
   item: WorkspaceRuntimeCustomNode;
@@ -23,13 +27,15 @@ export function WorkspaceLayoutBlockV2({ item, navigationContext, rCalculationCo
   if (item.component === "r-calculation" && item.calculation) {
     return (
       <section aria-label={label} className="workspace-custom-block workspace-custom-r-calculation" {...attributes}>
-        <WorkspaceRCalculation
-          calculation={item.calculation}
-          description={item.body}
-          navigationContext={navigationContext}
-          pageContext={rCalculationContext}
-          title={item.title}
-        />
+        <Suspense fallback={<p className="workspace-r-status">Loading browser R controls...</p>}>
+          <WorkspaceRCalculation
+            calculation={item.calculation}
+            description={item.body}
+            navigationContext={navigationContext}
+            pageContext={rCalculationContext}
+            title={item.title}
+          />
+        </Suspense>
       </section>
     );
   }

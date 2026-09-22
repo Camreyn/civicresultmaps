@@ -67,12 +67,12 @@ Admin-authored R is executable code, not a safe expression language. The impleme
 
 1. A hidden iframe is created only for a manual run.
 2. The iframe has `sandbox="allow-scripts"` without `allow-same-origin`, giving it an opaque origin that cannot read the CivicResultMaps page, cookies, storage, or DOM.
-3. Its Content Security Policy denies all resources by default and allows scripts, workers, WebAssembly, and connections only to the exact current CivicResultMaps origin used for the versioned runtime files. webR dynamic-library loading requires JavaScript `unsafe-eval`; it is allowed only inside this opaque, script-only sandbox and is not added to the CivicResultMaps page CSP.
+3. Its Content Security Policy denies all resources by default and limits scripts, WebAssembly, and connections to the exact versioned runtime directory on the current CivicResultMaps origin. Other same-origin paths, including `/api`, are not allowlisted. webR dynamic-library loading requires JavaScript `unsafe-eval`; it is allowed only inside this opaque, script-only sandbox and is not added to the CivicResultMaps page CSP.
 4. The R environment receives only the public calculation variables above.
 5. The parent accepts messages only from the exact active iframe window and opaque origin.
 6. A formula may use only an allowlisted 1,000, 2,500, or 5,000 millisecond execution window. On timeout, completion, or failure, the entire iframe and its worker are destroyed.
 
-webR 0.6.0 assumes a non-opaque `location.origin` while choosing its worker loader. `scripts/prepare-browser-r-runtime.mjs` applies one exact, counted compatibility rewrite while preparing the npm artifact at build time. It refuses a different package version, npm integrity value, or loader shape, copies only the reviewed runtime file set, and writes a byte count plus SHA-256 digest for every generated file to `runtime-manifest.json`. No runtime CDN loader is fetched or rewritten in a visitor browser.
+webR 0.6.0 assumes a non-opaque `location.origin` while choosing its worker loader. `scripts/prepare-browser-r-runtime.mjs` selects the package's browser export (`webr.js`) and applies one exact, counted compatibility rewrite while preparing the npm artifact at build time. It refuses a different package version, npm integrity value, or loader shape, copies only the reviewed runtime file set, and writes a byte count plus SHA-256 digest for every generated file to `runtime-manifest.json`. No runtime CDN loader is fetched or rewritten in a visitor browser.
 
 The generated directory is ignored by Git and recreated by `predev` and `prebuild`. It also contains the exact `LICENSE.md` distributed in the pinned npm package. Keep that notice with every hosted copy; do not summarize or replace its terms in generated assets.
 
@@ -97,9 +97,13 @@ When unset or false, published blocks still show their proof panel, but the run 
 Run:
 
 ```powershell
+npm run test:browser-r
+npm run test:e2e:browser-r
 npm run test:layout
 npm run typecheck
 npm run build
 ```
 
 For a real browser check, set both `UI_LAYOUT_TEST_HARNESS=true` and `WORKSPACE_R_CALCULATIONS_ENABLED=true`, start the local application, open `/layout-test-harness`, and run the local-only browser R fixture. The harness remains a 404 in production and does not bypass the R feature flag. Verify the metric result, proof variables, formula digest, CSP/console output, timeout teardown, static runtime response headers, and keyboard access in the supported browser matrix before enabling a preview deployment.
+
+`playwright.browser-r.config.ts` exercises the actual self-hosted runtime in Chromium, Firefox, and WebKit. It checks a successful calculation, the CORS/CORP/nosniff asset headers, absence of runtime console errors, destruction of an infinite-loop worker at the allowlisted timeout, an adversarial formula whose same-origin `/api` request must be blocked before reaching the application, and a proof-only disabled state. Passing these desktop engines does not remove the need for a manual low-memory mobile check before production enablement.

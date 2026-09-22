@@ -178,10 +178,10 @@ test("the browser runtime is pinned, isolated, and syntactically valid", () => {
   assert.equal(WORKSPACE_R_RUNTIME_R_VERSION, "4.6.0");
   assert.equal(WORKSPACE_R_RUNTIME_PUBLIC_PATH, "/vendor/webr/v0.6.0/");
   const document = workspaceRRuntimeDocument("http://localhost:3000");
-  assert.match(document, /http:\/\/localhost:3000\/vendor\/webr\/v0\.6\.0\/webr\.mjs/);
+  assert.match(document, /http:\/\/localhost:3000\/vendor\/webr\/v0\.6\.0\/webr\.js/);
   assert.match(document, /default-src 'none'; base-uri 'none';/);
-  assert.match(document, /connect-src http:\/\/localhost:3000;/);
-  assert.match(document, /script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: http:\/\/localhost:3000/);
+  assert.match(document, /connect-src http:\/\/localhost:3000\/vendor\/webr\/v0\.6\.0\//);
+  assert.match(document, /script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: http:\/\/localhost:3000\/vendor\/webr\/v0\.6\.0\//);
   assert.match(document, /worker-src blob:/);
   assert.doesNotMatch(document, /webr\.r-wasm\.org/);
   assert.doesNotMatch(document, /loader-fetching|patchedSource|originCheck/);
@@ -189,6 +189,7 @@ test("the browser runtime is pinned, isolated, and syntactically valid", () => {
   assert.match(document, /new shelter\.REnvironment/);
   assert.match(document, /event\.source !== parent/);
   assert.match(document, /byteLength\(message\.payload\.inputs\) <= MAX_INPUT_BYTES/);
+  assert.match(document, /byteLength\(output\) > MAX_OUTPUT_BYTES/);
   assert.throws(() => workspaceRRuntimeDocument("javascript:alert(1)"), /exact HTTP\(S\) parent origin/);
 
   const script = document.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
@@ -203,6 +204,8 @@ test("the build prepares only the exact lockfile-pinned self-hosted runtime", ()
   assert.equal(locked.version, WORKSPACE_R_RUNTIME_VERSION);
   assert.equal(locked.integrity, "sha512-M2b8m3/ZBk7XMIR7LD97s5k/9jUla83Z0Hl4b+WnrK7XmSMpZdajCiP3XkSzHKHDUgscHKe+lVUvk3aym8q0bw==");
   assert.match(script, /occurrenceCount !== 1/);
+  assert.match(script, /copyFile\(path\.join\(packageRoot, "LICENSE\.md"\), path\.join\(stagingRoot, "LICENSE\.md"\)\)/);
+  assert.match(script, /copiedFiles\.push\("LICENSE\.md"\)/);
   assert.match(script, /runtime-manifest\.json/);
   assert.match(script, /createHash\("sha256"\)/);
 });

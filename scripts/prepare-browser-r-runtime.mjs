@@ -13,7 +13,7 @@ const ROOT_RUNTIME_FILES = [
   "libRblas.so",
   "libRlapack.so",
   "webr-worker.js",
-  "webr.mjs",
+  "webr.js",
 ];
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -41,7 +41,7 @@ const copiedFiles = [];
 for (const filename of ROOT_RUNTIME_FILES) {
   const sourcePath = path.join(sourceRoot, filename);
   const destinationPath = path.join(stagingRoot, filename);
-  if (filename === "webr.mjs") {
+  if (filename === "webr.js") {
     const loader = await readFile(sourcePath, "utf8");
     const occurrenceCount = loader.split(LOADER_ORIGIN_EXPRESSION).length - 1;
     if (occurrenceCount !== 1) {

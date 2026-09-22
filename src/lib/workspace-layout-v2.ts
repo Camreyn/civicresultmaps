@@ -10,6 +10,9 @@ import {
   type WorkspaceSectionId,
   type WorkspaceTabId,
 } from "./workspace-layout.ts";
+import { WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH } from "./workspace-r-calculation.ts";
+
+export { WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH } from "./workspace-r-calculation.ts";
 
 export const WORKSPACE_LAYOUT_SCHEMA_VERSION_V2 = 2 as const;
 export const WORKSPACE_LAYOUT_REGISTRY_VERSION_V2 = 2 as const;
@@ -36,7 +39,6 @@ export const workspaceVisibilityCapabilityKeys = [
 
 export const WORKSPACE_LAYOUT_MAX_CUSTOM_BLOCKS_PER_TAB = 12;
 export const WORKSPACE_LAYOUT_MAX_R_CALCULATION_BLOCKS_PER_TAB = 1;
-export const WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH = 8_000;
 export const workspaceRCalculationTimeouts = [1_000, 2_500, 5_000] as const;
 
 export type WorkspaceProductionComponentIdV2 =

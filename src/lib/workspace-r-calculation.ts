@@ -5,6 +5,7 @@ export const WORKSPACE_R_RUNTIME_VERSION = "0.6.0";
 export const WORKSPACE_R_RUNTIME_R_VERSION = "4.6.0";
 export const WORKSPACE_R_RUNTIME_PUBLIC_PATH = `/vendor/webr/v${WORKSPACE_R_RUNTIME_VERSION}/`;
 export const WORKSPACE_R_RUNTIME_STARTUP_TIMEOUT_MS = 60_000;
+export const WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH = 8_000;
 export const WORKSPACE_R_MAX_INPUT_RESULT_ROWS = 5_000;
 export const WORKSPACE_R_MAX_INPUT_VOTE_ROWS = 25_000;
 export const WORKSPACE_R_MAX_INPUT_BYTES = 2_000_000;
@@ -14,6 +15,7 @@ export const WORKSPACE_R_MAX_OUTPUT_COLUMNS = 12;
 export const WORKSPACE_R_MAX_OUTPUT_VALUES = 100;
 export const WORKSPACE_R_MAX_OUTPUT_CELL_LENGTH = 2_000;
 export const WORKSPACE_R_MAX_OUTPUT_LABEL_LENGTH = 200;
+export const WORKSPACE_R_MAX_OUTPUT_BYTES = 3_000_000;
 
 export type WorkspaceRDataFrameColumns = Record<string, Array<boolean | number | string | null>>;
 
@@ -163,7 +165,8 @@ function buildInputsAtLimits(
   let voteRowsTruncated = false;
 
   for (const entry of limitedResults) {
-    for (const candidate of Object.keys(entry.votes)) {
+    for (const candidate in entry.votes) {
+      if (!Object.prototype.hasOwnProperty.call(entry.votes, candidate)) continue;
       if (votes.length >= voteLimit) {
         voteRowsTruncated = true;
         break;
@@ -280,7 +283,7 @@ function normalizeSerializedRObject(value: unknown): WorkspaceRDisplayResult {
       return {
         detail: detailIndex >= 0 ? String(displayScalar(values[detailIndex]) ?? "") : undefined,
         kind: "metric",
-        label: String(displayScalar(values[labelIndex]) ?? "Result"),
+        label: truncateLabel(String(displayScalar(values[labelIndex]) ?? "Result")),
         value: displayScalar(values[valueIndex]),
       };
     }

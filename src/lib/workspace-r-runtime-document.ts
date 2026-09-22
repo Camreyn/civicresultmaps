@@ -1,25 +1,26 @@
 import {
   WORKSPACE_R_MAX_INPUT_BYTES,
   WORKSPACE_R_MAX_OUTPUT_CELL_LENGTH,
+  WORKSPACE_R_MAX_OUTPUT_BYTES,
   WORKSPACE_R_MAX_OUTPUT_COLUMNS,
   WORKSPACE_R_MAX_OUTPUT_ROWS,
   WORKSPACE_R_MAX_OUTPUT_VALUES,
+  WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH,
   WORKSPACE_R_RUNTIME_PUBLIC_PATH,
 } from "./workspace-r-calculation.ts";
-import { WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH } from "./workspace-layout-v2.ts";
 
 export const WORKSPACE_R_RUNTIME_MESSAGE_SCOPE = "civicresultmaps:r-runtime:v1";
 
 export function workspaceRRuntimeDocument(parentOrigin: string) {
   const runtimeOrigin = normalizeParentOrigin(parentOrigin);
   const runtimeBaseUrl = `${runtimeOrigin}${WORKSPACE_R_RUNTIME_PUBLIC_PATH}`;
-  const runtimeModuleUrl = `${runtimeBaseUrl}webr.mjs`;
+  const runtimeModuleUrl = `${runtimeBaseUrl}webr.js`;
 
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; child-src blob:; connect-src ${runtimeOrigin}; form-action 'none'; object-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: ${runtimeOrigin}; style-src 'unsafe-inline'; worker-src blob:">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; child-src blob:; connect-src ${runtimeBaseUrl}; form-action 'none'; object-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: ${runtimeBaseUrl}; style-src 'unsafe-inline'; worker-src blob:">
   <meta name="referrer" content="no-referrer">
   <title>Isolated browser R runtime</title>
 </head>
@@ -29,6 +30,7 @@ export function workspaceRRuntimeDocument(parentOrigin: string) {
     const RUNTIME_MODULE_URL = ${JSON.stringify(runtimeModuleUrl)};
     const RUNTIME_BASE_URL = ${JSON.stringify(runtimeBaseUrl)};
     const MAX_INPUT_BYTES = ${WORKSPACE_R_MAX_INPUT_BYTES};
+    const MAX_OUTPUT_BYTES = ${WORKSPACE_R_MAX_OUTPUT_BYTES};
     const MAX_SOURCE_LENGTH = ${WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH};
     let active = false;
     let runtimePromise;
@@ -172,6 +174,9 @@ export function workspaceRRuntimeDocument(parentOrigin: string) {
         const output = isDataFrame
           ? { format: "data-frame", rows: await result.toD3() }
           : { format: "r-object", value: await result.toJs({ depth: 0 }) };
+        if (byteLength(output) > MAX_OUTPUT_BYTES) {
+          throw new Error("The R result exceeded the browser output byte limit.");
+        }
         post("result", {
           output,
           requestId,

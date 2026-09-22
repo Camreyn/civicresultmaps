@@ -165,8 +165,8 @@ export function WorkspaceRCalculation({
           setResult(normalizeWorkspaceRResult(message.output));
           setRunMetadata({
             contextKey: activeRun.contextKey,
-            runtimeVersion: String(message.runtimeVersion || WORKSPACE_R_RUNTIME_VERSION),
-            versionR: String(message.versionR || WORKSPACE_R_RUNTIME_R_VERSION),
+            runtimeVersion: String(message.runtimeVersion || WORKSPACE_R_RUNTIME_VERSION).slice(0, 40),
+            versionR: String(message.versionR || WORKSPACE_R_RUNTIME_R_VERSION).slice(0, 40),
           });
           setError(null);
           setPhase("success");
