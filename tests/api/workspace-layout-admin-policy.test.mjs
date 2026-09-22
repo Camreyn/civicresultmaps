@@ -139,3 +139,23 @@ test("builder v4 exposes grouped editing, recovery, scheduling, and safety contr
   assert.match(page, /builderV4Enabled [?] listLayoutDrafts[(][)]/);
   assert.match(templateActions, /toWorkspaceLayoutManifestV3/);
 });
+
+test("only authenticated layout editors expose R formula mutation controls", () => {
+  const actions = readFileSync("src/app/admin/layout/actions.ts", "utf8");
+  const drafts = readFileSync("src/app/admin/layout/draft-actions.ts", "utf8");
+  const legacyEditor = readFileSync("src/app/admin/layout/layout-editor-v3.tsx", "utf8");
+  const inspector = readFileSync("src/app/admin/layout/layout-editor-v4-inspector.tsx", "utf8");
+  const publicRunner = readFileSync("src/app/workspace-r-calculation.tsx", "utf8");
+  const harness = readFileSync("src/app/layout-test-harness/page.tsx", "utf8");
+  const page = readFileSync("src/app/page.tsx", "utf8");
+
+  assert.match(actions, /await requireLayoutAdmin\(\)/);
+  assert.match(drafts, /await requireLayoutAdmin\(\)/);
+  assert.match(legacyEditor, />R formula<textarea/);
+  assert.match(inspector, />R formula<textarea/);
+  assert.doesNotMatch(publicRunner, />R formula<textarea/);
+  assert.match(publicRunner, /<pre><code>\{calculation\.source\}<\/code><\/pre>/);
+  assert.match(page, /WORKSPACE_R_CALCULATIONS_ENABLED === "true"/);
+  assert.match(harness, /WORKSPACE_R_CALCULATIONS_ENABLED === "true"/);
+  assert.doesNotMatch(harness, /enabled:\s*true/);
+});

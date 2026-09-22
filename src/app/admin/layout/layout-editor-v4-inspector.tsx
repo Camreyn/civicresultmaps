@@ -14,6 +14,8 @@ import {
 import { useState } from "react";
 import type { WorkspaceTabId } from "@/lib/workspace-layout";
 import {
+  WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH,
+  workspaceRCalculationTimeouts,
   richTextDocumentFromPlainText,
   workspaceVisibilityCapabilityKeys,
   workspaceVisibilityDataKeys,
@@ -23,6 +25,7 @@ import {
   type WorkspaceLayoutDesktopSpanV2,
   type WorkspaceLayoutTabletSpanV2,
   type WorkspaceProductionConfigV2,
+  type WorkspaceRCalculationDefinitionV1,
   type WorkspaceVisibilityConditionV1,
 } from "@/lib/workspace-layout-v2";
 import {
@@ -355,7 +358,7 @@ function ProductionSettings({ node, update }: {
         <Select label="Navigation" value={config.navigationStyle ?? "tabs"} onChange={(value) => setConfig({ navigationStyle: value as "tabs" | "pills" | "sidebar" })} options={["tabs", "pills", "sidebar"]} />
         <ReviewCenterSettings config={config} setConfig={setConfig} />
       </>}
-      <p className={styles.noticeText}>The editor changes presentation only. Data, source labels, calculations, and trust-surface behavior remain code-owned.</p>
+      <p className={styles.noticeText}>The editor changes presentation only. Data, source labels, production calculations, and trust-surface behavior remain code-owned.</p>
     </fieldset>
   );
 }
@@ -449,7 +452,20 @@ function CustomSettings({ assets, node, onUploadImage, update, uploading }: {
       {node.component !== "divider" && <label>Title<input maxLength={100} onChange={(event) => set({ title: event.target.value })} value={node.title ?? ""} /></label>}
       {node.component === "rich-text"
         ? <LayoutRichTextEditor document={node.document ?? richTextDocumentFromPlainText(node.body ?? "")} onChange={(document) => set({ document })} />
-        : ["narrative", "callout", "heading"].includes(node.component) && <label>Body<textarea maxLength={2000} onChange={(event) => set({ body: event.target.value })} rows={5} value={node.body ?? ""} /></label>}
+        : ["narrative", "callout", "heading", "r-calculation"].includes(node.component) && <label>{node.component === "r-calculation" ? "Description" : "Body"}<textarea maxLength={2000} onChange={(event) => set({ body: event.target.value })} rows={5} value={node.body ?? ""} /></label>}
+      {node.component === "r-calculation" && node.calculation && <>
+        <label>R formula<textarea
+          aria-describedby={`r-calculation-help-${node.id}`}
+          maxLength={WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH}
+          onChange={(event) => set({ calculation: { ...node.calculation!, source: event.target.value } })}
+          rows={14}
+          spellCheck={false}
+          value={node.calculation.source}
+        /></label>
+        <Select label="Calculation timeout" value={String(node.calculation.timeoutMs)} onChange={(value) => set({ calculation: { ...node.calculation!, timeoutMs: Number(value) as WorkspaceRCalculationDefinitionV1["timeoutMs"] } })} options={workspaceRCalculationTimeouts.map(String)} />
+        <p className={styles.noticeText} id={`r-calculation-help-${node.id}`}>Runs only when a visitor presses Run. Inputs: <code>crm_context</code>, <code>crm_results</code>, <code>crm_view_results</code>, <code>crm_votes</code>, and <code>crm_view_votes</code>.</p>
+        <p className={styles.noticeText}>Use base R and return a scalar, vector, named list, or data frame. Public users can inspect this formula but cannot edit it.</p>
+      </>}
       {node.component === "image" && <>
         <label>Alternative text<input maxLength={240} onChange={(event) => {
           setAlt(event.target.value);

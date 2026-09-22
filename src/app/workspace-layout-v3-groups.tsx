@@ -3,14 +3,16 @@ import type { WorkspaceProductionNodeV3 } from "@/lib/workspace-layout-v3";
 import type { WorkspaceRuntimeGroupV3 } from "@/lib/workspace-layout-v3-runtime";
 import type { WorkspaceNavigationContext } from "@/lib/workspace-navigation";
 import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
+import type { WorkspaceRCalculationPageContext } from "./workspace-r-calculation";
 
 type WorkspaceLayoutGroupsV3Props = {
   groups: WorkspaceRuntimeGroupV3[];
   navigationContext: WorkspaceNavigationContext;
+  rCalculationContext: WorkspaceRCalculationPageContext;
   renderProduction: (node: WorkspaceProductionNodeV3) => ReactNode | null;
 };
 
-export function WorkspaceLayoutGroupsV3({ groups, navigationContext, renderProduction }: WorkspaceLayoutGroupsV3Props) {
+export function WorkspaceLayoutGroupsV3({ groups, navigationContext, rCalculationContext, renderProduction }: WorkspaceLayoutGroupsV3Props) {
   const landmarks = groups.filter((group) => Boolean(group.heading));
 
   return (
@@ -84,6 +86,7 @@ export function WorkspaceLayoutGroupsV3({ groups, navigationContext, renderProdu
                                 span: column.span,
                               }}
                               navigationContext={navigationContext}
+                              rCalculationContext={rCalculationContext}
                             />
                           )}
                     </div>

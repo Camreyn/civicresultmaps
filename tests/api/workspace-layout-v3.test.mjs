@@ -10,7 +10,10 @@ import {
   workspaceLayoutManifestV3ToV2,
   workspaceStarterGroupTemplatesV3,
 } from "../../src/lib/workspace-layout-v3.ts";
-import { embeddedWorkspaceLayoutManifestV2 } from "../../src/lib/workspace-layout-v2.ts";
+import {
+  createWorkspaceCustomNodeV2,
+  embeddedWorkspaceLayoutManifestV2,
+} from "../../src/lib/workspace-layout-v2.ts";
 import {
   createWorkspaceLayoutEnvelope,
   validateWorkspaceLayoutEnvelope,
@@ -111,4 +114,27 @@ test("schema v3 envelopes retain version metadata and detect tampering", () => {
   const tampered = structuredClone(envelope);
   tampered.manifest.settings.accentColor = "#ffffff";
   assert.equal(validateWorkspaceLayoutEnvelope(tampered).ok, false);
+});
+
+test("schema v3 conversion preserves the R formula contract", () => {
+  const v2 = structuredClone(embeddedWorkspaceLayoutManifestV2);
+  const rNode = createWorkspaceCustomNodeV2("r-calculation", "custom-r-proof");
+  v2.tabs.find((tab) => tab.id === "map").rows[0].columns[1].items.push(rNode);
+
+  const v3 = toWorkspaceLayoutManifestV3(v2);
+  const upgraded = v3.tabs.find((tab) => tab.id === "map").groups
+    .flatMap((group) => group.rows)
+    .flatMap((row) => row.columns)
+    .flatMap((column) => column.items)
+    .find((node) => node.id === rNode.id);
+  assert.deepEqual(upgraded.calculation, rNode.calculation);
+  const validation = validateWorkspaceLayoutManifestV3(v3);
+  assert.equal(validation.ok, true, validation.ok ? "" : validation.errors.join("\n"));
+
+  const roundTrip = workspaceLayoutManifestV3ToV2(v3);
+  const restored = roundTrip.tabs.find((tab) => tab.id === "map").rows
+    .flatMap((row) => row.columns)
+    .flatMap((column) => column.items)
+    .find((node) => node.id === rNode.id);
+  assert.deepEqual(restored.calculation, rNode.calculation);
 });

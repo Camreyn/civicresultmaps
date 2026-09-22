@@ -8,15 +8,31 @@ import {
 } from "@/lib/workspace-layout-v2";
 import type { WorkspaceRuntimeCustomNode } from "@/lib/workspace-layout-v2-runtime";
 import { contextualizeWorkspaceHref, type WorkspaceNavigationContext } from "@/lib/workspace-navigation";
+import { WorkspaceRCalculation, type WorkspaceRCalculationPageContext } from "./workspace-r-calculation";
 
 type WorkspaceLayoutBlockV2Props = {
   item: WorkspaceRuntimeCustomNode;
-  navigationContext?: WorkspaceNavigationContext;
+  navigationContext: WorkspaceNavigationContext;
+  rCalculationContext: WorkspaceRCalculationPageContext;
 };
 
-export function WorkspaceLayoutBlockV2({ item, navigationContext }: WorkspaceLayoutBlockV2Props) {
+export function WorkspaceLayoutBlockV2({ item, navigationContext, rCalculationContext }: WorkspaceLayoutBlockV2Props) {
   const attributes = workspaceLayoutItemAttributesV2(item);
   const label = item.title || blockLabel(item);
+
+  if (item.component === "r-calculation" && item.calculation) {
+    return (
+      <section aria-label={label} className="workspace-custom-block workspace-custom-r-calculation" {...attributes}>
+        <WorkspaceRCalculation
+          calculation={item.calculation}
+          description={item.body}
+          navigationContext={navigationContext}
+          pageContext={rCalculationContext}
+          title={item.title}
+        />
+      </section>
+    );
+  }
 
   if (item.component === "divider") {
     return (
