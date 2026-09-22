@@ -17,8 +17,8 @@ export const dynamic = "force-static";
 
 const securityTitle = "2024 Election Security Incident Explorer";
 const securityDescription =
-  "Explore at least 227 source-linked November 2024 election-period bomb threats across 109 mapped counties, with 2024 presidential winner and margin overlays, 66 statewide-only threats, and source limits.";
-const securitySocialImage = "/api/social-card?view=security&year=2024&v=security-v1";
+  "Explore 112 source-linked November 2024 election-period security records across 110 mapped counties, including at least 227 reported bomb threats, one official suspicious-package response, and 66 statewide-only threats.";
+const securitySocialImage = "/api/social-card?view=security&year=2024&v=security-v2";
 const securitySocialImageAlt =
   "Civic Result Maps 2024 Election Security Incident Explorer with mapped county records and a presidential result overlay";
 
@@ -64,9 +64,10 @@ export default async function SecurityPage() {
         </div>
         <h1>2024 Election Security Incident Explorer</h1>
         <p>
-          Explore the Brennan Center&apos;s later tracker of at least 227 threats reported from November 5 through
-          November 9, 2024. The map shows 109 source-linked counties; 66 additional threats reported only at statewide
-          grain remain in the totals without being assigned to a county.
+          Explore the Brennan Center&apos;s later tracker of at least 227 bomb threats reported from November 5 through
+          November 9, 2024, plus an official Hamilton County suspicious-package response that is counted separately.
+          The map shows 110 source-linked counties; 66 additional threats reported only at statewide grain remain in
+          the totals without being assigned to a county.
         </p>
         <p className={styles.heroQualifier}>
           The tracker compiles public reports, may not be exhaustive, and is not an official FBI roster. Incident records

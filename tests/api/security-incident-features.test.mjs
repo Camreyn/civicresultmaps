@@ -6,6 +6,7 @@ import { rowsToCsv } from "../../src/lib/csv.ts";
 import { activeMapSelection } from "../../src/lib/map-selection.ts";
 import {
   affectedLocationText,
+  securityIncidentMetricText,
   securityIncidentSummaryText,
   summarizeSecurityIncidents,
   threatCountBasisText,
@@ -22,11 +23,11 @@ const registry = JSON.parse(readFileSync("data/election-security-incidents-2024.
 test("security totals preserve county, statewide, affected-place, and threat-message units", () => {
   const totals = summarizeSecurityIncidents(registry.incidentRows);
 
-  assert.equal(securityIncidentApiSchemaVersion, "4.1.0");
-  assert.equal(totals.rowCount, 111);
-  assert.equal(totals.stateCount, 9);
-  assert.equal(totals.countyCount, 109);
-  assert.equal(totals.countyRowCount, 109);
+  assert.equal(securityIncidentApiSchemaVersion, "4.2.0");
+  assert.equal(totals.rowCount, 112);
+  assert.equal(totals.stateCount, 10);
+  assert.equal(totals.countyCount, 110);
+  assert.equal(totals.countyRowCount, 110);
   assert.equal(totals.statewideUnspecifiedRowCount, 2);
   assert.equal(totals.statewideUnspecifiedThreatCount, 66);
   assert.equal(totals.knownAffectedLocations, null);
@@ -35,25 +36,30 @@ test("security totals preserve county, statewide, affected-place, and threat-mes
   assert.deepEqual(totals.affectedLocationUnits, [
     { countComplete: false, documentedCount: null, knownCount: 0, unit: "election_facility" },
     { countComplete: true, documentedCount: 1, knownCount: 1, unit: "election_office" },
-    { countComplete: false, documentedCount: null, knownCount: 13, unit: "polling_location" },
+    { countComplete: false, documentedCount: null, knownCount: 14, unit: "polling_location" },
     { countComplete: true, documentedCount: 6, knownCount: 6, unit: "voting_precinct" },
   ]);
   assert.equal(totals.documentedThreatCount, null);
   assert.equal(totals.threatCountComplete, false);
   assert.equal(totals.knownThreatCount, 227);
   assert.equal(totals.unknownThreatCountRows, 1);
-  assert.equal(totals.officialRowCount, 6);
+  assert.equal(totals.nonBombThreatRowCount, 1);
+  assert.equal(totals.officialRowCount, 7);
   assert.equal(totals.supplementalRowCount, 105);
   assert.equal(
     affectedLocationText(totals),
-    "Number of affected election facilities not specified; 1 election office affected; At least 13 known polling locations affected; 6 voting precincts affected",
+    "Number of affected election facilities not specified; 1 election office affected; At least 14 known polling locations affected; 6 voting precincts affected",
   );
   assert.equal(
     threatCountText(totals),
-    "At least 227 reported threats documented; 1 additional record has no published count",
+    "At least 227 reported bomb threats documented; 1 additional bomb-threat record has no published count; 1 non-bomb-threat security incident tracked separately",
   );
-  assert.match(securityIncidentSummaryText(registry.incidentRows), /6 official and 105 supplemental records/);
-  assert.match(securityIncidentSummaryText(registry.incidentRows), /1 additional record has no published count/i);
+  assert.equal(
+    securityIncidentMetricText(totals),
+    "At least 227 bomb threats; 1 non-bomb-threat security incident",
+  );
+  assert.match(securityIncidentSummaryText(registry.incidentRows), /7 official and 105 supplemental records/);
+  assert.match(securityIncidentSummaryText(registry.incidentRows), /1 additional bomb-threat record has no published count/i);
   assert.equal(
     threatCountBasisText("research_tracker_compilation"),
     "Threat count source: later public-source tracker",
@@ -74,10 +80,32 @@ test("statewide-only threats remain totals without county tags", () => {
   assert.equal(totals.stateCount, 2);
   assert.equal(totals.statewideUnspecifiedThreatCount, 66);
   assert.equal(totals.documentedThreatCount, 66);
-  assert.equal(threatCountText(totals), "66 reported threats documented in loaded rows");
+  assert.equal(threatCountText(totals), "66 reported bomb threats documented in loaded rows");
   assert.ok(statewideRows.every((row) => row.jurisdictionCode === null));
   assert.ok(statewideRows.every((row) => /^state:[A-Z]{2}:unspecified$/.test(row.jurisdictionTag)));
   assert.ok(statewideRows.every((row) => !row.jurisdictionTag.startsWith("county:")));
+});
+
+test("Hamilton County suspicious-package response stays outside bomb-threat totals", () => {
+  const hamilton = registry.incidentRows.find(
+    (row) => row.id === "oh-2024-general-hamilton-suspicious-package-response",
+  );
+  assert.ok(hamilton);
+  const totals = summarizeSecurityIncidents([hamilton]);
+
+  assert.equal(totals.rowCount, 1);
+  assert.equal(totals.knownThreatCount, 0);
+  assert.equal(totals.unknownThreatCountRows, 0);
+  assert.equal(totals.nonBombThreatRowCount, 1);
+  assert.equal(securityIncidentMetricText(totals), "1 non-bomb-threat security incident");
+  assert.equal(
+    threatCountText(totals),
+    "1 non-bomb-threat security incident tracked; no bomb-threat count applies",
+  );
+  assert.equal(
+    threatCountBasisText(hamilton.threatCountBasis),
+    "Bomb-threat count: not applicable to this non-bomb-threat incident",
+  );
 });
 
 test("partial affected-place totals are labeled as a known minimum", () => {
@@ -244,7 +272,8 @@ test("national explorer is static, source-linked, mixed-grain, and carries a com
 
   assert.match(page, /dynamic = "force-static"/);
   assert.match(page, /getNationalSecurityIncidentReport\(2024\)/);
-  assert.match(page, /at least 227 threats/i);
+  assert.match(page, /at least 227 bomb threats/i);
+  assert.match(page, /official Hamilton County suspicious-package response/i);
   assert.match(page, /66 additional threats reported only at statewide/i);
   assert.match(page, /not an official FBI roster/i);
   assert.match(page, /loadNationalYearDataset\(2024\)/);
@@ -299,15 +328,16 @@ test("national explorer is static, source-linked, mixed-grain, and carries a com
   assert.match(explorer, /Source strength/);
   assert.match(socialCard, /params\.get\("view"\) === "security"/);
   assert.match(socialCard, /buildSecuritySocialCard/);
-  assert.match(socialCard, /Bomb-threat incident explorer/);
+  assert.match(socialCard, /Election security incident explorer/);
+  assert.match(socialCard, /bomb-threat minimum/);
   assert.match(socialCard, /mapped counties/);
   assert.match(socialCard, /without county/);
   assert.match(socialCard, /Separate datasets/);
   assert.match(socialCard, /fraud, misconduct, altered votes, or an incorrect outcome/);
   assert.match(socialCard, /County-attributed incident record/);
   assert.match(sidebar, /has-security-incidents/);
-  assert.match(sidebar, /States with bomb-threat records/);
-  assert.match(sidebar, /nine states in the later 227-threat public-source tracker/);
+  assert.match(sidebar, /States with security-incident records/);
+  assert.match(sidebar, /10 states with loaded security records/);
   assert.match(sidebar, /statewideUnspecifiedThreatCount/);
   assert.match(sidebar, /Source-linked election security records/);
   assert.match(sidebar, /state-security-summary/);

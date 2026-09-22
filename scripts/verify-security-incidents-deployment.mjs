@@ -25,10 +25,11 @@ const expectedReports = [
     label: "national",
     path: "/api/security-incidents?year=2024&limit=5000",
     totals: {
-      countyCount: 109,
+      countyCount: 110,
       knownThreatCount: 227,
-      rowCount: 111,
-      stateCount: 9,
+      nonBombThreatRowCount: 1,
+      rowCount: 112,
+      stateCount: 10,
       statewideUnspecifiedThreatCount: 66,
     },
   },
@@ -54,6 +55,18 @@ const expectedReports = [
       statewideUnspecifiedThreatCount: 47,
     },
   },
+  {
+    label: "Ohio",
+    path: "/api/security-incidents?state=OH&year=2024&limit=5000",
+    totals: {
+      countyCount: 1,
+      knownThreatCount: 0,
+      nonBombThreatRowCount: 1,
+      rowCount: 1,
+      stateCount: 1,
+      statewideUnspecifiedThreatCount: 0,
+    },
+  },
 ];
 
 function wait(ms) {
@@ -71,14 +84,14 @@ async function fetchResponse(path) {
 async function verify() {
   const pageResponse = await fetchResponse("/security");
   const page = await pageResponse.text();
-  assert.match(page, /at least 227 reported threats/i);
+  assert.match(page, /at least 227 bomb threats reported/i);
   assert.match(page, /66 additional threats reported only at statewide/i);
 
   for (const expected of expectedReports) {
     const response = await fetchResponse(expected.path);
     const payload = await response.json();
     assert.ok(Array.isArray(payload.data), `${expected.label} response data must be an array`);
-    assert.equal(payload.meta.schemaVersion, "4.1.0", `${expected.label} API schema version`);
+    assert.equal(payload.meta.schemaVersion, "4.2.0", `${expected.label} API schema version`);
     assert.equal(payload.data.length, expected.totals.rowCount, `${expected.label} response rows`);
     for (const [key, value] of Object.entries(expected.totals)) {
       assert.equal(payload.meta[key], value, `${expected.label} ${key}`);

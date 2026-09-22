@@ -58,7 +58,7 @@ export async function GET(request: Request) {
       limit,
       schemaVersion: securityIncidentApiSchemaVersion,
       caveat:
-        "These source-linked election-administration rows use the later Brennan Center 227-threat public-source tracker, retain statewide counts whose counties were not named, and preserve one additional earlier county mention with an unknown count. The tracker is not an FBI roster and may not be exhaustive. Reported threats and affected places remain different measures, and the rows are not evidence of fraud or misconduct.",
+        "These source-linked election-administration rows use the later Brennan Center 227-bomb-threat public-source tracker, retain statewide counts whose counties were not named, preserve one additional earlier bomb-threat county mention with an unknown count, and include an official Hamilton County suspicious-package response without adding it to the bomb-threat total. The tracker is not an FBI roster and may not be exhaustive. Reported bomb threats, other security incidents, and affected places remain different measures, and the rows are not evidence of fraud or misconduct.",
     }),
     { headers: securityIncidentCacheHeaders },
   );

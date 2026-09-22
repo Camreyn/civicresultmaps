@@ -267,6 +267,7 @@ export type SecurityThreatCountBasis =
   | "official_county_record"
   | "research_tracker_compilation"
   | "supplemental_national_compilation"
+  | "not_applicable_non_bomb_incident"
   | "not_separately_published";
 
 export type SecurityIncidentSummary = {
@@ -326,6 +327,7 @@ export type SecurityIncidentTotals = {
   documentedThreatCount: number | null;
   knownAffectedLocations: number | null;
   knownThreatCount: number;
+  nonBombThreatRowCount: number;
   officialRowCount: number;
   rowCount: number;
   stateCount: number;
