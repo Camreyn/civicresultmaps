@@ -120,6 +120,7 @@ const customBlocks: Array<{ description: string; id: WorkspaceCustomBlockKindV2;
   { description: "Highlighted context or caution", id: "callout", label: "Callout" },
   { description: "Plain explanatory paragraph", id: "narrative", label: "Narrative" },
   { description: "A compact row of key values", id: "metric-strip", label: "Metrics" },
+  { description: "Admin-authored R run in the visitor browser", id: "r-calculation", label: "R calculation" },
   { description: "A compact source-link list", id: "link-list", label: "Link list" },
   { description: "Prominent linked actions", id: "button-group", label: "Buttons" },
   { description: "Managed image from Vercel Blob", id: "image", label: "Image" },

@@ -44,6 +44,8 @@ import { initialLayoutActionState, type LayoutActionState } from "./layout-actio
 import { LayoutRichTextEditor } from "./layout-rich-text-editor";
 import { saveLayoutTemplateAction } from "./template-actions";
 import {
+  WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH,
+  workspaceRCalculationTimeouts,
   cloneWorkspaceLayoutManifestV2,
   createWorkspaceCustomNodeV2,
   createWorkspaceLayoutId,
@@ -64,6 +66,7 @@ import {
   type WorkspaceLayoutRowV2,
   type WorkspaceLayoutTabV2,
   type WorkspaceProductionNodeV2,
+  type WorkspaceRCalculationDefinitionV1,
   type WorkspaceVisibilityConditionV1,
 } from "@/lib/workspace-layout-v2";
 import type { WorkspaceTabId } from "@/lib/workspace-layout";
@@ -145,6 +148,7 @@ const customBlocks: Array<{ description: string; id: WorkspaceCustomBlockKindV2;
   { description: "Highlighted context or caution", id: "callout", label: "Callout" },
   { description: "Plain explanatory paragraph", id: "narrative", label: "Narrative" },
   { description: "A row of key values", id: "metric-strip", label: "Metrics" },
+  { description: "Admin-authored R run in the visitor browser", id: "r-calculation", label: "R calculation" },
   { description: "Links shown as a compact list", id: "link-list", label: "Link list" },
   { description: "Prominent linked actions", id: "button-group", label: "Buttons" },
   { description: "Managed image from Vercel Blob", id: "image", label: "Image" },
@@ -779,6 +783,7 @@ function ProductionSketch({ node }: { node: WorkspaceProductionNodeV2 }) {
 function CustomSketch({ node }: { node: WorkspaceCustomNodeV2 }) {
   if (node.component === "image") return node.asset ? <img alt={node.asset.alt} src={node.asset.url} /> : <div className={styles.imagePlaceholder}><FileImage size={24} /> Choose image</div>;
   if (node.component === "divider") return <hr />;
+  if (node.component === "r-calculation") return <div className={styles.imagePlaceholder}>R in browser - {node.calculation?.timeoutMs ?? 2_500} ms</div>;
   if (node.component === "metric-strip") return <div className={styles.pillSketch}>{node.items?.map((item) => <span key={item.label}>{item.value || item.label}</span>)}</div>;
   return <p>{node.body || node.document?.blocks[0]?.children.map((child) => child.text).join("") || "Configure this content with the gear."}</p>;
 }
@@ -894,7 +899,20 @@ function CustomInspector({ assets, node, onAttachAsset, onChange, onUpload, uplo
   const set = (patch: Partial<WorkspaceCustomNodeV2>) => onChange({ ...node, ...patch });
   return <fieldset><legend>Content</legend>
     {node.component !== "divider" && <label>Title<input maxLength={160} value={node.title ?? ""} onChange={(event) => set({ title: event.target.value })} /></label>}
-    {node.component === "rich-text" ? <LayoutRichTextEditor document={node.document ?? richTextDocumentFromPlainText(node.body ?? "")} key={node.id} onChange={(document) => set({ document })} /> : ["narrative", "callout", "heading", "button-group", "link-list"].includes(node.component) && <label>Body<textarea maxLength={2000} rows={5} value={node.body ?? ""} onChange={(event) => set({ body: event.target.value })} /></label>}
+    {node.component === "rich-text" ? <LayoutRichTextEditor document={node.document ?? richTextDocumentFromPlainText(node.body ?? "")} key={node.id} onChange={(document) => set({ document })} /> : ["narrative", "callout", "heading", "button-group", "link-list", "r-calculation"].includes(node.component) && <label>{node.component === "r-calculation" ? "Description" : "Body"}<textarea maxLength={2000} rows={5} value={node.body ?? ""} onChange={(event) => set({ body: event.target.value })} /></label>}
+    {node.component === "r-calculation" && node.calculation && <>
+      <label>R formula<textarea
+        aria-describedby={`r-calculation-help-${node.id}`}
+        maxLength={WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH}
+        onChange={(event) => set({ calculation: { ...node.calculation!, source: event.target.value } })}
+        rows={14}
+        spellCheck={false}
+        value={node.calculation.source}
+      /></label>
+      <Select label="Calculation timeout" value={String(node.calculation.timeoutMs)} onChange={(value) => set({ calculation: { ...node.calculation!, timeoutMs: Number(value) as WorkspaceRCalculationDefinitionV1["timeoutMs"] } })} options={workspaceRCalculationTimeouts.map(String)} />
+      <small id={`r-calculation-help-${node.id}`}>Runs only when a visitor presses Run. Inputs: crm_context, crm_results, crm_view_results, crm_votes, and crm_view_votes.</small>
+      <small>Use base R and return a scalar, vector, named list, or data frame. Public users can inspect this formula but cannot edit it.</small>
+    </>}
     {node.component === "image" && <>
       <label>Alternative text<input maxLength={240} onChange={(event) => { setAlt(event.target.value); if (node.asset) set({ asset: { ...node.asset, alt: event.target.value } }); }} value={alt} /></label>
       <label className={styles.uploadButton}>{uploading ? <LoaderCircle className={styles.spin} size={16} /> : <FileImage size={16} />} Upload image<input accept="image/avif,image/jpeg,image/png,image/webp" disabled={uploading} onChange={(event) => { const file = event.target.files?.[0]; if (file) void onUpload(file, alt); }} type="file" /></label>

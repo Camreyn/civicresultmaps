@@ -4,11 +4,14 @@
   "private": true,
   "description": "Civic Result Maps: database-backed national election result explorer, public API, and ETL platform.",
   "scripts": {
+    "predev": "npm run browser-r:prepare",
     "dev": "next dev",
+    "prebuild": "npm run browser-r:prepare",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "browser-r:prepare": "node scripts/prepare-browser-r-runtime.mjs",
     "release:verify": "node scripts/verify-national-data-release.mjs",
     "test": "npm run test:analytics && npm run test:layout && npm run test:api && npm run test:security-incidents && npm run test:equipment-catalog && npm run test:etl && npm run test:al-turnout",
     "test:analytics": "node --experimental-strip-types tests/api/workspace-analytics.test.mjs",
@@ -228,7 +231,9 @@
     "etl:prepare:dc": "node scripts/normalize-dc-certified-results.mjs",
     "etl:validate:dc": "npm run etl:prepare:dc && python -m civic_etl.cli validate --config etl/state-configs/dc.json",
     "etl:import:dc": "npm run etl:prepare:dc && python -m civic_etl.cli import --config etl/state-configs/dc.json --out .etl/staging",
-    "test:layout": "node --experimental-strip-types tests/api/workspace-layout.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v2.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v3.test.mjs && node --experimental-strip-types tests/api/workspace-layout-editor-reducer.test.mjs && node --experimental-strip-types tests/api/workspace-layout-contrast.test.mjs && node --experimental-strip-types tests/api/workspace-layout-diff.test.mjs && node --experimental-strip-types tests/api/workspace-layout-scheduler-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-resolution.test.mjs && node --experimental-strip-types tests/api/workspace-layout-publisher-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-visitor.test.mjs && node --experimental-strip-types tests/api/workspace-layout-admin-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-agent-operations.test.mjs && node --experimental-strip-types tests/api/workspace-layout-agent-mcp.test.mjs && node --experimental-strip-types tests/api/workspace-source-catalog.test.mjs && node --experimental-strip-types tests/api/workspace-navigation.test.mjs && node tests/api/navigation-tours.test.mjs",
+    "test:layout": "node --experimental-strip-types tests/api/workspace-layout.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v2.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v3.test.mjs && node --experimental-strip-types tests/api/workspace-layout-editor-reducer.test.mjs && node --experimental-strip-types tests/api/workspace-layout-contrast.test.mjs && node --experimental-strip-types tests/api/workspace-layout-diff.test.mjs && node --experimental-strip-types tests/api/workspace-layout-scheduler-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-resolution.test.mjs && node --experimental-strip-types tests/api/workspace-layout-publisher-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-visitor.test.mjs && node --experimental-strip-types tests/api/workspace-layout-admin-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-agent-operations.test.mjs && node --experimental-strip-types tests/api/workspace-layout-agent-mcp.test.mjs && node --experimental-strip-types tests/api/workspace-source-catalog.test.mjs && node --experimental-strip-types tests/api/workspace-navigation.test.mjs && node --experimental-strip-types tests/api/workspace-r-calculation.test.mjs && node tests/api/navigation-tours.test.mjs",
+    "test:browser-r": "node --experimental-strip-types tests/api/workspace-r-calculation.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v2.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v3.test.mjs && node --experimental-strip-types tests/api/workspace-layout-admin-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-agent-operations.test.mjs",
+    "test:e2e:browser-r": "playwright test --config=playwright.browser-r.config.ts",
     "test:e2e": "playwright test",
     "test:e2e:equipment": "playwright test tests/e2e/equipment-catalog.spec.ts tests/e2e/equipment-social-previews.spec.ts --workers=2",
     "test:e2e:equipment:ci": "playwright test tests/e2e/equipment-catalog.spec.ts tests/e2e/equipment-social-previews.spec.ts --workers=1",
@@ -478,6 +483,7 @@
     "sharp": "^0.34.5",
     "tesseract.js": "^7.0.0",
     "typescript": "^5.7.2",
+    "webr": "0.6.0",
     "xlsx": "^0.18.5"
   }
 }

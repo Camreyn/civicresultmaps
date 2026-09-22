@@ -261,3 +261,64 @@ test("review configuration rejects unknown, duplicate, empty, and hidden default
     assert.match(validation.errors.join(" "), /review/i);
   }
 });
+
+test("R calculation blocks have a valid, bounded default contract", () => {
+  const manifest = cloneWorkspaceLayoutManifestV2(embeddedWorkspaceLayoutManifestV2);
+  const node = createWorkspaceCustomNodeV2("r-calculation");
+  manifest.tabs.find((tab) => tab.id === "map").rows[0].columns[1].items.push(node);
+
+  assert.deepEqual(node.calculation, {
+    input: "workspace-results-v1",
+    source: `list(
+  label = "Total votes in the current view",
+  value = sum(crm_view_results$totalVotes)
+)`,
+    timeoutMs: 2_500,
+    version: 1,
+  });
+  const validation = validateWorkspaceLayoutManifestV2(manifest);
+  assert.equal(validation.ok, true, validation.ok ? "" : validation.errors.join("\n"));
+});
+
+test("R calculation contracts fail closed when missing, empty, misplaced, or unbounded", () => {
+  const invalidNodes = [
+    () => {
+      const node = createWorkspaceCustomNodeV2("r-calculation");
+      delete node.calculation;
+      return node;
+    },
+    () => {
+      const node = createWorkspaceCustomNodeV2("r-calculation");
+      node.calculation.source = "   ";
+      return node;
+    },
+    () => {
+      const node = createWorkspaceCustomNodeV2("r-calculation");
+      node.calculation.timeoutMs = 30_000;
+      return node;
+    },
+    () => {
+      const node = createWorkspaceCustomNodeV2("callout");
+      node.calculation = createWorkspaceCustomNodeV2("r-calculation").calculation;
+      return node;
+    },
+  ];
+
+  for (const createNode of invalidNodes) {
+    const manifest = cloneWorkspaceLayoutManifestV2(embeddedWorkspaceLayoutManifestV2);
+    manifest.tabs.find((tab) => tab.id === "map").rows[0].columns[1].items.push(createNode());
+    assert.equal(validateWorkspaceLayoutManifestV2(manifest).ok, false);
+  }
+});
+
+test("a tab may expose at most one R calculation block", () => {
+  const manifest = cloneWorkspaceLayoutManifestV2(embeddedWorkspaceLayoutManifestV2);
+  const column = manifest.tabs.find((tab) => tab.id === "map").rows[0].columns[1];
+  column.items.push(
+    createWorkspaceCustomNodeV2("r-calculation"),
+    createWorkspaceCustomNodeV2("r-calculation"),
+  );
+  const validation = validateWorkspaceLayoutManifestV2(manifest);
+  assert.equal(validation.ok, false);
+  assert.match(validation.errors.join(" "), /at most 1 R calculation block/i);
+});

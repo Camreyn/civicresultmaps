@@ -370,6 +370,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <section className="main-panel">
           <WorkspaceTabs
             adminSourceStatus={adminSourceStatuses.states[0]}
+            browserRCalculationsEnabled={process.env.WORKSPACE_R_CALCULATIONS_ENABLED === "true"}
             coverage={displayCoverage}
             countyLabel={resultLevelLabel ?? selected?.countyLabel ?? "County"}
             electionYear={selectedYear}
@@ -383,6 +384,8 @@ export default async function Home({ searchParams }: HomeProps) {
             indicators={indicators}
             indicatorsEvaluated={indicatorsEvaluated}
             layoutManifest={layoutManifest}
+            layoutManifestDigest={layoutResolution.envelope.manifestDigest}
+            layoutRevisionId={layoutResolution.envelope.revisionId}
             layoutManifestV3={layoutResolution.runtimeV3Enabled ? layoutManifestV3 : undefined}
             initialFips={validatedInitialFips}
             initialMapMode={initialMapMode}

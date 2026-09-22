@@ -570,6 +570,7 @@ function CustomSketch({ node }: { node: Extract<WorkspaceLayoutNodeV3, { kind: "
   if (node.component === "metric-strip") return <div className={base.pillSketch}>{node.items?.map((item, index) => <span key={`${item.label}-${index}`}>{item.value || item.label}</span>)}</div>;
   if (["link-list", "button-group"].includes(node.component)) return <div className={base.pillSketch}>{node.items?.map((item, index) => <span key={`${item.label}-${index}`}>{item.label}</span>)}</div>;
   if (node.component === "video") return <div className={base.imagePlaceholder}>Video - {node.video?.provider ?? "provider"}</div>;
+  if (node.component === "r-calculation") return <div className={base.imagePlaceholder}>R in browser - {node.calculation?.timeoutMs ?? 2_500} ms</div>;
   return <p>{node.body || node.document?.blocks.flatMap((block) => block.children).map((child) => child.text).join(" ") || "Configure this content with the gear."}</p>;
 }
 
