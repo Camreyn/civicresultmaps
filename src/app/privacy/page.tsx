@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           </div>
           <article className={styles.heroCard}>
             <span>Last updated</span>
-            <strong>August 7, 2026</strong>
+            <strong>September 13, 2026</strong>
             <p>The public election data remains source-linked and reviewable.</p>
           </article>
         </section>
@@ -56,6 +56,12 @@ export default function PrivacyPage() {
           </article>
           <article className={styles.card}>
             <h3>Analytics and public records</h3>
+            <p>
+              To understand which state workspaces are used most, we record aggregate state-load events with the
+              two-letter state code, displayed election year, and whether the state came from the page URL or the
+              site default. These custom event properties do not include names, email addresses, visitor identifiers,
+              county selections, or search text. They measure workspace loads, not a person&apos;s political preferences.
+            </p>
             <p>
               The site uses Vercel Web Analytics for aggregate site-usage measurement. Election sources and normalized data
               published by this project are public records or public-interest datasets; source authority, caveats, and

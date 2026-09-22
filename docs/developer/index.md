@@ -14,6 +14,8 @@ For Alaska's retained 2012/2016/2020 official registration snapshots, exact sour
 
 For the private workspace layout editor, immutable revision model, protected Vercel rollout, rollback, and privacy controls, read [`docs/developer/ui-layout-operations.md`](ui-layout-operations.md).
 
+For state workspace usage events, default-state caveats, privacy limits, and Vercel reporting, read [`docs/developer/workspace-analytics.md`](workspace-analytics.md).
+
 For the guarded layout MCP endpoint, constrained LLM operation vocabulary, authentication, and Codex plugin, read [`docs/developer/layout-agent-tooling.md`](layout-agent-tooling.md).
 
 For the guarded Texas 2012/2016/2020/2024 VTD / precinct-approximation release, including the hidden load, immutable Blob publication, database-gated deployment, and atomic public cutover, read [`docs/developer/tx-precinct-release-runbook.md`](tx-precinct-release-runbook.md).
