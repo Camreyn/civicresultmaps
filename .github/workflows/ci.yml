@@ -27,6 +27,27 @@ jobs:
 
   validate:
     runs-on: ubuntu-latest
+    outputs:
+      typecheck: ${{ steps.typecheck.outcome }}
+      analytics_contract: ${{ steps.analytics_contract.outcome }}
+      layout: ${{ steps.layout.outcome }}
+      mcp: ${{ steps.mcp.outcome }}
+      api_contract: ${{ steps.api_contract.outcome }}
+      security: ${{ steps.security.outcome }}
+      equipment_catalog: ${{ steps.equipment_catalog.outcome }}
+      etl: ${{ steps.etl.outcome }}
+      native_etl: ${{ steps.native_etl.outcome }}
+      sources: ${{ steps.sources.outcome }}
+      turnout: ${{ steps.turnout.outcome }}
+      acquisition: ${{ steps.acquisition.outcome }}
+      integrity: ${{ steps.integrity.outcome }}
+      integrity_requests: ${{ steps.integrity_requests.outcome }}
+      maps: ${{ steps.maps.outcome }}
+      build: ${{ steps.build.outcome }}
+      equipment_browser: ${{ steps.equipment_browser.outcome }}
+      browser: ${{ steps.browser.outcome }}
+      analytics_browser: ${{ steps.analytics_browser.outcome }}
+      numeric_browser: ${{ steps.numeric_browser.outcome }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,48 +64,67 @@ jobs:
         run: npm ci
 
       - name: Typecheck
+        id: typecheck
         run: npm run typecheck
 
       - name: Workspace analytics contract tests
+        id: analytics_contract
         run: npm run test:analytics
 
       - name: Workspace layout contract tests
+        id: layout
         run: npm run test:layout
 
+      - name: Guarded MCP contract tests
+        id: mcp
+        run: npm run test:mcp
+
       - name: API contract tests
+        id: api_contract
         run: npm run test:api
 
       - name: Security incident tests
+        id: security
         run: npm run test:security-incidents
 
       - name: Equipment catalog validation
+        id: equipment_catalog
         run: npm run test:equipment-catalog
 
       - name: ETL tests
+        id: etl
         run: npm run test:etl
 
       - name: Native ETL validation
+        id: native_etl
         run: npm run etl:validate:all
 
       - name: Native source package validation
+        id: sources
         run: npm run validate:source-packages
 
       - name: Turnout source package validation
+        id: turnout
         run: npm run validate:turnout-packages
 
       - name: Source acquisition tier validation
+        id: acquisition
         run: npm run validate:source-acquisition-tiers
 
       - name: Electronic integrity registry validation
+        id: integrity
         run: npm run validate:electronic-integrity
 
       - name: Electronic integrity request workflow validation
+        id: integrity_requests
         run: npm run validate:electronic-integrity-requests
 
       - name: Map geometry validation
+        id: maps
         run: npm run validate:map-geometry
 
       - name: Feature-enabled public equipment build
+        id: build
         run: npm run build
         env:
           EQUIPMENT_CATALOG_CHANNEL: public
@@ -96,13 +136,72 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Equipment browser tests
+        id: equipment_browser
         run: npm run test:e2e:equipment:ci
 
       - name: Workspace layout browser tests
+        id: browser
         run: npm run test:e2e:workspace
 
       - name: Workspace analytics browser tests
+        id: analytics_browser
         run: npx playwright test tests/e2e/workspace-analytics.spec.ts --workers=1
+
+      - name: Numeric verification browser fixture
+        id: numeric_browser
+        run: npm run test:mcp:browser
+
+  verification-evidence:
+    name: Verification evidence
+    if: always()
+    needs:
+      - api-integration
+      - validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Capture verification evidence
+        run: >-
+          node --experimental-strip-types scripts/record-ci-verification.mjs
+          "Public-API=${{ needs.api-integration.result }}"
+          "Validate-job=${{ needs.validate.result }}"
+          "Typecheck=${{ needs.validate.outputs.typecheck || 'skipped' }}"
+          "Analytics-contract=${{ needs.validate.outputs.analytics_contract || 'skipped' }}"
+          "MCP=${{ needs.validate.outputs.mcp || 'skipped' }}"
+          "Layout=${{ needs.validate.outputs.layout || 'skipped' }}"
+          "API-contract=${{ needs.validate.outputs.api_contract || 'skipped' }}"
+          "Security=${{ needs.validate.outputs.security || 'skipped' }}"
+          "Equipment-catalog=${{ needs.validate.outputs.equipment_catalog || 'skipped' }}"
+          "ETL=${{ needs.validate.outputs.etl || 'skipped' }}"
+          "Native-ETL=${{ needs.validate.outputs.native_etl || 'skipped' }}"
+          "Sources=${{ needs.validate.outputs.sources || 'skipped' }}"
+          "Turnout=${{ needs.validate.outputs.turnout || 'skipped' }}"
+          "Acquisition=${{ needs.validate.outputs.acquisition || 'skipped' }}"
+          "Integrity=${{ needs.validate.outputs.integrity || 'skipped' }}"
+          "Integrity-requests=${{ needs.validate.outputs.integrity_requests || 'skipped' }}"
+          "Maps=${{ needs.validate.outputs.maps || 'skipped' }}"
+          "Build=${{ needs.validate.outputs.build || 'skipped' }}"
+          "Equipment-browser=${{ needs.validate.outputs.equipment_browser || 'skipped' }}"
+          "Browser=${{ needs.validate.outputs.browser || 'skipped' }}"
+          "Analytics-browser=${{ needs.validate.outputs.analytics_browser || 'skipped' }}"
+          "Numeric-browser=${{ needs.validate.outputs.numeric_browser || 'skipped' }}"
+
+      - name: Upload verification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-evidence
+          path: .etl/ci-verification/verification-evidence.json
+          if-no-files-found: error
+          include-hidden-files: true
 
   vercel-preview:
     if: github.event_name == 'pull_request'

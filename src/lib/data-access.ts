@@ -39,6 +39,12 @@ import type {
 import { jurisdictionTagForRow } from "./jurisdiction-tags";
 import { finalizeResultRowSummary } from "./result-row-summary";
 
+function validatePageOffset(offset?: number) {
+  if (offset !== undefined && (!Number.isSafeInteger(offset) || offset < 0 || offset > 200_000)) {
+    throw new Error("Invalid public data page offset.");
+  }
+}
+
 const emptyCapabilities: CapabilitySummary = {
   sourcePlanner: true,
   certifiedResults: false,
@@ -1006,10 +1012,14 @@ export async function listReviewRows(input: {
   includeMetrics?: boolean;
   includeReportingUnitIdentity?: boolean;
   limit?: number;
+  offset?: number;
+  strict?: boolean;
   state: string;
   year: number;
 }): Promise<ReviewRowSummary[]> {
+  validatePageOffset(input.offset);
   if (!hasReadableDatabase()) {
+    if (input.strict) throw new Error("Database required for complete evidence reads.");
     return [];
   }
 
@@ -1076,10 +1086,12 @@ export async function listReviewRows(input: {
       left join source_documents on review_rows.source_document_id = source_documents.id
       where review_rows.state_code = ${input.state}
         and review_rows.election_year = ${input.year}
-      order by review_rows.jurisdiction_name, review_rows.local_unit
+      order by review_rows.jurisdiction_name, review_rows.local_unit, review_rows.id
       limit ${Math.min(Math.max(input.limit ?? 500, 1), 20000)}
+      offset ${input.offset ?? 0}
     `) as typeof rows;
   } catch (error) {
+    if (input.strict) throw error;
     rethrowReadErrorIfStrict(error);
     return [];
   }
@@ -1115,10 +1127,14 @@ export async function listReviewRows(input: {
 export async function listTurnoutRows(input: {
   includeReportingUnitIdentity?: boolean;
   limit?: number;
+  offset?: number;
+  strict?: boolean;
   state: string;
   year: number;
 }): Promise<TurnoutRowSummary[]> {
+  validatePageOffset(input.offset);
   if (!hasReadableDatabase()) {
+    if (input.strict) throw new Error("Database required for complete evidence reads.");
     return [];
   }
 
@@ -1161,10 +1177,12 @@ export async function listTurnoutRows(input: {
       left join source_documents on turnout_rows.source_document_id = source_documents.id
       where turnout_rows.state_code = ${input.state}
         and turnout_rows.election_year = ${input.year}
-      order by turnout_rows.jurisdiction_name
+      order by turnout_rows.jurisdiction_name, turnout_rows.id
       limit ${Math.min(Math.max(input.limit ?? 500, 1), 20000)}
+      offset ${input.offset ?? 0}
     `) as typeof rows;
   } catch (error) {
+    if (input.strict) throw error;
     rethrowReadErrorIfStrict(error);
     return [];
   }
@@ -1190,10 +1208,14 @@ export async function listTurnoutRows(input: {
 export async function listHistoricalResultRows(input: {
   includeMetrics?: boolean;
   limit?: number;
+  offset?: number;
+  strict?: boolean;
   state: string;
   year?: number;
 }): Promise<HistoricalResultRowSummary[]> {
+  validatePageOffset(input.offset);
   if (!hasReadableDatabase()) {
+    if (input.strict) throw new Error("Database required for complete evidence reads.");
     return [];
   }
 
@@ -1241,8 +1263,9 @@ export async function listHistoricalResultRows(input: {
           left join source_documents on historical_result_rows.source_document_id = source_documents.id
           where historical_result_rows.state_code = ${input.state}
             and historical_result_rows.election_year = ${input.year}
-          order by historical_result_rows.election_year desc, historical_result_rows.jurisdiction_name
+          order by historical_result_rows.election_year desc, historical_result_rows.jurisdiction_name, historical_result_rows.id
           limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+          offset ${input.offset ?? 0}
         `) as typeof rows)
       : ((await sql`
           select
@@ -1265,10 +1288,12 @@ export async function listHistoricalResultRows(input: {
           from historical_result_rows
           left join source_documents on historical_result_rows.source_document_id = source_documents.id
           where historical_result_rows.state_code = ${input.state}
-          order by historical_result_rows.election_year desc, historical_result_rows.jurisdiction_name
+          order by historical_result_rows.election_year desc, historical_result_rows.jurisdiction_name, historical_result_rows.id
           limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+          offset ${input.offset ?? 0}
         `) as typeof rows);
   } catch (error) {
+    if (input.strict) throw error;
     rethrowReadErrorIfStrict(error);
     return [];
   }

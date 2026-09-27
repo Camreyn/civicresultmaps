@@ -1437,7 +1437,7 @@ export function ResultsExplorer({
   };
 
   return (
-    <section className="results-explorer" aria-label={`${selectedState} result explorer`}>
+    <section className="results-explorer" aria-label={`${selectedState} result explorer`} data-crm-state={selectedState} data-crm-year={electionYear}>
       <div className="panel map-panel" data-tour="map-panel" aria-label={`${selectedState} county map`}>
         <div className="panel-header">
           <div>
@@ -1693,6 +1693,7 @@ export function ResultsExplorer({
                   <g key={`${selectedState}-${mapMode}-${name}-${featureIndex}`}>
                     <path
                       aria-pressed={Boolean(isPinned)}
+                      data-crm-map-jurisdiction={row?.jurisdictionCode}
                       aria-label={featureAriaLabel}
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
@@ -1881,18 +1882,18 @@ export function ResultsExplorer({
           </div>
           {selectedMapResult && mapMode !== "security" && (
             <>
-              <dl className="jurisdiction-stats">
+              <dl className="jurisdiction-stats" data-crm-drawer-jurisdiction={selectedMapResult.jurisdictionCode}>
                 <div>
                   <dt>{yearCandidates.dem}</dt>
-                  <dd>{(selectedMapResult.votes[yearCandidates.dem] ?? 0).toLocaleString()}</dd>
+                  <dd data-crm-field="demVotes">{(selectedMapResult.votes[yearCandidates.dem] ?? 0).toLocaleString()}</dd>
                 </div>
                 <div>
                   <dt>{yearCandidates.rep}</dt>
-                  <dd>{(selectedMapResult.votes[yearCandidates.rep] ?? 0).toLocaleString()}</dd>
+                  <dd data-crm-field="repVotes">{(selectedMapResult.votes[yearCandidates.rep] ?? 0).toLocaleString()}</dd>
                 </div>
                 <div>
                   <dt>Total</dt>
-                  <dd>{selectedMapResult.totalVotes.toLocaleString()}</dd>
+                  <dd data-crm-field="totalVotes">{selectedMapResult.totalVotes.toLocaleString()}</dd>
                 </div>
                 <div>
                   <dt>Indicators</dt>
@@ -2260,6 +2261,8 @@ export function ResultsExplorer({
                     return (
                     <tr
                       aria-label={`Inspect ${row.jurisdictionName}`}
+                      data-crm-jurisdiction={row.jurisdictionCode}
+                      data-crm-jurisdiction-tag={row.jurisdictionTag ?? ""}
                       className={rowClassName}
                       key={row.jurisdictionCode}
                       onClick={(event) => handleRowInspect(event.target)}
@@ -2278,7 +2281,7 @@ export function ResultsExplorer({
                       tabIndex={0}
                       title={`Inspect ${row.jurisdictionName}`}
                     >
-                      <td>{row.jurisdictionName}</td>
+                      <td data-crm-field="jurisdictionName">{row.jurisdictionName}</td>
                       <td>
                         {rowIndicators.length > 0 ? (
                           <div className="indicator-stack">
@@ -2306,13 +2309,13 @@ export function ResultsExplorer({
                         )}
                       </td>
                       <td className="benefit-cell" title={benefit.title}>{benefit.label}</td>
-                      <td className={isDemocraticWinner(row.winner) ? "winner-harris" : "winner-trump"}>
+                      <td data-crm-field="winner" className={isDemocraticWinner(row.winner) ? "winner-harris" : "winner-trump"}>
                         {row.winner}
                       </td>
-                      <td className="mono">{(row.votes[yearCandidates.dem] ?? 0).toLocaleString()}</td>
-                      <td className="mono">{(row.votes[yearCandidates.rep] ?? 0).toLocaleString()}</td>
-                      <td className="mono">{row.totalVotes.toLocaleString()}</td>
-                      <td className="mono">
+                      <td data-crm-field="demVotes" className="mono">{(row.votes[yearCandidates.dem] ?? 0).toLocaleString()}</td>
+                      <td data-crm-field="repVotes" className="mono">{(row.votes[yearCandidates.rep] ?? 0).toLocaleString()}</td>
+                      <td data-crm-field="totalVotes" className="mono">{row.totalVotes.toLocaleString()}</td>
+                      <td data-crm-field="margin" className="mono">
                         {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)
                       </td>
                       <td className="mono">
