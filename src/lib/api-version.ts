@@ -1,5 +1,5 @@
 export const publicApiSchemaVersion = "1.0.0";
-export const securityIncidentApiSchemaVersion = "4.1.0";
+export const securityIncidentApiSchemaVersion = "4.2.0";
 export const equipmentCatalogApiSchemaVersion = "2.1.0";
 export const currentNationalReleaseId = "2026-07-11-national-county-v1";
 

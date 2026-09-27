@@ -73,7 +73,7 @@ const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
   { label: "Results only", value: "results-only" },
   { label: "Needs sources", value: "needs-sources" },
   { label: "Result maps", value: "has-result-map" },
-  { label: "States with bomb-threat records", value: "has-security-incidents" },
+  { label: "States with security-incident records", value: "has-security-incidents" },
   { label: "Equipment maps only", value: "equipment-map-only" },
   { label: "Missing turnout", value: "missing-turnout" },
   { label: "Missing review", value: "missing-review" },
@@ -482,8 +482,9 @@ export function StateSwitcher({
       </label>
       {stateFilter === "has-security-incidents" && (
         <p className="state-filter-note">
-          Shows the nine states in the later 227-threat public-source tracker. Named counties are mapped; threats
-          reported only at the state level remain in the totals without being assigned to a county.
+          Shows 10 states with loaded security records: nine in the later 227-bomb-threat public-source tracker plus
+          Ohio&apos;s official suspicious-package response. Named counties are mapped; threats reported only at the state
+          level remain in the totals without being assigned to a county.
         </p>
       )}
       <label className="state-search" htmlFor="state-search">
