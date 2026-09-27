@@ -45,7 +45,7 @@ test("later tracker is normalized without inventing county geography", () => {
   assert.match(tracker.caveat, /may not be exhaustive/i);
 });
 
-test("registry covers all tracker rows plus the earlier Milwaukee mention", () => {
+test("registry covers tracker rows plus the Milwaukee and Hamilton County additions", () => {
   const countyRows = registry.incidentRows.filter((row) => row.reportingGrain === "county");
   const statewideRows = registry.incidentRows.filter((row) => row.reportingGrain === "statewide_unspecified");
   const knownThreatCount = registry.incidentRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
@@ -55,23 +55,27 @@ test("registry covers all tracker rows plus the earlier Milwaukee mention", () =
       .map((row) => [row.state, row.eventDate, row.jurisdictionTag, row.threatCount].join("|")),
   );
 
-  assert.equal(registry.schemaVersion, 5);
+  assert.equal(registry.schemaVersion, 6);
   assert.equal(registry.electionYear, 2024);
   assert.equal(registry.reportingGrain, "mixed_county_and_statewide_unspecified");
   assert.deepEqual(registry.reportingWindow, { start: "2024-11-05", end: "2024-11-09" });
-  assert.equal(registry.incidentRows.length, 111);
-  assert.equal(countyRows.length, 109);
-  assert.equal(new Set(countyRows.map((row) => row.jurisdictionTag)).size, 109);
+  assert.equal(registry.incidentRows.length, 112);
+  assert.equal(countyRows.length, 110);
+  assert.equal(new Set(countyRows.map((row) => row.jurisdictionTag)).size, 110);
   assert.equal(statewideRows.length, 2);
   assert.equal(statewideRows.reduce((sum, row) => sum + row.threatCount, 0), 66);
   assert.equal(knownThreatCount, 227);
-  assert.equal(registry.incidentRows.filter((row) => row.threatCount === null).length, 1);
-  assert.equal(registry.incidentRows.filter((row) => row.sourceTier === "official").length, 6);
+  assert.equal(
+    registry.incidentRows.filter((row) => row.eventType === "bomb_threat" && row.threatCount === null).length,
+    1,
+  );
+  assert.equal(registry.incidentRows.filter((row) => row.eventType === "security_threat").length, 1);
+  assert.equal(registry.incidentRows.filter((row) => row.sourceTier === "official").length, 7);
   assert.equal(registry.incidentRows.filter((row) => row.sourceTier === "supplemental").length, 105);
   assert.equal(registry.incidentRows.filter((row) => row.sourceStatus === "research_compilation").length, 104);
   assert.deepEqual(registry.expected.affectedLocationUnitTotals, {
     election_office: 1,
-    polling_location: 13,
+    polling_location: 14,
     voting_precinct: 6,
   });
 
@@ -92,7 +96,7 @@ test("registry covers all tracker rows plus the earlier Milwaukee mention", () =
   const officialStateRows = officialRows.filter((row) => row.reportingGrain === "statewide_unspecified");
   assert.deepEqual(
     new Set(officialCountyRows.map((row) => row.county)),
-    new Set(["Pima County", "DeKalb County", "Fulton County", "Chester County", "Philadelphia County"]),
+    new Set(["Pima County", "DeKalb County", "Fulton County", "Hamilton County", "Chester County", "Philadelphia County"]),
   );
   assert.equal(officialStateRows.length, 1);
   assert.equal(officialStateRows[0].state, "MN");
@@ -100,7 +104,23 @@ test("registry covers all tracker rows plus the earlier Milwaukee mention", () =
   assert.equal(officialStateRows[0].jurisdictionCode, null);
   assert.ok(officialCountyRows.every((row) => row.sourceStatus === "official_county_record"));
   assert.ok(officialStateRows.every((row) => row.sourceStatus === "official_state_record"));
-  assert.ok(officialRows.every((row) => row.threatCountBasis === "research_tracker_compilation"));
+  assert.ok(
+    officialRows
+      .filter((row) => row.eventType === "bomb_threat")
+      .every((row) => row.threatCountBasis === "research_tracker_compilation"),
+  );
+
+  const hamiltonRow = registry.incidentRows.find(
+    (row) => row.id === "oh-2024-general-hamilton-suspicious-package-response",
+  );
+  assert.ok(hamiltonRow);
+  assert.equal(hamiltonRow.eventType, "security_threat");
+  assert.equal(hamiltonRow.threatCount, null);
+  assert.equal(hamiltonRow.threatCountBasis, "not_applicable_non_bomb_incident");
+  assert.equal(hamiltonRow.jurisdictionTag, "county:39061");
+  assert.equal(hamiltonRow.affectedLocations, 1);
+  assert.ok(hamiltonRow.supportingSourceUrls.some((url) => url.includes("/22136-2/")));
+  assert.match(hamiltonRow.caveat, /do not document a bomb-threat message/i);
 
   for (const row of registry.incidentRows) {
     if (row.reportingGrain === "county") {
@@ -124,41 +144,55 @@ test("registry covers all tracker rows plus the earlier Milwaukee mention", () =
   assert.match(registry.caveat, /66 threats whose counties were not specified/i);
 });
 
-test("nationwide inventory identifies nine states and mixed geography limits", () => {
+test("nationwide inventory identifies 10 states and keeps event types separate", () => {
   const partialStates = inventory.stateCoverage.filter((entry) => entry.status === "partial");
   const georgia = inventory.stateCoverage.find((entry) => entry.state === "GA");
   const minnesota = inventory.stateCoverage.find((entry) => entry.state === "MN");
+  const ohio = inventory.stateCoverage.find((entry) => entry.state === "OH");
 
   assert.equal(inventory.schemaVersion, 4);
   assert.equal(inventory.stateCoverage.length, 51);
   assert.equal(new Set(inventory.stateCoverage.map((entry) => entry.state)).size, 51);
-  assert.equal(partialStates.length, 9);
+  assert.equal(partialStates.length, 10);
   assert.deepEqual(
     new Set(partialStates.map((entry) => entry.state)),
-    new Set(["AZ", "CA", "GA", "MD", "MI", "MN", "OR", "PA", "WI"]),
+    new Set(["AZ", "CA", "GA", "MD", "MI", "MN", "OH", "OR", "PA", "WI"]),
   );
-  assert.equal(inventory.expected.statesWithNormalizedRows, 9);
-  assert.equal(inventory.expected.normalizedEventRows, 111);
-  assert.equal(inventory.expected.mappedCountyCount, 109);
+  assert.equal(inventory.expected.statesWithNormalizedRows, 10);
+  assert.equal(inventory.expected.normalizedEventRows, 112);
+  assert.equal(inventory.expected.mappedCountyCount, 110);
   assert.equal(inventory.expected.statewideUnspecifiedRowCount, 2);
   assert.equal(inventory.expected.knownThreatCountMinimum, 227);
+  assert.equal(inventory.expected.nonBombThreatRowCount, 1);
   assert.equal(georgia.statewideUnspecifiedThreatCount, 19);
   assert.equal(minnesota.mappedCountyCount, 0);
   assert.equal(minnesota.statewideUnspecifiedThreatCount, 47);
+  assert.equal(ohio.expectedRowCount, 1);
+  assert.equal(ohio.mappedCountyCount, 1);
+  assert.equal(ohio.confidence, "official_security_incident_record");
+  assert.match(ohio.caveat, /non-bomb-threat security incident/i);
   assert.match(inventory.caveat, /not an official FBI roster/i);
   assert.match(inventory.caveat, /may not be exhaustive/i);
 });
 
-test("reviewed Minnesota and Philadelphia sources preserve their documented limits", () => {
-  assert.equal(inventory.reviewedOfficialSources.length, 2);
+test("reviewed official sources preserve their documented limits", () => {
+  assert.equal(inventory.reviewedOfficialSources.length, 4);
   const minnesotaSource = inventory.reviewedOfficialSources.find(
     (source) => source.sourceAuthority === "Office of the Minnesota Secretary of State",
   );
   const philadelphiaSource = inventory.reviewedOfficialSources.find(
     (source) => source.sourceAuthority === "First Judicial District of Pennsylvania",
   );
+  const hamiltonSources = inventory.reviewedOfficialSources.filter(
+    (source) => source.sourceAuthority === "Hamilton County Board of Elections",
+  );
   assert.ok(minnesotaSource);
   assert.ok(philadelphiaSource);
+  assert.equal(hamiltonSources.length, 2);
+  assert.deepEqual(
+    new Set(hamiltonSources.map((source) => source.acquisitionStatus)),
+    new Set(["download_complete_pdf_visually_reviewed"]),
+  );
   assert.match(minnesotaSource.caveat, /does not publish an exact threat count or name the affected counties/i);
   assert.equal(philadelphiaSource.expectedAffectedLocationCount, 6);
 
@@ -273,6 +307,7 @@ test("security API, extractor, builder, and server loader are wired", () => {
   assert.match(builder, /supplemental_earlier_compilation/);
   assert.match(builder, /Pima County/);
   assert.match(builder, /Philadelphia County/);
+  assert.match(builder, /hamiltonSuspiciousPackageRow/);
   assert.match(builder, /official_state_record/);
   assert.match(extractor, /pdf-parse/);
   assert.match(extractor, /national-counties\.geojson/);
@@ -291,9 +326,10 @@ test("security API, extractor, builder, and server loader are wired", () => {
   assert.match(productionSmoke, /deployment_status/);
   assert.match(productionSmoke, /civicresultmaps\.org/);
   assert.match(smokeScript, /\/api\/security-incidents\?year=2024&limit=5000/);
-  assert.match(smokeScript, /rowCount: 111/);
+  assert.match(smokeScript, /rowCount: 112/);
   assert.match(smokeScript, /state=GA/);
   assert.match(smokeScript, /state=MN/);
+  assert.match(smokeScript, /state=OH/);
 });
 
 test("security map layer keeps statewide rows off county joins", () => {

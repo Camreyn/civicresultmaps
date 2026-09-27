@@ -3,6 +3,7 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { listCompletenessReport, listIndicators, listResults } from "@/lib/api";
+import { securityIncidentMetricText } from "@/lib/security-incident-summary";
 import { getNationalSecurityIncidentReport } from "@/lib/security-incidents";
 import {
   buildStateSocialPreview,
@@ -346,11 +347,6 @@ function setSocialCardCache(response: ImageResponse) {
   return response;
 }
 
-function securityStateThreatLabel(knownThreatCount: number, unknownThreatCountRows: number) {
-  if (unknownThreatCountRows && !knownThreatCount) return "Count not separately published";
-  if (unknownThreatCountRows) return `At least ${knownThreatCount.toLocaleString("en-US")} reported threats`;
-  return `${knownThreatCount.toLocaleString("en-US")} reported threats`;
-}
 
 function buildSecuritySocialCard() {
   const report = getNationalSecurityIncidentReport(2024);
@@ -403,7 +399,7 @@ function buildSecuritySocialCard() {
                 2024 ELECTION SECURITY
               </div>
               <div style={{ display: "flex", fontSize: 43, fontWeight: 900, lineHeight: 1.04 }}>
-                Bomb-threat incident explorer
+                Election security incident explorer
               </div>
               <div style={{ display: "flex", fontSize: 18, color: "#a9aaa4", lineHeight: 1.32 }}>
                 County incident records with optional presidential winner and margin overlays.
@@ -425,7 +421,7 @@ function buildSecuritySocialCard() {
                 }}
               >
                 <div style={{ display: "flex", fontSize: 25, fontWeight: 900 }}>{report.totals.knownThreatCount}</div>
-                <div style={{ display: "flex", fontSize: 12, color: "#a9aaa4" }}>known minimum</div>
+                <div style={{ display: "flex", fontSize: 12, color: "#a9aaa4" }}>bomb-threat minimum</div>
               </div>
               <div
                 style={{
@@ -480,8 +476,8 @@ function buildSecuritySocialCard() {
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 13 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <div style={{ display: "flex", fontSize: 22, fontWeight: 900 }}>Nine loaded states</div>
-              <div style={{ display: "flex", color: "#a9aaa4", fontSize: 13 }}>November 5-9, 2024 public reports</div>
+              <div style={{ display: "flex", fontSize: 22, fontWeight: 900 }}>{report.totals.stateCount} loaded states</div>
+              <div style={{ display: "flex", color: "#a9aaa4", fontSize: 13 }}>November 5-9, 2024 source-linked records</div>
             </div>
             <div style={{ display: "flex", alignItems: "center", color: "#a9aaa4", fontSize: 12 }}>
               <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
@@ -495,8 +491,8 @@ function buildSecuritySocialCard() {
               <div
                 key={state.state}
                 style={{
-                  width: 215,
-                  height: 137,
+                  width: 325,
+                  height: 88,
                   border: "1px solid #2c302e",
                   borderTop: "3px solid #f97316",
                   borderRadius: 8,
@@ -504,7 +500,7 @@ function buildSecuritySocialCard() {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  padding: "12px 13px",
+                  padding: "8px 12px",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -513,7 +509,7 @@ function buildSecuritySocialCard() {
                 </div>
                 <div style={{ display: "flex", fontSize: 18, fontWeight: 900 }}>{state.stateName}</div>
                 <div style={{ display: "flex", color: "#a9aaa4", fontSize: 13, lineHeight: 1.25 }}>
-                  {securityStateThreatLabel(state.knownThreatCount, state.unknownThreatCountRows)}
+                  {securityIncidentMetricText(state)}
                 </div>
               </div>
             ))}

@@ -14,6 +14,7 @@ const allowedAffectedLocationUnits = new Set([
   "polling_location",
   "voting_precinct",
 ]);
+const allowedEventTypes = new Set(["bomb_threat", "security_threat"]);
 const allowedSourceTiers = new Set(["official", "supplemental"]);
 const allowedSourceStatuses = new Set([
   "official_county_record",
@@ -26,6 +27,7 @@ const allowedThreatCountBases = new Set([
   "official_county_record",
   "research_tracker_compilation",
   "supplemental_national_compilation",
+  "not_applicable_non_bomb_incident",
   "not_separately_published",
 ]);
 const officialHostPattern = /(^|\.)(gov|mil)$/i;
@@ -110,7 +112,7 @@ async function validateArtifact(localArtifact, label, expectedSha256) {
 }
 
 if (
-  registry.schemaVersion !== 5
+  registry.schemaVersion !== 6
   || registry.electionYear !== 2024
   || registry.reportingGrain !== "mixed_county_and_statewide_unspecified"
 ) {
@@ -207,6 +209,9 @@ for (const row of registry.incidentRows ?? []) {
   ) {
     addError(`${label} eventDate must fall inside the reporting window.`);
   }
+  if (!allowedEventTypes.has(row.eventType)) {
+    addError(`${label} has unsupported eventType ${row.eventType}.`);
+  }
   if (row.threatCount !== null && (!Number.isInteger(row.threatCount) || row.threatCount < 1)) {
     addError(`${label} threatCount must be null or a positive integer.`);
   }
@@ -216,8 +221,26 @@ for (const row of registry.incidentRows ?? []) {
   if (row.threatCount !== null && (!row.threatCountSourceUrl || !row.threatCountLocalArtifact)) {
     addError(`${label} needs a threat-count source URL and local artifact when threatCount is known.`);
   }
-  if (row.threatCount === null && row.threatCountBasis !== "not_separately_published") {
-    addError(`${label} with an unknown threatCount must use not_separately_published.`);
+  if (
+    row.eventType === "bomb_threat"
+    && row.threatCount === null
+    && row.threatCountBasis !== "not_separately_published"
+  ) {
+    addError(`${label} bomb-threat row with an unknown count must use not_separately_published.`);
+  }
+  if (
+    row.eventType === "security_threat"
+    && (
+      row.threatCount !== null
+      || row.threatCountBasis !== "not_applicable_non_bomb_incident"
+      || row.threatCountSourceUrl !== null
+      || row.threatCountLocalArtifact !== null
+    )
+  ) {
+    addError(`${label} non-bomb-threat incident must keep bomb-threat count fields not applicable.`);
+  }
+  if (row.eventType === "bomb_threat" && row.threatCountBasis === "not_applicable_non_bomb_incident") {
+    addError(`${label} bomb-threat row cannot use the non-bomb-threat count basis.`);
   }
   if (row.threatCountBasis === "research_tracker_compilation") {
     const host = sourceHost(row.threatCountSourceUrl, `${label} threatCountSourceUrl`);
@@ -284,18 +307,22 @@ for (const row of registry.incidentRows ?? []) {
 const rows = registry.incidentRows ?? [];
 const countyRows = rows.filter((row) => row.reportingGrain === "county");
 const statewideRows = rows.filter((row) => row.reportingGrain === "statewide_unspecified");
-const completeThreatCountRows = rows.filter((row) => row.threatCount !== null).length;
-const knownThreatCountMinimum = rows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
+const bombThreatRows = rows.filter((row) => row.eventType === "bomb_threat");
+const nonBombThreatRows = rows.filter((row) => row.eventType !== "bomb_threat");
+const completeThreatCountRows = bombThreatRows.filter((row) => row.threatCount !== null).length;
+const unknownThreatCountRows = bombThreatRows.filter((row) => row.threatCount === null).length;
+const knownThreatCountMinimum = bombThreatRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
 const statewideUnspecifiedThreatCount = statewideRows.reduce((sum, row) => sum + row.threatCount, 0);
-expectEqual(rows.length, 111, "Normalized incident row count");
-expectEqual(new Set(rows.map((row) => row.state)).size, 9, "Normalized state count");
-expectEqual(countyRows.length, 109, "County row count");
-expectEqual(new Set(countyRows.map((row) => row.jurisdictionTag)).size, 109, "Mapped county count");
+expectEqual(rows.length, 112, "Normalized incident row count");
+expectEqual(new Set(rows.map((row) => row.state)).size, 10, "Normalized state count");
+expectEqual(countyRows.length, 110, "County row count");
+expectEqual(new Set(countyRows.map((row) => row.jurisdictionTag)).size, 110, "Mapped county count");
 expectEqual(statewideRows.length, 2, "Statewide-unspecified row count");
 expectEqual(statewideUnspecifiedThreatCount, 66, "Statewide-unspecified threat count");
-expectEqual(completeThreatCountRows, 110, "Rows with published threat counts");
-expectEqual(rows.length - completeThreatCountRows, 1, "Rows without a published count");
-expectEqual(knownThreatCountMinimum, 227, "Known threat-count minimum");
+expectEqual(completeThreatCountRows, 110, "Bomb-threat rows with published counts");
+expectEqual(unknownThreatCountRows, 1, "Bomb-threat rows without a published count");
+expectEqual(nonBombThreatRows.length, 1, "Non-bomb-threat security incident rows");
+expectEqual(knownThreatCountMinimum, 227, "Known bomb-threat-count minimum");
 
 for (const [field, actual] of Object.entries({
   rowCount: rows.length,
@@ -305,7 +332,8 @@ for (const [field, actual] of Object.entries({
   statewideUnspecifiedRowCount: statewideRows.length,
   statewideUnspecifiedThreatCount,
   completeThreatCountRows,
-  unknownThreatCountRows: rows.length - completeThreatCountRows,
+  unknownThreatCountRows,
+  nonBombThreatRowCount: nonBombThreatRows.length,
   knownThreatCountMinimum,
   officialRowCount: rows.filter((row) => row.sourceTier === "official").length,
 })) {
@@ -493,6 +521,7 @@ for (const [field, actual] of Object.entries({
   mappedCountyCount: new Set(countyRows.map((row) => row.jurisdictionTag)).size,
   statewideUnspecifiedRowCount: statewideRows.length,
   knownThreatCountMinimum,
+  nonBombThreatRowCount: nonBombThreatRows.length,
   officialRowCount: rows.filter((row) => row.sourceTier === "official").length,
   reviewedOfficialSourceCount: inventory.reviewedOfficialSources?.length ?? 0,
   trackerRowCount: trackerRows.length,
@@ -506,7 +535,7 @@ for (const [field, actual] of Object.entries({
 if (!Array.isArray(inventory.reviewedOfficialSources)) {
   addError("Source inventory reviewedOfficialSources must be an array.");
 } else {
-  expectEqual(inventory.reviewedOfficialSources.length, 2, "Reviewed official source count");
+  expectEqual(inventory.reviewedOfficialSources.length, 4, "Reviewed official source count");
   for (const source of inventory.reviewedOfficialSources) {
     const label = source.sourceAuthority ?? "Reviewed official source";
     if (
@@ -546,6 +575,22 @@ if (
   || philadelphia.sourceStatus !== "official_county_record"
 ) {
   addError("Philadelphia must preserve 10 tracker threats separately from six polling locations named in the official court record.");
+}
+
+const hamilton = rows.find((row) => row.id === "oh-2024-general-hamilton-suspicious-package-response");
+if (
+  !hamilton
+  || hamilton.eventType !== "security_threat"
+  || hamilton.threatCount !== null
+  || hamilton.threatCountBasis !== "not_applicable_non_bomb_incident"
+  || hamilton.jurisdictionTag !== "county:39061"
+  || hamilton.affectedLocations !== 1
+  || hamilton.affectedLocationUnit !== "polling_location"
+  || hamilton.sourceTier !== "official"
+  || !hamilton.supportingSourceUrls?.some((url) => url.includes("/22136-2/"))
+  || !/do not document a bomb-threat message/i.test(hamilton.caveat)
+) {
+  addError("Hamilton County must preserve the official suspicious-package response without adding it to bomb-threat totals.");
 }
 
 for (const context of inventory.nationalContext ?? []) {
