@@ -1,0 +1,4 @@
+interface:
+  display_name: "CivicResultMaps MCP"
+  short_description: "Run guarded local CivicResultMaps workflows"
+  default_prompt: "Use $civicresultmaps-mcp to verify the local MCP server and run the safest reviewed repository workflow for this task."

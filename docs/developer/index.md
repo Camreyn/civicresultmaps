@@ -18,6 +18,12 @@ For state workspace usage events, default-state caveats, privacy limits, and Ver
 
 For the guarded layout MCP endpoint, constrained LLM operation vocabulary, authentication, and Codex plugin, read [`docs/developer/layout-agent-tooling.md`](layout-agent-tooling.md).
 
+For the private local ChatGPT/Codex STDIO server that exposes guarded repository inventory, ETL, staging, comparison, and validator tools, read [`docs/developer/local-mcp.md`](local-mcp.md).
+
+For the first five MCP workflow additions and their verification boundaries, read [`docs/developer/mcp-workflow-tools-verification.md`](mcp-workflow-tools-verification.md).
+
+For the five expanded verification capabilities, definitions, CRM-specific examples, and verification limits, read [`docs/developer/mcp-verification-expansion.md`](mcp-verification-expansion.md).
+
 For the guarded Texas 2012/2016/2020/2024 VTD / precinct-approximation release, including the hidden load, immutable Blob publication, database-gated deployment, and atomic public cutover, read [`docs/developer/tx-precinct-release-runbook.md`](tx-precinct-release-runbook.md).
 
 For the guarded Nevada 2016/2020/2024 precinct-map release, including immutable county delivery, hidden load, database-gated deployment, atomic public cutover, and the separately blocked 2012 Washoe follow-up, read [`docs/developer/nv-precinct-gis-runbook.md`](nv-precinct-gis-runbook.md).

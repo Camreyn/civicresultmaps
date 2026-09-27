@@ -1,0 +1,32 @@
+# Copy this file to .codex/config.toml, replace the placeholders with absolute
+# local paths, then restart ChatGPT Desktop or Codex. The active file is ignored.
+
+[mcp_servers.civicresultmaps]
+enabled = true
+required = true
+command = '<NODE_EXE>'
+args = ['--experimental-strip-types', '<ABS_REPO_PATH>\tools\civicresultmaps-mcp\server.ts']
+cwd = '<ABS_REPO_PATH>'
+env = { CRM_MCP_PYTHON = '<PYTHON_EXE>', CRM_MCP_REPO_ROOT = '<ABS_REPO_PATH>' }
+startup_timeout_sec = 15.0
+tool_timeout_sec = 3600.0
+default_tools_approval_mode = 'writes'
+enabled_tools = [
+  'crm_doctor',
+  'crm_state_inventory',
+  'crm_validate_state',
+  'crm_import_staging',
+  'crm_report_indicators',
+  'crm_compare_staging',
+  'crm_run_validator',
+  'crm_verify_state_delivery',
+  'crm_release_readiness',
+  'crm_coverage_gaps',
+  'crm_trace_value',
+  'crm_run_test_profile',
+  'crm_record_source_revision',
+  'crm_rehearse_database',
+  'crm_plan_verification',
+  'crm_capture_release_evidence',
+  'crm_validate_model',
+]
