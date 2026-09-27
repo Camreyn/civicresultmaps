@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowLeft } from "lucide-react";
 import { BrandMark } from "../brand-mark";
 import styles from "../platform-pages.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy",
   description: "How Civic Result Maps handles the minimal browser data used to operate the public explorer.",
-};
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

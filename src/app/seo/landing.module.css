@@ -1,0 +1,30 @@
+.shell { min-height: 100vh; background: #071c20; color: #e1f1ef; }
+.header { padding: 20px 5vw; border-bottom: 1px solid #28484b; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 750; text-decoration: none; }
+.header nav { display: flex; gap: 18px; flex-wrap: wrap; }
+.shell a { color: #87ded2; text-underline-offset: 4px; }
+.shell a:hover { color: #fff; }
+.shell a:focus-visible { outline: 2px solid #eacb80; outline-offset: 5px; }
+.content { max-width: 1180px; margin: auto; padding: 28px 5vw 64px; }
+.content h1 { font-size: clamp(2rem, 4.5vw, 3.6rem); line-height: 1.1; letter-spacing: -.025em; max-width: 1000px; margin: 32px 0 20px; }
+.content h2 { margin: 36px 0 16px; font-size: 1.45rem; }
+.content p, .content li { line-height: 1.65; }
+.lede { color: #b8d1ce; font-size: 1.12rem; max-width: 860px; }
+.breadcrumbs { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 0; list-style: none; font-size: .88rem; color: #b8d1ce; }
+.breadcrumbs li:not(:last-child)::after { content: "/"; padding-left: 12px; color: #7a9d9b; }
+.directory { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr)); padding: 0; gap: 12px; list-style: none; }
+.directory li { padding: 16px; background: #102a2e; border: 1px solid #2e4b4f; border-radius: 8px; }
+.directory li a { font-weight: 700; }
+.directory li p { margin: 6px 0 0; color: #b8d1ce; font-size: .88rem; }
+.tableScroll { overflow-x: auto; margin: 24px 0; }
+.tableScroll table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.tableScroll caption { text-align: left; color: #b8d1ce; padding: 0 0 16px; line-height: 1.6; }
+.tableScroll th, .tableScroll td { text-align: left; padding: 12px; border-bottom: 1px solid #2e4b4f; vertical-align: top; }
+.tableScroll thead th { background: #173237; }
+.tableScroll tbody th { font-weight: 500; }
+.sources { padding-left: 20px; }
+.sources li { margin: 22px 0; }
+.sources h3 { font-size: 1rem; margin-bottom: 8px; }
+.sources p { margin: 6px 0; color: #b8d1ce; }
+.note { margin-top: 36px; padding: 20px; border-left: 3px solid #eacb80; background: #152b2e; color: #ceddd9; line-height: 1.65; }
+@media(max-width: 620px) { .header { padding: 16px 5vw; } .header nav { gap: 12px; font-size: .9rem; } .tableScroll th, .tableScroll td { min-width: 115px; padding: 10px 8px; } }

@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowLeft, Database, Map, Radar } from "lucide-react";
 import { BrandMark } from "../brand-mark";
 import { listEvidenceTimelineEvents, summarizeEvidenceTimeline } from "@/lib/evidence-events";
 import { SuspiciousTimeline } from "../timeline/suspicious-timeline";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Evidence & Records Timeline",
   description: "A neutral, source-backed timeline of election records, review questions, evidence gaps, and public-records checkpoints.",
-  alternates: { canonical: "/evidence" },
-};
+  path: "/evidence",
+});
 
 const caveat =
   "This timeline organizes source-backed records, review questions, and evidence gaps. Missing, partial, denied, delayed, or constrained records do not establish fraud or misconduct; they identify where independent reconciliation still needs source evidence.";

@@ -154,12 +154,14 @@ test("mutable public caches advance with the monotonic data revision", () => {
 
 test("state links expose data-rich social previews", () => {
   const home = readFileSync("src/app/page.tsx", "utf8");
+  const seo = readFileSync("src/lib/seo.ts", "utf8");
   const preview = readFileSync("src/lib/social-preview.ts", "utf8");
   const socialCard = readFileSync("src/app/api/social-card/route.tsx", "utf8");
 
   assert.match(home, /generateMetadata/);
-  assert.match(home, /summary_large_image/);
-  assert.match(home, /openGraph/);
+  assert.match(home, /pageMetadata/);
+  assert.match(seo, /summary_large_image/);
+  assert.match(seo, /openGraph/);
   assert.match(home, /preview\.imagePath/);
   assert.match(preview, /buildStateSocialPreview/);
   assert.match(preview, /Advisory indicators mark source-reconciliation checks/);

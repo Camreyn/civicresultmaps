@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowLeft, Database, MapPinned, Ruler } from "lucide-react";
 import { BrandMark } from "../brand-mark";
 import { CompareExplorer, type CompareInitialState } from "./compare-explorer";
 import styles from "./compare.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "National County Swing & Flip Explorer",
   description:
     "Compare certified presidential results across 2016, 2020, and 2024 for every available U.S. county and county equivalent.",
-  alternates: { canonical: "/compare" },
-};
+  path: "/compare",
+});
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

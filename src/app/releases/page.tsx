@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Archive, ArrowLeft, Braces, Download, GitCompareArrows } from "lucide-react";
 import { BrandMark } from "../brand-mark";
 import {
@@ -8,11 +9,11 @@ import {
 } from "@/lib/national-releases";
 import styles from "../platform-pages.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Public Data Releases",
   description: "Versioned Civic Result Maps election-result, equipment, and security datasets with coverage notes and bulk downloads.",
-  alternates: { canonical: "/releases" },
-};
+  path: "/releases",
+});
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
