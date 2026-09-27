@@ -432,7 +432,7 @@ function inspectRow(row: WorkspaceLayoutRowV3, groupId: string, errors: string[]
     for (const node of column.items) {
       const allowed = node.kind === "production"
         ? ["component", "config", "id", "kind", "locked", "presentation", "visibility", "visible"]
-        : ["asset", "body", "component", "document", "id", "items", "kind", "locked", "presentation", "title", "video", "visibility", "visible"];
+        : ["asset", "body", "calculation", "component", "document", "id", "items", "kind", "locked", "presentation", "title", "video", "visibility", "visible"];
       if (!isRecord(node) || !hasOnlyKeys(node, allowed)) errors.push(`Column ${column.id} contains a component with unsupported fields.`);
       if (node.locked !== undefined && typeof node.locked !== "boolean") errors.push(`Component ${node.id} lock must be boolean.`);
       if (node.presentation?.height !== undefined && !["auto", "compact", "standard", "tall"].includes(node.presentation.height)) {
@@ -473,6 +473,7 @@ function stripV3Node(node: WorkspaceLayoutNodeV3): WorkspaceLayoutNodeV2 {
   return omitUndefined({
     asset: node.asset,
     body: node.body,
+    calculation: node.calculation,
     component: node.component,
     document: node.document,
     id: node.id,

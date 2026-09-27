@@ -93,6 +93,7 @@ import type {
 
 type WorkspaceTabsProps = {
   adminSourceStatus: AdminSourceStatusSummary | undefined;
+  browserRCalculationsEnabled: boolean;
   coverage: CoverageSummary | null;
   countyLabel: string;
   electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
@@ -111,6 +112,8 @@ type WorkspaceTabsProps = {
   indicators: AnalysisIndicator[];
   indicatorsEvaluated: boolean;
   layoutManifest: WorkspaceLayoutManifestV2;
+  layoutManifestDigest: string;
+  layoutRevisionId: string;
   layoutManifestV3?: WorkspaceLayoutManifestV3;
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
@@ -2757,6 +2760,7 @@ function dateLabel(value: string | null) {
 
 export function WorkspaceTabs({
   adminSourceStatus,
+  browserRCalculationsEnabled,
   electronicIntegrityStatus,
   electronicIntegrityRequests,
   sourceRecordsRequests,
@@ -2775,6 +2779,8 @@ export function WorkspaceTabs({
   indicators,
   indicatorsEvaluated,
   layoutManifest,
+  layoutManifestDigest,
+  layoutRevisionId,
   layoutManifestV3,
   reviewRows,
   results,
@@ -2901,13 +2907,19 @@ export function WorkspaceTabs({
     : [];
   const mapProvenanceConfig = workspaceProductionNodeV2(layoutManifest, "map", "source-provenance")?.config;
   const dataProvenanceConfig = workspaceProductionNodeV2(layoutManifest, "data", "source-provenance")?.config;
-  const workspaceNavigationContext = {
+  const workspaceNavigationContext = useMemo(() => ({
     fips: initialFips,
     mode: initialMapMode,
     state: selectedStateCode,
     tab: activeTab,
     year: electionYear,
-  } as const;
+  }), [activeTab, electionYear, initialFips, initialMapMode, selectedStateCode]);
+  const rCalculationContext = useMemo(() => ({
+    enabled: browserRCalculationsEnabled,
+    layoutManifestDigest,
+    layoutRevisionId,
+    results,
+  }), [browserRCalculationsEnabled, layoutManifestDigest, layoutRevisionId, results]);
   const contextGeographies = useMemo(() => {
     const geographies = new Map<string, string>();
 
@@ -6718,6 +6730,7 @@ export function WorkspaceTabs({
                 <WorkspaceLayoutGroupsV3
                   groups={activeLayoutGroups}
                   navigationContext={workspaceNavigationContext}
+                  rCalculationContext={rCalculationContext}
                   renderProduction={renderCapturedProduction}
                 />
               );
@@ -6744,7 +6757,14 @@ export function WorkspaceTabs({
                         "--layout-span-tablet": column.span.tablet,
                       } as CSSProperties}
                     >
-                      {column.items.map((block) => <WorkspaceLayoutBlockV2 item={block} key={block.id} navigationContext={workspaceNavigationContext} />)}
+                      {column.items.map((block) => (
+                        <WorkspaceLayoutBlockV2
+                          item={block}
+                          key={block.id}
+                          navigationContext={workspaceNavigationContext}
+                          rCalculationContext={rCalculationContext}
+                        />
+                      ))}
                     </div>
                   ))}
                 </div>

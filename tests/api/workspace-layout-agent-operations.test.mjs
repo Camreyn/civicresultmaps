@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   WorkspaceLayoutAgentOperationError,
   applyWorkspaceLayoutAgentOperations,
+  layoutAgentCustomBlockKinds,
 } from "../../src/lib/workspace-layout-agent-operations.ts";
 import {
   cloneWorkspaceLayoutManifestV3,
@@ -303,4 +304,18 @@ test("layout agent can configure Review Center defaults, order, and visibility",
   assert.equal(configured?.config?.navigationStyle, "pills");
   assert.deepEqual(configured?.config?.visibleViews, ["overview", "evidence-tools", "indicators", "methodology"]);
   assert.equal(validateWorkspaceLayoutManifestV3(result.manifest).ok, true);
+});
+
+test("layout agent operations cannot author executable R formulas", () => {
+  assert.equal(layoutAgentCustomBlockKinds.includes("r-calculation"), false);
+  assert.throws(
+    () => applyWorkspaceLayoutAgentOperations(embeddedWorkspaceLayoutManifestV3, [{
+      component: "r-calculation",
+      name: "Untrusted formula",
+      operationId: "reject-r-formula",
+      tabId: "map",
+      type: "add_group",
+    }]),
+    /invalid|supported|component/i,
+  );
 });

@@ -20,6 +20,19 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/vendor/webr/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+        ],
+      },
+    ];
+  },
   typedRoutes: true,
   outputFileTracingIncludes: {
     "/api/**/*": ["./data/canonical-jurisdictions.json"],

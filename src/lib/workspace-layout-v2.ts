@@ -10,6 +10,9 @@ import {
   type WorkspaceSectionId,
   type WorkspaceTabId,
 } from "./workspace-layout.ts";
+import { WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH } from "./workspace-r-calculation.ts";
+
+export { WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH } from "./workspace-r-calculation.ts";
 
 export const WORKSPACE_LAYOUT_SCHEMA_VERSION_V2 = 2 as const;
 export const WORKSPACE_LAYOUT_REGISTRY_VERSION_V2 = 2 as const;
@@ -35,6 +38,8 @@ export const workspaceVisibilityCapabilityKeys = [
 ] as const;
 
 export const WORKSPACE_LAYOUT_MAX_CUSTOM_BLOCKS_PER_TAB = 12;
+export const WORKSPACE_LAYOUT_MAX_R_CALCULATION_BLOCKS_PER_TAB = 1;
+export const workspaceRCalculationTimeouts = [1_000, 2_500, 5_000] as const;
 
 export type WorkspaceProductionComponentIdV2 =
   | Exclude<
@@ -50,7 +55,15 @@ export type WorkspaceCustomBlockKindV2 =
   | "button-group"
   | "image"
   | "video"
-  | "accordion";
+  | "accordion"
+  | "r-calculation";
+
+export type WorkspaceRCalculationDefinitionV1 = {
+  input: "workspace-results-v1";
+  source: string;
+  timeoutMs: (typeof workspaceRCalculationTimeouts)[number];
+  version: 1;
+};
 
 export type WorkspaceLayoutDesktopSpanV2 = 3 | 4 | 6 | 8 | 9 | 12;
 export type WorkspaceLayoutTabletSpanV2 = 6 | 12;
@@ -142,6 +155,7 @@ export type WorkspaceCustomNodeV2 = {
     width: number;
   };
   body?: string;
+  calculation?: WorkspaceRCalculationDefinitionV1;
   component: WorkspaceCustomBlockKindV2;
   document?: WorkspaceRichTextDocumentV1;
   id: string;
@@ -349,6 +363,17 @@ const customItemSchema = z.object({
   value: z.string().max(80).optional(),
 }).strict();
 
+const rCalculationSchema = z.object({
+  input: z.literal("workspace-results-v1"),
+  source: z.string().trim().min(1, "R calculations require a formula.").max(WORKSPACE_R_CALCULATION_MAX_SOURCE_LENGTH),
+  timeoutMs: z.union(workspaceRCalculationTimeouts.map((timeout) => z.literal(timeout)) as [
+    z.ZodLiteral<1_000>,
+    z.ZodLiteral<2_500>,
+    z.ZodLiteral<5_000>,
+  ]),
+  version: z.literal(1),
+}).strict();
+
 const customNodeSchema = z.object({
   asset: z.object({
     alt: z.string().max(240),
@@ -360,9 +385,10 @@ const customNodeSchema = z.object({
     width: z.number().int().positive().max(20_000),
   }).strict().optional(),
   body: z.string().max(2_000).optional(),
+  calculation: rCalculationSchema.optional(),
   component: z.enum([
     "narrative", "callout", "metric-strip", "link-list", "divider", "heading", "rich-text",
-    "button-group", "image", "video", "accordion",
+    "button-group", "image", "video", "accordion", "r-calculation",
   ]),
   document: richTextDocumentSchema.optional(),
   id: idSchema,
@@ -389,6 +415,12 @@ const customNodeSchema = z.object({
   }
   if (node.component === "video" && !node.video) {
     context.addIssue({ code: z.ZodIssueCode.custom, message: "Video blocks require an approved provider video." });
+  }
+  if (node.component === "r-calculation" && !node.calculation) {
+    context.addIssue({ code: z.ZodIssueCode.custom, message: "R calculation blocks require a calculation definition." });
+  }
+  if (node.component !== "r-calculation" && node.calculation) {
+    context.addIssue({ code: z.ZodIssueCode.custom, message: "Only R calculation blocks may contain a calculation definition." });
   }
 });
 
@@ -676,6 +708,22 @@ export function createWorkspaceCustomNodeV2(
   if (component === "divider") return { ...node, title: "Section" };
   if (component === "image") return { ...node, title: "Image" };
   if (component === "video") return { ...node, title: "Video" };
+  if (component === "r-calculation") {
+    return {
+      ...node,
+      body: "Calculated from the public result rows for the state and year currently being viewed.",
+      calculation: {
+        input: "workspace-results-v1",
+        source: `list(
+  label = "Total votes in the current view",
+  value = sum(crm_view_results$totalVotes)
+)`,
+        timeoutMs: 2_500,
+        version: 1,
+      },
+      title: "Browser R calculation",
+    };
+  }
   return {
     ...node,
     body: component === "callout" ? "Add an important caveat or next step." : "Add concise orientation or source context.",
@@ -775,6 +823,10 @@ function inspectStructuralRules(manifest: WorkspaceLayoutManifestV2) {
     const nodes = flattenWorkspaceNodes(tab);
     if (nodes.filter(isWorkspaceCustomNodeV2).length > WORKSPACE_LAYOUT_MAX_CUSTOM_BLOCKS_PER_TAB) {
       errors.push(`Tab ${tab.id} may contain at most ${WORKSPACE_LAYOUT_MAX_CUSTOM_BLOCKS_PER_TAB} custom blocks.`);
+    }
+    if (nodes.filter((node) => node.kind === "custom" && node.component === "r-calculation").length
+      > WORKSPACE_LAYOUT_MAX_R_CALCULATION_BLOCKS_PER_TAB) {
+      errors.push(`Tab ${tab.id} may contain at most ${WORKSPACE_LAYOUT_MAX_R_CALCULATION_BLOCKS_PER_TAB} R calculation block.`);
     }
     for (const row of tab.rows) {
       if (seenIds.has(row.id)) errors.push(`Layout id ${row.id} appears more than once.`);
