@@ -67,6 +67,9 @@ jobs:
         id: typecheck
         run: npm run typecheck
 
+      - name: SEO contracts
+        run: node --experimental-strip-types tests/api/seo.test.mjs
+
       - name: Workspace analytics contract tests
         id: analytics_contract
         run: npm run test:analytics
@@ -146,6 +149,9 @@ jobs:
       - name: Workspace analytics browser tests
         id: analytics_browser
         run: npx playwright test tests/e2e/workspace-analytics.spec.ts --workers=1
+
+      - name: SEO browser checks
+        run: npx playwright test tests/e2e/seo.spec.ts --workers=1
 
       - name: Numeric verification browser fixture
         id: numeric_browser

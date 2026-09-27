@@ -20,6 +20,10 @@ function responseWithVisitor(request: NextRequest, id: string) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(LAYOUT_VISITOR_HEADER, id);
   const response = NextResponse.next({ request: { headers: requestHeaders } });
+  if (process.env.VERCEL_ENV === "preview" ||
+    (request.nextUrl.search && ["/compare", "/readiness", "/security", "/equipment", "/equipment/compare", "/district-compactness"].includes(request.nextUrl.pathname))) {
+    response.headers.set("X-Robots-Tag", "noindex, follow");
+  }
   const existing = request.cookies.get(LAYOUT_VISITOR_COOKIE)?.value;
   if (!existing || !isLayoutVisitorId(existing)) {
     response.cookies.set(LAYOUT_VISITOR_COOKIE, id, {
@@ -47,9 +51,11 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
   const forwardedProto = request.headers.get("x-forwarded-proto");
   const host = request.headers.get("host")?.split(":")[0] ?? "";
 
-  if (productionHosts.has(host) && forwardedProto === "http") {
+  if (host === "civicresultmaps.org" || (productionHosts.has(host) && forwardedProto === "http")) {
     const secureUrl = request.nextUrl.clone();
     secureUrl.protocol = "https:";
+    secureUrl.hostname = "www.civicresultmaps.org";
+    secureUrl.port = "";
     return NextResponse.redirect(secureUrl, 308);
   }
 

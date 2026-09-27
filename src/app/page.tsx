@@ -40,6 +40,10 @@ import {
   type SupportedPresidentialYear,
 } from "@/lib/api-version";
 import { buildStateSocialPreview } from "@/lib/social-preview";
+import { homeTitle, homeDescription, pageMetadata } from "@/lib/seo";
+import { appSeoPolicy, appQueryPath, type SeoSearchParams } from "@/lib/seo-query-policy";
+import { loadSeoAvailability } from "@/lib/seo-data";
+import { stateByCode, countyByTag } from "@/lib/seo-geography";
 import { listSecurityIncidentStateSummaries } from "@/lib/security-incidents";
 import { historicalCountyRowsToResults } from "@/lib/state-year-results";
 import { workspaceTabSupportsHistoricalYear } from "@/lib/workspace-navigation";
@@ -48,13 +52,7 @@ const mapModes = new Set(["winner", "margin", "volume", "method", "equipment", "
 const securityIncidentStateSummaries = listSecurityIncidentStateSummaries(2024);
 
 type HomeProps = {
-  searchParams?: Promise<{
-    fips?: string;
-    mode?: string;
-    state?: string;
-    tab?: string;
-    year?: string;
-  }>;
+  searchParams?: Promise<SeoSearchParams>;
 };
 
 function parseYear(value?: string): SupportedPresidentialYear {
@@ -118,47 +116,35 @@ async function loadDisplaySources(
 }
 
 export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
-  const params = await searchParams;
-  const year = parseYear(params?.year);
-  const preview = await buildStateSocialPreview({ state: params?.state, year });
-
-  return {
-    title: preview.title,
-    description: preview.description,
-    alternates: {
-      canonical: preview.urlPath,
-    },
-    openGraph: {
-      type: "website",
-      title: preview.title,
-      description: preview.description,
-      url: preview.socialUrlPath,
-      siteName: "Civic Result Maps",
-      images: [
-        {
-          url: preview.imagePath,
-          width: 1200,
-          height: 630,
-          alt: preview.imageAlt,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: preview.title,
-      description: preview.description,
-      images: [
-        {
-          url: preview.imagePath,
-          alt: preview.imageAlt,
-        },
-      ],
-    },
-  };
+  const params = (await searchParams) ?? {};
+  const year = parseYear(typeof params.year === "string" ? params.year : undefined);
+  const state = typeof params.state === "string" ? stateByCode(params.state) : undefined;
+  const preview = await buildStateSocialPreview({ state: state?.code, year });
+  const image = new URL(preview.imagePath);
+  let policy = appSeoPolicy(params);
+  if (policy.semantic && state) {
+    const county = typeof params.fips === "string" ? countyByTag(`county:${params.fips}`) : undefined;
+    // Metadata must not break the existing explorer if its optional SEO read fails.
+    const availability = await loadSeoAvailability(state.code).catch(() => []);
+    const rows = availability.filter((row) => !county || (row.level === "county" && row.jurisdictionTag === county.jurisdictionTag));
+    if (!rows.length || rows.some((row) => !row.sourceLinked)) {
+      policy = { path: appQueryPath(params), index: false, semantic: false };
+    }
+  }
+  return pageMetadata({
+    title: state ? preview.title : homeTitle,
+    description: state ? preview.description : homeDescription,
+    path: policy.path,
+    index: policy.index,
+    // Excluded application views need no canonical; do not echo arbitrary query values into social URLs.
+    canonical: policy.index,
+    image: { path: image.pathname + image.search, alt: preview.imageAlt },
+  });
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const params = await searchParams;
+  const rawParams = (await searchParams) ?? {};
+  const params = Object.fromEntries(Object.entries(rawParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])) as Record<string, string | undefined>;
   const layoutResolution = await resolveWorkspaceLayout();
   const layoutManifestV3 = toWorkspaceLayoutManifestV3(layoutResolution.envelope.manifest);
   const layoutManifest = workspaceLayoutManifestAnyToV2(layoutResolution.envelope.manifest);

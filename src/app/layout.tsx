@@ -1,25 +1,22 @@
 import type { Metadata } from "next";
+import { homeTitle, homeDescription, siteOrigin, identityJsonLd, serializeJsonLd } from "@/lib/seo";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter } from "./site-footer";
 import "./globals.css";
 
 import "./workspace-layout-v2.css";
 import "./workspace-layout-v3.css";
-const siteUrl = "https://www.civicresultmaps.org";
-const siteDescription =
-  "Explore source-linked 2016, 2020, and 2024 U.S. county election results, national flips, permanent county profiles, data confidence, releases, and public APIs.";
+const siteUrl = siteOrigin;
+const siteDescription = homeDescription;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: "Civic Result Maps",
   title: {
-    default: "Civic Result Maps | County Election Comparisons and Source Data",
+    default: homeTitle,
     template: "%s | Civic Result Maps",
   },
   description: siteDescription,
-  alternates: {
-    canonical: "/",
-  },
   manifest: "/site.webmanifest",
   icons: {
     icon: [
@@ -33,13 +30,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
   },
   openGraph: {
     type: "website",
@@ -64,6 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(identityJsonLd) }} />
         {children}
         <SiteFooter />
         <Analytics />

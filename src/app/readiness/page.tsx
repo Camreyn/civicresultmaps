@@ -1,4 +1,5 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks, Radar } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
 import { BrandMark } from "../brand-mark";
 import { listAdminSourceStatuses, listCompletenessReport, listNativeSourcePackages, listSourceAcquisitionTiers, listTurnoutSourceStatuses } from "@/lib/api";
 import {
@@ -473,6 +474,12 @@ function stateChecklist(
     },
   ];
 }
+
+export const metadata = pageMetadata({
+  title: "2024 Election Data Readiness",
+  description: "Inspect election data coverage, source readiness, missing records, and documented limitations by state.",
+  path: "/readiness",
+});
 
 export default async function ReadinessPage({
   searchParams,

@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowLeft, Braces, Download, ExternalLink, GitCompareArrows } from "lucide-react";
 import { BrandMark } from "../brand-mark";
 import { currentNationalReleaseId, publicApiSchemaVersion } from "@/lib/api-version";
 import { dataConfidenceDefinitions } from "@/lib/data-confidence";
 import styles from "../platform-pages.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Public API",
   description: "Civic Result Maps API documentation for county data, plan-vintage district shape metrics, releases, and bulk downloads.",
-  alternates: { canonical: "/developers" },
-};
+  path: "/developers",
+});
 
 const endpoints = [
+  ["GET", "/api/results?state=WI&year=2024&office=president&level=county", "Normalized presidential result records by state and reporting grain"],
+  ["GET", "/api/sources?state=WI&year=2024", "Source authority, provenance, confidence, and lifecycle status"],
   ["GET", "/api/v1/flips", "Paginated county comparisons and CSV export"],
   ["GET", "/api/v1/counties/{fips}", "One permanent county profile"],
   ["GET", "/api/v1/jurisdictions", "Paginated canonical county registry"],
@@ -82,6 +85,7 @@ export default function DevelopersPage() {
 
         <section className={styles.section}>
           <div className={styles.sectionHead}><h2>Quick start</h2></div>
+          <p>Use the <a href="/datasets">dataset catalog</a> for documented presidential result downloads and <a href="/states">state landing pages</a> for crawlable result tables. Keep reporting grains separate and retain source and caveat fields. A live API retrieval timestamp is not a source publication date.</p>
           <div className={styles.grid}>
             <article className={styles.card}>
               <span className={styles.cardLabel}>2020 to 2024 flips</span>

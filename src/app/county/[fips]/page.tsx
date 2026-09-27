@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -14,6 +15,7 @@ import {
 import { BrandMark } from "@/app/brand-mark";
 import { GlobalCountySearch } from "@/app/global-county-search";
 import { findCanonicalCountyByFips } from "@/lib/county-search";
+import { countyByTag } from "@/lib/seo-geography";
 import { loadCountyProfile, type CountyProfile } from "@/lib/county-profile";
 import {
   formatIndicatorScopeSummary,
@@ -36,11 +38,11 @@ export async function generateMetadata({ params }: CountyPageProps): Promise<Met
       robots: { follow: false, index: false },
     };
   }
-  return {
+  return pageMetadata({
     title: `${county.displayName}, ${county.state} election profile`,
     description: `Presidential vote history, turnout, provenance, equipment context, and advisory review context for ${county.displayName}, FIPS ${county.fips}.`,
-    alternates: { canonical: `/county/${county.fips}` },
-  };
+    path: `/county/${county.fips}`,
+  });
 }
 
 function formatNumber(value: number | null) {
@@ -80,6 +82,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
   const profile = await loadCountyProfile(fips);
   if (!profile) notFound();
 
+  const semanticCounty = countyByTag(profile.jurisdictionTag);
   const availableYears = profile.history.filter((row) => row.available).length;
   const advisorySummary = summarizeIndicatorScopes(profile.advisoryIndicators);
   const compareHref = `/compare?from=2020&to=2024&fips=${profile.fips}`;
@@ -120,6 +123,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
               turnout, election-administration context, and non-conclusive review signals.
             </p>
             <div className={styles.actions}>
+              {semanticCounty ? <a href={semanticCounty.path}>County data guide and election results</a> : null}
               <a className={styles.primaryAction} href={stateHref}>
                 <MapPinned aria-hidden size={16} /> Open state map <ArrowUpRight aria-hidden size={14} />
               </a>
