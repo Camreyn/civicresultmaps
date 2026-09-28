@@ -162,10 +162,12 @@ Center. They are not conclusions.
 
 - Input: local review rows with same-party presidential and comparison-contest
   values.
-- Calculation: average same-party percent gap between presidential votes and the
-  comparison contest across imported local rows.
-- Threshold: flags when the Democratic or Republican average gap reaches 6
-  percent.
+- Calculation: for each comparable local row,
+  `(same-party presidential votes - comparison-contest votes) / total presidential votes * 100`.
+  Average these gaps with equal weight per row, not by statewide vote volume.
+- Threshold: flags when the absolute Democratic or Republican average gap reaches
+  2 percentage points, in a scope with at least 8 local rows. This matches
+  `src/lib/review-policy.ts`; the previous documentation incorrectly said 6 percent.
 - Vote-share-only imports do not emit this indicator.
 
 ### Down-Ballot Outliers

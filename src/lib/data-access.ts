@@ -38,6 +38,7 @@ import type {
 } from "./types";
 import { jurisdictionTagForRow } from "./jurisdiction-tags";
 import { finalizeResultRowSummary } from "./result-row-summary";
+import { withWisconsinAuditCorrection } from "./wi-audit-context";
 
 function validatePageOffset(offset?: number) {
   if (offset !== undefined && (!Number.isSafeInteger(offset) || offset < 0 || offset > 200_000)) {
@@ -1005,7 +1006,7 @@ export async function listIndicators(input: {
     state: row.state,
     summary: row.summary,
     type: row.type,
-  }));
+  })).map(withWisconsinAuditCorrection);
 }
 
 export async function listReviewRows(input: {

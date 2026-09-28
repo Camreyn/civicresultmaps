@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { PDFParse } from "pdf-parse";
 
 const reportPageUrl = "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report";
@@ -18,6 +19,8 @@ const expectedBallotsAudited = 327230;
 const expectedBallotPositions = 5604670;
 const expectedReportedPotentialIssueErrors = 5;
 const expectedPotentialIssueMunicipalities = 3;
+const expectedPdfSha256 = "b9df76b2e9779dcb4ec29fcd6fc637c9efc73bdd6cf4f424d52341e48fc232bf";
+const checkOnly = process.argv.includes("--check");
 
 function csvEscape(value) {
   const text = String(value ?? "");
@@ -183,6 +186,10 @@ function parseAuditSelections(text) {
 }
 
 async function ensurePdf() {
+  if (checkOnly) {
+    if (!existsSync(pdfPath)) throw new Error("Retained WEC audit PDF is required for --check.");
+    return;
+  }
   await mkdir(outDir, { recursive: true });
   if (existsSync(pdfPath) && !process.argv.includes("--fetch")) {
     return;
@@ -197,6 +204,9 @@ async function ensurePdf() {
 
 async function extractText() {
   const data = await readFile(pdfPath);
+  if (createHash("sha256").update(data).digest("hex") !== expectedPdfSha256) {
+    throw new Error("WEC audit PDF differs from the reviewed source. Review its arithmetic before regenerating the summary.");
+  }
   const parser = new PDFParse({ data });
   try {
     const result = await parser.getText({
@@ -204,7 +214,6 @@ async function extractText() {
       cellSeparator: " | ",
       pageJoiner: "\n\n---PAGE---\n\n",
     });
-    await writeFile(textPath, result.text, "utf8");
     return result.text;
   } finally {
     await parser.destroy?.();
@@ -246,6 +255,15 @@ function parseAggregateAuditResults(text) {
     "The total number of ballot positions on all audited ballots was 5,604,670",
     "Error rate with five reported errors: 0.0000009%",
     "Error rate without five reported errors: 0%",
+    "1 in 500,000 ballot positions or 0.00002%",
+    "ballot positions (0.000002%)",
+    "In total, 593 human errors were recorded",
+    "Human Error Rate: 0.011%",
+    "errors in the audit process, and errors in election administration on Election Day",
+    "President and Vice President (top-of-ballot contest included by default)",
+    "Representative in Congress",
+    "Representative to the Assembly",
+    "District Attorney",
   ];
   const missing = requiredSnippets.filter((snippet) => !normalizedText.includes(snippet));
   if (missing.length) {
@@ -259,7 +277,37 @@ function parseAggregateAuditResults(text) {
     locallyReportedPotentialEquipmentIssueErrors: expectedReportedPotentialIssueErrors,
     municipalitiesWithReportedPotentialIssues: expectedPotentialIssueMunicipalities,
     finalEquipmentErrorRate: "0%",
+    // Retained verbatim for provenance/backward compatibility, not a validated percentage.
     errorRateWithFiveReportedErrors: "0.0000009%",
+    percentageCorrection: {
+      status: "source_report_percentage_errors",
+      authority: "Civic Result Maps independent arithmetic check; not a WEC-issued correction",
+      fiveErrors: {
+        sourcePage: 10,
+        reportedPercent: "0.0000009%",
+        formula: "(5 / 5,604,670) × 100",
+        recalculatedPercent: (expectedReportedPotentialIssueErrors / expectedBallotPositions) * 100,
+        recalculatedDisplay: `${((expectedReportedPotentialIssueErrors / expectedBallotPositions) * 100).toFixed(7)}%`,
+      },
+      benchmark: {
+        description: "The report's stated one error in 500,000 ballot positions benchmark",
+        reportedPercentByPage: [
+          { page: 9, percent: "0.00002%" },
+          { page: 10, percent: "0.000002%" },
+        ],
+        formula: "(1 / 500,000) × 100",
+        recalculatedPercent: (1 / 500000) * 100,
+        recalculatedDisplay: `${((1 / 500000) * 100).toFixed(4)}%`,
+      },
+      note: "The WEC report's printed percentages are incorrect conversions of its stated ratios. The corrected five-case percentage is about 100 times the printed value and remains below the report's stated one-in-500,000 benchmark. This is a reporting/math-label error, not a newly discovered candidate-vote error; it does not change WEC's separately defined equipment-only rate of 0%.",
+    },
+    humanErrorCount: 593,
+    humanErrorRateAsPrinted: "0.011%",
+    humanErrorSourcePages: [11, 12],
+    humanErrorCaveat: "WEC's human-error category includes audit-process mistakes and election-administration issues. The 593 count is not a count of incorrectly tabulated presidential votes.",
+    auditedContests: ["President and Vice President", "U.S. House", "Wisconsin Assembly", "District Attorney"],
+    auditedContestsSourcePage: 5,
+    comparisonContestCaveat: "U.S. Senate was not one of the four selected audit contests. This audit does not directly validate Civic Result Maps' President-versus-Senate advisory comparisons.",
     perUnitOutcomeStatus: "not_published_in_final_report",
     summary:
       "WEC staff identified five locally reported errors in three municipalities that could potentially be attributed to tabulation equipment, but determined the errors were partially or completely attributable to human factors and did not recommend including them in the final equipment error rate.",
@@ -282,7 +330,19 @@ const equipmentSummary = Object.entries(
   .map(([equipment, values]) => ({ equipment, ...values }))
   .sort((a, b) => b.rows - a.rows || a.equipment.localeCompare(b.equipment));
 
-await writeFile(
+async function writeOrCheck(file, contents) {
+  if (checkOnly) {
+    const existing = await readFile(file, "utf8");
+    if (existing.replace(/\r\n/g, "\n") !== contents.replace(/\r\n/g, "\n")) {
+      throw new Error(`Generated Wisconsin audit artifact is stale: ${file}`);
+    }
+  } else {
+    await writeFile(file, contents, "utf8");
+  }
+}
+
+await writeOrCheck(textPath, text);
+await writeOrCheck(
   selectionsPath,
   csv(selections, [
     "state",
@@ -296,7 +356,6 @@ await writeFile(
     "sourceDocumentId",
     "sourceUrl",
   ]),
-  "utf8",
 );
 
 const summary = {
@@ -305,6 +364,7 @@ const summary = {
   sourceDocumentId: "wi-2024-post-election-voting-equipment-audit-final-report",
   sourcePageUrl: reportPageUrl,
   sourcePdfUrl: reportPdfUrl,
+  sourcePdfSha256: expectedPdfSha256,
   localPdf: pdfPath,
   extractedText: textPath,
   normalizedSelections: selectionsPath,
@@ -322,7 +382,7 @@ const summary = {
     "Appendix B provides selected reporting units, auditable equipment, and ballots audited. The source report gives statewide findings and aggregate/error discussion, not a per-reporting-unit discrepancy outcome table.",
   equipmentSummary,
 };
-await writeFile(summaryPath, JSON.stringify(summary, null, 2) + "\n", "utf8");
+await writeOrCheck(summaryPath, JSON.stringify(summary, null, 2) + "\n");
 
 console.log(
   JSON.stringify(

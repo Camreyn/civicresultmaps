@@ -147,7 +147,7 @@ export const listHistoricalResultRows = cachePublicData(
 
 export const listIndicators = cachePublicData(
   uncachedListIndicators,
-  "indicators",
+  "indicators-wi-audit-correction-v1",
 );
 
 export const listElections = cachePublicData(
