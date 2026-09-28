@@ -31,6 +31,7 @@ import type { ComponentType, CSSProperties, ReactNode, SVGProps } from "react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { WorkspaceGuidedLinks } from "./workspace-guided-links";
 import { WorkspaceSourceCatalog } from "./workspace-source-catalog";
+import { WisconsinAuditReportNote } from "./wi-audit-report-note";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
@@ -1170,6 +1171,9 @@ function auditContextSummary(indicator: AnalysisIndicator) {
           finalEquipmentErrorRate?: string;
           locallyReportedPotentialEquipmentIssueErrors?: number;
           perUnitOutcomeStatus?: string;
+          percentageCorrection?: {
+            fiveErrors: { reportedPercent: string; recalculatedDisplay: string };
+          };
         } | null;
         auditedBallots?: number;
         caveat?: string;
@@ -1185,16 +1189,19 @@ function auditContextSummary(indicator: AnalysisIndicator) {
     return "No audit context loaded for this indicator.";
   }
 
-  if (!audit.matchedSelectionRows) {
-    return "No WEC audit selected reporting units matched this review scope.";
-  }
-
   const equipment = audit.topEquipment?.length ? ` Equipment: ${audit.topEquipment.join(" - ")}.` : "";
   const aggregate = audit.aggregateAuditResults
     ? ` Statewide WEC audit context: final equipment error rate ${audit.aggregateAuditResults.finalEquipmentErrorRate ?? "not reported"}; ${audit.aggregateAuditResults.locallyReportedPotentialEquipmentIssueErrors ?? 0} reported potential equipment-issue errors were reviewed as partially or completely human-factor issues.`
     : "";
+  const correction = audit.aggregateAuditResults?.percentageCorrection?.fiveErrors;
+  const correctionNote = correction
+    ? ` Report percentage correction: WEC printed ${correction.reportedPercent} for the five cases, which is incorrect; recalculating from its stated counts gives ${correction.recalculatedDisplay}. This is not a newly discovered candidate-vote error.`
+    : "";
   const caveat = audit.caveat ? ` ${audit.caveat}` : " WEC report gives statewide findings, not per-unit discrepancy outcomes.";
-  return `${audit.matchedSelectionRows.toLocaleString()} WEC audit selection row${audit.matchedSelectionRows === 1 ? "" : "s"}; ${(audit.auditedBallots ?? 0).toLocaleString()} audited ballots.${equipment}${aggregate}${caveat}`;
+  const scope = audit.matchedSelectionRows
+    ? `${audit.matchedSelectionRows.toLocaleString()} WEC audit selection row${audit.matchedSelectionRows === 1 ? "" : "s"}; ${(audit.auditedBallots ?? 0).toLocaleString()} audited ballots.${equipment}`
+    : "No WEC audit selected reporting units matched this review scope.";
+  return `${scope}${aggregate}${correctionNote}${caveat}`;
 }
 
 function denominatorContextSummary(indicator: AnalysisIndicator) {
@@ -4375,6 +4382,7 @@ export function WorkspaceTabs({
                 <BarChart3 aria-hidden size={18} />
               </div>
             </div>
+            <WisconsinAuditReportNote state={selectedStateCode} electionYear={electionYear} />
             <label className="review-view-select">
               <span>Review view</span>
               <select
@@ -6051,6 +6059,7 @@ export function WorkspaceTabs({
               </div>
             </div>))}
             {captureProduction("source-provenance", (<div className="source-catalog-panel" data-tour="source-links" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
+              <WisconsinAuditReportNote state={selectedStateCode} electionYear={electionYear} />
               <WorkspaceSourceCatalog
                 initiallyOpen={dataProvenanceConfig?.provenanceInitialState !== "collapsed"}
                 sources={sources}

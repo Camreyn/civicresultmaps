@@ -6615,6 +6615,22 @@ td {
   padding: 12px 16px 0;
 }
 
+.audit-report-note {
+  background: rgba(240, 195, 106, 0.08);
+  border: 1px solid rgba(240, 195, 106, 0.26);
+  border-radius: 8px;
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 12px 16px;
+  overflow-wrap: anywhere;
+  padding: 12px 16px;
+}
+
+.audit-report-note p { margin: 8px 0; }
+.audit-report-note a { color: var(--accent); text-decoration: underline; }
+.audit-report-note summary { cursor: pointer; font-weight: 600; }
+
 .data-gap-banner {
   align-items: center;
   background: rgba(240, 195, 106, 0.08);

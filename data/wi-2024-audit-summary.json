@@ -4,6 +4,7 @@
   "sourceDocumentId": "wi-2024-post-election-voting-equipment-audit-final-report",
   "sourcePageUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
   "sourcePdfUrl": "https://elections.wi.gov/sites/default/files/documents/2024%20Post-Election%20Voting%20Equipment%20Audit%20Final%20Report.pdf",
+  "sourcePdfSha256": "b9df76b2e9779dcb4ec29fcd6fc637c9efc73bdd6cf4f424d52341e48fc232bf",
   "localPdf": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.pdf",
   "extractedText": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.txt",
   "normalizedSelections": "data/wi-2024-audit-selections.csv",
@@ -22,6 +23,49 @@
     "municipalitiesWithReportedPotentialIssues": 3,
     "finalEquipmentErrorRate": "0%",
     "errorRateWithFiveReportedErrors": "0.0000009%",
+    "percentageCorrection": {
+      "status": "source_report_percentage_errors",
+      "authority": "Civic Result Maps independent arithmetic check; not a WEC-issued correction",
+      "fiveErrors": {
+        "sourcePage": 10,
+        "reportedPercent": "0.0000009%",
+        "formula": "(5 / 5,604,670) × 100",
+        "recalculatedPercent": 0.00008921131841839038,
+        "recalculatedDisplay": "0.0000892%"
+      },
+      "benchmark": {
+        "description": "The report's stated one error in 500,000 ballot positions benchmark",
+        "reportedPercentByPage": [
+          {
+            "page": 9,
+            "percent": "0.00002%"
+          },
+          {
+            "page": 10,
+            "percent": "0.000002%"
+          }
+        ],
+        "formula": "(1 / 500,000) × 100",
+        "recalculatedPercent": 0.00019999999999999998,
+        "recalculatedDisplay": "0.0002%"
+      },
+      "note": "The WEC report's printed percentages are incorrect conversions of its stated ratios. The corrected five-case percentage is about 100 times the printed value and remains below the report's stated one-in-500,000 benchmark. This is a reporting/math-label error, not a newly discovered candidate-vote error; it does not change WEC's separately defined equipment-only rate of 0%."
+    },
+    "humanErrorCount": 593,
+    "humanErrorRateAsPrinted": "0.011%",
+    "humanErrorSourcePages": [
+      11,
+      12
+    ],
+    "humanErrorCaveat": "WEC's human-error category includes audit-process mistakes and election-administration issues. The 593 count is not a count of incorrectly tabulated presidential votes.",
+    "auditedContests": [
+      "President and Vice President",
+      "U.S. House",
+      "Wisconsin Assembly",
+      "District Attorney"
+    ],
+    "auditedContestsSourcePage": 5,
+    "comparisonContestCaveat": "U.S. Senate was not one of the four selected audit contests. This audit does not directly validate Civic Result Maps' President-versus-Senate advisory comparisons.",
     "perUnitOutcomeStatus": "not_published_in_final_report",
     "summary": "WEC staff identified five locally reported errors in three municipalities that could potentially be attributed to tabulation equipment, but determined the errors were partially or completely attributable to human factors and did not recommend including them in the final equipment error rate."
   },
