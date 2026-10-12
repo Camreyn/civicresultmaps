@@ -1,5 +1,49 @@
 import { test, expect } from "@playwright/test";
 
+test("guided examples isolate public evidence, restore sharing and exit cleanly", async ({ page }) => {
+  await page.goto("/connections");
+  await expect(page.getByLabel("Evidence date")).toBeEnabled();
+  await page.locator("summary").filter({ hasText: "Guided examples:" }).click();
+  await page.getByRole("button", { name: "AP election services retained (2024)", exact: true }).first().click();
+  await expect(page.locator("[data-connection-select]")).toHaveCount(1);
+  await expect(page.locator('.react-flow__edge[data-id="ap-usatodayco-2024"]')).toBeVisible();
+  await expect(page.getByRole("complementary").getByText(/not confirmation of renewal in 2026/)).toBeVisible();
+  await expect(page.getByLabel("Evidence date")).toHaveValue("2024-11-05");
+  await expect(page).toHaveURL(/example=ap-usatodayco-2024/);
+  await page.reload();
+  await expect(page.getByLabel("Evidence date")).toBeEnabled();
+  await expect(page.locator("[data-connection-select]")).toHaveCount(1);
+  await page.getByRole("button", { name: "Next example", exact: true }).click();
+  await expect(page.getByRole("complementary").getByRole("heading", { name: "2020 VoteCast survey partner note", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Show surrounding connections", exact: true }).click();
+  await expect(page.locator("[data-connection-select]")).not.toHaveCount(1);
+  await expect(page).not.toHaveURL(/example=/);
+});
+
+test("local records preserve dates, evidence scopes and missing contract details", async ({ page }) => {
+  await page.goto("/connections");
+  await expect(page.getByLabel("Evidence date")).toBeEnabled();
+  await page.getByRole("button", { name: "local records", exact: true }).click();
+  const records = page.getByLabel("Local evidence records");
+  await expect(records.getByText(/No Harris County contract amount or award ID/)).toBeVisible();
+  for (const label of ["2021 acquisition reported", "2021 certification reported", "2022 election use reported", "September 2026 inventory"]) await expect(records.getByRole("button", { name: label, exact: true })).toBeVisible();
+  await records.getByRole("button", { name: "2022 election use reported", exact: true }).click();
+  await expect(page.getByRole("complementary").getByText("Dated local use", { exact: true })).toBeVisible();
+  await expect(page.getByRole("complementary").getByText(/not a 2024\/2026 version inventory/)).toBeVisible();
+  await page.getByRole("combobox", { name: "Geography", exact: true }).selectOption("county:48201");
+  await expect(records.getByRole("button")).toHaveCount(3);
+});
+
+test("USA TODAY recruitment and disabled release comparison remain source-qualified", async ({ page }) => {
+  await page.goto("/connections");
+  await page.locator("summary").filter({ hasText: "USA TODAY: historical AP" }).click();
+  await expect(page.getByText(/Recruitment is not evidence of hires or deployment/).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /North Carolina election-night stringer recruitment/ }).first()).toHaveAttribute("href", /careerservices.jjc.edu/);
+  await expect(page.getByText("Syndicated recruitment lead, not employer-hosted verification", { exact: false })).toHaveCount(2);
+  await page.locator("summary").filter({ hasText: "What changed between reviewed releases?" }).click();
+  await expect(page.getByText(/2024\/2026 views are not release versions/)).toBeVisible();
+});
+
 test("selects edges with the keyboard and keeps active-date uncertainty explicit", async ({ page }) => {
   await page.goto("/connections");
   const edge = page.locator('.react-flow__edge[data-id="ap-cnn"]');
@@ -37,7 +81,7 @@ test("timeline and connection paths do not create new inferred data routes", asy
   await page.getByLabel("Follow only directed results relationships").check();
   await expect(page.getByText("No documented path within six relationships and the selected filters.")).toBeVisible();
   await page.getByRole("button", { name: "timeline", exact: true }).click();
-  await expect(page.getByText("Supporting document publication date; not an effective date.").first()).toBeVisible();
+  await expect(page.getByText("Recorded document or content-observation date; not an effective date.").first()).toBeVisible();
 });
 
 test("private APIs and document routes fail closed without exposing drafts or artifacts", async ({ request, page }) => {

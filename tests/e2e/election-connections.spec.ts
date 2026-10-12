@@ -76,6 +76,9 @@ test("downloads a reproducible evidence registry", async ({ page }) => {
 test("has an accessible desktop and mobile flow without page-level overflow", async ({ page }) => {
   await page.goto("/connections");
   await page.locator("#connections-reading-guide > summary").click();
+  await page.locator("summary").filter({ hasText: "Guided examples:" }).click();
+  await page.locator("summary").filter({ hasText: "USA TODAY: historical AP" }).click();
+  await page.locator("summary").filter({ hasText: "What changed between reviewed releases?" }).click();
   let scan = await new AxeBuilder({ page }).analyze();
   expect(scan.violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? ""))).toEqual([]);
   await page.setViewportSize({ width: 390, height: 844 });
@@ -96,10 +99,10 @@ test("source library and canonical metadata are available without JavaScript", a
   await expect(page.getByRole("link", { name: "Drey Dossier's TikTok video" })).toHaveAttribute("rel", "noopener noreferrer");
   await page.locator("#connections-reading-guide > summary").click();
   await expect(page.locator("#connections-reading-guide")).toContainText("Arrows follow the relationship wording, not necessarily a flow of votes or data.");
-  await expect(page.getByRole("heading", { name: "Sources 28", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sources 35", exact: true })).toBeVisible();
   await expect(page.locator("#source-library")).not.toHaveAttribute("open", "");
   await page.locator("#source-library > summary").click();
-  await expect(page.locator("#source-library article")).toHaveCount(28);
+  await expect(page.locator("#source-library article")).toHaveCount(35);
   await page.locator("#source-dhs-oracle summary").click();
   await expect(page.locator("#source-dhs-oracle")).toContainText("Exact record read in the browser");
   await context.close();

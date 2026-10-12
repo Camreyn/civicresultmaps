@@ -10,6 +10,7 @@ import { connectionJsonDigest } from "../../src/lib/connection-json-digest.ts";
 import { savedConnectionViews } from "../../src/lib/connection-saved-views.ts";
 import { connectionApiPaths, connectionApiSchemas } from "../../src/lib/connection-openapi.ts";
 import { publicAddress } from "../../scripts/collect-connection-sources.ts";
+import { researchLeads } from "../../src/lib/election-connections.ts";
 
 const at = "2026-10-11T12:00:00.000Z";
 const publisher = { id: "reviewer", email: "publisher@example.org", publisher: true };
@@ -33,8 +34,9 @@ test("migration keeps all existing relationships and three Texas pilots as unapp
   assert.ok(doc.claims.length >= 45);
   assert.ok(doc.claims.every((claim) => claim.state === "draft" && claim.review === null));
   assert.equal(doc.revisions.length, 0);
-  assert.ok(doc.questions.slice(0, 5).every((question) => question.public && question.status === "open" && !question.finding));
-  assert.ok(doc.questions.slice(5).every((question) => !question.public));
+  const legacyQuestionIds = new Set(researchLeads.map((question) => question.id));
+  assert.ok(doc.questions.filter((question) => legacyQuestionIds.has(question.id)).every((question) => question.public && question.status === "open" && !question.finding));
+  assert.ok(doc.questions.filter((question) => !legacyQuestionIds.has(question.id)).every((question) => !question.public));
   assert.deepEqual(doc.entities.filter((entity) => entity.identifiers.countyFips).map((entity) => entity.identifiers.countyFips), ["48001", "48201", "48453"]);
   assert.equal(publicResearchDocument(doc, "empty").claims.length, 0);
 });

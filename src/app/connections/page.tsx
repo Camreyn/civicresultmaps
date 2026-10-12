@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { connectionSources, connectionsReviewedOn } from "@/lib/election-connections";
+import { connectionSources } from "@/lib/election-connections";
 import { BrandMark } from "../brand-mark";
 import { ResearchExplorer } from "./research-explorer";
 import { legacyExplorerDocument } from "@/lib/connection-explorer-data";
-import { readPublishedConnections } from "@/lib/connection-research-repository";
+import { readPublishedConnections, readPublishedConnectionComparisons } from "@/lib/connection-research-repository";
+import { ReleaseComparison } from "./release-comparison";
+import type { ConnectionComparisons } from "@/lib/connection-release-comparison";
 import styles from "./connections.module.css";
 import { sourceDescriptions } from "./connection-descriptors";
 
@@ -26,6 +28,9 @@ export default async function ConnectionsPage() {
   } catch {
     return <main className={styles.shell}><h1>Election connections</h1><p role="alert">Reviewed connections release unavailable.</p><a href="/">State workspace</a></main>;
   }
+  let comparisons: ConnectionComparisons;
+  try { comparisons = await readPublishedConnectionComparisons(document); }
+  catch { comparisons = { status: "unavailable", comparisons: [] }; }
   return (
     <div className={styles.shell}>
       <header className={styles.topbar}>
@@ -50,6 +55,7 @@ export default async function ConnectionsPage() {
         </details>
       </section>
       <ResearchExplorer document={document} />
+      <section className={styles.comparisonSection} aria-label="Reviewed release comparison"><ReleaseComparison data={comparisons} /></section>
       <details className={styles.library} id="source-library">
         <summary><h2>Sources <span>{document.sources.length}</span></h2></summary>
         <div className={styles.sourceGrid}>{document.sources.map((source) => (
@@ -57,7 +63,7 @@ export default async function ConnectionsPage() {
             <small>{source.authority}</small>
             <h3><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} <span aria-hidden="true">↗</span></a></h3>
             <p>{source.publishedOn ? `Dated ${source.publishedOn}` : source.eventOn ? `Event ${source.eventOn} · Publication date unconfirmed` : "Undated"}</p>
-            <details className={styles.sourceCheck}><summary>{sourceDescriptions[source.sourceClass].label} · Source details</summary><p>{sourceDescriptions[source.sourceClass].description}</p>{document.releaseId === "legacy-documentary-catalog" ? <><p>{connectionSources.find((item) => item.id === source.id)?.review.locator}</p><p>{connectionSources.find((item) => item.id === source.id)?.review.note}</p><p>Content checked {connectionsReviewedOn}; retained revision unavailable.</p></> : document.evidence.filter((item) => item.sourceId === source.id).map((item) => <p key={item.id}>{item.locator.page ? `Page ${item.locator.page}: ` : ""}{item.locator.section}</p>)}</details>
+            <details className={styles.sourceCheck}><summary>{sourceDescriptions[source.sourceClass].label} · Source details</summary><p>{sourceDescriptions[source.sourceClass].description}</p>{document.releaseId === "legacy-documentary-catalog" ? <><p>{connectionSources.find((item) => item.id === source.id)?.review.locator}</p><p>{connectionSources.find((item) => item.id === source.id)?.review.note}</p><p>Content checked {connectionSources.find((item) => item.id === source.id)?.review.checkedOn}; retained revision unavailable.</p></> : document.evidence.filter((item) => item.sourceId === source.id).map((item) => <p key={item.id}>{item.locator.page ? `Page ${item.locator.page}: ` : ""}{item.locator.section}</p>)}</details>
           </article>
         ))}</div>
       </details>

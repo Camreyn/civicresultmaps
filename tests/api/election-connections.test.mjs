@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { connectionEdges, connectionNodes, connectionPositions, connectionSources, connectionsFor, connectionViews, researchLeads } from "../../src/lib/election-connections.ts";
 import { evidenceDescription, evidenceDescriptions, relationshipDescription, relationshipDescriptions, sourceDescriptions } from "../../src/app/connections/connection-descriptors.ts";
+import { legacyExplorerDocument } from "../../src/lib/connection-explorer-data.ts";
+import { guidedConnections } from "../../src/lib/connection-guides.ts";
+import { compareConnectionReleases, validatedRelease } from "../../src/lib/connection-release-comparison.ts";
+import { connectionJsonDigest } from "../../src/lib/connection-json-digest.ts";
 
 test("beginner descriptors cover catalog relationship kinds without changing machine values", () => {
   for (const edge of connectionEdges) {
@@ -108,4 +112,70 @@ test("survey, corporate and reporting relationship types remain separate", () =>
   assert.ok(connectionEdges.filter((connection) => connection.from === "ap" && ["abc", "cbs", "cnn", "nbc", "fox"].includes(connection.to)).every((connection) => connection.kind === "results"));
   assert.equal(connectionEdges.find((connection) => connection.id === "paramount-wbd").kind, "ownership");
   assert.match(connectionEdges.find((connection) => connection.id === "ap-cnn").limitation, /independent race calls/);
+});
+
+test("USA TODAY source scopes do not create a 2026 stringer-to-AP route", () => {
+  const document = legacyExplorerDocument();
+  assert.equal(document.sources.find((source) => source.id === "usatoday-stringers-nc-2026").sourceClass, "supplemental");
+  assert.equal(document.sources.find((source) => source.id === "usatoday-stringers-tx-2026").sourceClass, "supplemental");
+  assert.equal(document.claims.find((claim) => claim.id === "ap-usatodayco-2024").observedOn, "2024-03-19");
+  assert.match(document.claims.find((claim) => claim.id === "ap-usatodayco-2024").limitation, /not confirmation of renewal in 2026/);
+  assert.ok(!document.evidence.some((evidence) => evidence.sourceId.startsWith("usatoday-stringers-")));
+  assert.ok(!document.claims.some((claim) => claim.id.includes("stringer")));
+  assert.ok(document.questions.some((question) => question.id === "usatoday-stringers-2026" && !question.finding && question.status === "open"));
+  assert.equal(connectionSources.find((source) => source.id === "ap-networks").review.checkedOn, "2026-10-11");
+  assert.equal(connectionSources.find((source) => source.id === "ap-gannett-2024").review.checkedOn, "2026-10-12");
+});
+
+test("local records separate procurement, certification, fielded use and inventory", () => {
+  const document = legacyExplorerDocument();
+  for (const [id, scope] of [["harris-verity-procurement", "procured"], ["harris-verity-certification", "certified"], ["harris-verity-fielded-2022", "fielded"], ["harris-verity-inventory-2026", "documented"]]) {
+    assert.equal(document.claims.find((claim) => claim.id === id).scope, scope);
+  }
+  assert.match(document.claims.find((claim) => claim.id === "harris-verity-fielded-2022").dated, /2022/);
+  assert.equal(document.claims.find((claim) => claim.id === "harris-verity-fielded-2022").geography, "county:48201");
+  assert.equal(document.contracts.length, 0);
+});
+
+test("guided examples only use extant public supporting records", () => {
+  const document = legacyExplorerDocument();
+  assert.equal(guidedConnections(document).length, 7);
+  document.evidence = document.evidence.filter((item) => item.claimId !== "ap-cnn");
+  assert.ok(!guidedConnections(document).some((claim) => claim.id === "ap-cnn"));
+  document.claims = [];
+  assert.deepEqual(guidedConnections(document), []);
+});
+
+test("reviewed comparison detects semantic and evidence changes without republishing prior wording", () => {
+  const previous = { ...legacyExplorerDocument(), releaseId: "synthetic-previous" };
+  const current = structuredClone(previous); current.releaseId = "synthetic-current";
+  previous.claims[0].establishes = "OLD CORRECTED WORDING";
+  previous.claims[1].label = "WITHDRAWN LABEL";
+  current.claims = current.claims.filter((claim) => claim.id !== previous.claims[1].id);
+  current.sources.find((source) => source.id === "ap-networks").title += " Updated";
+  const diff = compareConnectionReleases(previous, current);
+  assert.ok(diff.changes.some((item) => item.id === current.claims[0].id && item.fields.includes("establishes")));
+  assert.ok(diff.changes.some((item) => item.id === "ap-cnn" && item.fields.includes("linked entity / source records")));
+  assert.ok(diff.removedIds.includes(previous.claims[1].id));
+  assert.equal(diff.counts.claims.removed, 1);
+  assert.ok(!JSON.stringify(diff).includes("OLD CORRECTED WORDING"));
+  assert.ok(!JSON.stringify(diff).includes("WITHDRAWN LABEL"));
+  assert.ok(!JSON.stringify(diff).includes("https://"));
+  const reordered = structuredClone(previous); reordered.claims.reverse(); reordered.sources.reverse(); reordered.evidence.reverse(); reordered.entities.reverse();
+  assert.equal(compareConnectionReleases(previous, reordered).changes.length, 0);
+  assert.throws(() => compareConnectionReleases(legacyExplorerDocument(), current), /not a reviewed release/);
+});
+
+test("archived snapshot validation rejects bad digest, identity, duplicates and private fields", () => {
+  const document = { ...legacyExplorerDocument(), releaseId: `connections-${"a".repeat(64)}` };
+  const row = { id: document.releaseId, document, digest: connectionJsonDigest(document) };
+  assert.equal(validatedRelease(row).releaseId, document.releaseId);
+  assert.throws(() => validatedRelease({ ...row, digest: "0".repeat(64) }), /digest/);
+  assert.throws(() => validatedRelease({ ...row, id: "wrong-id" }), /identity/);
+  const synthetic = { ...document, releaseId: "synthetic-release" };
+  assert.throws(() => validatedRelease({ id: synthetic.releaseId, document: synthetic, digest: connectionJsonDigest(synthetic) }), /identity/);
+  const duplicate = structuredClone(document); duplicate.claims.push(duplicate.claims[0]);
+  assert.throws(() => validatedRelease({ ...row, document: duplicate, digest: connectionJsonDigest(duplicate) }), /Duplicate/);
+  const privateDocument = { ...document, workingNotes: "PRIVATE" };
+  assert.throws(() => validatedRelease({ ...row, document: privateDocument, digest: connectionJsonDigest(privateDocument) }));
 });

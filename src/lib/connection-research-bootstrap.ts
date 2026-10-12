@@ -1,4 +1,4 @@
-import { connectionEdges, connectionNodes, connectionSources, connectionsReviewedOn, researchLeads } from "./election-connections.ts";
+import { connectionEdges, connectionNodes, connectionSources, connectionsReviewedOn, researchLeads, connectionSourceClass, connectionSourceAttribution } from "./election-connections.ts";
 import { validateResearchDocument, type ResearchDocument } from "./connection-research.ts";
 
 /** Migration is deliberately draft-only. Reading a URL is not archival verification. */
@@ -8,17 +8,17 @@ export function initialResearchDocument(): ResearchDocument {
     entities: connectionNodes.map((node) => ({ ...node, geography: ["txsos", "county", "team", "civix"].includes(node.id) ? "TX" : "national", identifiers: {} })),
     sources: connectionSources.map((source) => ({
       id: source.id, authority: source.authority, title: source.title, url: source.url,
-      sourceClass: /Secretary of State|DHS/.test(source.authority) ? "official" : "issuer",
+      sourceClass: connectionSourceClass(source),
       publishedOn: source.publishedOn ?? null, eventOn: source.eventOn ?? null, latestRevisionId: null,
       legacyCheck: { checkedOn: source.review.checkedOn, locator: source.review.locator, note: source.review.note },
     })),
     revisions: [], sourceReviews: [], contracts: [],
     claims: connectionEdges.map((edge) => ({
       id: edge.id, from: edge.from, to: edge.to, label: edge.label, kind: edge.kind, view: edge.view,
-      geography: edge.view === "technology" && [edge.from, edge.to].some((id) => ["team", "county", "txsos", "civix"].includes(id)) ? "TX" : "national",
+      geography: edge.geography ?? (edge.view === "technology" && [edge.from, edge.to].some((id) => ["team", "counties", "texas", "civix"].includes(id)) ? "TX" : "national"),
       establishes: edge.establishes, limitation: edge.limitation, dated: edge.dated,
-      observedOn: null, effectiveFrom: null, effectiveTo: null,
-      scope: "documented", state: "draft", review: null, ownership: null,
+      observedOn: edge.observedOn ?? null, effectiveFrom: null, effectiveTo: null,
+      scope: edge.scope ?? "documented", state: "draft", review: null, ownership: null,
     })),
     evidence: connectionEdges.flatMap((edge) => edge.sourceIds.map((sourceId) => {
       const source = connectionSources.find((record) => record.id === sourceId)!;
@@ -26,7 +26,7 @@ export function initialResearchDocument(): ResearchDocument {
         id: `${edge.id}-${sourceId}`, claimId: edge.id, sourceId, revisionId: null,
         relation: "supports" as const,
         locator: { page: null, section: source.review.locator, pointer: null }, excerpt: "",
-        attribution: /Secretary of State|DHS/.test(source.authority) ? "official_record" as const : "issuer_statement" as const,
+        attribution: connectionSourceAttribution(source),
       };
     })),
     questions: researchLeads.map((lead) => ({
