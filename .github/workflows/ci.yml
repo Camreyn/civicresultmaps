@@ -70,6 +70,9 @@ jobs:
       - name: SEO contracts
         run: node --experimental-strip-types tests/api/seo.test.mjs
 
+      - name: Connections research contract tests
+        run: npm run test:connections
+
       - name: Workspace analytics contract tests
         id: analytics_contract
         run: npm run test:analytics
@@ -141,6 +144,9 @@ jobs:
       - name: Equipment browser tests
         id: equipment_browser
         run: npm run test:e2e:equipment:ci
+
+      - name: Connections research browser tests
+        run: npx playwright test tests/e2e/election-connections.spec.ts tests/e2e/connection-research.spec.ts --workers=1
 
       - name: Workspace layout browser tests
         id: browser

@@ -466,6 +466,7 @@ export const resultRows = pgTable(
     votes: integer("votes").notNull(),
     reportingUnitId: uuid("reporting_unit_id").references(() => reportingUnits.id),
     sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+    sourceLocator: jsonb("source_locator").$type<Record<string, unknown>>(),
   },
   (table) => ({
     uniqueResult: uniqueIndex("result_rows_contest_jurisdiction_candidate_idx").on(

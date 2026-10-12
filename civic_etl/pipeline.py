@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -219,6 +220,21 @@ def build_staging_artifact(config: EtlConfig, report: ValidationReport) -> dict[
     if native_payload:
         artifact["native"] = native_payload
         artifact["validation"]["metrics"].update(native_payload.get("metrics", {}))
+
+    if config.code == "TX" and native_payload:
+        # Captured during this staging build, never retroactively attached to old outputs.
+        artifact["lineageManifest"] = {
+            "schemaVersion": 1,
+            "generatedAt": datetime.now(timezone.utc).isoformat(),
+            "parser": native_payload["parser"],
+            "parserCodeSha256": hashlib.sha256(Path(__file__).with_name("native.py").read_bytes()).hexdigest(),
+            "configCanonicalSha256": hashlib.sha256(json.dumps(config.raw, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+            "sourceArtifacts": {source["id"]: source["metadata"]["artifacts"] for source in artifact["sources"]},
+            "reviewStatus": "observed_at_staging_not_editorially_reviewed",
+        }
+        for source in config.sources:
+            if artifact_metadata(source.local_file) != {"artifacts": next(item for item in artifact["sources"] if item["id"] == source.id)["metadata"]["artifacts"]}:
+                raise ValueError("source changed during staging; rebuild from stable retained artifacts")
 
     return artifact
 

@@ -17,6 +17,7 @@ import {
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
+import { ResultSourceChain } from "./result-source-chain";
 import {
   formatIndicatorScopeSummary,
   presentIndicatorScope,
@@ -1955,6 +1956,7 @@ export function ResultsExplorer({
                   </a>
                 )}
               </div>
+              <ResultSourceChain key={`${selectedMapResult.year}-${selectedMapResult.office}-${selectedMapResult.level}-${selectedMapResult.jurisdictionCode}-${JSON.stringify(selectedMapResult.votes)}`} result={selectedMapResult} />
               {selectedSourceDrawer && (
                 <details className="source-drawer-panel" data-tour="source-drawer" open>
                   <summary>Source Drawer</summary>

@@ -4152,6 +4152,27 @@ def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig])
                 "margin": trump - harris,
                 "marginPct": pct(trump - harris, total),
                 "sourceId": source.id,
+                "sourceLocator": {
+                    "format": "texasCountyJson",
+                    "countyFips": str(fips),
+                    "raceId": president_id,
+                    "totalPointer": f"/{fips}/Races/{president_id}/T",
+                    "candidateContributions": {
+                        bucket: [
+                            {
+                                "pointer": f"/{fips}/Races/{president_id}/C/{candidate_id}/V",
+                                "sourceName": str(candidate.get("N") or ""),
+                                "party": str(candidate.get("P") or "").strip().upper(),
+                                "votes": int_text(candidate.get("V")),
+                            }
+                            for candidate_id, candidate in president.get("C", {}).items()
+                            if ("Harris" if str(candidate.get("P") or "").strip().upper() == "DEM"
+                                else "Trump" if str(candidate.get("P") or "").strip().upper() == "REP"
+                                else "Other") == bucket
+                        ]
+                        for bucket in ("Harris", "Trump", "Other")
+                    },
+                },
             }
         )
 

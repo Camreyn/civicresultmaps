@@ -39,7 +39,7 @@ function responseWithVisitor(request: NextRequest, id: string) {
 
 const authenticatedProxy = clerkConfigured
   ? clerkMiddleware(async (auth, request) => {
-      if (request.nextUrl.pathname.startsWith("/admin/layout") && !request.nextUrl.pathname.startsWith("/admin/sign-in")) {
+      if ((request.nextUrl.pathname.startsWith("/admin/layout") || request.nextUrl.pathname.startsWith("/admin/connections")) && !request.nextUrl.pathname.startsWith("/admin/sign-in")) {
         await auth.protect();
       }
       const id = visitorId(request);
@@ -59,7 +59,7 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
     return NextResponse.redirect(secureUrl, 308);
   }
 
-  if (authenticatedProxy && isPrivateAdminPath(request.nextUrl.pathname)) {
+  if (authenticatedProxy && (isPrivateAdminPath(request.nextUrl.pathname) || request.nextUrl.pathname.startsWith("/api/admin/connections"))) {
     const response = await authenticatedProxy(request, event);
     if (response) return response;
   }

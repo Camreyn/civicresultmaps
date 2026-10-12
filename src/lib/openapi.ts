@@ -1,4 +1,5 @@
 import { currentNationalReleaseId, equipmentCatalogApiSchemaVersion, publicApiSchemaVersion } from "./api-version";
+import { connectionApiPaths, connectionApiSchemas } from "./connection-openapi";
 
 const envelopeMeta = {
   type: "object",
@@ -8,6 +9,7 @@ const envelopeMeta = {
     source: { type: "string" },
     schemaVersion: { type: "string", example: publicApiSchemaVersion },
     releaseId: { type: ["string", "null"], example: currentNationalReleaseId },
+    dataRevision: { type: ["string", "null"], description: "Stored result-data revision; null when a stable revision was not established." },
     limit: { type: "integer", minimum: 1 },
     offset: { type: "integer", minimum: 0 },
     total: { type: "integer", minimum: 0 },
@@ -43,9 +45,11 @@ export function buildOpenApiDocument() {
       { name: "Districts", description: "Plan-vintage district boundary measurements and explicit comparability guards" },
       { name: "Releases", description: "Immutable result, equipment, and security release metadata and bulk downloads" },
       { name: "Equipment", description: "Source-linked certified configurations, change records, and evidence gaps" },
+      { name: "Connections", description: "Reviewed documentary relationships and result source lineage" },
       { name: "Platform", description: "Existing state, source, and coverage endpoints" },
     ],
     paths: {
+      ...connectionApiPaths,
       "/api/v1/flips": {
         get: {
           tags: ["Comparisons"],
@@ -326,6 +330,7 @@ export function buildOpenApiDocument() {
     },
     components: {
       schemas: {
+        ...connectionApiSchemas,
         EnvelopeMeta: envelopeMeta,
         ErrorEnvelope: {
           type: "object",

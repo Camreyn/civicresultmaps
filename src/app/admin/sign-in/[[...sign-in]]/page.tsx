@@ -5,7 +5,10 @@ import styles from "../../layout/layout-editor.module.css";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Layout Admin Sign In", robots: { index: false, follow: false } };
 
-export default async function LayoutAdminSignInPage() {
+export default async function LayoutAdminSignInPage({ searchParams }: { searchParams: Promise<{ redirect_url?: string }> }) {
+  const { redirect_url } = await searchParams;
+  // Only known private destinations are accepted; arbitrary URLs cannot become redirects.
+  const destination = redirect_url === "/admin/connections" ? "/admin/connections" : "/admin/layout";
   if (!isClerkConfigured()) {
     return (
       <main className={styles.page}>
@@ -20,7 +23,7 @@ export default async function LayoutAdminSignInPage() {
   return (
     <main className={styles.page}>
       <section className={styles.setupCard}>
-        <SignIn fallbackRedirectUrl="/admin/layout" />
+        <SignIn fallbackRedirectUrl={destination} />
       </section>
     </main>
   );

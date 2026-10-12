@@ -10,6 +10,7 @@ export function SiteFooter() {
         <a href="/states">States</a>
         <a href="/counties">Counties</a>
         <a href="/datasets">Datasets</a>
+        <a href="/connections">Connections</a>
         <Link href="/privacy">Privacy</Link>
         <Link href="/developers">API</Link>
         <a href="https://github.com/Camreyn/civicresultmaps" rel="noreferrer" target="_blank">Source code</a>

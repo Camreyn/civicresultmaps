@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getPublicDataRevision } from "@/lib/data-access";
 import {
   apiEnvelope,
   apiErrorEnvelope,
@@ -55,13 +56,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.json(apiEnvelope(await listResults({
+  const before = await getPublicDataRevision();
+  const rows = await listResults({
     state,
     year,
     level,
     office,
     parentGeoid,
-  })), {
+  });
+  const after = await getPublicDataRevision();
+  return NextResponse.json(apiEnvelope(rows, { dataRevision: before === after ? after : null }), {
     headers: publicDataCacheHeaders,
   });
 }

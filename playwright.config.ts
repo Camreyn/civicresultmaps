@@ -37,6 +37,10 @@ export default defineConfig({
         command: `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
         env: {
           CLERK_SECRET_KEY: "",
+          CONNECTIONS_DATABASE_URL: "",
+          CONNECTIONS_WRITES_ENABLED: "0",
+          CONNECTIONS_PUBLIC_RELEASES_ENABLED: "0",
+          RESULT_LINEAGE_ENABLED: "0",
           DATABASE_URL: "",
           EDGE_CONFIG: "",
           EQUIPMENT_CATALOG_CHANNEL: "staging",
