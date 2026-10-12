@@ -6,6 +6,7 @@ import { equipmentCatalogMetadata, listEquipmentSystemSlugs } from "@/lib/equipm
 import { equipmentDossierSections } from "@/app/equipment/[slug]/dossier-navigation";
 import { listTrackedEquipmentStates } from "@/lib/equipment-social-preview";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
+import { newsEntries } from "@/lib/news";
 
 export const dynamic = "force-dynamic";
 
@@ -15,8 +16,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = new Set([
     "/", "/elections", "/elections/2024/president", "/states", "/counties", "/datasets",
     "/compare", "/connections", "/security", "/readiness", "/evidence", "/releases", "/developers", "/privacy",
-    "/district-compactness",
+    "/district-compactness", "/news",
   ]);
+  for (const entry of newsEntries) paths.add(`/news/${entry.slug}`);
   // Preserve existing equipment discovery, but never list disabled/404 pages.
   if (isEquipmentExplorerEnabled({ catalogChannel: equipmentCatalogMetadata.channel, productionReady: equipmentCatalogMetadata.productionReady })) {
     paths.add("/equipment");
@@ -42,7 +44,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     paths.add(`/county/${county.fips}`);
     if (resultTags.has(county.jurisdictionTag)) paths.add(countyElectionPath(county));
   }
-  // No trustworthy page-modification timestamps are recorded. Omit lastModified.
+  // Omit modification dates except an explicit, reviewed News edit timestamp.
   // This inventory is well below the single-sitemap 50,000 URL limit.
-  return [...paths].map((path) => ({ url: absoluteUrl(path) }));
+  return [...paths].map((path) => {
+    const entry = newsEntries.find((item) => path === `/news/${item.slug}`);
+    return { url: absoluteUrl(path), ...(entry?.updatedOn ? { lastModified: entry.updatedOn } : {}) };
+  });
 }

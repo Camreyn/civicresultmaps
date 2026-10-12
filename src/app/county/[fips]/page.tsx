@@ -12,7 +12,6 @@ import {
   ShieldCheck,
   Vote,
 } from "lucide-react";
-import { BrandMark } from "@/app/brand-mark";
 import { GlobalCountySearch } from "@/app/global-county-search";
 import { findCanonicalCountyByFips } from "@/lib/county-search";
 import { countyByTag } from "@/lib/seo-geography";
@@ -90,20 +89,6 @@ export default async function CountyPage({ params }: CountyPageProps) {
 
   return (
     <main className={styles.shell}>
-      <header className={styles.topbar}>
-        <a className={styles.brand} href="/">
-          <BrandMark />
-          <span>
-            <strong>Civic Result Maps</strong>
-            <small>County election profile</small>
-          </span>
-        </a>
-        <nav aria-label="County profile navigation">
-          <a href="/"><ArrowLeft aria-hidden size={15} /> Workspace</a>
-          <a href="/compare"><BarChart3 aria-hidden size={15} /> Compare</a>
-          <a href="/developers"><Database aria-hidden size={15} /> API</a>
-        </nav>
-      </header>
 
       <div className={styles.content}>
         <section className={styles.hero}>

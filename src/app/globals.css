@@ -1,4 +1,5 @@
 :root {
+  --site-header-height: 64px;
   color-scheme: dark;
   --background: #101112;
   --foreground: #f4f1ea;
@@ -37,6 +38,16 @@ body {
 
 body {
   min-height: 100vh;
+}
+
+.site-page-tools {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px clamp(16px, 4vw, 48px) 0;
+}
+
+@media print {
+  .site-page-tools { display: none; }
 }
 
 a {
@@ -954,7 +965,7 @@ input {
 .sidebar {
   align-self: start;
   position: sticky;
-  top: 92px;
+  top: calc(var(--site-header-height) + 20px);
 }
 
 .sidebar-header {
@@ -1385,7 +1396,7 @@ input {
   align-self: start;
   min-width: 0;
   position: sticky;
-  top: 16px;
+  top: calc(var(--site-header-height) + 16px);
 }
 
 .workspace-notes.is-collapsed {
@@ -5744,41 +5755,12 @@ td {
   overflow-x: hidden;
 }
 
-.timeline-app-switcher,
 .timeline-hero,
 .timeline-metrics,
 .timeline-console {
   margin-inline: auto;
   max-width: 1480px;
   width: calc(100% - clamp(40px, 8vw, 96px));
-}
-
-.timeline-app-switcher {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding-top: 18px;
-}
-
-.timeline-app-switcher a {
-  align-items: center;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  display: inline-flex;
-  font-size: 12px;
-  font-weight: 800;
-  gap: 7px;
-  min-height: 34px;
-  padding: 0 12px;
-}
-
-.timeline-app-switcher a:hover,
-.timeline-app-switcher a[aria-current="page"] {
-  border-color: var(--accent-line);
-  color: var(--accent);
 }
 
 .timeline-hero {
@@ -6266,7 +6248,6 @@ td {
 }
 
 @media (max-width: 980px) {
-  .timeline-app-switcher,
   .timeline-hero,
   .timeline-metrics,
   .timeline-console {

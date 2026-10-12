@@ -3,7 +3,7 @@ import { Box, ChevronRight, Cpu } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { RouteTour } from "../../route-tour";
-import { SiteHeader } from "../../site-header";
+import { PageTools } from "../../page-tools";
 import { equipmentDetailTourSteps } from "../../tour-manifests";
 import {
   equipmentCatalogMetadata,
@@ -35,12 +35,7 @@ export default async function EquipmentDossierLayout({
 
   return (
     <main className={styles.shell}>
-      <SiteHeader
-        activePage="equipment"
-        equipmentEnabled={equipmentEnabled}
-        subtitle="U.S. election equipment evidence"
-        tourId="equipment-detail"
-      />
+      <PageTools tourId="equipment-detail" />
       <RouteTour steps={equipmentDetailTourSteps} tourId="equipment-detail" />
 
       <div className={styles.page}>

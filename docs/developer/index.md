@@ -51,6 +51,9 @@ guards, and the prohibition on mismatched result joins, read
 
 For the connections graph, private researcher and publisher workflow, retained sources, Texas county result lineage, and activation gates, read [`docs/developer/connection-research.md`](connection-research.md).
 
+For the shared public toolbar, curated News registry, source/date rules, RSS,
+correction workflow and navigation checks, read [`docs/developer/news-and-navigation.md`](news-and-navigation.md).
+
 ## Coordinator Protocol
 
 When coordinating state workers:

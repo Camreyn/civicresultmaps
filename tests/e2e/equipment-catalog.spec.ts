@@ -104,9 +104,9 @@ test("separates exact product-family matches from manufacturer context on state 
   )).toBe(true);
 });
 
-test("exposes U.S. Equipment in shared navigation and the equipment index tour", async ({ page }) => {
+test("exposes Equipment in shared navigation and the equipment index tour", async ({ page }) => {
   await page.goto("/equipment");
-  await expect(page.getByRole("link", { name: "U.S. Equipment" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("link", { name: "Equipment" })).toHaveAttribute("aria-current", "page");
   const tourButton = page.getByRole("button", { name: "Start a guided tour of this page" });
   await expect(tourButton).toContainText("Page tour");
   await tourButton.click();
@@ -593,12 +593,12 @@ test("keeps equipment navigation compact and keyboard-usable on mobile", async (
   await expect(page.getByRole("heading", { name: "Dominion Democracy Suite 5.17 / ImageCast X" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Open 3D view/ })).toBeVisible();
 
-  const openNavigation = page.getByRole("button", { name: "Open primary navigation" });
+  const openNavigation = page.getByRole("button", { name: "Primary navigation menu" });
   await expect(openNavigation).toBeVisible();
   await openNavigation.press("Enter");
   const mobileNavigation = page.getByRole("navigation", { name: "Mobile primary navigation" });
   await expect(mobileNavigation).toBeVisible();
-  await expect(mobileNavigation.getByRole("link", { name: "U.S. Equipment" })).toHaveAttribute("aria-current", "page");
+  await expect(mobileNavigation.getByRole("link", { name: "Equipment" })).toHaveAttribute("aria-current", "page");
 
   const accessibility = await new AxeBuilder({ page }).analyze();
   expect(accessibility.violations.filter(({ impact }) => impact === "serious" || impact === "critical")).toEqual([]);

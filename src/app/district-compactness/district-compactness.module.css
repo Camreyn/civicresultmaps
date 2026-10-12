@@ -1,12 +1,4 @@
 .shell { min-height: 100vh; padding-bottom: 72px; }
-.topbar { align-items: center; backdrop-filter: blur(16px); background: rgba(16,17,18,.9); border-bottom: 1px solid var(--line); display: flex; gap: 24px; justify-content: space-between; padding: 16px clamp(20px,4vw,52px); position: sticky; top: 0; z-index: 30; }
-.brand { align-items: center; display: flex; gap: 12px; }
-.brand > span { display: grid; gap: 2px; }
-.brand strong { font-size: 16px; line-height: 1.1; }
-.brand small { color: var(--muted); font-size: 12px; }
-.topnav { align-items: center; display: flex; gap: 9px; }
-.topnav a { align-items: center; border: 1px solid var(--line); border-radius: 999px; display: inline-flex; font-size: 12px; font-weight: 800; gap: 7px; min-height: 32px; padding: 0 11px; }
-.topnav a:hover,.topnav a:focus-visible { border-color: var(--accent-line); color: var(--accent); }
 .hero { display: grid; gap: clamp(28px,5vw,70px); grid-template-columns: minmax(0,1fr) minmax(260px,360px); margin: 0 auto; max-width: 1500px; padding: clamp(42px,7vw,86px) clamp(20px,4vw,52px) clamp(28px,4vw,46px); }
 .hero h1 { font-size: clamp(38px,6vw,76px); letter-spacing: -.055em; line-height: .98; margin: 16px 0 20px; max-width: 980px; }
 .lede { color: #c7c8c2; font-size: clamp(16px,2vw,20px); line-height: 1.65; margin: 0; max-width: 930px; }
@@ -67,4 +59,4 @@
 .sources li span { color: var(--quiet); font-size: 10px; }
 @media (max-width: 1120px) { .controls { grid-template-columns: repeat(3,minmax(0,1fr)); } .actions { grid-column: 1/-1; } .methodology { grid-template-columns: 1fr; } }
 @media (max-width: 800px) { .hero { grid-template-columns: 1fr; } .planCard { align-self: auto; } .metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } .controls { grid-template-columns: 1fr 1fr; } .actions { grid-column: 1/-1; } .methodology dl { grid-template-columns: 1fr; } .sources { grid-template-columns: 1fr; } }
-@media (max-width: 560px) { .topbar { align-items: flex-start; padding: 13px 16px; } .brand small,.topnav a:first-child { display: none; } .topnav a { font-size: 0; min-width: 34px; padding: 0 9px; } .hero,.explorer { padding-left: 14px; padding-right: 14px; } .hero h1 { font-size: 42px; } .metrics,.controls { grid-template-columns: 1fr; } .actions { grid-column: 1; } .sources li { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 560px) {    .hero,.explorer { padding-left: 14px; padding-right: 14px; } .hero h1 { font-size: 42px; } .metrics,.controls { grid-template-columns: 1fr; } .actions { grid-column: 1; } .sources li { align-items: flex-start; flex-direction: column; } }

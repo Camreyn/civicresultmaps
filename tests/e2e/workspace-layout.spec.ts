@@ -113,7 +113,7 @@ test("workspace navigation and state selector adapt on small screens", async ({ 
   await expect(page.getByLabel("Workspace state")).toHaveValue("WA");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await expect(page.locator("[data-tour='site-header']")).toHaveCSS("position", "sticky");
-  await expect(page.getByRole("button", { name: "Open primary navigation" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Primary navigation menu" })).toBeVisible();
 
   const stateTrigger = page.getByRole("button", { name: /Choose a state/i });
   await expect(stateTrigger).toBeVisible();
