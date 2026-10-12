@@ -9,8 +9,12 @@ import styles from "./connections.module.css";
 
 export const metadata: Metadata = pageMetadata({
   title: "Election Connections",
-  description: "Explore dated election-reporting, corporate and technology relationships, with primary sources and visible evidence limits.",
+  description: "Trace AP's election-data agreements with TV networks, OpenAI and Kalshi, plus source-linked corporate roles, ownership and technology partnerships.",
   path: "/connections",
+  image: {
+    path: "/api/connections-social-card?v=2",
+    alt: "Election Connections: AP's announced election-data agreements with ABC, CBS, CNN, NBC, Fox, OpenAI and Kalshi; separate Oracle–OpenAI AI-capacity partnership and Donald Trump Jr.–Kalshi advisor appointment. Dates mark announcements, not control of votes or race calls.",
+  },
 });
 
 export const dynamic = "force-dynamic";

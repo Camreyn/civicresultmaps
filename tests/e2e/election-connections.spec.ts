@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import sharp from "sharp";
 
 test("renders the graph, inspects a source, focuses neighbors and restores a shared URL", async ({ page }) => {
   const errors: string[] = [];
@@ -98,6 +99,34 @@ test("source library and canonical metadata are available without JavaScript", a
   await expect(page.locator("#source-library article")).toHaveCount(28);
   await page.locator("#source-dhs-oracle summary").click();
   await expect(page.locator("#source-dhs-oracle")).toContainText("Exact record read in the browser");
+  await context.close();
+});
+
+test("social crawlers receive a dedicated, publicly readable PNG thumbnail", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, userAgent: "Twitterbot/1.0" });
+  const page = await context.newPage();
+  await page.goto("/connections?view=ownership&node=paramount");
+  const imageUrl = "https://www.civicresultmaps.org/api/connections-social-card?v=2";
+  await expect(page.locator('head meta[property="og:image"]')).toHaveAttribute("content", imageUrl);
+  await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");
+  await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute("content", "630");
+  await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute("content", /AP's announced election-data agreements/);
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary_large_image");
+  await expect(page.locator('head meta[name="twitter:image"]')).toHaveAttribute("content", imageUrl);
+  await expect(page.locator('meta[name="twitter:image:alt"]')).toHaveAttribute("content", /separate Oracle–OpenAI AI-capacity partnership/);
+  const imagePath = new URL(imageUrl).pathname + new URL(imageUrl).search;
+  const response = await context.request.get(imagePath);
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("image/png");
+  expect(response.headers()["cache-control"]).toBe("public, max-age=0, s-maxage=86400, stale-while-revalidate=604800");
+  const png = await response.body();
+  const image = await sharp(png).metadata();
+  expect(image.format).toBe("png");
+  expect(image.width).toBe(1200);
+  expect(image.height).toBe(630);
+  await mkdir("outputs", { recursive: true });
+  await writeFile("outputs/connections-social-thumbnail-v2.png", png);
+  await test.info().attach("connections-social-thumbnail", { body: png, contentType: "image/png" });
   await context.close();
 });
 
