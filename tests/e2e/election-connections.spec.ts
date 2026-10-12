@@ -7,6 +7,9 @@ test("renders the graph, inspects a source, focuses neighbors and restores a sha
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/connections");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Election connections");
+  const about = page.getByRole("region", { name: "About this page" });
+  await expect(about).toContainText("Explore election-reporting networks, company ownership, and technology relationships.");
+  await expect(about.getByRole("link", { name: "Drey Dossier's TikTok video" })).toHaveAttribute("href", "https://www.tiktok.com/@thedreydossier/video/7695387832902241567");
   for (const removedCopy of ["Follow the connections.", "Keep the evidence in view.", "Research pilot", "The documentary layer", "Room to expand", "Connections are not conclusions.", "Documented relationship"]) {
     await expect(page.getByText(removedCopy, { exact: true })).toHaveCount(0);
   }
@@ -87,6 +90,8 @@ test("source library and canonical metadata are available without JavaScript", a
   const page = await context.newPage();
   await page.goto("/connections");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.civicresultmaps.org/connections");
+  await expect(page.getByRole("region", { name: "About this page" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Drey Dossier's TikTok video" })).toHaveAttribute("rel", "noopener noreferrer");
   await expect(page.getByRole("heading", { name: "Sources 28", exact: true })).toBeVisible();
   await expect(page.locator("#source-library")).not.toHaveAttribute("open", "");
   await page.locator("#source-library > summary").click();
