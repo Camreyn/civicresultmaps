@@ -5,6 +5,7 @@ import "@xyflow/react/dist/style.css";
 import { connectionPositions } from "@/lib/election-connections";
 import type { PublicResearchDocument } from "@/lib/connection-research";
 import styles from "./connections.module.css";
+import { relationshipDescriptions } from "./connection-descriptors";
 
 type EntityNode = Node<{ id: string; label: string; category: string; select: () => void }, "entity">;
 function Entity({ data, selected }: NodeProps<EntityNode>) {
@@ -12,7 +13,6 @@ function Entity({ data, selected }: NodeProps<EntityNode>) {
 }
 const nodeTypes = { entity: Entity };
 const colors: Record<string, string> = { results: "#74b8ff", survey: "#54d3b3", ownership: "#c1a1fa", role: "#f0c36a", technology: "#54d3b3", contract: "#f0c36a", inventory: "#54d3b3" };
-const kindLabels: Record<string, string> = { results: "Results", survey: "Surveys", ownership: "Ownership", role: "Roles", technology: "Technology", contract: "Contracts", inventory: "Inventory" };
 export type CanvasPositions = Record<string, { x: number; y: number }>;
 export function ConnectionCanvas({ entities, claims, selectedNode, selectedEdge, view, pinned, positions, onPosition, onSelect }: {
   entities: PublicResearchDocument["entities"]; claims: PublicResearchDocument["claims"]; selectedNode: string; selectedEdge: string | null;
@@ -41,8 +41,8 @@ export function ConnectionCanvas({ entities, claims, selectedNode, selectedEdge,
     markerEnd: { type: MarkerType.ArrowClosed, color: colors[claim.kind] }, style: { stroke: colors[claim.kind], strokeWidth: claim.id === selectedEdge ? 3 : 1.6 },
     labelStyle: { fill: "#eff6f1", fontSize: 10 }, labelBgStyle: { fill: "#1b231e" }, labelBgPadding: [5, 4] as [number, number],
   })), [claims, entities, selectedEdge, hoveredEdge]);
-  return <div className={styles.flowCanvas} data-connection-map="true" aria-label="Connection map">
-    <div className={`${styles.legend} ${styles.flowLegend}`} role="group" aria-label="Relationship types">{[...new Set(claims.map((claim) => claim.kind))].sort().map((kind) => <span key={kind}><i style={{ background: colors[kind] }} aria-hidden="true" />{kindLabels[kind]}</span>)}</div>
+  return <div className={styles.flowCanvas} data-connection-map="true" role="group" aria-label="Connection map" aria-describedby="connection-map-guide">
+    <div className={`${styles.legend} ${styles.flowLegend}`} role="group" aria-label="Relationship types">{[...new Set(claims.map((claim) => claim.kind))].sort().map((kind) => <span key={kind}><i style={{ background: colors[kind] }} aria-hidden="true" />{relationshipDescriptions[kind].label}</span>)}</div>
     <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange}
       onNodeDragStop={(_event, node) => onPosition(node.id, node.position)}
       onEdgeClick={(_event, edge) => onSelect(edge.source, edge.id)}

@@ -6,6 +6,7 @@ import { ResearchExplorer } from "./research-explorer";
 import { legacyExplorerDocument } from "@/lib/connection-explorer-data";
 import { readPublishedConnections } from "@/lib/connection-research-repository";
 import styles from "./connections.module.css";
+import { sourceDescriptions } from "./connection-descriptors";
 
 export const metadata: Metadata = pageMetadata({
   title: "Election Connections",
@@ -36,8 +37,17 @@ export default async function ConnectionsPage() {
         <span>Updated {document.reviewedOn}</span>
       </section>
       <section className={styles.intro} aria-label="About this page">
-        <p>Explore election-reporting networks, company ownership, and technology relationships. Select a node or connection to see its sources, dates, and evidence limits.</p>
+        <p>Explore election-reporting networks, company ownership, and technology relationships. Each box is a person, organization, product or public system. Select a box or line to see its sources, dates and evidence limits.</p>
         <p className={styles.credit}>Inspired by <a href="https://www.tiktok.com/@thedreydossier/video/7695387832902241567" target="_blank" rel="noopener noreferrer">Drey Dossier&apos;s TikTok video</a>. The cited records—not the video—support the relationships shown.</p>
+        <details className={styles.readingGuide} id="connections-reading-guide">
+          <summary>How to read this map</summary>
+          <dl className={styles.guideGrid}>
+            <div><dt>Boxes (nodes)</dt><dd>Select a box to learn what that person, organization or system does. Use the search to find a name; “Focus selected node” keeps only its direct connections.</dd></div>
+            <div><dt>Lines &amp; arrows</dt><dd>A line represents a specific relationship described in a source. Its color identifies the relationship type. Arrows follow the relationship wording, not necessarily a flow of votes or data. Select a line—or its entry in Connections—to read it.</dd></div>
+            <div><dt>Dates &amp; unknowns</dt><dd>A publication or observation date is not necessarily the start of a relationship. “Known active on” requires both a documented start and end date. Missing dates do not prove that a relationship was inactive.</dd></div>
+            <div><dt>Sources &amp; limits</dt><dd>“What the sources support” describes the evidence; “What is not established” identifies its limits. Source types describe where a statement came from, not a certainty score. “Content check only” means the source was read, but no saved source version is linked here.</dd></div>
+          </dl>
+        </details>
       </section>
       <ResearchExplorer document={document} />
       <details className={styles.library} id="source-library">
@@ -47,7 +57,7 @@ export default async function ConnectionsPage() {
             <small>{source.authority}</small>
             <h3><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} <span aria-hidden="true">↗</span></a></h3>
             <p>{source.publishedOn ? `Dated ${source.publishedOn}` : source.eventOn ? `Event ${source.eventOn} · Publication date unconfirmed` : "Undated"}</p>
-            <details className={styles.sourceCheck}><summary>{source.sourceClass} · Source details</summary>{document.releaseId === "legacy-documentary-catalog" ? <><p>{connectionSources.find((item) => item.id === source.id)?.review.locator}</p><p>{connectionSources.find((item) => item.id === source.id)?.review.note}</p><p>Content checked {connectionsReviewedOn}; retained revision unavailable.</p></> : document.evidence.filter((item) => item.sourceId === source.id).map((item) => <p key={item.id}>{item.locator.page ? `Page ${item.locator.page}: ` : ""}{item.locator.section}</p>)}</details>
+            <details className={styles.sourceCheck}><summary>{sourceDescriptions[source.sourceClass].label} · Source details</summary><p>{sourceDescriptions[source.sourceClass].description}</p>{document.releaseId === "legacy-documentary-catalog" ? <><p>{connectionSources.find((item) => item.id === source.id)?.review.locator}</p><p>{connectionSources.find((item) => item.id === source.id)?.review.note}</p><p>Content checked {connectionsReviewedOn}; retained revision unavailable.</p></> : document.evidence.filter((item) => item.sourceId === source.id).map((item) => <p key={item.id}>{item.locator.page ? `Page ${item.locator.page}: ` : ""}{item.locator.section}</p>)}</details>
           </article>
         ))}</div>
       </details>

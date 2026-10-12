@@ -102,11 +102,21 @@
 .intro p + p { margin-top:8px; }
 .intro .credit { font-size:11px; }
 .intro a { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+.readingGuide { margin-top:14px; border:1px solid var(--line); border-radius:6px; padding:12px 14px; }
+.readingGuide > summary { cursor:pointer; color:var(--foreground); font-weight:600; }
+.guideGrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 24px; margin:16px 0 0; }
+.guideGrid dt { font-weight:600; color:var(--foreground); }
+.guideGrid dd { margin:5px 0 0; color:var(--muted); }
+.viewDescription { margin:0 0 8px; color:var(--muted); font-size:12px; line-height:1.65; }
+.viewDescription strong,.filterHelp strong { color:var(--foreground); font-weight:550; }
+.filterHelp { margin:0 0 12px; color:var(--muted); font-size:11px; line-height:1.65; }
+.mapGuide { margin:0; padding:0 20px 14px; color:#b5c3ba; font-size:11px; line-height:1.65; }
+.inspector .explanation { font-size:11px; line-height:1.6; color:var(--muted); }
 .filters { display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:12px 0 18px; }
 .filters label { display:flex; flex-wrap:wrap; align-items:center; gap:7px; font-size:11px; color:var(--muted); }
 .filters input,.filters select,.filters button,.paths select,.paths button,.timeline button { border:1px solid var(--line); border-radius:5px; padding:9px; background:#1c2320; color:var(--foreground); font:inherit; max-width:100%; }
 .flowCanvas { position:relative; width:100%; height:640px; }
-.flowLegend { position:absolute; top:12px; left:16px; z-index:5; padding:6px 8px; border-radius:4px; background:#111614; }
+.flowLegend { position:absolute; top:12px; left:16px; z-index:5; max-width:calc(100% - 32px); padding:6px 8px; border-radius:4px; background:#111614; }
 .flowNode { display:block; position:relative; width:192px; min-height:76px; border:1px solid #688e7c; border-radius:8px; padding:14px; text-align:left; color:#f4f1ea; background:#1d2621; cursor:pointer; }
 .flowNode small { display:block; font-size:10px; color:#b6c9bd; margin-bottom:6px; }
 .flowNode strong { font-size:13px; font-weight:550; }
@@ -128,7 +138,7 @@
 .paths { margin-top:24px; font-size:11px; }
 .paths label { display:grid; gap:8px; margin:12px 0; }
 .paths button { text-align:left; }
-@media(max-width:800px) { .flowCanvas,.canvasLoading { height:480px; } .filters { gap:8px; } }
+@media(max-width:800px) { .flowCanvas,.canvasLoading { height:480px; } .filters { gap:8px; } .guideGrid { grid-template-columns:1fr; } .mapGuide { padding-inline:12px; } }
 .shell button:focus-visible,.shell input:focus-visible,.shell select:focus-visible,.shell a:focus-visible,.shell summary:focus-visible,.graphViewport:focus-visible { outline:2px solid #79e7c9; outline-offset:3px; }
 .shell button:hover { filter:brightness(1.12); }
 @media(min-width:1800px) { .explorer,.pageHeading,.intro,.library { max-width:1800px; } }

@@ -1,6 +1,29 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { connectionEdges, connectionNodes, connectionPositions, connectionSources, connectionsFor, connectionViews, researchLeads } from "../../src/lib/election-connections.ts";
+import { evidenceDescription, evidenceDescriptions, relationshipDescription, relationshipDescriptions, sourceDescriptions } from "../../src/app/connections/connection-descriptors.ts";
+
+test("beginner descriptors cover catalog relationship kinds without changing machine values", () => {
+  for (const edge of connectionEdges) {
+    const description = relationshipDescription(edge.kind);
+    assert.ok(description?.label && description.description, edge.id);
+    assert.equal(description, relationshipDescriptions[edge.kind]);
+  }
+  for (const attribution of ["official_record", "issuer_statement", "independent_reporting", "supplemental"]) {
+    assert.equal(evidenceDescription(attribution), evidenceDescriptions[attribution]);
+    assert.ok(evidenceDescriptions[attribution].label && evidenceDescriptions[attribution].description);
+  }
+  for (const unknown of ["all", "constructor", "toString", "__proto__", "not-a-kind"]) {
+    assert.equal(relationshipDescription(unknown), null);
+    assert.equal(evidenceDescription(unknown), null);
+  }
+  assert.match(relationshipDescriptions.survey.description, /not a count of ballots/);
+  assert.match(relationshipDescriptions.technology.description, /does not establish its use/);
+  assert.match(evidenceDescriptions.issuer_statement.description, /not independent corroboration/);
+  for (const sourceClass of ["official", "issuer", "independent", "supplemental"]) {
+    assert.ok(sourceDescriptions[sourceClass].label && sourceDescriptions[sourceClass].description);
+  }
+});
 
 test("registry IDs are unique and every edge has source references and limits", () => {
   for (const records of [connectionNodes, connectionEdges, connectionSources, researchLeads]) {
