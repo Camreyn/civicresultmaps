@@ -6,7 +6,7 @@ test("selects edges with the keyboard and keeps active-date uncertainty explicit
   await edge.focus(); await edge.press("Enter");
   await expect(page.getByRole("complementary").getByText(/Networks retain independent race calls/)).toBeVisible();
   await page.getByLabel("Time filter").selectOption("active");
-  await expect(page.getByText("No relationships have sufficient evidence for these filters.")).toBeVisible();
+  await expect(page.getByText("No connections match these filters. Known active on requires documented start and end dates covering this day; missing results do not prove a relationship was inactive.")).toBeVisible();
   await expect(page.locator("[data-connection-select]")).toHaveCount(0);
   await page.getByLabel("Time filter").selectOption("documented");
   await expect(page.locator('[data-connection-select="ap-cnn"]')).toBeVisible();
@@ -34,7 +34,7 @@ test("timeline and connection paths do not create new inferred data routes", asy
   await page.goto("/connections?view=technology&node=oracle");
   await page.locator("summary").filter({ hasText: "Find connections" }).click();
   await page.getByLabel("Destination").selectOption("team");
-  await page.getByLabel("Directed results-delivery relationships only").check();
+  await page.getByLabel("Follow only directed results relationships").check();
   await expect(page.getByText("No documented path within six relationships and the selected filters.")).toBeVisible();
   await page.getByRole("button", { name: "timeline", exact: true }).click();
   await expect(page.getByText("Supporting document publication date; not an effective date.").first()).toBeVisible();

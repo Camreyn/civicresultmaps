@@ -75,6 +75,7 @@ test("downloads a reproducible evidence registry", async ({ page }) => {
 
 test("has an accessible desktop and mobile flow without page-level overflow", async ({ page }) => {
   await page.goto("/connections");
+  await page.locator("#connections-reading-guide > summary").click();
   let scan = await new AxeBuilder({ page }).analyze();
   expect(scan.violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? ""))).toEqual([]);
   await page.setViewportSize({ width: 390, height: 844 });
@@ -93,6 +94,8 @@ test("source library and canonical metadata are available without JavaScript", a
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.civicresultmaps.org/connections");
   await expect(page.getByRole("region", { name: "About this page" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Drey Dossier's TikTok video" })).toHaveAttribute("rel", "noopener noreferrer");
+  await page.locator("#connections-reading-guide > summary").click();
+  await expect(page.locator("#connections-reading-guide")).toContainText("Arrows follow the relationship wording, not necessarily a flow of votes or data.");
   await expect(page.getByRole("heading", { name: "Sources 28", exact: true })).toBeVisible();
   await expect(page.locator("#source-library")).not.toHaveAttribute("open", "");
   await page.locator("#source-library > summary").click();
@@ -100,6 +103,38 @@ test("source library and canonical metadata are available without JavaScript", a
   await page.locator("#source-dhs-oracle summary").click();
   await expect(page.locator("#source-dhs-oracle")).toContainText("Exact record read in the browser");
   await context.close();
+});
+
+test("explains views, dates, evidence types and paths without changing their meaning", async ({ page }) => {
+  await page.goto("/connections");
+  await expect(page.getByLabel("Evidence date")).toBeEnabled();
+  await expect(page.locator("#connection-view-description")).toContainText("surveys are not ballot counts");
+  await page.getByLabel("Time filter").selectOption("active");
+  await expect(page.locator("#connection-date-help")).toContainText("both a documented start and end date");
+  await expect(page.getByText("No connections match these filters. Known active on requires documented start and end dates covering this day; missing results do not prove a relationship was inactive.")).toBeVisible();
+  await page.getByLabel("Time filter").selectOption("documented");
+  await page.getByRole("combobox", { name: "Relationship", exact: true }).selectOption("results");
+  await expect(page.getByRole("combobox", { name: "Relationship", exact: true })).toHaveAttribute("aria-describedby", "connection-kind-help");
+  await page.getByLabel("Evidence classification").selectOption("issuer_statement");
+  await expect(page.getByLabel("Evidence classification")).toHaveAttribute("aria-describedby", "connection-attribution-help");
+  await expect(page.getByRole("group", { name: "Connection map", exact: true })).toHaveAttribute("aria-describedby", "connection-map-guide");
+  await expect(page.locator("#connection-attribution-help")).toContainText("This is not independent corroboration.");
+  await page.locator("[data-connection-select='ap-cnn']").click();
+  const inspector = page.getByRole("complementary", { name: "Selected connection evidence" });
+  await expect(inspector.getByRole("heading", { name: "What the sources support", exact: true })).toBeVisible();
+  await expect(inspector.getByRole("heading", { name: "What is not established", exact: true })).toBeVisible();
+  await inspector.locator("summary").filter({ hasText: "Find connections" }).click();
+  await expect(inspector.getByLabel("Follow only directed results relationships")).toBeVisible();
+  await expect(inspector.locator("#connection-path-help")).toContainText("does not prove a live technical feed");
+  await page.getByRole("button", { name: "Ownership & roles", exact: true }).click();
+  await expect(page.locator("#connection-view-description")).toContainText("Company holdings, acquisitions");
+  await page.getByRole("button", { name: "Technology & public systems", exact: true }).click();
+  await expect(page.locator("#connection-view-description")).toContainText("department-wide contract");
+  await page.getByRole("combobox", { name: "Relationship", exact: true }).selectOption("all");
+  await page.getByLabel("Evidence classification").selectOption("all");
+  await page.getByRole("button", { name: "timeline", exact: true }).click();
+  await page.locator("summary").filter({ hasText: "Publication/observation date unknown" }).click();
+  await expect(page.getByText("An event date may still be listed in Sources; it is not used here as a publication or observation date.")).toBeVisible();
 });
 
 test("social crawlers receive a dedicated, publicly readable PNG thumbnail", async ({ browser }) => {
