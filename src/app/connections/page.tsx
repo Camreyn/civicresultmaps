@@ -31,6 +31,10 @@ export default async function ConnectionsPage() {
         <h1 id="connections-title">Election connections</h1>
         <span>Updated {document.reviewedOn}</span>
       </section>
+      <section className={styles.intro} aria-label="About this page">
+        <p>Explore election-reporting networks, company ownership, and technology relationships. Select a node or connection to see its sources, dates, and evidence limits.</p>
+        <p className={styles.credit}>Inspired by <a href="https://www.tiktok.com/@thedreydossier/video/7695387832902241567" target="_blank" rel="noopener noreferrer">Drey Dossier&apos;s TikTok video</a>. The cited records—not the video—support the relationships shown.</p>
+      </section>
       <ResearchExplorer document={document} />
       <details className={styles.library} id="source-library">
         <summary><h2>Sources <span>{document.sources.length}</span></h2></summary>
