@@ -74,6 +74,12 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(script, /promoteNativeStagingArtifact/);
 });
 
+test("new source locators are retained independently of the reporting-unit driver", () => {
+  const importer = readFileSync("src/db/native-import.ts", "utf8").replaceAll("\r\n", "\n");
+  assert.match(importer, /\n    }\n    \/\/ Migration 0010[\s\S]*?\n    if \(records\.some\(\(record\) => record\.source_locator\)\)/);
+  assert.match(importer, /update result_rows as target set source_locator = incoming\.source_locator/);
+});
+
 test("legacy importer tolerates non-array legacy turnout payloads", () => {
   const importer = readFileSync("src/db/legacy-import.ts", "utf8");
 

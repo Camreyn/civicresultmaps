@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import type { NeonQueryFunction } from "@neondatabase/serverless";
 import { calculateAnalysisIndicators, type CandidateNeutralReviewRow } from "../lib/analysis-indicators.ts";
 import { reviewPolicy } from "../lib/review-policy.ts";
@@ -34,6 +35,7 @@ type NativeResultRow = {
   level: string;
   votes: Record<"Harris" | "Trump" | "Other", number>;
   sourceId: string;
+  sourceLocator?: Record<string, unknown>;
   reportingUnit?: NativeReportingUnit;
 };
 
@@ -96,6 +98,7 @@ type NativeHistoricalRow = {
 };
 
 type NativeArtifact = {
+  lineageManifest?: Record<string, unknown>;
   state: {
     code: string;
     name: string;
@@ -618,7 +621,12 @@ export async function promoteNativeStagingArtifact(path: string, options: { data
     throw new Error("An injected native import target must be created by the labelled database rehearsal target resolver.");
   }
 
-  const artifact = JSON.parse(await readFile(path, "utf8")) as NativeArtifact;
+  const stagingBytes = await readFile(path);
+  const artifact = JSON.parse(stagingBytes.toString("utf8")) as NativeArtifact;
+  const importManifest = artifact.lineageManifest ? {
+    ...artifact.lineageManifest,
+    stagingSha256: createHash("sha256").update(stagingBytes).digest("hex"),
+  } : null;
   assertPromotable(artifact);
 
   const stateCode = artifact.state.code.toUpperCase();
@@ -778,7 +786,7 @@ export async function promoteNativeStagingArtifact(path: string, options: { data
       ${native.parser},
       ${primarySourceId ?? null},
       'staged',
-      ${JSON.stringify(native.metrics)}::text::jsonb
+      ${JSON.stringify({ ...native.metrics, ...(importManifest ? { lineageManifest: importManifest } : {}) })}::text::jsonb
     )
     returning id
   `;
@@ -1015,6 +1023,7 @@ export async function promoteNativeStagingArtifact(path: string, options: { data
         votes,
         reporting_unit_id: reportingUnit?.id ?? null,
         source_document_id: requiredSourceDocumentId(sourceIds, row.sourceId, "Native row"),
+        source_locator: row.sourceLocator ? { ...row.sourceLocator, bucket: candidate } : null,
       }),
     );
   });
@@ -1085,6 +1094,19 @@ export async function promoteNativeStagingArtifact(path: string, options: { data
           and target.candidate_name = incoming.candidate_name
           and target.party = incoming.party
           and incoming.reporting_unit_id is not null
+      `;
+    }
+    // Migration 0010 is required only for new artifacts carrying source locators.
+    // This is independent of reporting-unit support: both Neon and PostgreSQL retain lineage.
+    if (records.some((record) => record.source_locator)) {
+      await sql`
+        update result_rows as target set source_locator = incoming.source_locator
+        from jsonb_to_recordset(${JSON.stringify(records)}::text::jsonb) as incoming (
+          jurisdiction_code text, level text, candidate_name text, party text, source_locator jsonb
+        )
+        where target.contest_id = ${contest.id}::uuid and target.state_code = ${stateCode}
+          and target.level = incoming.level and target.jurisdiction_code = incoming.jurisdiction_code
+          and target.candidate_name = incoming.candidate_name and target.party = incoming.party
       `;
     }
   }
@@ -1594,6 +1616,7 @@ export async function promoteNativeStagingArtifact(path: string, options: { data
   const storedHistoricalRows = historicalRecords.length;
   const summary = {
     ...native.metrics,
+    ...(importManifest ? { lineageManifest: importManifest } : {}),
     storedResultRows,
     storedReviewRows,
     storedIndicatorRows,

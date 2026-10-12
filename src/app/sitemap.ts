@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const indexableStates = indexableStateCodes(availability);
   const paths = new Set([
     "/", "/elections", "/elections/2024/president", "/states", "/counties", "/datasets",
-    "/compare", "/security", "/readiness", "/evidence", "/releases", "/developers", "/privacy",
+    "/compare", "/connections", "/security", "/readiness", "/evidence", "/releases", "/developers", "/privacy",
     "/district-compactness",
   ]);
   // Preserve existing equipment discovery, but never list disabled/404 pages.

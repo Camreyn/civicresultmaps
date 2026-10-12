@@ -49,6 +49,8 @@ source retention, Polsby-Popper and convex-hull methods, resolution-stability
 guards, and the prohibition on mismatched result joins, read
 [`docs/developer/district-compactness.md`](district-compactness.md).
 
+For the connections graph, private researcher and publisher workflow, retained sources, Texas county result lineage, and activation gates, read [`docs/developer/connection-research.md`](connection-research.md).
+
 ## Coordinator Protocol
 
 When coordinating state workers:

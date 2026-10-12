@@ -162,7 +162,7 @@ function canonicalize(value: unknown): unknown {
   return value;
 }
 
-const migrations = ["0000_fancy_secret_warriors.sql", "0001_dry_luminals.sql", "0002_historical_review_candidates.sql", "0003_deep_landau.sql", "0004_uneven_hellcat.sql", "0005_lazy_human_torch.sql", "0006_broad_quicksilver.sql", "0007_sudden_agent_brand.sql", "0008_typical_thunderbolts.sql", "0009_public_wolfpack.sql"];
+const migrations = ["0000_fancy_secret_warriors.sql", "0001_dry_luminals.sql", "0002_historical_review_candidates.sql", "0003_deep_landau.sql", "0004_uneven_hellcat.sql", "0005_lazy_human_torch.sql", "0006_broad_quicksilver.sql", "0007_sudden_agent_brand.sql", "0008_typical_thunderbolts.sql", "0009_public_wolfpack.sql", "0010_connection_research.sql"];
 async function databaseHash(url: string, servingOnly = false) {
   const sql = postgres(url, { max: 1, connect_timeout: 10, connection: { statement_timeout: 30000 } });
   try {

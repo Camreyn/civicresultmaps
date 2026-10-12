@@ -1,0 +1,24 @@
+.shell { max-width:1500px; margin:auto; padding:24px; }
+.shell header,.toolbar,.shell footer { display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-bottom:18px; }
+.shell h1 { margin-right:auto; font-size:24px; }
+.shell h2 { font-size:16px; }
+.shell button,.shell select,.shell input,.shell textarea { color:var(--foreground); background:var(--panel); border:1px solid var(--line); border-radius:5px; padding:10px; font:inherit; }
+.shell button { cursor:pointer; }
+.shell button[aria-pressed=true] { border-color:var(--accent); color:var(--accent); }
+.shell button:disabled { opacity:.45; cursor:default; }
+.shell button:focus-visible,.shell input:focus-visible,.shell textarea:focus-visible,.shell select:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+.grid { display:grid; grid-template-columns:260px minmax(0,1fr); gap:24px; }
+.grid nav { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px; }
+.list { display:grid; gap:6px; max-height:70vh; overflow:auto; margin-top:14px; }
+.list button { text-align:left; font-size:12px; }
+.form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; align-content:start; }
+.field { display:grid; gap:7px; font-size:12px; }
+.field textarea { min-height:110px; resize:vertical; }
+.form > p,.form > ul,.form > details,.form > article,.form > .toolbar,.form > fieldset { grid-column:1/-1; }
+.form code { display:block; overflow-wrap:anywhere; font-size:11px; }
+.identifier { color:var(--muted); font-size:11px; }
+.comparison { grid-column:1/-1; min-width:0; }
+.compareColumns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.compareColumns pre { white-space:pre-wrap; overflow:auto; overflow-wrap:anywhere; max-height:500px; padding:16px; border:1px solid var(--line); font-size:11px; }
+.shell footer { padding:20px 0; border-top:1px solid var(--line); margin-top:24px; }
+@media(max-width:800px) { .grid { grid-template-columns:1fr; } .form { grid-template-columns:1fr; } .list { max-height:220px; } .shell { padding:16px; } }

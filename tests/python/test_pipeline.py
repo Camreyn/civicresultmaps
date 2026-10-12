@@ -641,6 +641,22 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 6393597)
         self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 4835250)
         self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 159827)
+        self.assertEqual(artifact["lineageManifest"]["reviewStatus"], "observed_at_staging_not_editorially_reviewed")
+        self.assertEqual(len(artifact["lineageManifest"]["parserCodeSha256"]), 64)
+        raw_counties = json.loads(Path("data/tx-2024-official-results/County.json").read_text(encoding="utf-8-sig"))
+        for result in artifact["native"]["resultRows"]:
+            locator = result["sourceLocator"]
+            self.assertEqual(locator["countyFips"], result["jurisdictionCode"])
+            self.assertEqual(locator["raceId"], "1001")
+            race = raw_counties[locator["countyFips"]]["Races"]["1001"]
+            self.assertEqual(int(race["T"]), result["totalVotes"])
+            for bucket, contributions in locator["candidateContributions"].items():
+                self.assertEqual(sum(part["votes"] for part in contributions), result["votes"][bucket])
+                for part in contributions:
+                    value = raw_counties
+                    for key in part["pointer"].split("/")[1:]:
+                        value = value[key]
+                    self.assertEqual(int(value), part["votes"])
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 9348)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 9346)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")

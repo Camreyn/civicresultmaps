@@ -38,6 +38,9 @@ patterns, generated state registries, and validation expectations.
   plan-vintage Census sources, shape calculations, resolution guards, and the
   explicit boundary against unsupported election-result or intent claims.
 
+- [Connections research](docs/developer/connection-research.md) - interactive source
+  graph, private editorial workflow, Texas result lineage, and activation gates.
+
 ## Stack
 
 - Next.js App Router and React for the frontend and public read API.
