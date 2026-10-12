@@ -167,9 +167,11 @@ test("evidence timeline is neutral, canonical, and backwards compatible", () => 
   const timelineView = readFileSync("src/app/timeline/suspicious-timeline.tsx", "utf8");
   const evidenceEvents = readFileSync("src/lib/evidence-events.ts", "utf8");
   const redirect = readFileSync("src/app/timeline/page.tsx", "utf8");
-  assert.match(evidencePage, /Evidence &amp; records timeline/);
+  assert.match(evidencePage, /title: "Evidence & Records Timeline"/);
+  assert.match(evidencePage, /<SuspiciousTimeline caveat={caveat} events={events} summary={summary}/);
   assert.match(evidencePage, /do not establish fraud or misconduct/);
   assert.match(timelineView, /Evidence &amp; Records Timeline/);
+  assert.match(timelineView, /<h1>National evidence and records timeline<\/h1>/);
   assert.doesNotMatch(timelineView, /Suspicious Event Timeline/);
   assert.doesNotMatch(timelineView, /tampering_example|tamperingExample/);
   assert.match(timelineView, /event\.relevance/);
