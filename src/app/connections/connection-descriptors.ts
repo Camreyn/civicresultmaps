@@ -28,6 +28,13 @@ export const sourceDescriptions = {
   supplemental: evidenceDescriptions.supplemental,
 } satisfies Record<SourceClass, { label: string; description: string }>;
 
+export const scopeDescriptions = {
+  documented: { label: "Documented relationship / inventory", description: "The record describes a relationship or lists equipment. It does not establish procurement, certification or election-specific use." },
+  certified: { label: "System certification", description: "The source reports approval of a system or version. This is not certification of election results or evidence of installation." },
+  procured: { label: "Procurement", description: "The source reports an acquisition or award. Read its limits: actual spend, delivery and operational use may remain unknown." },
+  fielded: { label: "Dated local use", description: "The source reports use in the named jurisdiction and period. Do not carry that system, version or route into another election." },
+} satisfies Record<PublicResearchDocument["claims"][number]["scope"], { label: string; description: string }>;
+
 export function relationshipDescription(value: string) {
   return Object.hasOwn(relationshipDescriptions, value) ? relationshipDescriptions[value as ClaimKind] : null;
 }

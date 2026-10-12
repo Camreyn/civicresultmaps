@@ -138,6 +138,26 @@
 .paths { margin-top:24px; font-size:11px; }
 .paths label { display:grid; gap:8px; margin:12px 0; }
 .paths button { text-align:left; }
+.guidedExamples,.exampleActive { border:1px solid var(--line); border-radius:6px; padding:14px; margin-bottom:14px; font-size:12px; line-height:1.7; }
+.guidedExamples summary { cursor:pointer; font-weight:600; }
+.guidedExamples p,.comparisonSection p { color:var(--muted); line-height:1.7; }
+.guidedExamples a,.localRecord a { text-decoration:underline; text-underline-offset:3px; }
+.exampleButtons { display:flex; flex-wrap:wrap; gap:8px; }
+.exampleButtons button,.exampleActive button { border:1px solid var(--line); border-radius:5px; background:#1c2320; color:var(--foreground); padding:9px 12px; cursor:pointer; font:inherit; }
+.exampleActive { background:#1c2e25; }
+.exampleActive button + button { margin-left:8px; }
+.exampleButtons button[aria-pressed=true] { border-color:var(--accent); }
+.localRecord { padding:18px 0; border-bottom:1px solid var(--line); }
+.localRecord ul { padding-left:18px; font-size:11px; line-height:1.7; }
+.comparisonSection { padding:0 clamp(16px,3vw,48px); max-width:1600px; margin:auto; font-size:12px; }
+.comparisonSection li { line-height:1.8; overflow-wrap:anywhere; }
+.comparisonSelect { display:grid; gap:8px; }
+.comparisonSelect select { max-width:100%; border:1px solid var(--line); background:#1c2320; color:var(--foreground); padding:9px; border-radius:5px; }
+.releaseIds { overflow-wrap:anywhere; font-size:10px; }
+.comparisonTable { overflow-x:auto; }
+.comparisonTable table { width:100%; border-collapse:collapse; }
+.comparisonTable th,.comparisonTable td { padding:9px; border-bottom:1px solid var(--line); text-align:left; }
+.comparisonTable caption { text-align:left; margin:12px 0; }
 @media(max-width:800px) { .flowCanvas,.canvasLoading { height:480px; } .filters { gap:8px; } .guideGrid { grid-template-columns:1fr; } .mapGuide { padding-inline:12px; } }
 .shell button:focus-visible,.shell input:focus-visible,.shell select:focus-visible,.shell a:focus-visible,.shell summary:focus-visible,.graphViewport:focus-visible { outline:2px solid #79e7c9; outline-offset:3px; }
 .shell button:hover { filter:brightness(1.12); }

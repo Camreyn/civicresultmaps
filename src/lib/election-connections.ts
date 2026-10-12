@@ -1,20 +1,28 @@
 /** Curated documentary relationships, not election results or operational telemetry. */
-export const connectionsReviewedOn = "2026-10-11";
+export const connectionsReviewedOn = "2026-10-12";
 export const connectionViews = ["reporting", "ownership", "technology"] as const;
 export type ConnectionView = (typeof connectionViews)[number];
 export type ConnectionSnapshot = "2024" | "2026";
-export type ConnectionKind = "results" | "survey" | "ownership" | "role" | "technology";
+export type ConnectionKind = "results" | "survey" | "ownership" | "role" | "technology" | "inventory";
 export type SourceReview = { status: "content-checked" | "pending"; checkedOn: string; locator: string; note: string };
-export type ConnectionSource = { id: string; authority: string; title: string; url: string; publishedOn?: string; eventOn?: string; review: SourceReview };
+export type ConnectionSource = { id: string; authority: string; title: string; url: string; publishedOn?: string; eventOn?: string; sourceClass?: "official" | "issuer" | "independent" | "supplemental"; review: SourceReview };
 export type ConnectionNode = { id: string; label: string; category: string; description: string };
 export type ConnectionEdge = {
   id: string; from: string; to: string; label: string; kind: ConnectionKind;
   view: ConnectionView; snapshots: ConnectionSnapshot[]; dated: string;
   establishes: string; limitation: string; sourceIds: string[];
+  geography?: string; observedOn?: string; scope?: "documented" | "certified" | "procured" | "fielded";
 };
 export type ResearchLead = { id: string; title: string; question: string; needed: string; sourceIds: string[] };
 
 const sourceRegistry: Omit<ConnectionSource, "review">[] = [
+  { id: "usatoday-about", authority: "USA TODAY Co.", title: "USA TODAY Co.: company and publication portfolio", url: "https://www.usatodayco.com/about/" },
+  { id: "ap-gannett-2024", authority: "Associated Press", title: "Gannett retained AP election services while dropping general news (2024)", publishedOn: "2024-03-19", url: "https://www.ap.org/media-center/ap-in-the-news/2024/gannett-mcclatchy-news-chains-say-they-will-stop-using-associated-press-content/" },
+  { id: "votecast-usatoday-2020", authority: "Associated Press", title: "AP's 2024 explainer: USA TODAY Network listed for the 2020 VoteCast survey", publishedOn: "2024-10-15", eventOn: "2020-11-03", url: "https://www.ap.org/news-highlights/spotlights/2024/ap-votecast-how-americans-voted-in-2020-and-what-it-could-mean-for-2024/" },
+  { id: "usatoday-stringers-nc-2026", authority: "Joliet Junior College career center / USA Today – Election Team listing", sourceClass: "supplemental", title: "North Carolina election-night stringer recruitment listing (2026)", eventOn: "2026-11-03", url: "https://careerservices.jjc.edu/jobs/usa-today-election-team-usa-today-election-night-stringer-north-carolina/" },
+  { id: "usatoday-stringers-tx-2026", authority: "Tufts University career center / USA Today – Election Team listing", sourceClass: "supplemental", title: "Texas election-night contractor recruitment listing (2026)", eventOn: "2026-11-03", url: "https://careers.tufts.edu/jobs/usa-today-election-team-paid-texas-election-night-job-opportunity-for-usa-today/" },
+  { id: "harris-audit-2022", authority: "Texas Secretary of State", title: "Harris County preliminary audit: November 2022 system procurement, certification and use", eventOn: "2022-11-08", url: "https://www.sos.texas.gov/elections/fad/harris-county-preliminary-findings-report.pdf" },
+  { id: "tx-harris-inventory-2026", authority: "Texas Secretary of State", title: "September 2026 county voting-system inventory: Harris County", publishedOn: "2026-09-01", url: "https://www.sos.texas.gov/elections/forms/sysexam/voting-sys-bycounty.pdf" },
   { id: "ap-count", authority: "Associated Press", title: "How AP counts the vote", url: "https://www.ap.org/elections/our-role-in-the-u-s-elections/how-ap-counts-the-vote/" },
   { id: "ap-networks", authority: "Associated Press", title: "AP announces U.S. networks as elections customers", publishedOn: "2025-10-15", url: "https://www.ap.org/media-center/press-releases/2025/ap-announces-us-networks-as-elections-customers-2/" },
   { id: "nep-2024", authority: "Edison Research", title: "The Race to Rogan: podcast release with NEP provider disclosure", publishedOn: "2024-10-15", url: "https://www.edisonresearch.com/wp-content/uploads/2024/10/Press-Release-Edison-Research-Provides-Critical-Data-on-Podcast-Listeners.pdf" },
@@ -47,8 +55,15 @@ const sourceRegistry: Omit<ConnectionSource, "review">[] = [
 
 // A content check confirms what the cited document says, not every claim made
 // by its publisher. No review status is inferred from an HTTPS URL or HTTP 200.
-const checked = (locator: string, note: string): SourceReview => ({ status: "content-checked", checkedOn: connectionsReviewedOn, locator, note });
+const checked = (locator: string, note: string, checkedOn = "2026-10-11"): SourceReview => ({ status: "content-checked", checkedOn, locator, note });
 const sourceReviews: Record<string, SourceReview> = {
+  "usatoday-about": checked("Our Story: former name and publication portfolio", "Undated company page read October 12, 2026. Identifies USA TODAY Co. as formerly Gannett and publisher of USA TODAY and local outlets; no election-data agreement is specified.", "2026-10-12"),
+  "ap-gannett-2024": checked("March 19, 2024 date and paragraph on retained polling/vote-count services", "AP reports Gannett's statement about retaining election services. AP is a party to this arrangement, not an independent verifier. Renewal or a specific USA TODAY technical feed in 2026 is not established.", "2026-10-12"),
+  "votecast-usatoday-2020": checked("2020 survey methodology / partner note near article end", "Page published October 15, 2024, but the partner note describes the 2020 survey. Names USA TODAY Network there; no USA TODAY partnership for the 2024 or 2026 survey is established.", "2026-10-12"),
+  "usatoday-stringers-nc-2026": checked("Recruitment dates, Position Details and Responsibilities", "Read directly in browser October 12, 2026. Employer-attributed university listing: Whiteville and Lincolnton; stated September 21–October 21 recruitment for November 3. Describes smartphone transmission of released totals. Not employer-hosted verification, proof of hiring/deployment or an AP feed.", "2026-10-12"),
+  "usatoday-stringers-tx-2026": checked("Recruitment dates, Location and Job Description", "Read directly in browser October 12, 2026. Employer-attributed university listing: September 29–October 29 recruitment for November 3 in El Paso, Harris, Harrison, Liberty, Montgomery, Smith and Victoria Counties. Collection of released totals, not ballot tabulation. No hires, staffing totals or AP destination established.", "2026-10-12"),
+  "harris-audit-2022": checked("PDF page 16 (printed page 3), Election Systems / Voting Systems in Harris County", "SOS's preliminary audit reports acquisition in January 2021, certification April 1, 2021 and use of Verity Voting 2.5 in November 2022. Publication date unconfirmed. These are dated system-context observations, not an audit endorsement or findings about 2024/2026.", "2026-10-12"),
+  "tx-harris-inventory-2026": checked("PDF page 15, Harris rows; revision September 1, 2026", "Lists Verity 2.7, Duo, Controller, Scan and Central. Inventory only, not election-specific execution or a media/cloud integration.", "2026-10-12"),
   "ap-count": checked("Vote-count collection and certification sections", "AP describes collection from officials, websites and feeds. Undated publisher description; not an election-system architecture audit."),
   "ap-networks": checked("Opening customer announcement and independent race-call paragraph", "Dated October 15, 2025. AP names ABC, CBS, CNN and NBC for 2026 onward, and Fox as an existing customer. AP's own announcement, not independent confirmation."),
   "nep-2024": checked("PDF page 1, company description", "Dated October 15, 2024. Edison identifies its NEP role and ABC, CBS, CNN and NBC members within a podcast release. Historical provider disclosure only."),
@@ -79,8 +94,19 @@ const sourceReviews: Record<string, SourceReview> = {
   "dhs-oracle": checked("SAM.gov Published Date, Award Details and Description", "Exact record read in the browser after empty text extraction. Published/awarded August 10, 2026 to Oracle America for department-wide Cumulus cloud services. SAVE/USCIS architecture is not specified."),
 };
 export const connectionSources: ConnectionSource[] = sourceRegistry.map((source) => ({ ...source, review: sourceReviews[source.id] }));
+export function connectionSourceClass(source: ConnectionSource) {
+  return source.sourceClass ?? (/Secretary of State|DHS/.test(source.authority) ? "official" : "issuer");
+}
+export function connectionSourceAttribution(source: ConnectionSource) {
+  return ({ official: "official_record", issuer: "issuer_statement", independent: "independent_reporting", supplemental: "supplemental" } as const)[connectionSourceClass(source)];
+}
 
 export const connectionNodes: ConnectionNode[] = [
+  { id: "usatodayco", label: "USA TODAY Co. / Gannett", category: "Media parent", description: "USA TODAY Co. identifies itself as formerly Gannett. Keep the parent company's historical AP services separate from USA TODAY's own collection operation." },
+  { id: "usatoday", label: "USA TODAY / Network", category: "News publication & network", description: "National publication and local outlets. AP's 2024 explainer names the network in its 2020 VoteCast survey note; the 2026 recruitment listings are separate reporting leads." },
+  { id: "harris-records", label: "Harris County, TX", category: "Local public authority", description: "A bounded equipment-records example: 2022 use and September 2026 inventory are different dated observations." },
+  { id: "harris-verity-25", label: "Hart Verity 2.5", category: "2022 system record", description: "Version named in the SOS preliminary audit of Harris County's November 2022 election. Do not carry it forward to 2024 or 2026." },
+  { id: "harris-verity-27", label: "Hart Verity 2.7", category: "2026 inventory record", description: "Version listed for Harris County in the September 2026 SOS inventory. Inventory does not establish use in a particular election." },
   { id: "officials", label: "Election officials", category: "Public authority", description: "Local and state offices publish vote totals and conduct canvass and certification. Media reports are a separate layer." },
   { id: "ap", label: "Associated Press", category: "Results reporting", description: "Collects reported vote totals and makes journalistic race calls; also supplies data to customers." },
   { id: "edison", label: "Edison Research", category: "Research organization", description: "Historical National Election Pool provider. SSRS announced its acquisition in October 2025." },
@@ -112,6 +138,13 @@ export const connectionNodes: ConnectionNode[] = [
 const edge = (value: ConnectionEdge): ConnectionEdge => value;
 const networkIds = ["abc", "cbs", "cnn", "nbc", "fox"];
 export const connectionEdges: ConnectionEdge[] = [
+  edge({ id: "usatodayco-usatoday", from: "usatodayco", to: "usatoday", label: "Publication portfolio", kind: "ownership", view: "ownership", snapshots: ["2026"], observedOn: "2026-10-12", dated: "Undated company page observed 2026-10-12", establishes: "USA TODAY Co., formerly Gannett, identifies USA TODAY and local media outlets as its publications.", limitation: "The parent and publication/network are distinct. This does not identify an election-data feed or every contractor's legal employer.", sourceIds: ["usatoday-about"] }),
+  edge({ id: "ap-usatodayco-2024", from: "ap", to: "usatodayco", label: "AP election services retained (2024)", kind: "results", view: "reporting", snapshots: ["2024"], dated: "Gannett statement reported 2024-03-19", establishes: "AP reported that Gannett would retain AP election-related polling and vote-counting services after dropping AP's general journalism feed.", limitation: "Parent-chain historical customer evidence, not confirmation of renewal in 2026, a specific API, or USA TODAY stringers supplying AP.", sourceIds: ["ap-gannett-2024"] }),
+  edge({ id: "votecast-usatoday-2020", from: "votecast", to: "usatoday", label: "2020 VoteCast survey partner note", kind: "survey", view: "reporting", snapshots: ["2024"], dated: "2020 survey described in AP's October 15, 2024 explainer", establishes: "The AP explainer lists USA TODAY Network among outlets for the 2020 VoteCast survey.", limitation: "The note does not establish a USA TODAY partnership for the 2024 survey or continuation in 2026. Survey research is not ballot counting.", sourceIds: ["votecast-usatoday-2020"] }),
+  edge({ id: "harris-verity-procurement", from: "harris-records", to: "harris-verity-25", label: "2021 acquisition reported", kind: "technology", view: "technology", snapshots: ["2026"], geography: "county:48201", observedOn: "2026-10-12", scope: "procured", dated: "January 2021 acquisition; observed in SOS audit 2026-10-12", establishes: "The SOS audit reports a January 2021 contract to acquire Verity Voting 2.5.", limitation: "Executed contract, award ID, amounts and amendments have not been reviewed here. Procurement alone is not deployment.", sourceIds: ["harris-audit-2022"] }),
+  edge({ id: "harris-verity-certification", from: "texas", to: "harris-verity-25", label: "2021 certification reported", kind: "technology", view: "technology", snapshots: ["2026"], geography: "TX", observedOn: "2026-10-12", scope: "certified", dated: "Certification April 1, 2021, reported in SOS audit", establishes: "The SOS audit reports state certification of Verity Voting 2.5 on April 1, 2021.", limitation: "Certification is approval of a system, not proof of installation, execution or media integration. The certification letter is not linked here.", sourceIds: ["harris-audit-2022"] }),
+  edge({ id: "harris-verity-fielded-2022", from: "harris-records", to: "harris-verity-25", label: "2022 election use reported", kind: "technology", view: "technology", snapshots: ["2026"], geography: "county:48201", observedOn: "2026-10-12", scope: "fielded", dated: "November 8, 2022 general election; SOS audit observation", establishes: "The SOS preliminary audit reports Verity Voting 2.5 in use for Harris County's November 2022 election.", limitation: "Historical use only; not a 2024/2026 version inventory, network path, security finding or certification of election results.", sourceIds: ["harris-audit-2022"] }),
+  edge({ id: "harris-verity-inventory-2026", from: "harris-records", to: "harris-verity-27", label: "September 2026 inventory", kind: "inventory", view: "technology", snapshots: ["2026"], geography: "county:48201", dated: "Inventory revised September 1, 2026", establishes: "The SOS county inventory lists Verity 2.7 and Duo, Controller, Scan and Central equipment for Harris County.", limitation: "An inventory is not proof of use in November 2024 or November 2026. No connection to TEAM, AP or Oracle is established by these rows.", sourceIds: ["tx-harris-inventory-2026"] }),
   edge({ id: "officials-ap", from: "officials", to: "ap", label: "Reported vote totals", kind: "results", view: "reporting", snapshots: ["2024", "2026"], dated: "2024 coverage plans and current collection method", establishes: "AP describes collecting totals from election offices, official websites and feeds.", limitation: "This is media collection, not ownership of voting systems or legal certification. It does not identify every jurisdiction's route.", sourceIds: ["ap-count", "ap-2024"] }),
   edge({ id: "edison-nep", from: "edison", to: "nep", label: "2024 NEP provider", kind: "results", view: "reporting", snapshots: ["2024"], dated: "Pre-election provider disclosure 2024-10-15", establishes: "Edison's provider statement identifies election data, projections and analysis for the NEP.", limitation: "The disclosure appears in a podcast press release's company description, not a dedicated election-results announcement. Do not assume this historical arrangement for 2026.", sourceIds: ["nep-2024"] }),
   ...networkIds.filter((id) => id !== "fox").map((id) => edge({ id: `nep-${id}`, from: "nep", to: id, label: "2024 NEP member", kind: "results", view: "reporting", snapshots: ["2024"], dated: "2024 election", establishes: `${id.toUpperCase()} was a named 2024 NEP member.`, limitation: "Membership identifies a reporting arrangement, not a common owner or official vote tabulator.", sourceIds: ["nep-2024"] })),
@@ -146,6 +179,8 @@ export const connectionEdges: ConnectionEdge[] = [
 ];
 
 export const researchLeads: ResearchLead[] = [
+  { id: "usatoday-stringers-2026", title: "USA TODAY's 2026 stringer recruitment", question: "As observed October 12, 2026, university-hosted listings attributed to USA Today – Election Team describe November 3 collection of officials' released totals, not ballot counting. North Carolina names Whiteville and Lincolnton (stated deadline October 21); Texas names seven counties, including Harris (deadline October 29). Recruitment is not evidence of hires or deployment. No matching stringer result was visible in the Dayforce search at review time; that does not establish absence of recruitment. No onward AP feed is established.", needed: "An employer-hosted recruitment notice or confirmation, contracting entity, final coverage assignments and an attributable reporting-destination record. Do not infer an AP route from the separate 2024 parent-company agreement.", sourceIds: ["usatoday-stringers-nc-2026", "usatoday-stringers-tx-2026", "ap-gannett-2024"] },
+  { id: "harris-local-deployment", title: "Harris County: bridge the equipment records to a specific election", question: "The 2022 audit documents historical system use; the September 2026 inventory lists a different version. Neither establishes November 2024/2026 use or a connection to USA TODAY's recruitment.", needed: "Executed contracts and amendments, dated acceptance/testing records, election-specific version inventories and a named reporting/feed agreement. Keep acquisition, certification, inventory and actual use separate.", sourceIds: ["harris-audit-2022", "tx-harris-inventory-2026", "usatoday-stringers-tx-2026"] },
   { id: "ap-oracle", title: "Does AP's core results database use Oracle?", question: "S3 delivery and Oracle Database@AWS availability do not establish this deployment.", needed: "An AP-specific architecture statement, contract or independently reviewable deployment record.", sourceIds: ["ap-s3", "oracle-aws"] },
   { id: "team-oracle", title: "What database powers current Texas TEAM?", question: "The 2025 modernization and current Civix role do not identify the database engine. Historical reporting must not be carried forward silently.", needed: "A current Texas SOS architecture record, contract or vendor technical specification.", sourceIds: ["texas-rollout", "texas-civix"] },
   { id: "save-oracle", title: "Does USCIS SAVE run on Oracle?", question: "DHS's department-wide Oracle award is not a SAVE-specific architecture record.", needed: "USCIS documentation identifying SAVE's actual database and hosting deployment.", sourceIds: ["dhs-oracle", "texas-save-followup"] },
@@ -161,15 +196,18 @@ export function connectionsFor(view: ConnectionView, snapshot: ConnectionSnapsho
 /** Positions communicate reading order, not operational topology. */
 export const connectionPositions: Record<ConnectionView, Record<string, [number, number]>> = {
   reporting: {
+    usatodayco: [1150, 350], usatoday: [1150, 550],
     officials: [125, 135], ap: [425, 135], abc: [820, 60], cbs: [820, 160], cnn: [820, 260], nbc: [820, 360], fox: [820, 460],
     openai: [1150, 90], kalshi: [1150, 220], ssrs: [125, 550], voterpoll: [425, 550],
     edison: [125, 350], nep: [425, 350], norc: [125, 550], votecast: [425, 550],
   },
   ownership: {
+    usatodayco: [145, 585], usatoday: [1170, 585],
     ellisonfamily: [145, 110], david: [145, 245], paramount: [480, 170], cbs: [850, 70], wbd: [850, 220], cnn: [1170, 220],
     larry: [145, 450], oracle: [480, 450], ssrs: [850, 450], edison: [1170, 450], trumpjr: [480, 585], kalshi: [850, 585],
   },
   technology: {
+    "harris-records": [135, 585], "harris-verity-25": [1120, 80], "harris-verity-27": [440, 460],
     counties: [135, 80], texas: [135, 255], civix: [440, 255], team: [440, 80], save: [135, 460],
     ap: [765, 80], apfiles: [765, 255], aws: [1120, 255], oracle: [765, 460], openai: [1120, 460], dhs: [440, 585],
   },

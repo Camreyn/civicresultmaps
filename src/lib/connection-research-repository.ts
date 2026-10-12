@@ -10,6 +10,7 @@ import { researchDatabaseTarget, assertResearchWrites } from "./connection-datab
 import type { ReadSql } from "../db/read-sql";
 import { editResearchDocument, type ResearchCommand } from "./connection-research-policy";
 import { readResearchArtifact } from "./connection-research-artifacts";
+import { compareConnectionReleases, validatedRelease, type ConnectionComparisons } from "./connection-release-comparison";
 
 export class ResearchRepositoryError extends Error {
   constructor(public readonly status: number, message: string) { super(message); }
@@ -38,6 +39,22 @@ export async function readPublishedConnections(): Promise<PublicResearchDocument
   const document = publicResearchDocumentSchema.parse(row.document);
   if (document.releaseId !== row.id || digest(document) !== row.digest) throw new Error("Release identity or digest mismatch");
   return document;
+}
+
+/** Bounded reviewed snapshot comparisons, not a complete publication/rollback log. */
+export async function readPublishedConnectionComparisons(current: PublicResearchDocument): Promise<ConnectionComparisons> {
+  if (process.env.CONNECTIONS_PUBLIC_RELEASES_ENABLED !== "1" || current.releaseId === "legacy-documentary-catalog") return { status: "disabled", comparisons: [] };
+  return readResearchSql(async (sql) => {
+    const [row] = await sql`select release.id, release.document, release.digest, release.workspace_version
+      from connection_publication publication join connection_releases release on release.id = publication.release_id
+      join connection_workspace_revisions revision on revision.version = release.workspace_version and revision.actor_id = release.actor_id
+      where publication.id = 'default' and release.id = ${current.releaseId}` as Array<{ id: string; document: unknown; digest: string; workspace_version: number }>;
+    if (!row || digest(validatedRelease(row)) !== digest(current)) throw new ResearchRepositoryError(409, "Publication changed during comparison");
+    const previous = await sql`select release.id, release.document, release.digest from connection_releases release
+      join connection_workspace_revisions revision on revision.version = release.workspace_version and revision.actor_id = release.actor_id
+      where release.workspace_version < ${row.workspace_version} order by release.workspace_version desc, release.id desc limit 12` as Array<{ id: string; document: unknown; digest: string }>;
+    return { status: "available", comparisons: previous.map((record) => compareConnectionReleases(validatedRelease(record), current)) };
+  });
 }
 export async function mutateResearchWorkspace(expectedVersion: number, command: ResearchCommand, actor: ResearchActor) {
   const target = databaseTarget(true);
