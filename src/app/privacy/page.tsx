@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { ArrowLeft } from "lucide-react";
-import { BrandMark } from "../brand-mark";
 import styles from "../platform-pages.module.css";
 
 export const metadata: Metadata = pageMetadata({
@@ -13,15 +11,6 @@ export const metadata: Metadata = pageMetadata({
 export default function PrivacyPage() {
   return (
     <main className={styles.shell}>
-      <header className={styles.header}>
-        <a className={styles.brand} href="/">
-          <BrandMark />
-          <div><strong>Civic Result Maps</strong><span>Privacy</span></div>
-        </a>
-        <nav className={styles.nav} aria-label="Primary">
-          <a href="/"><ArrowLeft aria-hidden size={14} /> State explorer</a>
-        </nav>
-      </header>
       <div className={styles.main}>
         <section className={styles.hero}>
           <div>

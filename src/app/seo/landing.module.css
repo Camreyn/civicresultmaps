@@ -1,7 +1,4 @@
 .shell { min-height: 100vh; background: #071c20; color: #e1f1ef; }
-.header { padding: 20px 5vw; border-bottom: 1px solid #28484b; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
-.brand { display: flex; align-items: center; gap: 12px; font-weight: 750; text-decoration: none; }
-.header nav { display: flex; gap: 18px; flex-wrap: wrap; }
 .shell a { color: #87ded2; text-underline-offset: 4px; }
 .shell a:hover { color: #fff; }
 .shell a:focus-visible { outline: 2px solid #eacb80; outline-offset: 5px; }
@@ -27,4 +24,4 @@
 .sources h3 { font-size: 1rem; margin-bottom: 8px; }
 .sources p { margin: 6px 0; color: #b8d1ce; }
 .note { margin-top: 36px; padding: 20px; border-left: 3px solid #eacb80; background: #152b2e; color: #ceddd9; line-height: 1.65; }
-@media(max-width: 620px) { .header { padding: 16px 5vw; } .header nav { gap: 12px; font-size: .9rem; } .tableScroll th, .tableScroll td { min-width: 115px; padding: 10px 8px; } }
+@media(max-width: 620px) {   .tableScroll th, .tableScroll td { min-width: 115px; padding: 10px 8px; } }

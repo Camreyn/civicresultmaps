@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ChevronRight, ExternalLink, MapPinned, Network, Share2 } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 
-import { SiteHeader } from "../../../site-header";
 import { EquipmentShareButton } from "../../equipment-share-button.client";
 import {
   equipmentCatalogMetadata,
@@ -180,11 +179,7 @@ export default async function EquipmentStatePage({ params }: PageProps) {
 
   return (
     <main className={styles.shell}>
-      <SiteHeader
-        activePage="equipment"
-        equipmentEnabled={equipmentEnabled}
-        subtitle="U.S. election equipment evidence"
-      />
+
 
       <div className={styles.page}>
         <nav aria-label="Breadcrumb" className={styles.equipmentBreadcrumb}>

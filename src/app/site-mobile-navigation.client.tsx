@@ -1,106 +1,87 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
-import {
-  Archive,
-  Boxes,
-  Braces,
-  Database,
-  GitCompareArrows,
-  Map,
-  Menu,
-  Radar,
-  ShieldAlert,
-  X,
-  type LucideIcon,
-} from "lucide-react";
-
+import { useEffect, useId, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { ChevronDown, Menu } from "lucide-react";
+import { activeSitePage, type SiteNavigationLink, type SitePage } from "@/lib/site-navigation";
 import styles from "./site-header.module.css";
 
-export type SiteMobileNavigationLink = {
-  active: boolean;
-  href: string;
-  id: "workspace" | "equipment" | "security" | "compare" | "evidence" | "releases" | "developers" | "readiness";
-  label: string;
-};
+function NavigationLinks({ links, active, close }: {
+  links: readonly SiteNavigationLink[]; active: SitePage | null; close?: () => void;
+}) {
+  return links.map(({ href, id, label }) => (
+    <a href={href} key={id} aria-current={active === id ? "page" : undefined} onClick={close}
+      data-tour={id === "equipment" ? "equipment-nav-link" : id === "readiness" ? "readiness-link" : undefined}>
+      {label}
+    </a>
+  ));
+}
 
-type SiteMobileNavigationProps = {
-  links: SiteMobileNavigationLink[];
-};
-
-const iconById: Record<SiteMobileNavigationLink["id"], LucideIcon> = {
-  workspace: Map,
-  equipment: Boxes,
-  security: ShieldAlert,
-  compare: GitCompareArrows,
-  evidence: Radar,
-  releases: Archive,
-  developers: Braces,
-  readiness: Database,
-};
-
-export function SiteMobileNavigation({ links }: SiteMobileNavigationProps) {
-  const [open, setOpen] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const navigationId = useId();
-
+function NavigationMenu({ links, active, mobile = false }: {
+  links: readonly SiteNavigationLink[]; active: SitePage | null; mobile?: boolean;
+}) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  const id = useId();
+  const groups = [...new Set(links.map((link) => link.group))];
   useEffect(() => {
-    if (!open) return undefined;
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
-      setOpen(false);
-      buttonRef.current?.focus();
+    function keydown(event: KeyboardEvent) {
+      if (event.key !== "Escape" || !ref.current?.open) return;
+      ref.current.open = false;
+      ref.current.querySelector("summary")?.focus();
     }
-
-    function handlePointerDown(event: PointerEvent) {
-      if (event.target instanceof Node && !containerRef.current?.contains(event.target)) {
-        setOpen(false);
-      }
+    function outside(event: PointerEvent) {
+      if (event.target instanceof Node && ref.current?.open && !ref.current.contains(event.target)) ref.current.open = false;
     }
-
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("pointerdown", handlePointerDown);
+    function resize() {
+      // A hidden menu must not remain open or take focus after a breakpoint change.
+      if (ref.current && (mobile ? innerWidth > 1100 : innerWidth <= 1100)) ref.current.open = false;
+    }
+    document.addEventListener("keydown", keydown);
+    document.addEventListener("pointerdown", outside);
+    window.addEventListener("resize", resize);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", keydown);
+      document.removeEventListener("pointerdown", outside);
+      window.removeEventListener("resize", resize);
     };
-  }, [open]);
-
+  }, [mobile]);
   return (
-    <div className={styles.mobileNavigation} ref={containerRef}>
-      <button
-        aria-controls={navigationId}
-        aria-expanded={open}
-        aria-label={open ? "Close primary navigation" : "Open primary navigation"}
-        className={styles.mobileMenuButton}
-        onClick={() => setOpen((current) => !current)}
-        ref={buttonRef}
-        type="button"
-      >
-        {open ? <X aria-hidden size={18} /> : <Menu aria-hidden size={18} />}
-        <span>Menu</span>
-      </button>
-      {open ? (
-        <nav aria-label="Mobile primary navigation" className={styles.mobileMenuPanel} id={navigationId}>
-          {links.map(({ active, href, id, label }) => {
-            const Icon = iconById[id];
-            return (
-              <a
-                aria-current={active ? "page" : undefined}
-                data-tour={id === "equipment" ? "equipment-nav-link" : id === "readiness" ? "readiness-link" : undefined}
-                href={href}
-                key={id}
-                onClick={() => setOpen(false)}
-              >
-                <Icon aria-hidden size={17} />
-                <span>{label}</span>
-              </a>
-            );
-          })}
-        </nav>
-      ) : null}
-    </div>
+    <details ref={ref} className={mobile ? styles.mobile : styles.more}>
+      <summary role="button" aria-controls={id} aria-label={mobile ? "Primary navigation menu" : "More navigation menu"}
+        data-active={!mobile && links.some((link) => link.id === active) ? "true" : undefined}>
+        {mobile ? <Menu aria-hidden size={18} /> : null}{mobile ? "Menu" : "More"}<ChevronDown aria-hidden size={14} />
+      </summary>
+      <nav id={id} aria-label={mobile ? "Mobile primary navigation" : "More navigation"} className={styles.panel}>
+        {groups.map((group) => (
+          <div key={group} className={styles.group}>
+            {group !== "primary" ? <span>{group}</span> : null}
+            <NavigationLinks links={links.filter((link) => link.group === group)} active={active}
+              close={() => { if (ref.current) ref.current.open = false; }} />
+          </div>
+        ))}
+      </nav>
+    </details>
+  );
+}
+
+export function SiteNavigation({ links }: { links: readonly SiteNavigationLink[] }) {
+  const active = activeSitePage(usePathname() ?? "/");
+  useEffect(() => {
+    const header = document.getElementById("site-toolbar");
+    if (!header) return;
+    const update = () => document.documentElement.style.setProperty("--site-header-height", `${header.getBoundingClientRect().height}px`);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <>
+      <nav aria-label="Primary navigation" className={styles.desktop}>
+        <NavigationLinks links={links.filter((link) => link.group === "primary")} active={active} />
+        <NavigationMenu links={links.filter((link) => link.group !== "primary")} active={active} />
+      </nav>
+      <NavigationMenu links={links} active={active} mobile />
+    </>
   );
 }

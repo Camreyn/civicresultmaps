@@ -25,7 +25,7 @@
   justify-content: space-between;
   padding: 0.7rem 0.8rem;
   position: sticky;
-  top: 0.6rem;
+  top: calc(var(--site-header-height) + 0.6rem);
   z-index: 30;
 }
 

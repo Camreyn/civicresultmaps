@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import {
-  ArrowLeft,
-  Braces,
   ExternalLink,
   Ruler,
   Shapes,
   TriangleAlert,
 } from "lucide-react";
 
-import { BrandMark } from "../brand-mark";
 import {
   getDistrictCompactnessDataset,
   listDistrictCompactnessStateOptions,
@@ -104,16 +101,6 @@ export default async function DistrictCompactnessPage({ searchParams }: PageProp
 
   return (
     <main className={styles.shell}>
-      <header className={styles.topbar}>
-        <a className={styles.brand} href="/">
-          <BrandMark />
-          <span><strong>Civic Result Maps</strong><small>District shape lab</small></span>
-        </a>
-        <nav aria-label="Primary navigation" className={styles.topnav}>
-          <a href="/compare"><ArrowLeft aria-hidden size={15} />County comparison</a>
-          <a href="/api/district-compactness"><Braces aria-hidden size={15} />API</a>
-        </nav>
-      </header>
 
       <section className={styles.hero}>
         <div>

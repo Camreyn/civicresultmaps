@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { ArrowLeftRight, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 
-import { SiteHeader } from "../../site-header";
 import {
   equipmentCatalogMetadata,
   listEquipmentSystems,
@@ -51,11 +50,7 @@ export default async function EquipmentComparePage({ searchParams }: PageProps) 
 
   return (
     <main className={styles.shell}>
-      <SiteHeader
-        activePage="equipment"
-        equipmentEnabled={equipmentEnabled}
-        subtitle="U.S. election equipment evidence"
-      />
+
 
       <div className={styles.page}>
         <nav aria-label="Breadcrumb" className={styles.equipmentBreadcrumb}>

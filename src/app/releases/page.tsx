@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { Archive, ArrowLeft, Braces, Download, GitCompareArrows } from "lucide-react";
-import { BrandMark } from "../brand-mark";
+import { Archive, Braces, Download } from "lucide-react";
 import {
   getCurrentNationalDataRelease,
   listNationalDataReleases,
@@ -43,20 +42,6 @@ export default function ReleasesPage() {
 
   return (
     <main className={styles.shell}>
-      <header className={styles.header}>
-        <a className={styles.brand} href="/">
-          <BrandMark />
-          <div>
-            <strong>Civic Result Maps</strong>
-            <span>Versioned public election data</span>
-          </div>
-        </a>
-        <nav className={styles.nav} aria-label="Primary">
-          <a href="/"><ArrowLeft aria-hidden size={14} /> State explorer</a>
-          <a href="/compare"><GitCompareArrows aria-hidden size={14} /> Compare</a>
-          <a href="/developers"><Braces aria-hidden size={14} /> API</a>
-        </nav>
-      </header>
 
       <div className={styles.main}>
         <section className={styles.hero}>

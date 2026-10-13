@@ -1,7 +1,7 @@
 .dossierNavWrap {
   position: sticky;
-  z-index: 70;
-  top: 74px;
+  z-index: 60;
+  top: calc(var(--site-header-height) + 2px);
   margin: 18px 0 4px;
   padding: 7px;
   border: 1px solid rgba(103, 217, 204, 0.2);

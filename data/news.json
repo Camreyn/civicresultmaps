@@ -1,0 +1,88 @@
+[
+  {
+    "id": "connections-guided-evidence-2026-10",
+    "slug": "connections-guided-examples-local-evidence",
+    "kind": "site_update",
+    "title": "Connections adds guided examples and local evidence scopes",
+    "summary": "The explorer now separates election reporting, surveys, ownership and public systems, with seven guided examples and a Harris County records pilot.",
+    "eventOn": "2026-10-12",
+    "eventLabel": "Code merged",
+    "coverageReviewedOn": "2026-10-12",
+    "topics": ["site-development", "election-reporting", "public-records"],
+    "states": ["US", "TX"],
+    "sourceIds": ["connections-update-064abf6"],
+    "connectionClaimIds": [],
+    "relatedPageIds": ["connections", "evidence"],
+    "body": [
+      "The Connections explorer includes seven source-qualified examples and plain-language descriptions of nodes, links, dates and evidence limits. Its sources remain available without using the visual graph.",
+      "The Harris County pilot separates 2021 acquisition and certification, documented November 2022 use, and a September 2026 state inventory. These records answer different questions and are not interchangeable.",
+      "USA TODAY coverage distinguishes historical AP-service and survey relationships from supplemental 2026 recruiting listings. Listings are research leads, not proof that contractors were deployed or that they supplied AP.",
+      "Reviewed-release comparison support is present but gated off until approved public releases exist. This update does not activate a research database or publish private drafts."
+    ],
+    "limitations": ["The linked commit documents a code change, not a deployment timestamp or a finding about election outcomes."],
+    "corrections": []
+  },
+  {
+    "id": "ap-openai-2026",
+    "slug": "ap-openai-election-data-agreement",
+    "kind": "election_news",
+    "title": "AP announces OpenAI as an election-data customer through 2028",
+    "summary": "AP says the agreement covers U.S. vote-count data for national, state and major-city local elections through the 2028 general election.",
+    "eventOn": "2026-05-27",
+    "eventLabel": "Announced",
+    "coverageReviewedOn": "2026-10-12",
+    "topics": ["election-reporting", "technology"],
+    "states": ["US"],
+    "sourceIds": ["ap-openai"],
+    "connectionClaimIds": ["ap-openai"],
+    "relatedPageIds": ["connections"],
+    "body": [
+      "In its May 27 announcement, the Associated Press identifies OpenAI as an election-data customer. AP describes providing vote-count data through the 2028 general election.",
+      "This is a data-supply relationship. It is separate from official election administration, certification and any particular cloud-hosting arrangement. The Connections explorer links the organizations to this specific announcement."
+    ],
+    "limitations": ["An issuer announcement establishes the stated agreement, not the backend used by a particular response or the accuracy of every AI-generated answer."],
+    "corrections": []
+  },
+  {
+    "id": "ap-kalshi-2026",
+    "slug": "ap-kalshi-election-data",
+    "kind": "election_news",
+    "title": "AP to provide Kalshi election data ahead of 2026 primaries",
+    "summary": "AP announced an agreement to provide vote-count data and race calls for national and major state elections.",
+    "eventOn": "2026-03-02",
+    "eventLabel": "Announced",
+    "coverageReviewedOn": "2026-10-12",
+    "topics": ["election-reporting", "prediction-markets"],
+    "states": ["US"],
+    "sourceIds": ["ap-kalshi"],
+    "connectionClaimIds": ["ap-kalshi"],
+    "relatedPageIds": ["connections"],
+    "body": [
+      "The Associated Press announcement identifies Kalshi as a customer for election vote-count data and race calls ahead of the 2026 primaries.",
+      "News race calls, market forecasts and certified election results are different products. The agreement describes election information supplied to a customer; it does not make a prediction market part of an official canvass."
+    ],
+    "limitations": ["The announcement does not establish AP control over Kalshi contracts or settlement, ownership of the market, or the hosting of its services."],
+    "corrections": []
+  },
+  {
+    "id": "ap-networks-2025",
+    "slug": "ap-network-election-results-customers",
+    "kind": "election_news",
+    "title": "AP announces U.S. network election-results customers",
+    "summary": "ABC, CBS, CNN and NBC were announced as election-results customers for 2026 and beyond, alongside longstanding customer Fox News.",
+    "eventOn": "2025-10-15",
+    "eventLabel": "Announced",
+    "coverageReviewedOn": "2026-10-12",
+    "topics": ["election-reporting"],
+    "states": ["US"],
+    "sourceIds": ["ap-networks"],
+    "connectionClaimIds": ["ap-abc", "ap-cbs", "ap-cnn", "ap-nbc", "ap-fox"],
+    "relatedPageIds": ["connections"],
+    "body": [
+      "AP's October 15, 2025 announcement names ABC News, CBS News, CNN and NBC News as election-results customers beginning in 2026, joining Fox News.",
+      "The announcement says the networks retain independent race calls. Sharing a results provider is a documented customer relationship, not evidence that their editorial decisions are jointly controlled."
+    ],
+    "limitations": ["This is a 2025 announcement with a stated 2026 scope, not a new announcement on the date this brief was reviewed. It does not identify election-system ownership or vote-tabulation control."],
+    "corrections": []
+  }
+]

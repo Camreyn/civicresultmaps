@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { connectionSources } from "@/lib/election-connections";
-import { BrandMark } from "../brand-mark";
 import { ResearchExplorer } from "./research-explorer";
 import { legacyExplorerDocument } from "@/lib/connection-explorer-data";
 import { readPublishedConnections, readPublishedConnectionComparisons } from "@/lib/connection-research-repository";
@@ -9,6 +8,7 @@ import { ReleaseComparison } from "./release-comparison";
 import type { ConnectionComparisons } from "@/lib/connection-release-comparison";
 import styles from "./connections.module.css";
 import { sourceDescriptions } from "./connection-descriptors";
+import { sourceDateLabel } from "@/lib/source-dates";
 
 export const metadata: Metadata = pageMetadata({
   title: "Election Connections",
@@ -33,13 +33,10 @@ export default async function ConnectionsPage() {
   catch { comparisons = { status: "unavailable", comparisons: [] }; }
   return (
     <div className={styles.shell}>
-      <header className={styles.topbar}>
-        <a className={styles.brand} href="/" aria-label="Civic Result Maps home"><BrandMark /><span>Civic Result Maps</span></a>
-        <nav aria-label="Connections navigation"><a href="/">State workspace</a><a href="/evidence">Evidence tools</a><a href="#source-library">Sources</a></nav>
-      </header>
       <section className={styles.pageHeading} aria-labelledby="connections-title">
         <h1 id="connections-title">Election connections</h1>
         <span>Updated {document.reviewedOn}</span>
+        <a href="#source-library">Sources</a>
       </section>
       <section className={styles.intro} aria-label="About this page">
         <p>Explore election-reporting networks, company ownership, and technology relationships. Each box is a person, organization, product or public system. Select a box or line to see its sources, dates and evidence limits.</p>
@@ -62,7 +59,7 @@ export default async function ConnectionsPage() {
           <article key={source.id} id={`source-${source.id}`}>
             <small>{source.authority}</small>
             <h3><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} <span aria-hidden="true">↗</span></a></h3>
-            <p>{source.publishedOn ? `Dated ${source.publishedOn}` : source.eventOn ? `Event ${source.eventOn} · Publication date unconfirmed` : "Undated"}</p>
+            <p>{sourceDateLabel(source)}</p>
             <details className={styles.sourceCheck}><summary>{sourceDescriptions[source.sourceClass].label} · Source details</summary><p>{sourceDescriptions[source.sourceClass].description}</p>{document.releaseId === "legacy-documentary-catalog" ? <><p>{connectionSources.find((item) => item.id === source.id)?.review.locator}</p><p>{connectionSources.find((item) => item.id === source.id)?.review.note}</p><p>Content checked {connectionSources.find((item) => item.id === source.id)?.review.checkedOn}; retained revision unavailable.</p></> : document.evidence.filter((item) => item.sourceId === source.id).map((item) => <p key={item.id}>{item.locator.page ? `Page ${item.locator.page}: ` : ""}{item.locator.section}</p>)}</details>
           </article>
         ))}</div>

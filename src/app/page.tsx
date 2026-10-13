@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { MapPin } from "lucide-react";
 import { GlobalCountySearch } from "./global-county-search";
 import { NationalOverview } from "./national-overview";
-import { SiteHeader } from "./site-header";
+import { PageTools } from "./page-tools";
 import { StateRail } from "./state-rail";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
@@ -328,13 +328,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </form>
         </aside>
       )}
-      <SiteHeader
-        activePage="workspace"
-        equipmentEnabled={equipmentExplorerEnabled}
-        live
-        subtitle="National election result data platform"
-        tourId="workspace"
-      />
+      <PageTools tourId="workspace" />
 
       <div className="workspace">
         <StateRail loadedCount={states.length} selectedState={selectedStateCode}>

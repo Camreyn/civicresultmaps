@@ -605,7 +605,7 @@
 @media (min-width: 981px) {
   .workspace-context-bar {
     position: sticky;
-    top: 86px;
+    top: calc(var(--site-header-height) + 14px);
     z-index: 8;
   }
 }

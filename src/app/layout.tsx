@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { homeTitle, homeDescription, siteOrigin, identityJsonLd, serializeJsonLd } from "@/lib/seo";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter } from "./site-footer";
+import { SiteHeader } from "./site-header";
+import { equipmentCatalogMetadata } from "@/lib/equipment-catalog";
+import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import "./globals.css";
 
 import "./workspace-layout-v2.css";
@@ -55,6 +58,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(identityJsonLd) }} />
+        <SiteHeader equipmentEnabled={isEquipmentExplorerEnabled({
+          catalogChannel: equipmentCatalogMetadata.channel,
+          productionReady: equipmentCatalogMetadata.productionReady,
+        })} />
         {children}
         <SiteFooter />
         <Analytics />

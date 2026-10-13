@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { siteNavigation } from "@/lib/site-navigation";
 import styles from "./site-footer.module.css";
 
 export function SiteFooter() {
@@ -6,13 +6,8 @@ export function SiteFooter() {
     <footer className={styles.footer}>
       <span>Civic Result Maps publishes source-linked public records and highlights patterns that may warrant further review.</span>
       <nav aria-label="Site navigation and policies">
-        <a href="/elections">Elections</a>
-        <a href="/states">States</a>
-        <a href="/counties">Counties</a>
-        <a href="/datasets">Datasets</a>
-        <a href="/connections">Connections</a>
-        <Link href="/privacy">Privacy</Link>
-        <Link href="/developers">API</Link>
+        {siteNavigation.filter(({ id }) => ["elections", "states", "counties", "datasets", "connections", "news", "privacy", "developers"].includes(id))
+          .map(({ id, href, label }) => <a key={id} href={href}>{label}</a>)}
         <a href="https://github.com/Camreyn/civicresultmaps" rel="noreferrer" target="_blank">Source code</a>
       </nav>
     </footer>

@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { ShieldAlert } from "lucide-react";
 
-import { equipmentCatalogMetadata } from "@/lib/equipment-catalog";
-import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import { loadNationalYearDataset } from "@/lib/national-county-comparison-data";
 import { getNationalSecurityIncidentReport } from "@/lib/security-incidents";
 import { buildSecurityElectionOverlay } from "@/lib/security-result-overlay";
 import { RouteTour } from "../route-tour";
-import { SiteHeader } from "../site-header";
+import { PageTools } from "../page-tools";
 import { securityTourSteps } from "../tour-manifests";
 import baseStyles from "../compare/compare.module.css";
 import { SecurityExplorer } from "./security-explorer";
@@ -45,16 +43,10 @@ export const metadata: Metadata = {
 export default async function SecurityPage() {
   const report = getNationalSecurityIncidentReport(2024);
   const electionOverlay = buildSecurityElectionOverlay(report.incidents, await loadNationalYearDataset(2024));
-  const equipmentEnabled = isEquipmentExplorerEnabled({ catalogChannel: equipmentCatalogMetadata.channel, productionReady: equipmentCatalogMetadata.productionReady });
 
   return (
     <main className={baseStyles.shell}>
-      <SiteHeader
-        activePage="security"
-        equipmentEnabled={equipmentEnabled}
-        subtitle="Election security records"
-        tourId="security"
-      />
+      <PageTools tourId="security" />
       <RouteTour steps={securityTourSteps} tourId="security" />
 
       <section className={baseStyles.hero} data-print-hide="true" data-tour="security-hero">

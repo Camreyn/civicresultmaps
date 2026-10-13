@@ -1,6 +1,5 @@
-import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks, Radar } from "lucide-react";
+import { CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
 import { pageMetadata } from "@/lib/seo";
-import { BrandMark } from "../brand-mark";
 import { listAdminSourceStatuses, listCompletenessReport, listNativeSourcePackages, listSourceAcquisitionTiers, listTurnoutSourceStatuses } from "@/lib/api";
 import {
   getNativeSourcePackage,
@@ -535,26 +534,6 @@ export default async function ReadinessPage({
 
   return (
     <main className="readiness-shell">
-      <header className="topbar">
-        <a className="brand" href="/">
-          <BrandMark />
-          <div>
-            <strong>Civic Result Maps</strong>
-            <span>Readiness dashboard</span>
-          </div>
-        </a>
-        <div className="topbar-actions">
-          <a className="topbar-link" href="/">
-            <ArrowLeft aria-hidden size={15} />
-            Workspace
-          </a>
-          <a className="topbar-link" href="/evidence">
-            <Radar aria-hidden size={15} />
-            Evidence
-          </a>
-          <span className="domain">civicresultmaps.org</span>
-        </div>
-      </header>
 
       <section className="readiness-hero">
         <div>

@@ -10,7 +10,7 @@ import {
 import { notFound } from "next/navigation";
 
 import { RouteTour } from "../route-tour";
-import { SiteHeader } from "../site-header";
+import { PageTools } from "../page-tools";
 import { equipmentIndexTourSteps } from "../tour-manifests";
 import { equipmentCatalogMetadata, listEquipmentSystemTiles } from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
@@ -114,12 +114,7 @@ export default async function EquipmentIndexPage({ searchParams }: PageProps) {
 
   return (
     <main className={styles.shell}>
-      <SiteHeader
-        activePage="equipment"
-        equipmentEnabled={equipmentEnabled}
-        subtitle="U.S. election equipment evidence"
-        tourId="equipment-index"
-      />
+      <PageTools tourId="equipment-index" />
       <RouteTour steps={equipmentIndexTourSteps} tourId="equipment-index" />
 
       <div className={styles.page}>

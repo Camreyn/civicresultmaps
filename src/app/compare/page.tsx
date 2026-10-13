@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { ArrowLeft, Database, MapPinned, Ruler } from "lucide-react";
-import { BrandMark } from "../brand-mark";
+import { MapPinned } from "lucide-react";
 import { CompareExplorer, type CompareInitialState } from "./compare-explorer";
 import styles from "./compare.module.css";
 
@@ -40,30 +39,6 @@ export default async function ComparePage({ searchParams }: PageProps) {
 
   return (
     <main className={styles.shell}>
-      <header className={styles.topbar}>
-        <a className={styles.brand} href="/">
-          <BrandMark />
-          <span>
-            <strong>Civic Result Maps</strong>
-            <small>National comparison lab</small>
-          </span>
-        </a>
-        <nav className={styles.topnav} aria-label="Primary navigation">
-          <a href="/">
-            <ArrowLeft aria-hidden size={15} />
-            State workspace
-          </a>
-          <a href="/readiness">
-            <Database aria-hidden size={15} />
-            Data readiness
-          </a>
-          <a href="/district-compactness">
-            <Ruler aria-hidden size={15} />
-            District compactness
-          </a>
-          <span className={styles.domain}>civicresultmaps.org</span>
-        </nav>
-      </header>
 
       <section className={styles.hero}>
         <div className={styles.eyebrow}>

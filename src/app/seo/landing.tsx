@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { BrandMark } from "@/app/brand-mark";
 import { absoluteUrl, publicSourceUrl, serializeJsonLd } from "@/lib/seo";
 import { breadcrumbJsonLd, type Breadcrumb } from "@/lib/seo-structured-data";
 import { countyByTag, countyElectionPath } from "@/lib/seo-geography";
@@ -14,10 +13,6 @@ export function Landing({ title, description, breadcrumbs, children, structuredD
   title: string; description: string; breadcrumbs: Breadcrumb[]; children: ReactNode; structuredData?: unknown;
 }) {
   return <main className={styles.shell}>
-    <header className={styles.header}>
-      <a className={styles.brand} href="/"><BrandMark /><span>Civic Result Maps</span></a>
-      <nav aria-label="Primary"><a href="/elections">Elections</a><a href="/states">States</a><a href="/counties">Counties</a><a href="/datasets">Datasets</a><a href="/developers">Developers</a></nav>
-    </header>
     <div className={styles.content}>
       <nav aria-label="Breadcrumb"><ol className={styles.breadcrumbs}>{breadcrumbs.map((item, index) =>
         <li key={item.path}>{index === breadcrumbs.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={item.path}>{item.name}</a>}</li>)}</ol></nav>

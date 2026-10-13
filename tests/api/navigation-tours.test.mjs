@@ -27,19 +27,21 @@ const [
   readFile("src/app/workspace-tabs.tsx", "utf8"),
 ]);
 
-assert.match(header, /U\.S\. Equipment/);
-assert.match(header, /href: "\/equipment"/);
+const registry = await readFile("src/lib/site-navigation.ts", "utf8");
+const navigation = await readFile("src/app/site-mobile-navigation.client.tsx", "utf8");
+const pageTools = await readFile("src/app/page-tools.tsx", "utf8");
+const rootLayout = await readFile("src/app/layout.tsx", "utf8");
+assert.match(registry, /label: "Equipment"/);
+assert.match(registry, /href: "\/equipment"/);
+assert.match(rootLayout, /<SiteHeader/);
 assert.match(header, /equipmentEnabled/);
-assert.match(header, /aria-current/);
-assert.match(header, /TourLaunchButton/);
+assert.match(navigation, /aria-current/);
+assert.match(pageTools, /TourLaunchButton/);
 
-assert.match(home, /activePage="workspace"/);
 assert.match(home, /tourId="workspace"/);
-assert.match(home, /equipmentEnabled={equipmentExplorerEnabled}/);
-assert.match(equipmentIndex, /activePage="equipment"/);
+assert.match(home, /equipmentExplorerEnabled={equipmentExplorerEnabled}/);
 assert.match(equipmentIndex, /tourId="equipment-index"/);
 assert.match(equipmentLayout, /tourId="equipment-detail"/);
-assert.match(securityPage, /activePage="security"/);
 assert.match(securityPage, /tourId="security"/);
 
 assert.match(guidedTour, /role="dialog"/);

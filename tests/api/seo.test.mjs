@@ -104,7 +104,9 @@ test("new data reader has no seeded fallback or write path", () => {
 });
 test("sitemap omits fabricated timestamps and redirects while retaining eligible equipment routes", () => {
   const source = readFileSync(new URL("../../src/app/sitemap.ts", import.meta.url), "utf8");
-  assert.doesNotMatch(source, /new Date|lastModified:|\/timeline|\/admin/);
+  assert.doesNotMatch(source, /new Date|\/timeline|\/admin/);
+  assert.match(source, /entry\?\.updatedOn \? \{ lastModified: entry.updatedOn \}/);
+  assert.doesNotMatch(source, /lastModified:.*(?:coverageReviewedOn|eventOn)/);
   assert.match(source, /sourceLinked/); assert.match(source, /loadSeoAvailability/);
   assert.match(source, /isEquipmentExplorerEnabled/);
   assert.match(source, /equipmentCatalogMetadata\.productionReady/);
