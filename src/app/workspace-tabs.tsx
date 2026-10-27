@@ -6689,7 +6689,7 @@ export function WorkspaceTabs({
                   <span>ETL tooling, source audits, coverage checks, and interface improvements.</span>
                 </article>
               </div>
-              <a className="support-button" href="https://ko-fi.com/camreyn" rel="noreferrer" target="_blank">
+              <a className="support-button" href="https://ko-fi.com/civicresultmaps" rel="noreferrer" target="_blank">
                 <HeartHandshake aria-hidden size={16} />
                 Support on Ko-fi
               </a>
