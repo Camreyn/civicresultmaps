@@ -47,6 +47,7 @@ import { stateByCode, countyByTag } from "@/lib/seo-geography";
 import { listSecurityIncidentStateSummaries } from "@/lib/security-incidents";
 import { historicalCountyRowsToResults } from "@/lib/state-year-results";
 import { workspaceTabSupportsHistoricalYear } from "@/lib/workspace-navigation";
+import { compactWorkspaceReviewRows } from "@/lib/workspace-review-payload";
 
 const mapModes = new Set(["winner", "margin", "volume", "method", "equipment", "security"]);
 const securityIncidentStateSummaries = listSecurityIncidentStateSummaries(2024);
@@ -370,7 +371,7 @@ export default async function Home({ searchParams }: HomeProps) {
             initialFips={validatedInitialFips}
             initialMapMode={initialMapMode}
             initialTab={activeTab}
-            reviewRows={reviewRows}
+            reviewRows={compactWorkspaceReviewRows(reviewRows, activeTab)}
             results={results}
             selectedCompleteness={selectedCompleteness}
             selectedState={selected}
