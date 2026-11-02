@@ -85,4 +85,6 @@ test("2026 branch occurs before presidential data loading and keeps presidential
   assert.ok(page.indexOf("return <MidtermWorkspace") < page.indexOf("const layoutResolution"));
   assert.deepEqual(supportedPresidentialYears, [2012, 2016, 2020, 2024]);
   assert.equal(isSupportedPresidentialYear(2026), false);
+  const deploymentIgnore = await readFile(new URL(".vercelignore", root), "utf8");
+  assert.match(deploymentIgnore, /^!data\/ny-2026-equipment\.json\r?$/m, "The runtime snapshot must survive Vercel's data upload exclusions");
 });
