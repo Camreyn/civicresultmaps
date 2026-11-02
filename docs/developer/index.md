@@ -8,6 +8,10 @@ Build a reproducible, source-cited election data pipeline that lets CivicResultM
 
 The project does not assert fraud. It exposes data quality, reconciliation, provenance, and review signals.
 
+For the separate 2026 midterm workspace and sourced New York county equipment
+snapshot, read [`docs/ny-2026-midterm-equipment.md`](../ny-2026-midterm-equipment.md).
+Do not extend the presidential year contract or carry 2024 results into that view.
+
 For historical 2016/2020 review-row eligibility, candidate-neutral fields, indicator thresholds, broad-signal warnings, and promotion rules, read [`docs/historical-advisory-indicators.md`](../historical-advisory-indicators.md).
 
 For Alaska's retained 2012/2016/2020 official registration snapshots, exact source replay, and source-only turnout limitations, read [`docs/ak-historical-registration-source-review.md`](../ak-historical-registration-source-review.md).

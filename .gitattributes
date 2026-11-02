@@ -178,3 +178,7 @@
 /data/district-compactness/*.gz -text -diff
 /data/district-compactness/*.json text eol=lf
 /data/district-compactness/*.csv text eol=lf
+
+# Keep the reviewed NY 2026 equipment observation and replay package byte-stable.
+/data/ny-2026-equipment-source-observations.json text eol=lf
+/data/ny-2026-equipment.json text eol=lf

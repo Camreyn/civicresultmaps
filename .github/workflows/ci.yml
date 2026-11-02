@@ -76,6 +76,9 @@ jobs:
       - name: News and shared navigation contracts
         run: npm run test:news
 
+      - name: Midterm equipment source contracts
+        run: npm run test:midterms
+
       - name: Workspace analytics contract tests
         id: analytics_contract
         run: npm run test:analytics
@@ -164,6 +167,9 @@ jobs:
 
       - name: News and shared navigation browser checks
         run: npx playwright test tests/e2e/site-navigation-news.spec.ts --workers=1
+
+      - name: Midterm workspace browser checks
+        run: npx playwright test tests/e2e/midterm-workspace.spec.ts --workers=1
 
       - name: Numeric verification browser fixture
         id: numeric_browser
