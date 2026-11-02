@@ -16,6 +16,10 @@ patterns, generated state registries, and validation expectations.
 
 ## Documentation
 
+- [New York 2026 midterms](docs/ny-2026-midterm-equipment.md) - separate midterm
+  workspace with sourced county equipment listings, observation dates, and
+  explicit election-deployment limitations; no 2026 results are loaded.
+
 - [System topology](docs/system-topology.md) - Obsidian-ready Mermaid maps of
   the product, API, runtime, data model, ETL, validation, and deployment paths.
 - [Developer playbook](docs/developer/index.md) - managed-thread coordination,

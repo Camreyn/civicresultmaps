@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "authority": "New York State Board of Elections",
+  "observedAt": "2026-11-02",
+  "electionYear": 2026,
+  "electionDate": "2026-11-03",
+  "reportingGrain": "county",
+  "captureMethod": "Reviewed transcription of official page county-list sections retrieved through the web reader. This is not a retained original HTML download; direct downloads returned a Cloudflare challenge.",
+  "publicationDate": null,
+  "parser": "scripts/build-ny-2026-equipment.mjs",
+  "confidence": "Official county-to-family listing observed on this date; election-specific deployment is not independently confirmed.",
+  "electionDateEvidence": { "sourceId": "election-information", "section": "Upcoming Elections", "observedText": "November 3, 2026 General Election" },
+  "lists": [
+    {
+      "sourceId": "clear-ballot",
+      "section": "Clear Ballot Counties / Full suite of Clear Ballot products",
+      "role": "listed_system_family",
+      "counties": ["Broome", "Cayuga", "Chenango", "Delaware", "Jefferson", "Livingston", "Montgomery", "Nassau", "Onondaga", "Orleans", "Oswego", "Rensselaer", "Saratoga", "Schuyler", "Steuben", "Tompkins", "Warren"]
+    },
+    {
+      "sourceId": "liberty-vote",
+      "section": "Liberty Vote Counties",
+      "role": "listed_system_family",
+      "counties": ["Cattaraugus", "Chautauqua", "Chemung", "Clinton", "Columbia", "Cortland", "Dutchess", "Essex", "Franklin", "Fulton", "Genesee", "Greene", "Lewis", "Madison", "Niagara", "Oneida", "Ontario", "Orange", "Putnam", "Schoharie", "Seneca", "St. Lawrence", "Sullivan", "Tioga", "Wayne", "Westchester", "Wyoming"]
+    },
+    {
+      "sourceId": "ess",
+      "section": "ES&S Counties",
+      "role": "listed_system_family",
+      "counties": ["Albany", "Erie", "New York City (Bronx, Kings, New York, Queens, Richmond)", "Monroe", "Rockland", "Schenectady", "Suffolk"]
+    },
+    {
+      "sourceId": "hart-verity",
+      "section": "Hart Verity Counties",
+      "role": "listed_system_family",
+      "counties": ["Allegany", "Hamilton", "Herkimer", "Otsego", "Ulster", "Washington", "Yates"]
+    },
+    {
+      "sourceId": "clear-ballot",
+      "section": "Clear Ballot Counties / Central Count/Audit tool only",
+      "role": "central_count_audit_only",
+      "counties": ["Bronx", "Cattaraugus", "Chemung", "Clinton", "Columbia", "Cortland", "Dutchess", "Kings", "Madison", "New York", "Oneida", "Orange", "Putnam", "Queens", "Richmond", "Rockland", "Schenectady", "Seneca", "St. Lawrence", "Suffolk", "Sullivan", "Tioga", "Wayne", "Westchester"]
+    }
+  ],
+  "expected": { "countyRows": 62, "listedSystemFamilies": 4, "centralCountAuditOnlyCounties": 24 },
+  "caveats": [
+    "These undated NYSBOE pages list system families, not election-specific deployment inventories. The 2026 workspace year is not the source publication year.",
+    "Exact county models, installed software/firmware, quantities, pollbooks, and uniformity across polling places and voting modes are not established.",
+    "Clear Ballot central-count/audit-only listings are separate from the listed poll-site system family and do not prove that an audit occurred.",
+    "The legacy official ES&S AutoMARK page at /node/276 also lists Nassau. The current voting-technology hub links to the ES&S family page, which excludes Nassau, and the Clear Ballot page lists Nassau in its full suite. The source conflict is retained; retirement and election-effective dates are unresolved.",
+    "No votes, turnout, results, advisory indicators, or 2024 equipment rows are created or carried forward by this package."
+  ]
+}

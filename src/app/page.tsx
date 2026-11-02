@@ -7,6 +7,7 @@ import { StateRail } from "./state-rail";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
 import { WorkspaceStateAnalytics } from "./workspace-state-analytics";
+import { ElectionCycleNavigation } from "./election-cycle-navigation";
 import { equipmentCatalogMetadata } from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import {
@@ -117,6 +118,17 @@ async function loadDisplaySources(
 
 export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
   const params = (await searchParams) ?? {};
+  if ((Array.isArray(params.year) ? params.year[0] : params.year) === "2026") {
+    const requestedState = Array.isArray(params.state) ? params.state[0] : params.state;
+    const state = requestedState ? stateByCode(requestedState) : undefined;
+    return pageMetadata({
+      title: `${state?.name ?? "New York"} 2026 Midterms | County Election Equipment`,
+      description: "Official-source county election equipment listings for the 2026 midterm workspace. New York first; election-specific deployment unconfirmed and results not loaded.",
+      path: "/?state=NY&year=2026&tab=equipment",
+      index: false,
+      canonical: false,
+    });
+  }
   const year = parseYear(typeof params.year === "string" ? params.year : undefined);
   const state = typeof params.state === "string" ? stateByCode(params.state) : undefined;
   const preview = await buildStateSocialPreview({ state: state?.code, year });
@@ -145,6 +157,10 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
 export default async function Home({ searchParams }: HomeProps) {
   const rawParams = (await searchParams) ?? {};
   const params = Object.fromEntries(Object.entries(rawParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])) as Record<string, string | undefined>;
+  if (params.year === "2026") {
+    const { MidtermWorkspace } = await import("./midterm-workspace");
+    return <MidtermWorkspace state={params.state ?? "NY"} tab={params.tab} fips={params.fips} />;
+  }
   const layoutResolution = await resolveWorkspaceLayout();
   const layoutManifestV3 = toWorkspaceLayoutManifestV3(layoutResolution.envelope.manifest);
   const layoutManifest = workspaceLayoutManifestAnyToV2(layoutResolution.envelope.manifest);
@@ -313,6 +329,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="app-shell">
+      <ElectionCycleNavigation state={selectedStateCode} />
       {selected && layoutResolution.source !== "draft" && (
         <WorkspaceStateAnalytics
           state={selected.code}
