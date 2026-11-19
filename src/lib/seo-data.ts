@@ -13,6 +13,28 @@ export type SeoCandidateRow = {
 
 export type SeoAvailability = { state: string; level: string; jurisdictionTag: string | null; sourceLinked: boolean };
 
+// A registry landing only needs to know which links to display. Do not load candidate
+// totals or source documents. An unavailable database must not become cached "no results".
+export async function loadCountyLandingCoverage(state: string, countyTag: string) {
+  if (!hasReadableDatabase()) {
+    if (process.env.VERCEL_ENV === "production") throw new Error("County coverage database unavailable");
+    return null;
+  }
+  const sql = getReadSql();
+  const [row] = await sql`
+    with eligible as not materialized (
+      select r.level, r.jurisdiction_tag from result_rows r
+      join contests c on r.contest_id = c.id join elections e on c.election_id = e.id
+      where r.state_code = ${state} and e.year = 2024 and lower(e.office) = 'president'
+        and r.level in ('county', 'state', 'city', 'city_town', 'town', 'federal_precincts', 'non_geographic')
+    )
+    select exists(select 1 from eligible where level = 'county' and jurisdiction_tag = ${countyTag}) as county,
+           exists(select 1 from eligible) as state
+  ` as Array<{ county: boolean; state: boolean }>;
+  if (typeof row?.county !== "boolean" || typeof row.state !== "boolean") throw new Error("Invalid county coverage response");
+  return row;
+}
+
 // Read only existing normalized public rows. No seed fallback, geography inference,
 // election arithmetic, ETL, or database mutation. Errors propagate as a 5xx response:
 // never turn a transient database outage into a successful empty sitemap or a 404.

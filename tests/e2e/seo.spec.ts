@@ -59,6 +59,20 @@ test("result and dataset initial HTML reconcile with the existing API", async ({
   await context.close();
 });
 
+test("public county landing HTML does not assign or embed a layout visitor", async ({ request }) => {
+  const path = "/counties/wisconsin/outagamie";
+  const first = await request.get(path, { headers: { cookie: "" } });
+  const marker = "e32cac43-9d41-47eb-9e60-66636cbbcead";
+  const returning = await request.get(path, { headers: { cookie: `crm_layout_visitor=${marker}` } });
+  for (const response of [first, returning]) {
+    expect(response.status()).toBe(200);
+    expect(response.headers()["set-cookie"] ?? "").not.toContain("crm_layout_visitor");
+    const html = await response.text();
+    expect(html).toContain("55087");
+    expect(html).not.toContain(marker);
+  }
+});
+
 test("invalid semantic routes are real 404s", async ({ request }) => {
   for (const path of ["/states/not-a-state", "/states/wisconsin/elections/2023/president", "/counties/wisconsin/not-a-county", "/counties/minnesota/outagamie", "/datasets/not-a-dataset"]) {
     expect((await request.get(path)).status(), path).toBe(404);

@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, listAdminSourceStatuses, publicDataCacheHeaders, stateQuery, yearQuery } from "@/lib/api";
-import type { AdminSourceStatusValue } from "@/lib/admin-source-packages";
-
-const statusValues = new Set<AdminSourceStatusValue>([
-  "blocked",
-  "candidate",
-  "documented_exclusion",
-  "loaded",
-  "needs_data",
-  "partial",
-]);
+import { apiEnvelope, listAdminSourceStatuses, publicDataCacheHeaders } from "@/lib/api";
+import { invalidPublicQuery, parseSourceStatusQuery } from "@/lib/public-api-query";
 
 export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-  const stateParam = params.get("state");
-  const yearParam = params.get("year");
-  const statusParam = params.get("status") as AdminSourceStatusValue | null;
-  const state = stateParam ? stateQuery.parse(stateParam) : undefined;
-  const year = yearParam ? yearQuery.parse(yearParam) : 2024;
-  const status = statusParam && statusValues.has(statusParam) ? statusParam : undefined;
+  const parsed = parseSourceStatusQuery(request.nextUrl.searchParams);
+  if (!parsed.success) return invalidPublicQuery(parsed.error);
+
+  const { state, year, status } = parsed.data;
   const packages = listAdminSourceStatuses({ state, status, year });
 
   return NextResponse.json(
