@@ -63,6 +63,13 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
     const response = await authenticatedProxy(request, event);
     if (response) return response;
   }
+  // These public registry pages are shared ISR output, never a workspace or admin
+  // surface. Assign layout visitors when they actually reach a personalized route.
+  if (/^\/counties\/[a-z0-9-]+\/[a-z0-9-]+\/?$/.test(request.nextUrl.pathname)) {
+    const response = NextResponse.next();
+    if (process.env.VERCEL_ENV === "preview") response.headers.set("X-Robots-Tag", "noindex, follow");
+    return response;
+  }
   const id = visitorId(request);
   return responseWithVisitor(request, id);
 }
