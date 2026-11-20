@@ -114,9 +114,9 @@ export async function renderWorkspaceMapCard(card: WorkspaceMapPreview) {
       </div>
       <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
         <div style={{ width: 388, display: "flex", flexDirection: "column", paddingRight: 22 }}>
-          <div style={{ fontSize: 28, color: "#69d9b9" }}>{card.stateName}</div>
-          <div style={{ fontSize: 51, fontWeight: 700, lineHeight: 1.03, marginTop: 10 }}>{card.label}</div>
-          {card.mode === "votes-3d" && <div style={{ fontSize: 28, marginTop: 14 }}>{card.raceLabel}</div>}
+          <div style={{ fontSize: 52, fontWeight: 700, lineHeight: 1.04, letterSpacing: -1 }}>{card.stateName}</div>
+          <div style={{ fontSize: 32, color: "#69d9b9", lineHeight: 1.12, marginTop: 10 }}>{card.label}</div>
+          {card.mode === "votes-3d" && <div style={{ fontSize: 25, marginTop: 12 }}>{card.raceLabel}</div>}
           <div style={{ fontSize: 22, color: muted, marginTop: 22 }}>{card.description}</div>
           <div style={{ fontSize: 20, color: "#f0c36a", marginTop: 24 }}>{art.statistic}</div>
         </div>

@@ -44,7 +44,7 @@ export async function buildWorkspaceMapPreview(params: SeoSearchParams, loadRace
   const imageAlt = `${title}${focus ? " · " + focus.displayName : ""}. ${description}`;
   return { state: state.code, stateName: state.name, year, mode: selectedMode, label, description,
     title, imageAlt, raceId, raceLabel, selectedRace, focus, sharePath: "/?" + query,
-    imagePath: "/api/social-card?" + query + "&v=map-modes-1" };
+    imagePath: "/api/social-card?" + query + "&v=map-modes-2" };
 }
 
 export type WorkspaceMapPreview = NonNullable<Awaited<ReturnType<typeof buildWorkspaceMapPreview>>>;
