@@ -833,6 +833,7 @@ export async function listResults(input: {
   }
 
   const grouped = new Map<string, ResultRow>();
+  const parties = new Map<string, string>();
 
   for (const row of rows) {
     const key = row.office.toLowerCase() + "|" + row.jurisdictionCode;
@@ -862,11 +863,18 @@ export async function listResults(input: {
       } satisfies ResultRow);
 
     current.votes[row.candidateName] = row.votes;
+    parties.set(key + "|" + row.candidateName, row.party);
     current.totalVotes += row.votes;
     grouped.set(key, current);
   }
 
-  return Array.from(grouped.values(), finalizeResultRowSummary);
+  return Array.from(grouped, ([key, value]) => {
+    const result = finalizeResultRowSummary(value);
+    const party = parties.get(key + "|" + result.winner) ?? "";
+    if (/^(D|DEM|DFL|Democrat(ic)?)$/i.test(party)) result.winnerParty = "dem";
+    if (/^(R|REP|GOP|Republican)$/i.test(party)) result.winnerParty = "rep";
+    return result;
+  });
 }
 
 export async function listSources(input: { state: string; year: number }): Promise<SourceSummary[]> {

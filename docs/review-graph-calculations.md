@@ -59,6 +59,22 @@ view.
 - For each mapped jurisdiction, the app sums total votes.
 - Color intensity reflects relative vote volume among joined jurisdictions.
 
+### 3D County Votes
+
+Choose **3D votes** on a state's Map tab, then select a **Map race**. On the
+current canonical county/county-equivalent boundaries, height is linear:
+`height = maximum display height × county votes / largest joined county total`.
+Heights reset for each race, year and state; they are neither persons per square
+mile nor turnout rates. Color identifies the leader where known. Select a
+county to see the exact count and source, or rotate the view to uncover it.
+
+Only matching county IDs are shown. The map uses county result rows, historical
+presidential baselines, and separately labeled county comparisons with explicit
+Democratic, Republican and other counts for one statewide contest. It does not
+sum precinct samples, allocate statewide or district votes to counties, or
+interpret missing totals as zero. Gray counties have no unambiguous joined
+total; a reported zero is flat but is not gray.
+
 ### Vote Method Map
 
 - Input: EAC or state-native participation-method rows where loaded.

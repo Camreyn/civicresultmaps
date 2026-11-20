@@ -5,6 +5,7 @@ export const workspaceMapModes = [
   "winner",
   "margin",
   "volume",
+  "votes-3d",
   "method",
   "equipment",
   "security",
@@ -13,6 +14,7 @@ export const workspaceMapModes = [
 export type WorkspaceMapMode = (typeof workspaceMapModes)[number];
 
 export type WorkspaceNavigationContext = {
+  race?: string;
   fips?: string;
   mode?: WorkspaceMapMode;
   state: string;
@@ -21,6 +23,7 @@ export type WorkspaceNavigationContext = {
 };
 
 export type WorkspaceContextChangeDetail = {
+  race?: string | null;
   fips?: string | null;
   mode?: WorkspaceMapMode | null;
 };
@@ -41,7 +44,7 @@ const workspaceTabs = new Set<WorkspaceTabId>([
   "support",
   "contact",
 ]);
-const historicalMapModes = new Set<WorkspaceMapMode>(["winner", "margin", "volume"]);
+const historicalMapModes = new Set<WorkspaceMapMode>(["winner", "margin", "volume", "votes-3d"]);
 
 export function workspaceTabSupportsHistoricalYear(tab: WorkspaceTabId) {
   return tab === "map" || tab === "exports";
@@ -86,6 +89,7 @@ export function workspaceNavigationContextFromSearchParams(
 
   return {
     fips,
+    ...(mode === "votes-3d" && searchParams.get("race") ? { race: searchParams.get("race")! } : {}),
     mode: year === 2024 || !mode || historicalMapModes.has(mode) ? mode : undefined,
     state: normalizeState(searchParams.get("state"), fallback.state),
     tab,
@@ -107,6 +111,7 @@ export function workspaceNavigationHref(context: WorkspaceNavigationContext): `/
 
   if (mode && (year === 2024 || historicalMapModes.has(mode))) {
     params.set("mode", mode);
+    if (mode === "votes-3d" && context.race) params.set("race", context.race);
   }
   if (fips) {
     params.set("fips", fips);
@@ -120,6 +125,7 @@ export function workspaceStateHref(context: WorkspaceNavigationContext, state: s
   return workspaceNavigationHref({
     ...context,
     fips: stateChanged ? undefined : context.fips,
+    race: stateChanged ? undefined : context.race,
     state,
   });
 }
@@ -144,10 +150,15 @@ export function contextualizeWorkspaceHref(href: string, context: WorkspaceNavig
     const fips = params.has("fips") ? normalizeFips(params.get("fips")) : context.fips;
     if (mode && (year === 2024 || historicalMapModes.has(mode))) params.set("mode", mode);
     else params.delete("mode");
+    if (mode === "votes-3d" && state === context.state && year === context.year && context.race && !params.has("race")) {
+      params.set("race", context.race);
+    }
+    if (mode !== "votes-3d") params.delete("race");
     if (fips) params.set("fips", fips);
     else params.delete("fips");
   } else {
     params.delete("mode");
+    params.delete("race");
     params.delete("fips");
   }
 

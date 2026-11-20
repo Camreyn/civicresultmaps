@@ -46,10 +46,11 @@ import { loadSeoAvailability } from "@/lib/seo-data";
 import { stateByCode, countyByTag } from "@/lib/seo-geography";
 import { listSecurityIncidentStateSummaries } from "@/lib/security-incidents";
 import { historicalCountyRowsToResults } from "@/lib/state-year-results";
-import { workspaceTabSupportsHistoricalYear } from "@/lib/workspace-navigation";
+import { workspaceTabSupportsHistoricalYear, workspaceMapModes, type WorkspaceMapMode } from "@/lib/workspace-navigation";
+import { buildCountyVoteRaces } from "@/lib/county-vote-races";
 import { compactWorkspaceReviewRows } from "@/lib/workspace-review-payload";
 
-const mapModes = new Set(["winner", "margin", "volume", "method", "equipment", "security"]);
+const mapModes = new Set<string>(workspaceMapModes);
 const securityIncidentStateSummaries = listSecurityIncidentStateSummaries(2024);
 
 type HomeProps = {
@@ -63,8 +64,12 @@ function parseYear(value?: string): SupportedPresidentialYear {
 
 async function loadDisplayResults(state: string, year: SupportedPresidentialYear) {
   if (year !== 2024) {
-    const historicalRows = await listHistoricalResultRows({ state, year, limit: 5000 });
+    const [historicalRows, raceResults] = await Promise.all([
+      listHistoricalResultRows({ state, year, limit: 5000 }),
+      listResults({ state, year, level: "county" }),
+    ]);
     return {
+      historicalRows, raceResults,
       countyResults: historicalCountyRowsToResults(historicalRows, year),
       cityResults: [],
       cityTownResults: [],
@@ -85,16 +90,18 @@ async function loadDisplayResults(state: string, year: SupportedPresidentialYear
     nonGeographicResults,
   ] = await Promise.all([
     listResults({ state, year, level: "county" }),
-    listResults({ state, year, level: "city" }),
-    listResults({ state, year, level: "city_town" }),
-    listResults({ state, year, level: "town" }),
-    listResults({ state, year, level: "state" }),
-    listResults({ state, year, level: "federal_precincts" }),
-    listResults({ state, year, level: "non_geographic" }),
+    listResults({ state, year, level: "city", office: "president" }),
+    listResults({ state, year, level: "city_town", office: "president" }),
+    listResults({ state, year, level: "town", office: "president" }),
+    listResults({ state, year, level: "state", office: "president" }),
+    listResults({ state, year, level: "federal_precincts", office: "president" }),
+    listResults({ state, year, level: "non_geographic", office: "president" }),
   ]);
 
   return {
-    countyResults,
+    historicalRows: [],
+    raceResults: countyResults,
+    countyResults: countyResults.filter(r => r.office.toLowerCase() === "president"),
     cityResults,
     cityTownResults,
     townResults,
@@ -155,10 +162,10 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedYear = workspaceTabSupportsHistoricalYear(activeTab) ? requestedYear : 2024;
   const workspaceSummaryYear = activeTab === "exports" ? selectedYear : 2024;
   const requestedMapMode = mapModes.has(params?.mode ?? "")
-    ? params?.mode as "winner" | "margin" | "volume" | "method" | "equipment" | "security"
+    ? params?.mode as WorkspaceMapMode
     : undefined;
   const initialMapMode = selectedYear === 2024
-    || requestedMapMode === "winner" || requestedMapMode === "margin" || requestedMapMode === "volume"
+    || requestedMapMode === "winner" || requestedMapMode === "margin" || requestedMapMode === "volume" || requestedMapMode === "votes-3d"
     ? requestedMapMode
     : undefined;
   const initialFips = /^\d{5}$/.test(params?.fips ?? "") ? params?.fips : undefined;
@@ -350,6 +357,9 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <section className="main-panel">
           <WorkspaceTabs
+            countyVoteRaces={activeTab === "map" ? buildCountyVoteRaces(
+              selectedStateCode, selectedYear, resultBundle.raceResults, resultBundle.historicalRows, reviewRows,
+            ) : []}
             adminSourceStatus={adminSourceStatuses.states[0]}
             browserRCalculationsEnabled={process.env.WORKSPACE_R_CALCULATIONS_ENABLED === "true"}
             coverage={displayCoverage}

@@ -17,14 +17,16 @@ import {
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
+import dynamic from "next/dynamic";
+import type { CountyVoteRace } from "@/lib/county-vote-races";
 import { ResultSourceChain } from "./result-source-chain";
+import { PrecinctDetailMap } from "./precinct-detail-map";
+import type { SupportedPresidentialYear } from "@/lib/api-version";
 import {
   formatIndicatorScopeSummary,
   presentIndicatorScope,
   summarizeIndicatorScopes,
 } from "@/lib/indicator-presentation";
-import { PrecinctDetailMap } from "./precinct-detail-map";
-import type { SupportedPresidentialYear } from "@/lib/api-version";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
 import { activeMapSelection } from "@/lib/map-selection";
 import {
@@ -39,6 +41,7 @@ import { candidateNamesForYear } from "@/lib/state-year-results";
 import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, ReviewRowSummary, SecurityIncidentSummary, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 import { notifyWorkspaceContextChange, type WorkspaceMapMode } from "@/lib/workspace-navigation";
 type ResultsExplorerProps = {
+  countyVoteRaces: CountyVoteRace[];
   countyLabel: string;
   electionYear: SupportedPresidentialYear;
   initialFips?: string;
@@ -57,6 +60,7 @@ type ResultsExplorerProps = {
 type SortKey = "jurisdiction" | "winner" | "total" | "margin";
 type MapMode = WorkspaceMapMode;
 type MapPan = { x: number; y: number };
+const CountyVoteMap = dynamic(() => import("./county-vote-map").then(mod => mod.CountyVoteMap));
 
 function updateExplorerUrl(key: "fips" | "mode", value: string | null) {
   const url = new URL(window.location.href);
@@ -65,6 +69,7 @@ function updateExplorerUrl(key: "fips" | "mode", value: string | null) {
   } else {
     url.searchParams.delete(key);
   }
+  if (key === "mode" && value !== "votes-3d") url.searchParams.delete("race");
   window.history.replaceState(null, "", url);
   notifyWorkspaceContextChange(
     key === "mode"
@@ -663,7 +668,27 @@ function countyFill(
   return "#f0c36a";
 }
 
-export function ResultsExplorer({
+export function ResultsExplorer({ countyVoteRaces, ...props }: ResultsExplorerProps) {
+  const [mapMode, setMapMode] = useState<MapMode>(props.initialMapMode ?? "winner");
+  const [flatFips, setFlatFips] = useState(props.initialFips);
+  if (mapMode === "votes-3d") {
+    return <section className="results-explorer" aria-label={`${props.selectedState} result explorer`} data-crm-state={props.selectedState} data-crm-year={props.electionYear}>
+      <div className="panel map-panel" data-tour="map-panel">
+        <div className="panel-header">
+          <div><h2>3D county votes</h2><span>County and county-equivalent results</span></div>
+          <button type="button" onClick={() => {
+            setFlatFips(new URL(window.location.href).searchParams.get("fips") ?? undefined);
+            setMapMode("winner"); updateExplorerUrl("mode", "winner");
+          }}>Return to flat map</button>
+        </div>
+        <CountyVoteMap key={props.selectedState + props.electionYear} state={props.selectedState} year={props.electionYear} races={countyVoteRaces} sources={props.sources} />
+      </div>
+    </section>;
+  }
+  return <FlatResultsExplorer {...props} initialFips={flatFips} mapMode={mapMode} setMapMode={setMapMode} />;
+}
+
+function FlatResultsExplorer({
   countyLabel,
   equipmentRows,
   securityIncidents,
@@ -671,19 +696,19 @@ export function ResultsExplorer({
   indicators,
   indicatorsEvaluated,
   initialFips,
-  initialMapMode,
+  mapMode,
+  setMapMode,
   results,
   reviewRows,
   selectedState,
   sources,
   voteMethodRows,
-}: ResultsExplorerProps) {
+}: Omit<ResultsExplorerProps, "countyVoteRaces"> & { mapMode: MapMode; setMapMode: (mode: MapMode) => void }) {
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [equipmentFeatures, setEquipmentFeatures] = useState<GeoFeature[]>([]);
   const [supplementalOverlay, setSupplementalOverlay] = useState<SupplementalMapOverlay | null>(null);
   const [equipmentGeoStatus, setEquipmentGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
-  const [mapMode, setMapMode] = useState<MapMode>(initialMapMode ?? "winner");
   const [mapPan, setMapPan] = useState<MapPan>({ x: 0, y: 0 });
   const [mapZoom, setMapZoom] = useState(1);
   const [selectedVoteMethod, setSelectedVoteMethod] = useState("in_person_early");
@@ -959,6 +984,7 @@ export function ResultsExplorer({
       { label: "Winner", mode: "winner" },
       { label: "Margin", mode: "margin" },
       { label: "Votes", mode: "volume" },
+      { label: "3D votes", mode: "votes-3d" },
       { label: "Method", mode: "method" },
       { label: "Equipment", mode: "equipment" },
     ];
