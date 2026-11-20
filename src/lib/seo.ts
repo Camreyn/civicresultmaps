@@ -10,7 +10,7 @@ export function absoluteUrl(path: string) {
   return new URL(path, siteOrigin).href;
 }
 
-export function pageMetadata(input: { title: string; description: string; path: string; index?: boolean; canonical?: boolean; image?: { path: string; alt: string } }): Metadata {
+export function pageMetadata(input: { title: string; description: string; path: string; socialPath?: string; index?: boolean; canonical?: boolean; image?: { path: string; alt: string } }): Metadata {
   const title = input.title.includes(siteName) ? input.title : `${input.title} | ${siteName}`;
   const url = absoluteUrl(input.path);
   return {
@@ -19,7 +19,7 @@ export function pageMetadata(input: { title: string; description: string; path: 
     ...(input.canonical === false ? {} : { alternates: { canonical: url } }),
     robots: { index: input.index ?? true, follow: true },
     openGraph: { type: "website", title, description: input.description, siteName,
-      ...(input.canonical === false ? {} : { url }),
+      ...(input.socialPath ? { url: absoluteUrl(input.socialPath) } : input.canonical === false ? {} : { url }),
       ...(input.image ? { images: [{ url: absoluteUrl(input.image.path), width: 1200, height: 630, alt: input.image.alt }] } : {}),
     },
     twitter: { card: input.image ? "summary_large_image" : "summary", title, description: input.description,

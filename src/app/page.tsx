@@ -27,7 +27,6 @@ import {
   listImportRuns,
   listIndicators,
   listReviewRows,
-  listResults,
   listSourceRecordsRequests,
   listSources,
   listStates,
@@ -40,12 +39,13 @@ import {
   type SupportedPresidentialYear,
 } from "@/lib/api-version";
 import { buildStateSocialPreview } from "@/lib/social-preview";
-import { homeTitle, homeDescription, pageMetadata } from "@/lib/seo";
+import { workspaceMapPreview } from "@/lib/workspace-map-preview-data";
+import { homeTitle, homeDescription, pageMetadata, siteOrigin } from "@/lib/seo";
 import { appSeoPolicy, appQueryPath, type SeoSearchParams } from "@/lib/seo-query-policy";
 import { loadSeoAvailability } from "@/lib/seo-data";
 import { stateByCode, countyByTag } from "@/lib/seo-geography";
 import { listSecurityIncidentStateSummaries } from "@/lib/security-incidents";
-import { historicalCountyRowsToResults } from "@/lib/state-year-results";
+import { loadDisplayResults } from "@/lib/workspace-result-data";
 import { workspaceTabSupportsHistoricalYear, workspaceMapModes, type WorkspaceMapMode } from "@/lib/workspace-navigation";
 import { buildCountyVoteRaces } from "@/lib/county-vote-races";
 import { compactWorkspaceReviewRows } from "@/lib/workspace-review-payload";
@@ -62,54 +62,6 @@ function parseYear(value?: string): SupportedPresidentialYear {
   return isSupportedPresidentialYear(parsed) ? parsed : 2024;
 }
 
-async function loadDisplayResults(state: string, year: SupportedPresidentialYear) {
-  if (year !== 2024) {
-    const [historicalRows, raceResults] = await Promise.all([
-      listHistoricalResultRows({ state, year, limit: 5000 }),
-      listResults({ state, year, level: "county" }),
-    ]);
-    return {
-      historicalRows, raceResults,
-      countyResults: historicalCountyRowsToResults(historicalRows, year),
-      cityResults: [],
-      cityTownResults: [],
-      townResults: [],
-      stateResults: [],
-      federalPrecinctResults: [],
-      nonGeographicResults: [],
-    };
-  }
-
-  const [
-    countyResults,
-    cityResults,
-    cityTownResults,
-    townResults,
-    stateResults,
-    federalPrecinctResults,
-    nonGeographicResults,
-  ] = await Promise.all([
-    listResults({ state, year, level: "county" }),
-    listResults({ state, year, level: "city", office: "president" }),
-    listResults({ state, year, level: "city_town", office: "president" }),
-    listResults({ state, year, level: "town", office: "president" }),
-    listResults({ state, year, level: "state", office: "president" }),
-    listResults({ state, year, level: "federal_precincts", office: "president" }),
-    listResults({ state, year, level: "non_geographic", office: "president" }),
-  ]);
-
-  return {
-    historicalRows: [],
-    raceResults: countyResults,
-    countyResults: countyResults.filter(r => r.office.toLowerCase() === "president"),
-    cityResults,
-    cityTownResults,
-    townResults,
-    stateResults,
-    federalPrecinctResults,
-    nonGeographicResults,
-  };
-}
 
 async function loadDisplaySources(
   state: string,
@@ -127,8 +79,9 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
   const params = (await searchParams) ?? {};
   const year = parseYear(typeof params.year === "string" ? params.year : undefined);
   const state = typeof params.state === "string" ? stateByCode(params.state) : undefined;
-  const preview = await buildStateSocialPreview({ state: state?.code, year });
-  const image = new URL(preview.imagePath);
+  const map = await workspaceMapPreview(params);
+  const preview = map ?? await buildStateSocialPreview({ state: state?.code, year });
+  const image = new URL(preview.imagePath, siteOrigin);
   let policy = appSeoPolicy(params);
   if (policy.semantic && state) {
     const county = typeof params.fips === "string" ? countyByTag(`county:${params.fips}`) : undefined;
@@ -140,9 +93,10 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
     }
   }
   return pageMetadata({
-    title: state ? preview.title : homeTitle,
-    description: state ? preview.description : homeDescription,
+    title: state || map ? preview.title : homeTitle,
+    description: state || map ? preview.description : homeDescription,
     path: policy.path,
+    socialPath: map?.sharePath,
     index: policy.index,
     // Excluded application views need no canonical; do not echo arbitrary query values into social URLs.
     canonical: policy.index,

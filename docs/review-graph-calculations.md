@@ -75,6 +75,24 @@ sum precinct samples, allocate statewide or district votes to counties, or
 interpret missing totals as zero. Gray counties have no unambiguous joined
 total; a reported zero is flat but is not gray.
 
+### Shared map thumbnails
+
+Sharing a state map link advertises a 1200 × 630 PNG to Open Graph and Twitter
+crawlers, without running JavaScript. For example,
+`/?state=AZ&year=2024&tab=map&mode=votes-3d&race=comparison%3AUnited+States+Senator`
+uses the published contest when available. Unknown races fall back to President,
+as in the explorer. The image uses the selected state, year, mode, race and
+valid in-state county pin; other query parameters are not copied to social URLs.
+The default 3D camera angle is used, not the viewer's last rotation.
+
+Images are rendered on demand by `/api/social-card` and cached for 15 minutes.
+The PNG reads current results; only the **boundary paths** are precomputed.
+After updating the repository's county, Alaska district, or Verified Voting
+equipment boundary files, run `npm run thumbnails:geometry` and commit the
+updated `data/map-thumbnail-paths/*.json.gz`. To verify without writing, run
+`npm.cmd run thumbnails:geometry -- --check`. The 3D cards reuse the explorer's
+public county geometry and linear height calculation directly.
+
 ### Vote Method Map
 
 - Input: EAC or state-native participation-method rows where loaded.

@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/**/*": ["./data/canonical-jurisdictions.json"],
     "/api/admin/setup-database": ["./drizzle/**/*"],
-    "/api/social-card": ["./data/*-counties.geojson"],
+    "/api/social-card": ["./public/data/national-counties.geojson", "./data/map-thumbnail-paths/*.json.gz", "./data/ak-2024-legacy-house-district-overlay.json"],
   },
   turbopack: {
     root: __dirname,

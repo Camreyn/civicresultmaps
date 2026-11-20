@@ -1,7 +1,9 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { readThumbnailPaths, type ThumbnailShape } from "@/lib/social-map-assets";
+import { mapViewBox } from "@/lib/social-map-geometry";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
+import { workspaceMapPreview } from "@/lib/workspace-map-preview-data";
+import { renderWorkspaceMapCard } from "./workspace-map-card";
 import { listCompletenessReport, listIndicators, listResults } from "@/lib/api";
 import { securityIncidentMetricText } from "@/lib/security-incident-summary";
 import { getNationalSecurityIncidentReport } from "@/lib/security-incidents";
@@ -18,8 +20,6 @@ const size = {
   height: 630,
 };
 
-const mapViewBox = { width: 700, height: 420 };
-const rawGeoBaseUrl = "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
 const nationalTileOrder = [
   "WA", "ID", "MT", "ND", "MN", "WI", "MI", "NY", "VT", "ME",
   "OR", "NV", "WY", "SD", "IA", "IL", "IN", "OH", "PA", "NH",
@@ -28,33 +28,6 @@ const nationalTileOrder = [
   "HI", "OK", "TX", "LA", "MS", "AL", "GA", "FL", "NJ", "CT",
 ];
 
-type GeoFeature = {
-  geometry: {
-    coordinates: unknown;
-    type: "Polygon" | "MultiPolygon";
-  };
-  properties: {
-    BASENAME?: string;
-    GEOID?: string;
-    NAME?: string;
-    county_name?: string;
-    jurisdictionName?: string;
-    [key: string]: unknown;
-  };
-};
-
-type FeatureCollection = {
-  features: GeoFeature[];
-  type: "FeatureCollection";
-};
-
-type MapBounds = {
-  maxX: number;
-  maxY: number;
-  minX: number;
-  minY: number;
-  referenceLatitude: number;
-};
 
 type MapFeaturePath = {
   flagged: boolean;
@@ -82,7 +55,7 @@ function normalizeName(name: string) {
     .toUpperCase();
 }
 
-function featureName(feature: GeoFeature) {
+function featureName(feature: ThumbnailShape) {
   return feature.properties.jurisdictionName ?? feature.properties.NAME ?? feature.properties.county_name ?? feature.properties.BASENAME ?? "";
 }
 
@@ -94,120 +67,6 @@ function resultNameForFeature(state: string, name: string) {
   return name;
 }
 
-function flattenPositions(coordinates: unknown): number[][] {
-  if (!Array.isArray(coordinates)) {
-    return [];
-  }
-
-  if (coordinates.length >= 2 && typeof coordinates[0] === "number" && typeof coordinates[1] === "number") {
-    return [coordinates as number[]];
-  }
-
-  return coordinates.flatMap((item) => flattenPositions(item));
-}
-
-function polygonRings(feature: GeoFeature): number[][][] {
-  if (feature.geometry.type === "Polygon") {
-    return feature.geometry.coordinates as number[][][];
-  }
-
-  return (feature.geometry.coordinates as number[][][][]).flat();
-}
-
-function mapCoordinate(state: string, [lon, lat]: number[]) {
-  if (state === "AK" && lon > 0) {
-    return [lon - 360, lat];
-  }
-
-  return [lon, lat];
-}
-
-function average(values: number[]) {
-  const finite = values.filter(Number.isFinite);
-  return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
-}
-
-function longitudeScale(referenceLatitude: number) {
-  const scale = Math.cos((referenceLatitude * Math.PI) / 180);
-  return Number.isFinite(scale) && scale > 0.1 ? scale : 1;
-}
-
-function coordinateBounds(points: number[][]): MapBounds {
-  if (!points.length) {
-    return { maxX: 1, maxY: 1, minX: 0, minY: 0, referenceLatitude: 0 };
-  }
-
-  const referenceLatitude = average(points.map(([, lat]) => lat));
-  const scale = longitudeScale(referenceLatitude);
-
-  return points.reduce(
-    (bounds, [lon, lat]) => {
-      const projectedX = lon * scale;
-      return {
-        ...bounds,
-        maxX: Math.max(bounds.maxX, projectedX),
-        maxY: Math.max(bounds.maxY, lat),
-        minX: Math.min(bounds.minX, projectedX),
-        minY: Math.min(bounds.minY, lat),
-      };
-    },
-    {
-      maxX: Number.NEGATIVE_INFINITY,
-      maxY: Number.NEGATIVE_INFINITY,
-      minX: Number.POSITIVE_INFINITY,
-      minY: Number.POSITIVE_INFINITY,
-      referenceLatitude,
-    },
-  );
-}
-
-function mapFit(bounds: MapBounds) {
-  const width = bounds.maxX - bounds.minX || 1;
-  const height = bounds.maxY - bounds.minY || 1;
-  const scale = Math.min((mapViewBox.width - 40) / width, (mapViewBox.height - 34) / height);
-  return {
-    offsetX: (mapViewBox.width - width * scale) / 2,
-    offsetY: (mapViewBox.height - height * scale) / 2,
-    scale,
-  };
-}
-
-function projectedLongitude(lon: number, bounds: MapBounds) {
-  return lon * longitudeScale(bounds.referenceLatitude);
-}
-
-function simplifyRing(ring: number[][], maxPoints = 130) {
-  if (ring.length <= maxPoints) {
-    return ring;
-  }
-
-  const stride = Math.ceil(ring.length / maxPoints);
-  const sampled = ring.filter((_, index) => index % stride === 0);
-  const last = ring[ring.length - 1];
-  if (last && sampled[sampled.length - 1] !== last) {
-    sampled.push(last);
-  }
-  return sampled;
-}
-
-function makePath(state: string, rings: number[][][], bounds: MapBounds) {
-  const { offsetX, offsetY, scale } = mapFit(bounds);
-
-  return rings
-    .map((ring) =>
-      simplifyRing(ring)
-        .map((coordinate, index) => {
-          const [lon, lat] = mapCoordinate(state, coordinate);
-          const projectedX = projectedLongitude(lon, bounds);
-          const x = offsetX + (projectedX - bounds.minX) * scale;
-          const y = offsetY + (bounds.maxY - lat) * scale;
-          return `${index === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`;
-        })
-        .join(" ")
-        .concat(" Z"),
-    )
-    .join(" ");
-}
 
 function countyFill(winner: string) {
   if (/harris|dem/i.test(winner)) {
@@ -226,25 +85,8 @@ async function loadMapPaths(state: string, year: number): Promise<MapFeaturePath
     return [];
   }
 
-  let collection: FeatureCollection;
-  try {
-    const geoJsonPath = path.join(process.cwd(), "data", `${state.toLowerCase()}-counties.geojson`);
-    collection = JSON.parse(await readFile(geoJsonPath, "utf8")) as FeatureCollection;
-  } catch {
-    try {
-      const response = await fetch(`${rawGeoBaseUrl}/${state.toLowerCase()}-counties.geojson`, {
-        next: { revalidate: 60 * 60 * 24 },
-      });
-      if (!response.ok) {
-        return [];
-      }
-      collection = (await response.json()) as FeatureCollection;
-    } catch {
-      return [];
-    }
-  }
-
-  const [countyResults, cityResults, cityTownResults, townResults, stateResults, indicators] = await Promise.all([
+  const [{ counties }, countyResults, cityResults, cityTownResults, townResults, stateResults, indicators] = await Promise.all([
+    readThumbnailPaths(state),
     listResults({ state, year, level: "county" }),
     listResults({ state, year, level: "city" }),
     listResults({ state, year, level: "city_town" }),
@@ -256,10 +98,7 @@ async function loadMapPaths(state: string, year: number): Promise<MapFeaturePath
   const resultsByName = new Map(results.map((row) => [normalizeName(row.jurisdictionName), row]));
   const indicatorNames = new Set(indicators.map((indicator) => normalizeName(indicator.jurisdictionName)));
   const indicatorCodes = new Set(indicators.map((indicator) => indicator.jurisdictionCode));
-  const points = collection.features.flatMap((feature) => flattenPositions(feature.geometry.coordinates).map((coordinate) => mapCoordinate(state, coordinate)));
-  const bounds = coordinateBounds(points);
-
-  return collection.features.map((feature, index) => {
+  return counties.map((feature, index) => {
     const name = resultNameForFeature(state, featureName(feature));
     const normalized = normalizeName(name);
     const row = resultsByName.get(normalized);
@@ -269,7 +108,7 @@ async function loadMapPaths(state: string, year: number): Promise<MapFeaturePath
     return {
       flagged,
       key: `${state}-${geoId || normalized || index}`,
-      path: makePath(state, polygonRings(feature), bounds),
+      path: feature.path,
       winner: row?.winner ?? "",
     };
   });
@@ -527,6 +366,11 @@ export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   if (params.get("view") === "security") {
     return buildSecuritySocialCard();
+  }
+  if (params.has("mode")) {
+    const map = await workspaceMapPreview(Object.fromEntries(params), true);
+    if (!map) return new Response("Unsupported map preview", { status: 400 });
+    return setSocialCardCache(await renderWorkspaceMapCard(map));
   }
 
   const preview = await buildStateSocialPreview({
