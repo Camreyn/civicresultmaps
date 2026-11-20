@@ -186,13 +186,16 @@ export function WorkspaceContextBar({
           </select>
         </label>
 
-        <div className="workspace-context-readonly">
+        <div className="workspace-context-control">
           <span>Contest</span>
-          {in3D ? <a href="#county-vote-race">{contest}</a> : <strong>President</strong>}
+          <div className="workspace-context-readonly">
+            {in3D ? <a href="#county-vote-race">{contest}</a> : <strong>President</strong>}
+          </div>
         </div>
 
-        {in3D ? <div className="workspace-context-readonly">
-          <span>Geography</span><a href="#county-vote-selection">Inspect county on map</a>
+        {in3D ? <div className="workspace-context-control is-wide">
+          <span>Geography</span>
+          <div className="workspace-context-readonly"><a href="#county-vote-selection">Inspect county on map</a></div>
         </div> : <label className="workspace-context-control is-wide">
           <span>Geography</span>
           <select
