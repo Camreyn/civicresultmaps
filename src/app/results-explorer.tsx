@@ -17,6 +17,7 @@ import {
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
+import { aggregateVoteMethod, countyFill, equipmentFeatureGroupLabel, equipmentFill, equipmentGroupLabel, featureJurisdictionTag, featureName, isDemocraticWinner, isRepublicanWinner, methodShare, normalizeName, resultNameForFeature, type GeoFeature } from "@/lib/workspace-map-paint";
 import dynamic from "next/dynamic";
 import type { CountyVoteRace } from "@/lib/county-vote-races";
 import { ResultSourceChain } from "./result-source-chain";
@@ -78,21 +79,6 @@ function updateExplorerUrl(key: "fips" | "mode", value: string | null) {
   );
 }
 
-type GeoFeature = {
-  geometry: {
-    coordinates: unknown;
-    type: "Polygon" | "MultiPolygon";
-  };
-  properties: {
-    BASENAME?: string;
-    GEOID?: string;
-    NAME?: string;
-    equipmentGroupLabel?: string;
-    jurisdictionName?: string;
-    county_name?: string;
-    [key: string]: unknown;
-  };
-};
 
 type FeatureCollection = {
   features: GeoFeature[];
@@ -166,42 +152,6 @@ function verifiedVotingAreaPath(state: string) {
   return `verifiedvoting-${state.toLowerCase()}-2024-equipment-areas.geojson`;
 }
 
-function normalizeName(name: string) {
-  return name
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\bSaint\b/gi, "St")
-    .replace(/\bMore\b.*$/i, "")
-    .replace(/Â»/g, "")
-    .replace(/\s+(County|Parish|Planning Region)$/i, "")
-    .replace(/[^a-z0-9]+/gi, "")
-    .toUpperCase();
-}
-
-function isDemocraticWinner(winner: string) {
-  return ["Harris", "Biden", "Clinton", "Obama"].includes(winner);
-}
-
-function isRepublicanWinner(winner: string) {
-  return ["Trump", "Romney"].includes(winner);
-}
-
-function featureName(feature: GeoFeature) {
-  return feature.properties.jurisdictionName ?? feature.properties.NAME ?? feature.properties.county_name ?? feature.properties.BASENAME ?? "";
-}
-
-function featureJurisdictionTag(feature: GeoFeature) {
-  const geoid = feature.properties.GEOID;
-  return typeof geoid === "string" && /^\d{5}$/.test(geoid) ? `county:${geoid}` : null;
-}
-
-function resultNameForFeature(state: string, name: string) {
-  if (state === "MS" && normalizeName(name) === "JEFFERSONDAVIS") {
-    return "Jeff Davis County";
-  }
-
-  return name;
-}
 
 function isNonGeographicResultRow(state: string, name: string) {
   const normalized = normalizeName(name);
@@ -538,34 +488,6 @@ function clampPan(pan: MapPan, zoom: number) {
   };
 }
 
-function mixColor(start: [number, number, number], end: [number, number, number], amount: number) {
-  const t = clamp(amount, 0, 1);
-  const [r1, g1, b1] = start;
-  const [r2, g2, b2] = end;
-  return `rgb(${Math.round(r1 + (r2 - r1) * t)}, ${Math.round(g1 + (g2 - g1) * t)}, ${Math.round(
-    b1 + (b2 - b1) * t,
-  )})`;
-}
-
-type VoteMethodAggregate = {
-  method: string;
-  methodLabel: string;
-  reportedRows: number;
-  totalVoters: number;
-  unavailableRows: number;
-  voters: number;
-};
-
-const equipmentPalette = [
-  "#35c7a3",
-  "#6fa6ea",
-  "#f0c36a",
-  "#e7896f",
-  "#c58cff",
-  "#8fd17f",
-  "#d986c8",
-  "#9ca3af",
-];
 const securityLegend = [
   { color: "#f97316", label: "Loaded official county detail" },
   { color: "#fbbf24", label: "Later public-source tracker" },
@@ -573,41 +495,6 @@ const securityLegend = [
   { color: "#2c302e", label: "No loaded matching county record" },
 ] as const;
 
-function methodShare(row: VoteMethodAggregate | undefined) {
-  return row && row.totalVoters > 0 ? (row.voters / row.totalVoters) * 100 : null;
-}
-
-function equipmentGroupLabel(row: EquipmentRowSummary | undefined) {
-  if (!row) {
-    return "No equipment row";
-  }
-
-  return [row.vendor || "Vendor not recorded", row.systemName || row.equipmentType || "System not recorded"].join(" - ");
-}
-
-function equipmentFeatureGroupLabel(feature: GeoFeature | undefined) {
-  const label = feature?.properties.equipmentGroupLabel;
-  return typeof label === "string" && label.trim() ? label : "";
-}
-
-function stableHash(value: string) {
-  return Array.from(value).reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 0);
-}
-
-function equipmentFill(row: EquipmentRowSummary | undefined, feature: GeoFeature | undefined) {
-  const label = row ? equipmentGroupLabel(row) : equipmentFeatureGroupLabel(feature);
-  if (!label) {
-    return "#2c302e";
-  }
-
-  return equipmentPalette[stableHash(label) % equipmentPalette.length];
-}
-
-function securityFill(rows: SecurityIncidentSummary[]) {
-  if (rows.some((row) => row.sourceTier === "official")) return "#f97316";
-  if (rows.some((row) => row.sourceStatus === "supplemental_earlier_compilation")) return "#c084fc";
-  return rows.length ? "#fbbf24" : "#2c302e";
-}
 
 function securitySourceLabel(row: SecurityIncidentSummary) {
   if (row.sourceTier === "official") return "Official county record";
@@ -620,53 +507,6 @@ function securitySummary(rows: SecurityIncidentSummary[]) {
   return securityIncidentSummaryText(rows);
 }
 
-function countyFill(
-  row: ResultRow | undefined,
-  mode: MapMode,
-  maxTotalVotes: number,
-  methodRow?: VoteMethodAggregate,
-  equipmentRow?: EquipmentRowSummary,
-  equipmentFeature?: GeoFeature,
-  maxMethodShare = 100,
-  securityRows: SecurityIncidentSummary[] = [],
-) {
-  if (mode === "security") {
-    return securityFill(securityRows);
-  }
-
-  if (mode === "equipment") {
-    return equipmentFill(equipmentRow, equipmentFeature);
-  }
-
-  if (mode === "method") {
-    const share = methodShare(methodRow);
-    if (share === null) {
-      return "#2c302e";
-    }
-    return mixColor([220, 252, 231], [13, 148, 136], share / Math.max(1, maxMethodShare));
-  }
-
-  if (!row) {
-    return "#2c302e";
-  }
-
-  if (mode === "volume") {
-    const intensity = Math.min(0.88, Math.max(0.18, row.totalVotes / Math.max(1, maxTotalVotes)));
-    return `rgba(240, 195, 106, ${intensity})`;
-  }
-
-  const strength = mode === "margin" ? clamp(row.marginPct / 42, 0, 1) : clamp(row.marginPct / 60, 0, 1);
-
-  if (isDemocraticWinner(row.winner)) {
-    return mixColor([191, 219, 254], [29, 78, 216], strength);
-  }
-
-  if (isRepublicanWinner(row.winner)) {
-    return mixColor([254, 202, 202], [220, 38, 38], strength);
-  }
-
-  return "#f0c36a";
-}
 
 export function ResultsExplorer({ countyVoteRaces, ...props }: ResultsExplorerProps) {
   const [mapMode, setMapMode] = useState<MapMode>(props.initialMapMode ?? "winner");
@@ -1025,31 +865,7 @@ function FlatResultsExplorer({
   }, [voteMethodOptions]);
 
   const voteMethodByCounty = useMemo(() => {
-    const aggregates = new Map<string, VoteMethodAggregate>();
-    for (const row of voteMethodRows) {
-      if (row.method !== selectedVoteMethod) {
-        continue;
-      }
-      const countyName = row.county || row.jurisdictionName;
-      const key = normalizeName(countyName);
-      const current = aggregates.get(key) ?? {
-        method: row.method,
-        methodLabel: row.methodLabel,
-        reportedRows: 0,
-        totalVoters: 0,
-        unavailableRows: 0,
-        voters: 0,
-      };
-      if (row.valueStatus === "reported" && row.voters !== null) {
-        current.reportedRows += 1;
-        current.voters += row.voters;
-        current.totalVoters += row.totalVoters ?? 0;
-      } else {
-        current.unavailableRows += 1;
-      }
-      aggregates.set(key, current);
-    }
-    return aggregates;
+    return aggregateVoteMethod(voteMethodRows, selectedVoteMethod);
   }, [selectedVoteMethod, voteMethodRows]);
   const equipmentByCounty = useMemo(() => {
     const rows = new Map<string, EquipmentRowSummary>();

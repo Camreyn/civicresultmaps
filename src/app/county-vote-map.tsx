@@ -7,20 +7,11 @@ import type { NationalCountyFeature, NationalCountyFeatureCollection } from "@/l
 import { buildVotePrisms, voteMapBox, type VotePrism } from "@/lib/county-vote-prisms";
 import { notifyWorkspaceContextChange } from "@/lib/workspace-navigation";
 import type { SourceSummary } from "@/lib/types";
+import { countyVoteColors, palette } from "@/lib/county-vote-style";
 import styles from "./county-vote-map.module.css";
 
 const compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumSignificantDigits: 3 });
 const number = new Intl.NumberFormat("en-US");
-const palette = {
-  dem: ["#779bfd", "#4e71cd", "#344f9d"],
-  rep: ["#f3857b", "#c05d58", "#973f42"],
-  neutral: ["#e3be72", "#b79552", "#8a713f"],
-  missing: ["#515966", "", ""],
-};
-const shades = {
-  dem: [["#acbff7","#819bd9","#6076b8"],palette.dem,["#597fe4","#4264bd","#304b96"],["#446cd8","#3758ab","#253e85"]],
-  rep: [["#f5b4ad","#d58b85","#af6c69"],palette.rep,["#e86560","#bc504e","#934045"],["#d94c49","#b44040","#8b3339"]],
-};
 function describe(p: VotePrism) {
   return p.vote ? `${number.format(p.vote.total)} votes · ${p.vote.outcome}` : "No joined county total";
 }
@@ -102,9 +93,7 @@ export function CountyVoteMap({ state, year, races, sources }: {
         {features?.length ? (
           <svg viewBox={viewBox} role="group" aria-label={`${state} ${year} ${race.label} 3D county votes`}>
             {prisms.map(p => {
-              const party = p.vote?.color;
-              const tone = Math.max(0, Math.min(3, Math.floor(((p.vote?.leadShare ?? .60) - .50) * 10)));
-              const [roof, light, dark] = party === "dem" || party === "rep" ? shades[party][tone] : palette[party ?? "missing"];
+              const [roof, light, dark] = countyVoteColors(p.vote);
               return <g key={p.id} role="button" tabIndex={0} aria-label={p.name + ": " + describe(p)} aria-pressed={pinned?.id === p.id}
                 className={styles.county} data-active={inspected?.id === p.id} data-fips={p.id}
                 onMouseEnter={() => setHover(p.id)} onMouseLeave={() => setHover("")}

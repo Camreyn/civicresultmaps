@@ -226,8 +226,10 @@ test("map joins support repository GeoJSON county name variants", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   const socialCard = readFileSync("src/app/api/social-card/route.tsx", "utf8");
   const productionValidator = readFileSync("scripts/validate-production-map-joins.mjs", "utf8");
-  assert.match(explorer, /county_name/);
-  assert.match(explorer, /function featureName/);
+  const sharedPaint = readFileSync("src/lib/workspace-map-paint.ts", "utf8");
+  assert.match(sharedPaint, /county_name/);
+  assert.match(sharedPaint, /function featureName/);
+  assert.match(explorer, /featureName/);
   assert.match(explorer, /ak-house-districts\.geojson/);
   assert.match(explorer, /lon - 360/);
   assert.doesNotMatch(explorer, /state === "HI" && normalizeName\(name\) === "KALAWAO"/);
@@ -805,7 +807,8 @@ test("statewide-only result rows remain visible in workspace and coverage", () =
   const page = readFileSync("src/app/page.tsx", "utf8");
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
 
-  assert.match(page, /level: "state"/);
+  assert.match(readFileSync("src/lib/workspace-result-data.ts", "utf8"), /level: "state"/);
+  assert.match(page, /loadDisplayResults/);
   assert.match(page, /cityTownResults\.length/);
   assert.match(page, /townResults\.length/);
   assert.match(page, /stateResults/);
