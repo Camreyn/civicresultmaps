@@ -18,7 +18,7 @@ test("every map mode advertises a distinct 1200×630 PNG to a crawler without Ja
       const image = await page.locator('head meta[property="og:image"]').getAttribute("content");
       expect(await page.locator('head meta[name="twitter:image"]').getAttribute("content")).toBe(image);
       expect(await page.locator('head meta[property="og:url"]').getAttribute("content")).toBe(origin + path);
-      expect(image).toBe(origin + "/api/social-card?" + query + "&v=map-modes-1");
+      expect(image).toBe(origin + "/api/social-card?" + query + "&v=map-modes-2");
       images.add(image!);
       const response = await context.request.get(new URL(image!).pathname + new URL(image!).search);
       expect(response.status()).toBe(200);
