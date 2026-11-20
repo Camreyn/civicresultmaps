@@ -197,11 +197,15 @@ export const listTurnoutRows = cachePublicData(
   { persistent: false },
 );
 
-export const listVoteMethodRows = unstable_cache(
+const cachedVoteMethodRows = unstable_cache(
   uncachedListVoteMethodRows,
   [publicDataCacheNamespace, "vote-method-rows"],
   { revalidate: publicDataRevalidateSeconds },
 );
+const fullVoteMethodRows = cache(uncachedListVoteMethodRows);
+export function listVoteMethodRows(input: Parameters<typeof uncachedListVoteMethodRows>[0]) {
+  return (input.limit ?? 500) > 1000 ? fullVoteMethodRows(input) : cachedVoteMethodRows(input);
+}
 
 export { listNativeSourcePackages } from "./native-source-packages";
 export { listAdminSourceStatuses } from "./admin-source-packages";

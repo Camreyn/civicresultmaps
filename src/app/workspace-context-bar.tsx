@@ -1,6 +1,7 @@
 "use client";
 
 import { SlidersHorizontal } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { StateSummary } from "@/lib/types";
 import type { WorkspaceTabId } from "@/lib/workspace-layout";
@@ -23,6 +24,7 @@ type GeographyOption = {
 };
 
 type WorkspaceContextBarProps = {
+  races: { id: string; label: string }[];
   activeTab: WorkspaceTabId;
   countyLabel: string;
   electionYear: SupportedPresidentialYear;
@@ -42,9 +44,11 @@ const baseMapModeOptions: Array<{ label: string; value: WorkspaceMapMode }> = [
   { label: "Winner", value: "winner" },
   { label: "Margin", value: "margin" },
   { label: "Vote volume", value: "volume" },
+  { label: "3D votes", value: "votes-3d" },
 ];
 
 export function WorkspaceContextBar({
+  races,
   activeTab,
   countyLabel,
   electionYear,
@@ -63,6 +67,9 @@ export function WorkspaceContextBar({
     : undefined;
   const [selectedFips, setSelectedFips] = useState(validInitialFips ?? "");
   const [selectedMapMode, setSelectedMapMode] = useState<WorkspaceMapMode>(initialMapMode ?? "winner");
+  const search = useSearchParams();
+  const in3D = selectedMapMode === "votes-3d";
+  const contest = in3D ? races.find(r => r.id === search.get("race"))?.label ?? "President" : "President";
   const fallbackContext: WorkspaceNavigationContext = {
     fips: validInitialFips,
     mode: initialMapMode,
@@ -111,7 +118,7 @@ export function WorkspaceContextBar({
     const url = new URL(window.location.href);
     const urlFips = url.searchParams.get("fips");
 
-    if (!urlFips || geographies.some((geography) => geography.code === urlFips)) {
+    if (selectedMapMode === "votes-3d" || !urlFips || geographies.some((geography) => geography.code === urlFips)) {
       return;
     }
 
@@ -119,7 +126,7 @@ export function WorkspaceContextBar({
     window.history.replaceState(null, "", url);
     setSelectedFips("");
     notifyWorkspaceContextChange({ fips: null });
-  }, [geographies]);
+  }, [geographies, selectedMapMode]);
 
   const currentContext = () => {
     const context = workspaceNavigationContextFromSearchParams(
@@ -127,7 +134,7 @@ export function WorkspaceContextBar({
       fallbackContext,
     );
 
-    return context.fips && !geographies.some((geography) => geography.code === context.fips)
+    return !in3D && context.fips && !geographies.some((geography) => geography.code === context.fips)
       ? { ...context, fips: undefined }
       : context;
   };
@@ -140,7 +147,7 @@ export function WorkspaceContextBar({
         <div>
           <span>Current context</span>
           <h1>
-            {selectedStateName} · <small>{electionYear} President</small>
+            {selectedStateName} · <small>{electionYear} {contest}</small>
           </h1>
         </div>
       </div>
@@ -168,6 +175,7 @@ export function WorkspaceContextBar({
               navigate(workspaceNavigationHref({
                 ...currentContext(),
                 fips: undefined,
+                race: undefined,
                 tab: workspaceTabSupportsHistoricalYear(activeTab) ? activeTab : "map",
                 year,
               }));
@@ -178,14 +186,14 @@ export function WorkspaceContextBar({
           </select>
         </label>
 
-        <div className="workspace-context-control">
+        <div className="workspace-context-readonly">
           <span>Contest</span>
-          <div className="workspace-context-readonly">
-            <strong>President</strong>
-          </div>
+          {in3D ? <a href="#county-vote-race">{contest}</a> : <strong>President</strong>}
         </div>
 
-        <label className="workspace-context-control is-wide">
+        {in3D ? <div className="workspace-context-readonly">
+          <span>Geography</span><a href="#county-vote-selection">Inspect county on map</a>
+        </div> : <label className="workspace-context-control is-wide">
           <span>Geography</span>
           <select
             aria-label="Workspace geography"
@@ -201,7 +209,7 @@ export function WorkspaceContextBar({
               <option key={geography.code} value={geography.code}>{geography.name}</option>
             ))}
           </select>
-        </label>
+        </label>}
 
         <label className="workspace-context-control">
           <span>Map layer</span>

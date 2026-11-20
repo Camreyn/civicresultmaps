@@ -37,6 +37,7 @@ export type ResultRow = {
   marginVotes: number;
   marginPct: number;
   winner: string;
+  winnerParty?: "dem" | "rep";
   sourceId: string;
   resultStatus?: "candidate_detail_suppressed";
   reportedRegistration?: number;

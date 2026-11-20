@@ -93,6 +93,7 @@ import type {
 } from "@/lib/types";
 
 type WorkspaceTabsProps = {
+  countyVoteRaces: import("@/lib/county-vote-races").CountyVoteRace[];
   adminSourceStatus: AdminSourceStatusSummary | undefined;
   browserRCalculationsEnabled: boolean;
   coverage: CoverageSummary | null;
@@ -107,7 +108,7 @@ type WorkspaceTabsProps = {
   historicalRows: HistoricalResultRowSummary[];
   historicalBroadSignalWarning?: string;
   initialFips?: string;
-  initialMapMode?: "winner" | "margin" | "volume" | "method" | "equipment" | "security";
+  initialMapMode?: import("@/lib/workspace-navigation").WorkspaceMapMode;
   initialTab?: string;
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
@@ -2766,6 +2767,7 @@ function dateLabel(value: string | null) {
 }
 
 export function WorkspaceTabs({
+  countyVoteRaces,
   adminSourceStatus,
   browserRCalculationsEnabled,
   electronicIntegrityStatus,
@@ -4123,6 +4125,7 @@ export function WorkspaceTabs({
       } as CSSProperties}
     >
       <WorkspaceContextBar
+        races={countyVoteRaces}
         activeTab={activeTab}
         countyLabel={countyLabel}
         electionYear={electionYear}
@@ -4234,6 +4237,7 @@ export function WorkspaceTabs({
           <div className="content-grid">
             {captureProduction("results-map", (<div {...layoutSectionProps(layoutManifest, "map", "results-map")}>
             <ResultsExplorer
+              countyVoteRaces={countyVoteRaces}
               countyLabel={countyLabel}
               electionYear={electionYear}
               equipmentRows={equipmentRows}
